@@ -18,8 +18,8 @@ public class StencilHttpClient {
         return descriptorStore.getForClassName(className);
     }
 
-    public void reload() {
-        builder.build();
+    public StencilHttpClient reload() {
+        return builder.build();
     }
 
     public class Builder {
@@ -32,7 +32,7 @@ public class StencilHttpClient {
         private int backoffMs = 1000;
         private int timeoutMs = 10000;
 
-        public void build() {
+        public StencilHttpClient build() {
             if (StringUtils.isBlank(schemaDir)
                     || StringUtils.isBlank(schemaVersion)) {
                 throw new StencilConfigurationException(
@@ -60,6 +60,7 @@ public class StencilHttpClient {
                     throw new StencilRuntimeException(e);
                 }
             }
+            return StencilHttpClient.this;
         }
 
         private String getUrl() {
