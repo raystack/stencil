@@ -1,7 +1,5 @@
-package com.gojek.esb.stencil;
+package com.gojek.de.stencil;
 
-import com.gojek.de.stencil.DescriptorStore;
-import com.gojek.de.stencil.DescriptorStoreBuilder;
 import com.google.protobuf.Descriptors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

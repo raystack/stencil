@@ -1,4 +1,4 @@
-package com.gojek.esb.stencil;
+package com.gojek.de.stencil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

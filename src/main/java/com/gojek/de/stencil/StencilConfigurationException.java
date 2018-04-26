@@ -1,4 +1,4 @@
-package com.gojek.esb.stencil;
+package com.gojek.de.stencil;
 
 public class StencilConfigurationException extends RuntimeException {
     public StencilConfigurationException(String message) {
