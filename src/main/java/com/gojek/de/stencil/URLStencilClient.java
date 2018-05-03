@@ -43,6 +43,7 @@ public class URLStencilClient implements StencilClient {
         //get schema from server
         while (true) {
             try {
+                log.info("fetching descriptors from {} with timeout: {}ms, backoff: {}ms {} retries pending", url);
                 InputStream is = new RemoteFile().fetch(url, timeout);
                 descriptorMap = new DescriptorMapBuilder().buildFrom(is);
                 break;
