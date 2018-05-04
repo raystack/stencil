@@ -22,6 +22,7 @@ public class URLStencilClient implements StencilClient {
 
     private String url;
     private Map<String, String> options;
+
     private Map<String, Descriptors.Descriptor> descriptorMap;
 
     public Descriptors.Descriptor get(String className) {
@@ -29,6 +30,13 @@ public class URLStencilClient implements StencilClient {
             load();
         }
         return descriptorMap.get(className);
+    }
+
+    public Map<String, Descriptors.Descriptor> getDescriptorMap() {
+        if(descriptorMap == null) {
+            load();
+        }
+        return descriptorMap;
     }
 
     @Override
