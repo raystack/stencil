@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 @Slf4j
-public class URLStencilClient implements StencilClient {
+public class URLStencilClient extends StencilClient {
 
     public static final String DEFAULT_STENCIL_TIMEOUT_MS = "10000";
     public static final String DEFAULT_STENCIL_BACKOFF_MS = "1000";

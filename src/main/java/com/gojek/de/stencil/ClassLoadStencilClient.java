@@ -5,7 +5,7 @@ import com.google.protobuf.Descriptors;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassLoadStencilClient implements StencilClient {
+public class ClassLoadStencilClient extends StencilClient {
 
     private Map<String, Descriptors.Descriptor> descriptorMap;
 
