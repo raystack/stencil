@@ -10,12 +10,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class RemoteFile {
-    public InputStream fetch(String url, int timeout) throws IOException {
+    public byte[] fetch(String url, int timeout) throws IOException {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(timeout)
                 .setSocketTimeout(timeout).build();
@@ -40,6 +38,6 @@ public class RemoteFile {
         } finally {
             httpclient.close();
         }
-        return new ByteArrayInputStream(responseBody);
+        return responseBody;
     }
 }

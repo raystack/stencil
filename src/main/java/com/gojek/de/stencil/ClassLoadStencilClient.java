@@ -24,14 +24,4 @@ public class ClassLoadStencilClient extends StencilClient {
         }
         return descriptorMap.get(className);
     }
-
-    @Override
-    public void load() {
-        descriptorMap = new HashMap<>();
-    }
-
-    @Override
-    public void reload() {
-        load();
-    }
 }
