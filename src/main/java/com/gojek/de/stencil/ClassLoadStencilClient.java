@@ -2,12 +2,13 @@ package com.gojek.de.stencil;
 
 import com.google.protobuf.Descriptors;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassLoadStencilClient extends StencilClient {
+public class ClassLoadStencilClient extends StencilClient implements Serializable{
 
-    private transient Map<String, Descriptors.Descriptor> descriptorMap;
+    transient private Map<String, Descriptors.Descriptor> descriptorMap;
 
     public ClassLoadStencilClient() {
     }

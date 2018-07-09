@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Map;
 
-public class URLStencilClient extends StencilClient {
+public class URLStencilClient extends StencilClient implements Serializable{
 
     final Logger log = LoggerFactory.getLogger(URLStencilClient.class);
 
