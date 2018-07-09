@@ -7,13 +7,16 @@ import java.util.Map;
 
 public class ClassLoadStencilClient extends StencilClient {
 
-    private Map<String, Descriptors.Descriptor> descriptorMap;
+    private transient Map<String, Descriptors.Descriptor> descriptorMap;
 
     public ClassLoadStencilClient() {
-        descriptorMap = new HashMap<>();
     }
+
     @Override
     public Descriptors.Descriptor get(String className) {
+        if (descriptorMap == null) {
+            descriptorMap = new HashMap<>();
+        }
         if (! descriptorMap.containsKey(className)) {
             try {
                 Class<?> protoClass = Class.forName(className);

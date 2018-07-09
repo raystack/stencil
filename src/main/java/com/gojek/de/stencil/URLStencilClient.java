@@ -18,7 +18,7 @@ public class URLStencilClient extends StencilClient {
     public static final String DEFAULT_STENCIL_RETRIES = "4";
 
     private byte[] descriptorBin;
-    private Map<String, Descriptors.Descriptor> descriptorMap;
+    private transient Map<String, Descriptors.Descriptor> descriptorMap;
 
     public Descriptors.Descriptor get(String className) {
         if (descriptorMap == null) {
