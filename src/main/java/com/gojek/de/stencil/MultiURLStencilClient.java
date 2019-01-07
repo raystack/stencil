@@ -2,12 +2,13 @@ package com.gojek.de.stencil;
 
 import com.google.protobuf.Descriptors;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MultiURLStencilClient extends StencilClient {
+public class MultiURLStencilClient extends StencilClient implements Serializable {
 
 
     private List<StencilClient> stencilClients;
