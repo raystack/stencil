@@ -1,5 +1,6 @@
 package com.gojek.de.stencil;
 
+import com.google.common.cache.CacheLoader;
 import com.google.protobuf.Descriptors;
 
 import java.io.Serializable;
@@ -13,8 +14,8 @@ public class MultiURLStencilClient extends StencilClient implements Serializable
 
     private List<StencilClient> stencilClients;
 
-    public MultiURLStencilClient(List<String> urls, Map<String, String> config) {
-        stencilClients = urls.stream().map(url -> new URLStencilClient(url, config)).collect(Collectors.toList());
+    public MultiURLStencilClient(List<String> urls, Map<String, String> config, CacheLoader cacheLoader) {
+        stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());
     }
 
     @Override
