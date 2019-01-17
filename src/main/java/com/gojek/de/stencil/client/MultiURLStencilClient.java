@@ -1,4 +1,4 @@
-package com.gojek.de.stencil;
+package com.gojek.de.stencil.client;
 
 import com.google.common.cache.CacheLoader;
 import com.google.protobuf.Descriptors;
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MultiURLStencilClient extends StencilClient implements Serializable {
+public class MultiURLStencilClient implements Serializable, StencilClient {
 
 
     private List<StencilClient> stencilClients;
