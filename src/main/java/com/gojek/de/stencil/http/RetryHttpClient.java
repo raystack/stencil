@@ -17,8 +17,8 @@ public class RetryHttpClient {
 
 
     private static final String DEFAULT_STENCIL_TIMEOUT_MS = "10000";
-    private static final String DEFAULT_STENCIL_BACKOFF_MS = "1000";
-    private static final String DEFAULT_STENCIL_RETRIES = "4";
+    private static final String DEFAULT_STENCIL_BACKOFF_MS = "2000";
+    private static final String DEFAULT_STENCIL_RETRIES = "2";
 
     public CloseableHttpClient create(Map<String, String> config) {
         int timeout = Integer.parseInt(StringUtils.isBlank(config.get("STENCIL_TIMEOUT_MS")) ?
@@ -28,7 +28,7 @@ public class RetryHttpClient {
         int retries = Integer.parseInt(StringUtils.isBlank(config.get("STENCIL_RETRIES")) ?
                 DEFAULT_STENCIL_RETRIES : config.get("STENCIL_RETRIES"));
 
-        logger.info("initialising HTTP client with timeout: {}ms, backoff: {}ms {} retries pending", timeout, backoffMs, retries);
+        logger.info("initialising HTTP client with timeout: {}ms, backoff: {}ms, max retry attempts: {}", timeout, backoffMs, retries);
 
 
         RequestConfig requestConfig = RequestConfig.custom()
@@ -38,14 +38,17 @@ public class RetryHttpClient {
 
         return HttpClientBuilder.create()
                 .setDefaultRequestConfig(requestConfig)
-                .setRetryHandler((exception, executionCount, context) -> executionCount <= retries)
                 .setServiceUnavailableRetryStrategy(new ServiceUnavailableRetryStrategy() {
                     int waitPeriod = backoffMs;
 
                     @Override
                     public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
-                        waitPeriod *= 2;
-                        return executionCount <= retries && response.getStatusLine().getStatusCode() >= 500;
+                        if (executionCount <= retries && response.getStatusLine().getStatusCode() >= 400) {
+                            logger.info("Retrying requests, attempts left: {}", retries - executionCount);
+                            waitPeriod *= 2;
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
