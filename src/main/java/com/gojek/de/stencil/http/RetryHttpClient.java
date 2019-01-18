@@ -18,7 +18,7 @@ public class RetryHttpClient {
 
     private static final String DEFAULT_STENCIL_TIMEOUT_MS = "10000";
     private static final String DEFAULT_STENCIL_BACKOFF_MS = "2000";
-    private static final String DEFAULT_STENCIL_RETRIES = "2";
+    private static final String DEFAULT_STENCIL_RETRIES = "4";
 
     public CloseableHttpClient create(Map<String, String> config) {
         int timeout = Integer.parseInt(StringUtils.isBlank(config.get("STENCIL_TIMEOUT_MS")) ?
@@ -38,6 +38,7 @@ public class RetryHttpClient {
 
         return HttpClientBuilder.create()
                 .setDefaultRequestConfig(requestConfig)
+                .setConnectionManagerShared(true)
                 .setServiceUnavailableRetryStrategy(new ServiceUnavailableRetryStrategy() {
                     int waitPeriod = backoffMs;
 
