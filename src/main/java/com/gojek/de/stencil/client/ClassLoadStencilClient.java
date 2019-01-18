@@ -28,4 +28,9 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
         }
         return descriptorMap.get(className);
     }
+
+    @Override
+    public void close() {
+        
+    }
 }

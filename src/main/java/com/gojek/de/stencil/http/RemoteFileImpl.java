@@ -20,12 +20,13 @@ public class RemoteFileImpl implements RemoteFile, ResponseHandler<byte[]> {
     public byte[] fetch(String url) throws IOException {
         HttpGet httpget = new HttpGet(url);
         byte[] responseBody;
-        try {
-            responseBody = closeableHttpClient.execute(httpget, this);
-        } finally {
-            closeableHttpClient.close();
-        }
+        responseBody = closeableHttpClient.execute(httpget, this);
         return responseBody;
+    }
+
+    @Override
+    public void close() throws IOException {
+        closeableHttpClient.close();
     }
 
     @Override

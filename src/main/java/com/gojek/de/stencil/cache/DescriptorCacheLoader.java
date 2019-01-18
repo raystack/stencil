@@ -7,26 +7,30 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.protobuf.Descriptors;
+import com.timgroup.statsd.StatsDClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descriptors.Descriptor>> {
+public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descriptors.Descriptor>> implements Closeable {
+    private Optional<StatsDClient> statsDClientOpt;
     private static final Integer DEFAULT_THREAD_POOL = 2;
 
     private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL);
     private RemoteFile remoteFile;
     private final Logger logger = LoggerFactory.getLogger(DescriptorCacheLoader.class);
 
-
-    public DescriptorCacheLoader(RemoteFile remoteFile) {
+    public DescriptorCacheLoader(RemoteFile remoteFile, Optional<StatsDClient> statsDClientOpt) {
         this.remoteFile = remoteFile;
+        this.statsDClientOpt = statsDClientOpt;
     }
 
 
@@ -59,11 +63,18 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
             byte[] descriptorBin = remoteFile.fetch(url);
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
+            statsDClientOpt.ifPresent(s -> s.count("stencil.client.refresh", 1, "status:success"));
             return new DescriptorMapBuilder().buildFrom(inputStream);
 
         } catch (IOException | Descriptors.DescriptorValidationException e) {
+            statsDClientOpt.ifPresent(s -> s.count("stencil.client.refresh", 1, "status:failed"));
             throw new StencilRuntimeException(e);
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        remoteFile.close();
     }
 }
 
