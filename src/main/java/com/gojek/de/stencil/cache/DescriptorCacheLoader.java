@@ -16,21 +16,20 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descriptors.Descriptor>> implements Closeable {
-    private Optional<StatsDClient> statsDClientOpt;
+    private StatsDClient statsDClient;
     private static final Integer DEFAULT_THREAD_POOL = 2;
 
     private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL);
     private RemoteFile remoteFile;
     private final Logger logger = LoggerFactory.getLogger(DescriptorCacheLoader.class);
 
-    public DescriptorCacheLoader(RemoteFile remoteFile, Optional<StatsDClient> statsDClientOpt) {
+    public DescriptorCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient) {
         this.remoteFile = remoteFile;
-        this.statsDClientOpt = statsDClientOpt;
+        this.statsDClient = statsDClient;
     }
 
 
@@ -63,11 +62,11 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
             byte[] descriptorBin = remoteFile.fetch(url);
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
-            statsDClientOpt.ifPresent(s -> s.count("stencil.client.refresh", 1, "status:success"));
+            statsDClient.count("stencil.client.refresh", 1, "status:success");
             return new DescriptorMapBuilder().buildFrom(inputStream);
 
         } catch (IOException | Descriptors.DescriptorValidationException e) {
-            statsDClientOpt.ifPresent(s -> s.count("stencil.client.refresh", 1, "status:failed"));
+            statsDClient.count("stencil.client.refresh", 1, "status:failed");
             throw new StencilRuntimeException(e);
         }
     }

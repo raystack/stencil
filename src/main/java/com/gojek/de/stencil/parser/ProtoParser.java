@@ -5,20 +5,24 @@ import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.timgroup.statsd.NoOpStatsDClient;
 import com.timgroup.statsd.StatsDClient;
 
 import java.time.Instant;
-import java.util.Optional;
 
 public class ProtoParser implements Parser {
     private StencilClient stencilClient;
-    private Optional<StatsDClient> statsDClientOpt;
+    private StatsDClient statsDClient;
     private String protoClassName;
 
-    public ProtoParser(StencilClient stencilClient, Optional<StatsDClient> statsDClientOpt, String protoClassName) {
+    public ProtoParser(StencilClient stencilClient, StatsDClient statsDClient, String protoClassName) {
         this.stencilClient = stencilClient;
-        this.statsDClientOpt = statsDClientOpt;
+        this.statsDClient = statsDClient;
         this.protoClassName = protoClassName;
+    }
+
+    public ProtoParser(StencilClient stencilClient, String protoClassName) {
+        this(stencilClient, new NoOpStatsDClient(), protoClassName);
     }
 
     public DynamicMessage parse(byte[] bytes) throws InvalidProtocolBufferException {
@@ -26,7 +30,7 @@ public class ProtoParser implements Parser {
         Descriptors.Descriptor descriptor = stencilClient.get(protoClassName);
         Instant end = Instant.now();
         long latencyMillis = end.toEpochMilli() - start.toEpochMilli();
-        statsDClientOpt.ifPresent(s -> s.recordExecutionTime("stencil.exec.time", latencyMillis, "name:name"));
+        statsDClient.recordExecutionTime("stencil.exec.time", latencyMillis, "name=" + stencilClient.getAppName());
         if (descriptor == null) {
             throw new StencilRuntimeException(new Throwable(String.format("No Descriptors found for %s", protoClassName)));
         }
