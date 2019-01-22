@@ -62,11 +62,11 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
             byte[] descriptorBin = remoteFile.fetch(url);
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
-            statsDClient.count("stencil.client.refresh", 1, "status:success");
+            statsDClient.count("stencil.client.refresh" + ",status=success", 1);
             return new DescriptorMapBuilder().buildFrom(inputStream);
 
         } catch (IOException | Descriptors.DescriptorValidationException e) {
-            statsDClient.count("stencil.client.refresh", 1, "status:failed");
+            statsDClient.count("stencil.client.refresh" + ",status=failed", 1);
             throw new StencilRuntimeException(e);
         }
     }

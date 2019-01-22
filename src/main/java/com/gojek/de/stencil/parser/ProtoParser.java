@@ -30,7 +30,7 @@ public class ProtoParser implements Parser {
         Descriptors.Descriptor descriptor = stencilClient.get(protoClassName);
         Instant end = Instant.now();
         long latencyMillis = end.toEpochMilli() - start.toEpochMilli();
-        statsDClient.recordExecutionTime("stencil.exec.time", latencyMillis, "name=" + stencilClient.getAppName());
+        statsDClient.recordExecutionTime("stencil.exec.time" + "," + "name=" + stencilClient.getAppName(), latencyMillis );
         if (descriptor == null) {
             throw new StencilRuntimeException(new Throwable(String.format("No Descriptors found for %s", protoClassName)));
         }
