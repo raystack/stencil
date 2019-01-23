@@ -25,6 +25,7 @@ public class URLStencilClient implements Serializable, StencilClient {
     private String url;
     private DescriptorCacheLoader cacheLoader;
     private LoadingCache<String, Map<String, Descriptors.Descriptor>> descriptorCache;
+    private Duration ttl;
     private static final int DEFAULT_TTL_MIN = 30;
     private static final int DEFAULT_TTL_MAX = 60;
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
@@ -44,7 +45,7 @@ public class URLStencilClient implements Serializable, StencilClient {
 
 
     public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader, Ticker ticker) {
-        Duration ttl = StringUtils.isBlank(config.get("TTL_IN_MINUTES")) ?
+        this.ttl = StringUtils.isBlank(config.get("TTL_IN_MINUTES")) ?
                 getDefaultTTL() : Duration.ofMinutes(Long.parseLong(config.get("TTL_IN_MINUTES")));
         this.url = url;
         this.cacheLoader = cacheLoader;
@@ -53,6 +54,10 @@ public class URLStencilClient implements Serializable, StencilClient {
                 .build(cacheLoader);
         logger.info("initialising URL Stencil client with TTL: {} minutes", ttl.toMinutes());
 
+    }
+
+    public Duration getTTL() {
+        return ttl;
     }
 
     private Duration getDefaultTTL() {
