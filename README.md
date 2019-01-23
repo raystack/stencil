@@ -10,11 +10,11 @@ To get the proto descriptor of ESB log entities
 
 ### Properties (default value)
 
-```$xslt
+```
 STENCIL_TIMEOUT_MS (10000)
-STENCIL_BACKOFF_MS (2000)
+STENCIL_BACKOFF_MS (2000-4000)
 STENCIL_RETRIES (4)
-TTL_IN_MINUTES (30)
+TTL_IN_MINUTES (30-60)
 ```
 
 
