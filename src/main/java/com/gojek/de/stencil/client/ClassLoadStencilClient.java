@@ -1,4 +1,4 @@
-package com.gojek.de.stencil;
+package com.gojek.de.stencil.client;
 
 import com.google.protobuf.Descriptors;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassLoadStencilClient extends StencilClient implements Serializable{
+public class ClassLoadStencilClient implements Serializable, StencilClient {
 
     transient private Map<String, Descriptors.Descriptor> descriptorMap;
 
@@ -22,10 +22,15 @@ public class ClassLoadStencilClient extends StencilClient implements Serializabl
             try {
                 Class<?> protoClass = Class.forName(className);
                 descriptorMap.put(className, (Descriptors.Descriptor) protoClass.getMethod("getDescriptor").invoke(null));
-            } catch (ReflectiveOperationException exception) {
+            } catch (ReflectiveOperationException ignored) {
 
             }
         }
         return descriptorMap.get(className);
+    }
+
+    @Override
+    public void close() {
+        
     }
 }
