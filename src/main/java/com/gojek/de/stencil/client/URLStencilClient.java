@@ -1,6 +1,7 @@
 package com.gojek.de.stencil.client;
 
 import com.gojek.de.stencil.cache.DescriptorCacheLoader;
+import com.gojek.de.stencil.config.StencilConfig;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.utils.RandomUtils;
 import com.google.common.base.Ticker;
@@ -8,7 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Descriptors;
-import org.apache.commons.lang3.StringUtils;
+import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -45,13 +47,23 @@ public class URLStencilClient implements Serializable, StencilClient {
 
 
     public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader, Ticker ticker) {
-        this.ttl = StringUtils.isBlank(config.get("TTL_IN_MINUTES")) ?
-                getDefaultTTL() : Duration.ofMinutes(Long.parseLong(config.get("TTL_IN_MINUTES")));
+        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
+
+
+        this.ttl = stencilConfig.getTilInMinutes() != 0 ? Duration.ofMinutes(stencilConfig.getTilInMinutes()) :
+                getDefaultTTL();
         this.url = url;
         this.cacheLoader = cacheLoader;
-        descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                .refreshAfterWrite(ttl.toMinutes(), TimeUnit.MINUTES)
-                .build(cacheLoader);
+
+        if(stencilConfig.shouldRefreshCache()) {
+            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
+                    .refreshAfterWrite(ttl.toMinutes(), TimeUnit.MINUTES)
+                    .build(cacheLoader);
+        } else {
+            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
+                    .build(cacheLoader);
+        }
+
         logger.info("initialising URL Stencil client with TTL: {} minutes", ttl.toMinutes());
 
     }
