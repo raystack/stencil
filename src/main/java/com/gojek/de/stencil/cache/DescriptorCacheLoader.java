@@ -20,12 +20,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descriptors.Descriptor>> implements Closeable {
-    private StatsDClient statsDClient;
     private static final Integer DEFAULT_THREAD_POOL = 2;
-
+    private final Logger logger = LoggerFactory.getLogger(DescriptorCacheLoader.class);
+    private StatsDClient statsDClient;
     private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL);
     private RemoteFile remoteFile;
-    private final Logger logger = LoggerFactory.getLogger(DescriptorCacheLoader.class);
 
     public DescriptorCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient) {
         this.remoteFile = remoteFile;
@@ -74,6 +73,7 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
     @Override
     public void close() throws IOException {
         remoteFile.close();
+        executor.shutdown();
     }
 }
 
