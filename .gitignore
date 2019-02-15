@@ -4,3 +4,5 @@ out
 *.iml
 .DS_Store
 build
+src/test/generated/
+src/test/resources/

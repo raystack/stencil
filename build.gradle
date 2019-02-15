@@ -15,9 +15,11 @@ buildscript {
 }
 
 plugins {
+    id 'idea'
     id 'java-library'
     id 'maven-publish'
     id 'com.jfrog.artifactory' version "4.7.1"
+    id "com.google.protobuf" version "0.8.7"
 }
 
 group 'com.gojek.de'
@@ -36,21 +38,29 @@ dependencies {
     testCompile "com.github.tomakehurst:wiremock:2.18.0"
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: '12.0-rc2'
     testImplementation 'org.mockito:mockito-core:2.7.22'
-
+    compile 'com.google.protobuf:protobuf-java:3.1.0'
+    compile 'com.google.protobuf:protobuf-java-util:3.1.0'
 }
 
 buildscript.repositories.each { repositories.add(it) }
 
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
+protobuf {
+    generatedFilesBaseDir = "$projectDir/src/test/generated"
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.1.0"
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.includeSourceInfo = false
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.path = "$projectDir/src/test/resources/__files/descriptors.bin"
         }
     }
 }
 
-task vcr(type: JavaExec) {
-    classpath = project.sourceSets.test.runtimeClasspath + files("${projectDir}/test")
-    main = "com.gojek.de.stencil.Vcr"
+idea {
+    module {
+        testSourceDirs += file("$projectDir/src/generated/test/java")
+    }
 }
