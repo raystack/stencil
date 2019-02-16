@@ -1,6 +1,6 @@
 # Stencil client
 
-To get the proto descriptor of ESB log entities
+To get the proto descriptors from a server
 
 ### Usage
 
