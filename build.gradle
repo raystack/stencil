@@ -17,13 +17,14 @@ buildscript {
 plugins {
     id 'idea'
     id 'java-library'
-    id 'maven-publish'
+    id 'maven'
+    id 'signing'
     id 'com.jfrog.artifactory' version "4.7.1"
     id "com.google.protobuf" version "0.8.7"
 }
 
-group 'com.gojek.de'
-version '2.0.2'
+group 'com.gojek'
+version '2.0.3'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -63,4 +64,64 @@ idea {
     module {
         testSourceDirs += file("$projectDir/src/generated/test/java")
     }
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+def ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : ''
+def ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : ''
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Stencil'
+                packaging 'jar'
+                description 'Library to pull latest proto descriptors from a remote server'
+                url 'https://github.com/gojekfarm/stencil'
+
+                scm {
+                    url 'https://github.com/gojekfarm/stencil.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        name 'Data Engineering'
+                        email 'de-devs@go-jek.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign configurations.archives
 }
