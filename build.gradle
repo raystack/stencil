@@ -24,7 +24,7 @@ plugins {
 }
 
 group 'com.gojek'
-version '2.0.4'
+version '2.0.5'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -72,7 +72,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier 'sources'
     from sourceSets.main.allSource
 }
 
