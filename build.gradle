@@ -24,7 +24,7 @@ plugins {
 }
 
 group 'com.gojek'
-version '2.0.3'
+version '2.0.4'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -66,11 +66,13 @@ idea {
     }
 }
 
-task javadocJar(type: Jar) {
-    from javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
-task sourcesJar(type: Jar) {
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
     from sourceSets.main.allSource
 }
 
