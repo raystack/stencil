@@ -24,7 +24,7 @@ plugins {
 }
 
 group 'com.gojek'
-version '2.0.5'
+version '2.0.12'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -66,17 +66,19 @@ idea {
     }
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-}
-
 artifacts {
-    archives javadocJar, sourcesJar
+    archives sourcesJar
+    archives javadocJar
 }
 
 def ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : ''
