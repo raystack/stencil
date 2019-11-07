@@ -3,6 +3,14 @@ out
 .gradle
 *.iml
 .DS_Store
+
 build
 src/test/generated/
 src/test/resources/
+classpath
+
+.classpath
+.vscode/
+.project
+.settings/
+bin/
