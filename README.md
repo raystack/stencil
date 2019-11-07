@@ -1,22 +1,16 @@
 # Stencil
 
-Dynamic schema registry for protobuf.
-
-## Motivation
-
-Protobuf is a great efficient and fast mechanism for serializing structured data. The challenge with protobuf is that for every change it requires to recompile the package to generate the necessary classes. This is not a big challenge if you have protobuf enclosed in your application and compile at startup. But if you have thousands of protos stored in central registry and 100s of applications use them. Updating depndencies of compiled proto jar can soon become a nightmare.
-
-## How it works
+Stencil is dynamic schema registry for protobuf. Protobuf is a great efficient and fast mechanism for serializing structured data. The challenge with protobuf is that for every change it requires to recompile the package to generate the necessary classes. This is not a big challenge if you have protobuf enclosed in your application and compile at startup. But if you have thousands of protos stored in central registry and 100s of applications use them. Updating depndencies of compiled proto jar can soon become a nightmare.
 
 Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescriptorSet is basically a description of the proto file i.e. it’s name, it’s package name, it’s dependencies and the messages it contains. Once you have the descriptor file, you can simply read it in any language to create a FileDescriptor Object. Now any serialized ProtoMessage can be deserialized using DynamicMessage and ProtoMessage descriptor.
 
-## Usage
+### Usage
 
-### Add stencil as gradle dependency
+#### Add stencil as gradle dependency
 
-- `compile group: 'com.gojek.de', name: 'stencil-client', version: '2.0.14'`
+- `compile group: 'com.gojek.de', name: 'stencil', version: '2.0.14'`
 
-### Creating a stencil Client instance
+#### Creating a stencil Client instance
 
 Stencil client scan be created in different modes.
 
@@ -31,7 +25,7 @@ This loads the Protobuf Class from the Classpath.
 - Descriptor URL path
 
 ```java
-StecilClient stecnilClient = StencilClientFacorty.getClient(url, Collections.emptyMap());
+StencilClient stencilClient = StencilClientFacorty.getClient(url, Collections.emptyMap());
 ```
 
 This fetches the artifacts from the provided url.
@@ -42,7 +36,7 @@ This fetches the artifacts from the provided url.
  StencilClient stencilClient = StencilClientFactory.getClient(url, new HashMap<>(), stasdClient)
 ```
 
-### Getting descriptor
+#### Getting descriptor
 
 Given the name of the Proto-Class StencilClient returns the Descriptor for it.
 
@@ -60,7 +54,7 @@ ProtoParser protoParser = new ProtoParser(stencilClient, appConfig.getProtoSchem
 protoParser.parse(byte[])
 ```
 
-### Configurations
+#### Configurations
 
 ```
 STENCIL_TIMEOUT_MS (10000)
@@ -69,7 +63,7 @@ STENCIL_RETRIES (4)
 TTL_IN_MINUTES (30-60)
 ```
 
-### Publishing
+#### Publishing
 
 In order to publish to central maven, you require sonatype credentials and [GnuPG](http://gnupg.org) setup.
 
@@ -98,6 +92,6 @@ gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys <last eight symbols of
 gpg --keyserver hkp://keyserver.ubuntu.com --send-keys <last eight symbols of gnupg keyId>
 ```
 
-### Notes
+#### Notes
 
 - Stencil uses `java-statsd-client` from `com.timgroup`, Please use the same client in your application for statsd
