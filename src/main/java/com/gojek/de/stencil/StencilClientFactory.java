@@ -1,6 +1,7 @@
 package com.gojek.de.stencil;
 
 import com.gojek.de.stencil.cache.DescriptorCacheLoader;
+import com.gojek.de.stencil.cache.ProtoUpdateListener;
 import com.gojek.de.stencil.client.ClassLoadStencilClient;
 import com.gojek.de.stencil.client.MultiURLStencilClient;
 import com.gojek.de.stencil.client.StencilClient;
@@ -15,12 +16,22 @@ import java.util.Map;
 
 public class StencilClientFactory {
     public static StencilClient getClient(String url, Map<String, String> config, StatsDClient statsDClient) {
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null);
+        return new URLStencilClient(url, config, cacheLoader);
+    }
+
+    public static StencilClient getClient(String url, Map<String, String> config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener);
         return new URLStencilClient(url, config, cacheLoader);
     }
 
     public static StencilClient getClient(List<String> urls, Map<String, String> config, StatsDClient statsDClient) {
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null);
+        return new MultiURLStencilClient(urls, config, cacheLoader);
+    }
+
+    public static StencilClient getClient(List<String> urls, Map<String, String> config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener);
         return new MultiURLStencilClient(urls, config, cacheLoader);
     }
 

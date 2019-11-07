@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,16 +26,18 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
     private StatsDClient statsDClient;
     private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL);
     private RemoteFile remoteFile;
+    private ProtoUpdateListener protoUpdateListener;
 
-    public DescriptorCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient) {
+    public DescriptorCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
         this.remoteFile = remoteFile;
         this.statsDClient = statsDClient;
+        this.protoUpdateListener = protoUpdateListener;
     }
 
 
     @Override
     public Map<String, Descriptors.Descriptor> load(String key) {
-        return refreshMap(key);
+        return refreshMap(key, new HashMap<>());
     }
 
     @Override
@@ -43,7 +46,7 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
         ListenableFutureTask<Map<String, Descriptors.Descriptor>> task = ListenableFutureTask.create(
                 () -> {
                     try {
-                        return refreshMap(key);
+                        return refreshMap(key, prevDescriptor);
                     } catch (Throwable e) {
                         logger.info("Exception on refreshing stencil descriptor", e);
                         return prevDescriptor;
@@ -55,15 +58,26 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
     }
 
 
-    private Map<String, Descriptors.Descriptor> refreshMap(String url) {
+    private Map<String, Descriptors.Descriptor> refreshMap(String url, final Map<String, Descriptors.Descriptor> prevDescriptor) {
         try {
             logger.info("fetching descriptors from {}", url);
             byte[] descriptorBin = remoteFile.fetch(url);
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
             statsDClient.count("stencil.client.refresh" + ",status=success", 1);
-            return new DescriptorMapBuilder().buildFrom(inputStream);
+            Map<String, Descriptors.Descriptor> newDesciptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
 
+            if (this.protoUpdateListener != null) {
+                String proto = this.protoUpdateListener.getProto();
+                Descriptors.Descriptor prevDescriptorForProto = prevDescriptor.get(proto);
+                Descriptors.Descriptor newDescriptorForProto = newDesciptorsMap.get(proto);
+                if (prevDescriptorForProto != null && !prevDescriptorForProto.toProto().equals(newDescriptorForProto.toProto())) {
+                    logger.info("Proto has changed for {}", proto);
+                    this.protoUpdateListener.onProtoUpdate();
+                }
+            }
+
+            return newDesciptorsMap;
         } catch (IOException | Descriptors.DescriptorValidationException e) {
             statsDClient.count("stencil.client.refresh" + ",status=failed", 1);
             throw new StencilRuntimeException(e);

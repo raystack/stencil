@@ -2,6 +2,7 @@ package com.gojek.de.stencil.cache;
 
 import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.http.RemoteFile;
+import com.gojek.stencil.TestMessage;
 import com.google.common.io.ByteStreams;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.timgroup.statsd.NoOpStatsDClient;
@@ -17,6 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DescriptorCacheLoaderTest {
@@ -27,7 +30,7 @@ public class DescriptorCacheLoaderTest {
     public void testStencilCacheLoadOnException() throws Exception {
         RemoteFile remoteFile = mock(RemoteFile.class);
         when(remoteFile.fetch(anyString())).thenThrow(new ClientProtocolException(""));
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient());
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
         cacheLoader.load(LOOKUP_KEY);
     }
 
@@ -39,7 +42,7 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient());
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
         assertTrue(cacheLoader.load(LOOKUP_KEY).containsKey(LOOKUP_KEY));
     }
 
@@ -51,7 +54,7 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient());
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
         Map<String, Descriptor> prevDescriptor = new HashMap<>();
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
     }
@@ -61,10 +64,27 @@ public class DescriptorCacheLoaderTest {
         RemoteFile remoteFile = mock(RemoteFile.class);
         when(remoteFile.fetch(anyString())).thenThrow(new ClientProtocolException(""));
 
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient());
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
 
         Map<String, Descriptor> prevDescriptor = new HashMap<>();
         Map<String, Descriptor> result = cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get();
         assertEquals(result.size(), 0);
+    }
+
+    @Test
+    public void testStencilCacheReloadShouldCallOnProtoUpdateIfProtoChanges() throws Exception {
+        RemoteFile remoteFile = mock(RemoteFile.class);
+        ProtoUpdateListener protoUpdateListener = mock(ProtoUpdateListener.class);
+        when(protoUpdateListener.getProto()).thenReturn(LOOKUP_KEY);
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream fileInputStream = new FileInputStream(classLoader.getResource(DESCRIPTOR_FILE_PATH).getFile());
+        byte[] bytes = ByteStreams.toByteArray(fileInputStream);
+        when(remoteFile.fetch(anyString())).thenReturn(bytes);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), protoUpdateListener);
+        Map<String, Descriptor> prevDescriptor = new HashMap<>();
+        TestMessage t = TestMessage.newBuilder().setSampleString("sample_value").build();
+        prevDescriptor.put(LOOKUP_KEY, t.getDescriptorForType());
+        assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
+        verify(protoUpdateListener, times(1)).onProtoUpdate();
     }
 }
