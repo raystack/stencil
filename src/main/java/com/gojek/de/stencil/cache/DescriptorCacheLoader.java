@@ -65,19 +65,19 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
             statsDClient.count("stencil.client.refresh" + ",status=success", 1);
-            Map<String, Descriptors.Descriptor> newDesciptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
+            Map<String, Descriptors.Descriptor> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
 
             if (this.protoUpdateListener != null) {
                 String proto = this.protoUpdateListener.getProto();
                 Descriptors.Descriptor prevDescriptorForProto = prevDescriptor.get(proto);
-                Descriptors.Descriptor newDescriptorForProto = newDesciptorsMap.get(proto);
+                Descriptors.Descriptor newDescriptorForProto = newDescriptorsMap.get(proto);
                 if (prevDescriptorForProto != null && !prevDescriptorForProto.toProto().equals(newDescriptorForProto.toProto())) {
                     logger.info("Proto has changed for {}", proto);
                     this.protoUpdateListener.onProtoUpdate();
                 }
             }
 
-            return newDesciptorsMap;
+            return newDescriptorsMap;
         } catch (IOException | Descriptors.DescriptorValidationException e) {
             statsDClient.count("stencil.client.refresh" + ",status=failed", 1);
             throw new StencilRuntimeException(e);

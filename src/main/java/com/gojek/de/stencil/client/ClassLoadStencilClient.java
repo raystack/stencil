@@ -30,7 +30,11 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
     }
 
     @Override
+    public Map<String, Descriptors.Descriptor> getAll() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void close() {
-        
     }
 }
