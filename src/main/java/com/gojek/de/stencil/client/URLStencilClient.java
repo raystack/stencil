@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -40,15 +39,20 @@ public class URLStencilClient implements Serializable, StencilClient {
         }
     }
 
+    public Map<String, Descriptors.Descriptor> getAll() {
+        try {
+            return descriptorCache.get(url);
+        } catch (UncheckedExecutionException | ExecutionException e) {
+            throw new StencilRuntimeException(e);
+        }
+    }
 
     public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader) {
         this(url, config, cacheLoader, systemTicker());
     }
 
-
     public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader, Ticker ticker) {
         StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
-
 
         this.ttl = stencilConfig.getTilInMinutes() != 0 ? Duration.ofMinutes(stencilConfig.getTilInMinutes()) :
                 getDefaultTTL();
@@ -65,7 +69,6 @@ public class URLStencilClient implements Serializable, StencilClient {
         }
 
         logger.info("initialising URL Stencil client with TTL: {} minutes", ttl.toMinutes());
-
     }
 
     public Duration getTTL() {

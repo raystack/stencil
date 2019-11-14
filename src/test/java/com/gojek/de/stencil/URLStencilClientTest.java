@@ -33,6 +33,8 @@ public class URLStencilClientTest {
         String url = "http://localhost:8082/descriptors.bin";
         Map<String, String> config = new HashMap<>();
         StencilClient c = StencilClientFactory.getClient(url, config);
+        Map<String, Descriptors.Descriptor> descMap = c.getAll();
+        assertNotNull(descMap);
         Descriptors.Descriptor desc = c.get("com.gojek.stencil.TestMessage");
         assertNotNull(desc);
     }
