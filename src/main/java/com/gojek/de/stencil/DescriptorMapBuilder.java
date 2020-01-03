@@ -27,6 +27,10 @@ public class DescriptorMapBuilder {
             String javaPackage = fd.getOptions().getJavaPackage();
             fd.getMessageTypes().stream().forEach(desc -> {
                 String className = desc.getName();
+                desc.getNestedTypes().stream().forEach(nestedDesc -> {
+                    String nestedClassName = nestedDesc.getName();
+                    descriptorMap.put(String.format("%s.%s.%s", javaPackage, className, nestedClassName), nestedDesc);
+                });
                 descriptorMap.put(String.format("%s.%s", javaPackage, className), desc);
             });
         });

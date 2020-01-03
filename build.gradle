@@ -19,12 +19,13 @@ plugins {
     id 'java-library'
     id 'maven'
     id 'signing'
+    id 'maven-publish'
     id 'com.jfrog.artifactory' version "4.7.1"
     id "com.google.protobuf" version "0.8.7"
 }
 
 group 'com.gojek'
-version '2.0.15'
+version '2.0.16'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -86,6 +87,7 @@ def ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('oss
 
 uploadArchives {
     repositories {
+        mavenLocal()
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
@@ -121,6 +123,14 @@ uploadArchives {
                     }
                 }
             }
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
         }
     }
 }
