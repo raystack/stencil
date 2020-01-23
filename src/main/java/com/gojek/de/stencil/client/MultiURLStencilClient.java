@@ -34,6 +34,14 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
     }
 
     @Override
+    public Map<String, String> getTypeNameToPackageNameMap() {
+        Map<String, String> requiredStencil = new HashMap<>();
+        stencilClients.stream().map(StencilClient::getTypeNameToPackageNameMap)
+                .forEach(requiredStencil::putAll);
+        return requiredStencil;
+    }
+
+    @Override
     public void close() {
         stencilClients.forEach(c -> {
             try {

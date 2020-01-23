@@ -1,5 +1,6 @@
 package com.gojek.de.stencil;
 
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class DescriptorMapBuilderTest {
         ClassLoader classLoader = getClass().getClassLoader();
         String descriptorFilePath = "__files/descriptors.bin";
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
-        Map<String, Descriptors.Descriptor> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
+        Map<String, DescriptorAndTypeName> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
         assertNotNull(descriptorMap);
         assertNotNull(descriptorMap.get("com.gojek.stencil.TestMessage"));
     }

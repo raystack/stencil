@@ -1,5 +1,6 @@
 package com.gojek.de.stencil;
 
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
 
@@ -11,8 +12,8 @@ import java.util.Map;
 
 public class DescriptorMapBuilder {
 
-    public Map<String, Descriptors.Descriptor> buildFrom(InputStream stream) throws IOException, Descriptors.DescriptorValidationException {
-        Map<String, Descriptors.Descriptor> descriptorMap = new HashMap<>();
+    public Map<String, DescriptorAndTypeName> buildFrom(InputStream stream) throws IOException, Descriptors.DescriptorValidationException {
+        Map<String, DescriptorAndTypeName> descriptorMap = new HashMap<>();
         ArrayList<Descriptors.FileDescriptor> fileDescriptors = new ArrayList<>();
 
         DescriptorProtos.FileDescriptorSet descriptorSet = DescriptorProtos.FileDescriptorSet.parseFrom(stream);
@@ -25,13 +26,24 @@ public class DescriptorMapBuilder {
 
         fileDescriptors.forEach(fd -> {
             String javaPackage = fd.getOptions().getJavaPackage();
+            String protoPackage = fd.getPackage();
             fd.getMessageTypes().stream().forEach(desc -> {
                 String className = desc.getName();
                 desc.getNestedTypes().stream().forEach(nestedDesc -> {
                     String nestedClassName = nestedDesc.getName();
-                    descriptorMap.put(String.format("%s.%s.%s", javaPackage, className, nestedClassName), nestedDesc);
+                    descriptorMap.put(
+                            String.format("%s.%s.%s", javaPackage, className, nestedClassName),
+                            new DescriptorAndTypeName(
+                                    nestedDesc,
+                                    String.format(".%s.%s.%s", protoPackage, className, nestedClassName)
+                            ));
                 });
-                descriptorMap.put(String.format("%s.%s", javaPackage, className), desc);
+                descriptorMap.put(
+                        String.format("%s.%s", javaPackage, className),
+                        new DescriptorAndTypeName(
+                                desc,
+                                String.format(".%s.%s", protoPackage, className)
+                        ));
             });
         });
 

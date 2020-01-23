@@ -7,7 +7,10 @@ import java.util.Map;
 
 public interface StencilClient extends Closeable {
     Descriptors.Descriptor get(String className);
+
     Map<String, Descriptors.Descriptor> getAll();
+
+    Map<String, String> getTypeNameToPackageNameMap();
 
     default String getAppName() {
         String podName = System.getenv("POD_NAME");
