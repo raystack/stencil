@@ -3,6 +3,7 @@ package com.gojek.de.stencil.cache;
 import com.gojek.de.stencil.DescriptorMapBuilder;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.http.RemoteFile;
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descriptors.Descriptor>> implements Closeable {
+public class DescriptorCacheLoader extends CacheLoader<String, Map<String, DescriptorAndTypeName>> implements Closeable {
     private static final Integer DEFAULT_THREAD_POOL = 2;
     private final Logger logger = LoggerFactory.getLogger(DescriptorCacheLoader.class);
     private StatsDClient statsDClient;
@@ -36,14 +37,14 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
 
 
     @Override
-    public Map<String, Descriptors.Descriptor> load(String key) {
+    public Map<String, DescriptorAndTypeName> load(String key) {
         return refreshMap(key, new HashMap<>());
     }
 
     @Override
-    public ListenableFuture<Map<String, Descriptors.Descriptor>> reload(final String key, final Map<String, Descriptors.Descriptor> prevDescriptor) {
+    public ListenableFuture<Map<String, DescriptorAndTypeName>> reload(final String key, final Map<String, DescriptorAndTypeName> prevDescriptor) {
         logger.info("reloading the cache to get the new descriptors");
-        ListenableFutureTask<Map<String, Descriptors.Descriptor>> task = ListenableFutureTask.create(
+        ListenableFutureTask<Map<String, DescriptorAndTypeName>> task = ListenableFutureTask.create(
                 () -> {
                     try {
                         return refreshMap(key, prevDescriptor);
@@ -58,19 +59,21 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
     }
 
 
-    private Map<String, Descriptors.Descriptor> refreshMap(String url, final Map<String, Descriptors.Descriptor> prevDescriptor) {
+    private Map<String, DescriptorAndTypeName> refreshMap(String url, final Map<String, DescriptorAndTypeName> prevDescriptor) {
         try {
             logger.info("fetching descriptors from {}", url);
             byte[] descriptorBin = remoteFile.fetch(url);
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
             statsDClient.count("stencil.client.refresh" + ",status=success", 1);
-            Map<String, Descriptors.Descriptor> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
+            Map<String, DescriptorAndTypeName> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
 
             if (this.protoUpdateListener != null) {
                 String proto = this.protoUpdateListener.getProto();
-                Descriptors.Descriptor prevDescriptorForProto = prevDescriptor.get(proto);
-                Descriptors.Descriptor newDescriptorForProto = newDescriptorsMap.get(proto);
+                DescriptorAndTypeName prevDescriptorAndTypeName = prevDescriptor.get(proto);
+                DescriptorAndTypeName newDescriptorAndTypeName = newDescriptorsMap.get(proto);
+                Descriptors.Descriptor prevDescriptorForProto = prevDescriptorAndTypeName != null ? prevDescriptorAndTypeName.getDescriptor() : null;
+                Descriptors.Descriptor newDescriptorForProto = newDescriptorAndTypeName != null ? newDescriptorAndTypeName.getDescriptor() : null;
                 if (prevDescriptorForProto != null && !prevDescriptorForProto.toProto().equals(newDescriptorForProto.toProto())) {
                     logger.info("Proto has changed for {}", proto);
                     this.protoUpdateListener.onProtoUpdate();

@@ -3,6 +3,7 @@ package com.gojek.de.stencil.parser;
 import com.gojek.de.stencil.DescriptorMapBuilder;
 import com.gojek.de.stencil.client.StencilClient;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.gojek.stencil.TestMessage;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class ProtoParserTest {
 
     private static final String LOOKUP_KEY = "com.gojek.stencil.TestMessage";
-    Map<String, Descriptors.Descriptor> descriptorMap;
+    Map<String, DescriptorAndTypeName> descriptorMap;
 
     @Before
     public void setup() throws IOException, Descriptors.DescriptorValidationException {
@@ -43,7 +44,7 @@ public class ProtoParserTest {
     @Test
     public void testProtoParseOnSuccess() throws InvalidProtocolBufferException {
         StencilClient stencilClient = mock(StencilClient.class);
-        when(stencilClient.get(LOOKUP_KEY)).thenReturn(descriptorMap.get(LOOKUP_KEY));
+        when(stencilClient.get(LOOKUP_KEY)).thenReturn(descriptorMap.get(LOOKUP_KEY).getDescriptor());
         ProtoParser protoParser = new ProtoParser(stencilClient, LOOKUP_KEY);
         DynamicMessage parsed = protoParser.parse(TestMessage.newBuilder().setSampleString("sample_string").build().toByteArray());
         assertNotNull(parsed);

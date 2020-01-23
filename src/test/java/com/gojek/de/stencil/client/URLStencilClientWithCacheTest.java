@@ -3,6 +3,7 @@ package com.gojek.de.stencil.client;
 import com.gojek.de.stencil.DescriptorMapBuilder;
 import com.gojek.de.stencil.cache.DescriptorCacheLoader;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.common.testing.FakeTicker;
 import com.google.protobuf.Descriptors;
 import org.junit.Before;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 public class URLStencilClientWithCacheTest {
 
-    private Map<String, Descriptors.Descriptor> descriptorMap;
+    private Map<String, DescriptorAndTypeName> descriptorMap;
     private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
     private static final String LOOKUP_KEY = "com.gojek.stencil.TestMessage";
 

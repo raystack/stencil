@@ -18,7 +18,7 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
         if (descriptorMap == null) {
             descriptorMap = new HashMap<>();
         }
-        if (! descriptorMap.containsKey(className)) {
+        if (!descriptorMap.containsKey(className)) {
             try {
                 Class<?> protoClass = Class.forName(className);
                 descriptorMap.put(className, (Descriptors.Descriptor) protoClass.getMethod("getDescriptor").invoke(null));
@@ -31,6 +31,11 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
 
     @Override
     public Map<String, Descriptors.Descriptor> getAll() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<String, String> getTypeNameToPackageNameMap() {
         throw new UnsupportedOperationException();
     }
 
