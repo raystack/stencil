@@ -1,5 +1,9 @@
 package com.gojek.de.stencil.cache;
 
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
+
+import java.util.Map;
+
 public abstract class ProtoUpdateListener {
     private String proto;
 
@@ -13,4 +17,6 @@ public abstract class ProtoUpdateListener {
     }
 
     public abstract void onProtoUpdate();
+
+    public abstract void onProtoUpdate(String url, final Map<String, DescriptorAndTypeName> newDescriptor);
 }

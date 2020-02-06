@@ -3,6 +3,7 @@ package com.gojek.de.stencil.cache;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.http.RemoteFile;
 import com.gojek.de.stencil.models.DescriptorAndTypeName;
+import com.gojek.stencil.TestKey;
 import com.gojek.stencil.TestMessage;
 import com.google.common.io.ByteStreams;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -82,12 +84,11 @@ public class DescriptorCacheLoaderTest {
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream fileInputStream = new FileInputStream(classLoader.getResource(DESCRIPTOR_FILE_PATH).getFile());
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
-        when(remoteFile.fetch(anyString())).thenReturn(bytes);
+        when(remoteFile.fetch(LOOKUP_KEY)).thenReturn(bytes);
         DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), protoUpdateListener);
         Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
-        TestMessage t = TestMessage.newBuilder().setSampleString("sample_value").build();
-        prevDescriptor.put(LOOKUP_KEY, new DescriptorAndTypeName(t.getDescriptorForType(), TYPENAME_KEY));
+        prevDescriptor.put(LOOKUP_KEY, new DescriptorAndTypeName(TestKey.getDescriptor(), TYPENAME_KEY));
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
-        verify(protoUpdateListener, times(1)).onProtoUpdate();
+        verify(protoUpdateListener, times(1)).onProtoUpdate(any(String.class), any(Map.class));
     }
 }
