@@ -23,7 +23,7 @@ public class StencilUtils {
     public static Map<String, String> getTypeNameToPackageNameMap(final Map<String, DescriptorAndTypeName> allDescriptors) {
         Map<String, String> typeNameMap = new HashMap();
         allDescriptors.entrySet().stream().forEach((mapEntry) -> {
-            DescriptorAndTypeName descriptorAndTypeName = (DescriptorAndTypeName)mapEntry.getValue();
+            DescriptorAndTypeName descriptorAndTypeName = (DescriptorAndTypeName) mapEntry.getValue();
             if (descriptorAndTypeName != null) {
                 typeNameMap.put(descriptorAndTypeName.getTypeName(), mapEntry.getKey());
             }
@@ -37,10 +37,10 @@ public class StencilUtils {
      * @param allDescriptors - Stencil modelled descriptors
      * @return - map of type and the respective protobuff descriptor
      */
-    public static Map<String, Descriptors.Descriptor> getAllProtobuffDescriptors(final Map<String, DescriptorAndTypeName> allDescriptors) {
+    public static Map<String, Descriptors.Descriptor> getAllProtobufDescriptors(final Map<String, DescriptorAndTypeName> allDescriptors) {
         Map<String, Descriptors.Descriptor> descriptorMap = new HashMap();
         allDescriptors.entrySet().stream().forEach((mapEntry) -> {
-            DescriptorAndTypeName descriptorAndTypeName = (DescriptorAndTypeName)mapEntry.getValue();
+            DescriptorAndTypeName descriptorAndTypeName = (DescriptorAndTypeName) mapEntry.getValue();
             if (descriptorAndTypeName != null) {
                 descriptorMap.put(mapEntry.getKey(), descriptorAndTypeName.getDescriptor());
             }

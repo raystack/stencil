@@ -69,15 +69,7 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
             Map<String, DescriptorAndTypeName> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
 
             if (this.protoUpdateListener != null) {
-                String proto = this.protoUpdateListener.getProto();
-                DescriptorAndTypeName prevDescriptorAndTypeName = prevDescriptor.get(proto);
-                DescriptorAndTypeName newDescriptorAndTypeName = newDescriptorsMap.get(proto);
-                Descriptors.Descriptor prevDescriptorForProto = prevDescriptorAndTypeName != null ? prevDescriptorAndTypeName.getDescriptor() : null;
-                Descriptors.Descriptor newDescriptorForProto = newDescriptorAndTypeName != null ? newDescriptorAndTypeName.getDescriptor() : null;
-                if (prevDescriptorForProto != null && !prevDescriptorForProto.toProto().equals(newDescriptorForProto.toProto())) {
-                    logger.info("Proto has changed for {}", proto);
-                    this.protoUpdateListener.onProtoUpdate(url, newDescriptorsMap);
-                }
+                this.protoUpdateListener.onProtoUpdate(url, newDescriptorsMap);
             }
 
             return newDescriptorsMap;

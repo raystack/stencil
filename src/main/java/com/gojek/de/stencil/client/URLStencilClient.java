@@ -75,6 +75,15 @@ public class URLStencilClient implements Serializable, StencilClient {
         }
     }
 
+    @Override
+    public Map<String, DescriptorAndTypeName> getAllDescriptorAndTypeName() {
+        try {
+            return descriptorCache.get(url);
+        } catch (ExecutionException e) {
+            throw new StencilRuntimeException(e);
+        }
+    }
+
     public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader) {
         this(url, config, cacheLoader, systemTicker());
     }

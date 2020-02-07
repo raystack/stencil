@@ -1,5 +1,6 @@
 package com.gojek.de.stencil.client;
 
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
 
 import java.io.Closeable;
@@ -11,6 +12,8 @@ public interface StencilClient extends Closeable {
     Map<String, Descriptors.Descriptor> getAll();
 
     Map<String, String> getTypeNameToPackageNameMap();
+
+    Map<String, DescriptorAndTypeName> getAllDescriptorAndTypeName();
 
     default String getAppName() {
         String podName = System.getenv("POD_NAME");

@@ -1,7 +1,6 @@
 package com.gojek.de.stencil.client;
 
 import com.gojek.de.stencil.StencilClientFactory;
-import com.gojek.de.stencil.client.StencilClient;
 import com.google.protobuf.Descriptors;
 import org.junit.Test;
 
@@ -13,7 +12,6 @@ import static org.junit.Assert.*;
 
 public class ClassLoadStencilClientTest {
 
-    private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
     private static final String LOOKUP_KEY = "com.gojek.stencil.TestMessage";
 
     @Test
