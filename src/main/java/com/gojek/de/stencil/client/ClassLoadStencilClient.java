@@ -1,5 +1,6 @@
 package com.gojek.de.stencil.client;
 
+import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
 
 import java.io.Serializable;
@@ -36,6 +37,11 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
 
     @Override
     public Map<String, String> getTypeNameToPackageNameMap() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<String, DescriptorAndTypeName> getAllDescriptorAndTypeName() {
         throw new UnsupportedOperationException();
     }
 
