@@ -38,6 +38,7 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
 
     @Override
     public Map<String, DescriptorAndTypeName> load(String key) {
+        logger.info("loading stencil cache");
         return refreshMap(key, new HashMap<>());
     }
 
@@ -69,7 +70,9 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
             Map<String, DescriptorAndTypeName> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
 
             if (this.protoUpdateListener != null) {
-                this.protoUpdateListener.onProtoUpdate(url, newDescriptorsMap);
+                if (!prevDescriptor.isEmpty()) {
+                    this.protoUpdateListener.onProtoUpdate(url, newDescriptorsMap);
+                }
             }
 
             return newDescriptorsMap;
