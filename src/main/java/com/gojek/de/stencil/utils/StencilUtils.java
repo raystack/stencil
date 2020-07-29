@@ -1,13 +1,10 @@
 package com.gojek.de.stencil.utils;
 
-import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.models.DescriptorAndTypeName;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Descriptors;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Utility method to parse the types and packages based on the descriptors.

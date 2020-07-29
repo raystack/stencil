@@ -27,26 +27,28 @@ public class DescriptorMapBuilder {
         fileDescriptors.forEach(fd -> {
             String javaPackage = fd.getOptions().getJavaPackage();
             String protoPackage = fd.getPackage();
-            fd.getMessageTypes().stream().forEach(desc -> {
-                String className = desc.getName();
-                desc.getNestedTypes().stream().forEach(nestedDesc -> {
-                    String nestedClassName = nestedDesc.getName();
-                    descriptorMap.put(
-                            String.format("%s.%s.%s", javaPackage, className, nestedClassName),
-                            new DescriptorAndTypeName(
-                                    nestedDesc,
-                                    String.format(".%s.%s.%s", protoPackage, className, nestedClassName)
-                            ));
-                });
-                descriptorMap.put(
-                        String.format("%s.%s", javaPackage, className),
-                        new DescriptorAndTypeName(
-                                desc,
-                                String.format(".%s.%s", protoPackage, className)
-                        ));
-            });
+            fd.getMessageTypes().stream().forEach(desc -> descriptorMap.putAll(getFlattenedDescriptors(desc, javaPackage, protoPackage, "", new HashMap<>())));
         });
 
         return descriptorMap;
     }
+
+    private Map<String, DescriptorAndTypeName> getFlattenedDescriptors(Descriptors.Descriptor descriptor, String javaPackage, String protoPackage, String parentClassName, Map<String, DescriptorAndTypeName> initialDescriptorMap) {
+        String className = getClassName(descriptor, parentClassName);
+        initialDescriptorMap.put(
+                String.format("%s.%s", javaPackage, className),
+                new DescriptorAndTypeName(
+                        descriptor,
+                        String.format(".%s.%s", protoPackage, className)
+                ));
+        descriptor.getNestedTypes()
+                .forEach(desc -> getFlattenedDescriptors(desc, javaPackage, protoPackage, className, initialDescriptorMap));
+        return initialDescriptorMap;
+    }
+
+
+    private String getClassName(Descriptors.Descriptor descriptor, String parentClassName) {
+        return parentClassName.isEmpty() ? descriptor.getName() : parentClassName + "." + descriptor.getName();
+    }
+
 }

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package com.gojek.stencil;
+
+option java_multiple_files = true;
+option java_package = "com.gojek.stencil";
+option java_outer_classname = "Recursive";
+
+
+message RecursiveLogMessage {
+    string id = 1;
+    message RECORD {
+        string id = 1;
+        RECORD record = 2;
+    }
+}
