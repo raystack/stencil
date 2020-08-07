@@ -12,6 +12,9 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
+    }
 }
 
 plugins {
@@ -22,10 +25,11 @@ plugins {
     id 'maven-publish'
     id 'com.jfrog.artifactory' version "4.7.1"
     id "com.google.protobuf" version "0.8.7"
+    id 'io.codearte.nexus-staging' version '0.21.2'
 }
 
 group 'com.gojek'
-version '4.1.0'
+version '4.1.1'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -137,4 +141,11 @@ publishing {
 
 signing {
     sign configurations.archives
+}
+
+nexusStaging {
+    packageGroup = "com.gojek"
+    stagingProfileId = "9bf6aebae3df9b"
+    username = ossrhUsername
+    password = ossrhPassword
 }
