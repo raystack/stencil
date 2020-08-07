@@ -1,13 +1,40 @@
 language: java
 dist: trusty
+
 jdk:
   - oraclejdk8
-install:
-  - './gradlew assemble -x signArchives'
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+install: skip
+
 script:
-  - './gradlew check'
-after_success:
-  - sh ./deploy.sh
+  - './gradlew clean check'
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_49353df1995f_key -iv $encrypted_49353df1995f_iv -in key.gpg.enc -out key.gpg -d
+
+deploy:
+  # Deploy releases
+  - provider: script
+    script: ./gradlew publishToSonatype closeAndReleaseRepository -x test  -PossrhUsername=${SONATYPE_USERNAME} -PossrhPassword=${SONATYPE_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=key.gpg
+    skip_cleanup: true
+    on:
+      tags: true
+  # Deploy snapshots
+  - provider: script
+    script: ./gradlew publishToSonatype -x test -x sign  -PossrhUsername=${SONATYPE_USERNAME} -PossrhPassword=${SONATYPE_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=key.gpg
+    skip_cleanup: true
+    on:
+      branch: master
+
 env:
   global:
     - secure: GE/6EmtO3BT3vICno2d2zPEcxZaAdOsMEPMsJ+1mKZ6EFB2lDhhDr4W3jN1DSDAoisEM+PXZ/PFIQhLJ9QmrE/dRL4oHALgNX/hKF+TuL+zA0so0oO5xWP1GQV9FjhueFE9aJc2JMd0Xmhd6GOBw2QzneKfrddI8W0yD4hn4KRG9hl1mffUve2fotAOy6WPtZtvUeQ5qpQPUYoQABtTUfN6tZuIcxgztqceSglh1sESv0JbJoCRj+OhHw7inJX6DvJZz8Q+YtmcKhxttVl7fDdV9DF3XpHyj6bvX584vFTBYYwH3eZ9D2fzZ9SpIkl6u9xvUmVnf0hir6AnXLM6b2Zb1xLmPU/5PMw31kqOLToic1cBI8p73EDGR6vyIIRjJ6/oE1+wx0bv/TcFRZvmvQxDfVIPxHFcHb+7RV3LDGb2SUWGA80rWWSApUrF5qSKtO7OKgormLoNvBNNmfkVESJ9eUT4jE8wvefXmQMptJgXqfVs3pieLX2d/mOY0BqcWRkmGTy+TuR3Y4Gu1yBP6hJ7Ic+ut9X9Kk4oy2oIwZNedGgUtyNFQjGDeQ3EE/RWq4zNqZ0Br7yGnL6Ahl0nnagxyQv6ovFjZMprRsK+4m+ThsTOhuimJdd0qpzVWNyP/PQYfWETGj14vK2u2fidfrNuMMEVIVzqtvh5gRrjBR+c=
