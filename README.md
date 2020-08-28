@@ -92,10 +92,10 @@ gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys <last eight symbols of
 gpg --keyserver hkp://keyserver.ubuntu.com --send-keys <last eight symbols of gnupg keyId>
 ```
 
-### Stencil Server API
+### Managing descriptors behind an HTTP Server
 
-For serving the protobuf descriptor set artifacts and their versions we use a Stencil Server.
-This also helps us to easily update the descriptor sets by allowing us to push Protobuf Descriptor sets directly.
+For serving the protobuf descriptor set artifacts and their versions use a Stencil Server.
+This also helps to easily update the descriptor sets by allowing us to push Protobuf Descriptor sets directly.
 
 #### Endpoints
 
@@ -105,7 +105,7 @@ PUT https://stencil-hostname.example.com/artifactory/proto-descriptors/:stencil_
 GET https://stencil-hostname.example.com/metadata/proto-descriptors/:stencil_repo/version
 PUT https://stencil-hostname.example.com/metadata/proto-descriptors/:stencil_repo/version
 ```
-All above endpoints are behind HTTP Basic Auth.
+The section avoids handling/recommending AUTH mechanism as it is left to the user. The samples below assume that basic Auth set up.
 
 Attribute reference -
  - stencil_repo - A set of protbuf definitions that will be bundled together in a descriptor set
