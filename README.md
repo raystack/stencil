@@ -92,6 +92,52 @@ gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys <last eight symbols of
 gpg --keyserver hkp://keyserver.ubuntu.com --send-keys <last eight symbols of gnupg keyId>
 ```
 
+### Managing descriptors behind an HTTP Server
+
+For serving the protobuf descriptor set artifacts and their versions use a Stencil Server.
+This also helps to easily update the descriptor sets by allowing us to push Protobuf Descriptor sets directly.
+
+#### Endpoints
+
+```http
+GET https://stencil-hostname.example.com/artifactory/proto-descriptors/:stencil_repo/:version
+PUT https://stencil-hostname.example.com/artifactory/proto-descriptors/:stencil_repo/:version
+GET https://stencil-hostname.example.com/metadata/proto-descriptors/:stencil_repo/version
+PUT https://stencil-hostname.example.com/metadata/proto-descriptors/:stencil_repo/version
+```
+The section avoids handling/recommending AUTH mechanism as it is left to the user. The samples below assume that basic Auth set up.
+
+Attribute reference -
+ - stencil_repo - A set of protbuf definitions that will be bundled together in a descriptor set
+ - version - Artifact version promoted for production use
+
+#### Example Usage
+
+To push a new version of proto descriptor -
+
+```sh
+curl -u test:pasword -X PUT "https://stencil-hostname.example.com/artifactory/proto-descriptors/test-stencil-repo/0.0.5" -T /path/to/protobuf/descriptor/set/file
+```
+
+
+To set version of latest promoted artifact -
+```sh
+curl -u test:password -X PUT "https://stencil-hostname.example.com/metadata/proto-descriptors/test-stencil-repo/version" -d value="0.0.5"
+```
+
+#### CI/CD
+
+Use the script `stencil-push.sh` in CI for uploading Protobuf descriptor sets -
+
+```sh
+# Should be set these as secrets in CI
+export STENCIL_HOSTNAME=stencil-hostname.example.com
+export STENCIL_USERNAME=test-stencil-repo
+export STENCIL_PASSWORD=test-password
+
+./stencil-push.sh 0.0.1 test-stencil-repo /path/to/protobuf/descriptor/set/file
+```
+
 #### Notes
 
 - Stencil uses `java-statsd-client` from `com.timgroup`, Please use the same client in your application for statsd
