@@ -18,11 +18,11 @@ help() {
     echo "   "
     echo "   stencil-push.sh needs a few ENV variables set - STENCIL_HOSTNAME, STENCIL_USERNAME, STENCIL_PASSWORD"
     echo "   STENCIL_HOSTNAME - Hostname serving the stencil APIs"
-    echo "   STENCIL_USERNAME - HTTP Basic Auth username"
-    echo "   STENCIL_PASSWORD - HTTP Basic Auth password"
+    echo "   STENCIL_USERNAME - HTTP Basic Auth username if required"
+    echo "   STENCIL_PASSWORD - HTTP Basic Auth password if required"
 }
 
-if [[ -z "$STENCIL_HOSTNAME" ]] || [[ -z "$STENCIL_USERNAME" ]] || [[ -z "$STENCIL_PASSWORD" ]]
+if [[ -z "$STENCIL_HOSTNAME" ]]
 then
     log_error "Missing values for ENV variables"
     help
