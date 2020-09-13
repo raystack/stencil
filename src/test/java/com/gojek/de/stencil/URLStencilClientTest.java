@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class URLStencilClientTest {
     }
 
     @Test
-    public void downloadFile() {
+    public void downloadFile() throws IOException {
         String url = "http://localhost:8082/descriptors.bin";
         Map<String, String> config = new HashMap<>();
         StencilClient c = StencilClientFactory.getClient(url, config);
@@ -37,6 +38,8 @@ public class URLStencilClientTest {
         assertNotNull(descMap);
         Descriptors.Descriptor desc = c.get("com.gojek.stencil.TestMessage");
         assertNotNull(desc);
+        c.refresh();
+        c.close();
     }
 
 }

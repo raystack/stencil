@@ -20,4 +20,6 @@ public interface StencilClient extends Closeable {
         if (podName != null) return podName;
         return "";
     }
+
+    void refresh();
 }

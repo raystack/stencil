@@ -33,7 +33,7 @@ public class DescriptorCacheLoaderTest {
     public void testStencilCacheLoadOnException() throws Exception {
         RemoteFile remoteFile = mock(RemoteFile.class);
         when(remoteFile.fetch(anyString())).thenThrow(new ClientProtocolException(""));
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null, true);
         cacheLoader.load(LOOKUP_KEY);
     }
 
@@ -45,7 +45,7 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null, true);
         assertTrue(cacheLoader.load(LOOKUP_KEY).containsKey(LOOKUP_KEY));
     }
 
@@ -57,7 +57,7 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null, true);
         Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
     }
@@ -67,7 +67,7 @@ public class DescriptorCacheLoaderTest {
         RemoteFile remoteFile = mock(RemoteFile.class);
         when(remoteFile.fetch(anyString())).thenThrow(new ClientProtocolException(""));
 
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null, true);
 
         Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
         Map<String, DescriptorAndTypeName> result = cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get();
@@ -83,7 +83,7 @@ public class DescriptorCacheLoaderTest {
         InputStream fileInputStream = new FileInputStream(classLoader.getResource(DESCRIPTOR_FILE_PATH).getFile());
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(LOOKUP_KEY)).thenReturn(bytes);
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), protoUpdateListener);
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), protoUpdateListener, true);
         Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
         prevDescriptor.put(LOOKUP_KEY, new DescriptorAndTypeName(TestKey.getDescriptor(), TYPENAME_KEY));
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));

@@ -2,10 +2,12 @@ package com.gojek.de.stencil.client;
 
 import com.gojek.de.stencil.DescriptorMapBuilder;
 import com.gojek.de.stencil.cache.DescriptorCacheLoader;
+import com.gojek.de.stencil.config.StencilConfig;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.common.testing.FakeTicker;
 import com.google.protobuf.Descriptors;
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -38,7 +41,7 @@ public class URLStencilClientWithCacheTest {
         DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
         when(cacheLoader.load(LOOKUP_KEY)).thenReturn(descriptorMap);
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, new HashMap<>(), cacheLoader);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, new HashMap<>()), cacheLoader);
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
 
         verify(cacheLoader, times(1)).load(LOOKUP_KEY);
@@ -51,7 +54,7 @@ public class URLStencilClientWithCacheTest {
         DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
         when(cacheLoader.load(LOOKUP_KEY)).thenThrow(new StencilRuntimeException(new Throwable()));
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, new HashMap<>(), cacheLoader);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, new HashMap<>()), cacheLoader);
         stencilClient.get(LOOKUP_KEY);
     }
 
@@ -62,7 +65,7 @@ public class URLStencilClientWithCacheTest {
 
         FakeTicker fakeTicker = new FakeTicker();
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, new HashMap<>(), cacheLoader, fakeTicker);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, new HashMap<>()), cacheLoader, fakeTicker);
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
 
         fakeTicker.advance(1000, TimeUnit.MINUTES);
@@ -82,7 +85,7 @@ public class URLStencilClientWithCacheTest {
         Map<String, String> config = new HashMap<>();
         config.put("REFRESH_CACHE", "true");
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, config, cacheLoader, fakeTicker);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, config), cacheLoader, fakeTicker);
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
         assertNotNull(result);
 

@@ -10,7 +10,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Descriptors;
-import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +31,29 @@ public class URLStencilClient implements Serializable, StencilClient {
     private static final int DEFAULT_TTL_MIN = 30;
     private static final int DEFAULT_TTL_MAX = 60;
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
+
+    public URLStencilClient(String url, StencilConfig config, DescriptorCacheLoader cacheLoader) {
+        this(url, config, cacheLoader, systemTicker());
+    }
+
+    public URLStencilClient(String url, StencilConfig stencilConfig, DescriptorCacheLoader cacheLoader, Ticker ticker) {
+
+        this.ttl = stencilConfig.getTilInMinutes() != 0 ? Duration.ofMinutes(stencilConfig.getTilInMinutes()) :
+                getDefaultTTL();
+        this.url = url;
+        this.cacheLoader = cacheLoader;
+
+        if (stencilConfig.shouldAutoRefreshCache()) {
+            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
+                    .refreshAfterWrite(ttl.toMinutes(), TimeUnit.MINUTES)
+                    .build(cacheLoader);
+        } else {
+            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
+                    .build(cacheLoader);
+        }
+
+        logger.info("initialising URL Stencil client with TTL: {} minutes", ttl.toMinutes());
+    }
 
     @Override
     public Descriptors.Descriptor get(String className) {
@@ -84,28 +106,8 @@ public class URLStencilClient implements Serializable, StencilClient {
         }
     }
 
-    public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader) {
-        this(url, config, cacheLoader, systemTicker());
-    }
-
-    public URLStencilClient(String url, Map<String, String> config, DescriptorCacheLoader cacheLoader, Ticker ticker) {
-        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
-
-        this.ttl = stencilConfig.getTilInMinutes() != 0 ? Duration.ofMinutes(stencilConfig.getTilInMinutes()) :
-                getDefaultTTL();
-        this.url = url;
-        this.cacheLoader = cacheLoader;
-
-        if (stencilConfig.shouldRefreshCache()) {
-            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                    .refreshAfterWrite(ttl.toMinutes(), TimeUnit.MINUTES)
-                    .build(cacheLoader);
-        } else {
-            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                    .build(cacheLoader);
-        }
-
-        logger.info("initialising URL Stencil client with TTL: {} minutes", ttl.toMinutes());
+    public void refresh() {
+        descriptorCache.refresh(url);
     }
 
     public Duration getTTL() {
