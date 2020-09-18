@@ -48,4 +48,9 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
     @Override
     public void close() {
     }
+
+    @Override
+    public void refresh() {
+        throw new UnsupportedOperationException();
+    }
 }

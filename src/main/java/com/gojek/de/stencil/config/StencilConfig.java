@@ -17,7 +17,7 @@ public interface StencilConfig extends Config{
 
     @Key("REFRESH_CACHE")
     @DefaultValue("false")
-    Boolean shouldRefreshCache();
+    Boolean shouldAutoRefreshCache();
 
     @Key("TIL_IN_MINUTES")
     @DefaultValue("0")

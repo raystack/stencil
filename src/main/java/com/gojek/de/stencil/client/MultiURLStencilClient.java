@@ -1,6 +1,7 @@
 package com.gojek.de.stencil.client;
 
 import com.gojek.de.stencil.cache.DescriptorCacheLoader;
+import com.gojek.de.stencil.config.StencilConfig;
 import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
 
@@ -16,7 +17,7 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
 
     private List<StencilClient> stencilClients;
 
-    public MultiURLStencilClient(List<String> urls, Map<String, String> config, DescriptorCacheLoader cacheLoader) {
+    public MultiURLStencilClient(List<String> urls, StencilConfig config, DescriptorCacheLoader cacheLoader) {
         stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());
     }
 
@@ -58,6 +59,13 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    @Override
+    public void refresh() {
+        stencilClients.forEach(c -> {
+            c.refresh();
         });
     }
 }
