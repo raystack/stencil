@@ -22,4 +22,6 @@ public interface StencilClient extends Closeable {
     }
 
     void refresh();
+
+    boolean shouldAutoRefreshCache();
 }

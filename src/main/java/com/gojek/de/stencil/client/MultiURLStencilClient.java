@@ -16,8 +16,10 @@ import java.util.stream.Collectors;
 public class MultiURLStencilClient implements Serializable, StencilClient {
 
     private List<StencilClient> stencilClients;
+    private boolean shouldAutoRefreshCache;
 
     public MultiURLStencilClient(List<String> urls, StencilConfig config, DescriptorCacheLoader cacheLoader) {
+        shouldAutoRefreshCache = config.shouldAutoRefreshCache();
         stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());
     }
 
@@ -67,5 +69,10 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
         stencilClients.forEach(c -> {
             c.refresh();
         });
+    }
+
+    @Override
+    public boolean shouldAutoRefreshCache() {
+        return shouldAutoRefreshCache;
     }
 }

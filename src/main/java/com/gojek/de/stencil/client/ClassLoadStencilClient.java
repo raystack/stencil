@@ -53,4 +53,9 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
     public void refresh() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean shouldAutoRefreshCache() {
+        return false;
+    }
 }
