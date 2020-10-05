@@ -31,13 +31,14 @@ public class URLStencilClient implements Serializable, StencilClient {
     private static final int DEFAULT_TTL_MIN = 30;
     private static final int DEFAULT_TTL_MAX = 60;
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
+    private boolean shouldAutoRefreshCache;
 
     public URLStencilClient(String url, StencilConfig config, DescriptorCacheLoader cacheLoader) {
         this(url, config, cacheLoader, systemTicker());
     }
 
     public URLStencilClient(String url, StencilConfig stencilConfig, DescriptorCacheLoader cacheLoader, Ticker ticker) {
-
+        this.shouldAutoRefreshCache = stencilConfig.shouldAutoRefreshCache();
         this.ttl = stencilConfig.getTilInMinutes() != 0 ? Duration.ofMinutes(stencilConfig.getTilInMinutes()) :
                 getDefaultTTL();
         this.url = url;
@@ -47,12 +48,13 @@ public class URLStencilClient implements Serializable, StencilClient {
             descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
                     .refreshAfterWrite(ttl.toMinutes(), TimeUnit.MINUTES)
                     .build(cacheLoader);
+            logger.info("configuring URL Stencil client with TTL: {} minutes", ttl.toMinutes());
         } else {
             descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
                     .build(cacheLoader);
         }
 
-        logger.info("initialising URL Stencil client with TTL: {} minutes", ttl.toMinutes());
+        logger.info("initialising URL Stencil client with auto refresh: {}", shouldAutoRefreshCache);
     }
 
     @Override
@@ -123,5 +125,10 @@ public class URLStencilClient implements Serializable, StencilClient {
     @Override
     public void close() throws IOException {
         cacheLoader.close();
+    }
+
+    @Override
+    public boolean shouldAutoRefreshCache() {
+        return shouldAutoRefreshCache;
     }
 }

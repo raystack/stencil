@@ -14,11 +14,16 @@ public class ProtoParserWithRefresh implements Parser {
     private StencilClient stencilClient;
     private StatsDClient statsDClient;
     private String protoClassName;
+    private Descriptors.Descriptor descriptor;
 
     public ProtoParserWithRefresh(StencilClient stencilClient, StatsDClient statsDClient, String protoClassName) {
+        if (stencilClient.shouldAutoRefreshCache()) {
+            throw new UnsupportedOperationException(String.format("REFRESH_CACHE is not supported with %s", getClass().getName()));
+        }
         this.stencilClient = stencilClient;
         this.statsDClient = statsDClient;
         this.protoClassName = protoClassName;
+        this.descriptor = getDescriptor();
     }
 
     public ProtoParserWithRefresh(StencilClient stencilClient, String protoClassName) {
@@ -27,31 +32,25 @@ public class ProtoParserWithRefresh implements Parser {
 
     public DynamicMessage parse(byte[] bytes) throws InvalidProtocolBufferException {
         Instant start = Instant.now();
-        Descriptors.Descriptor descriptor = getDescriptor();
-        if (descriptor == null) {
-            throw new StencilRuntimeException(new Throwable(String.format("No Descriptors found for %s", protoClassName)));
+        DynamicMessage parsedMessage = DynamicMessage.parseFrom(descriptor, bytes);
+        if (hasUnknownFields(parsedMessage)) {
+            parsedMessage = DynamicMessage.parseFrom(getRefreshedDescriptor(), bytes);
         }
-        DynamicMessage parsedMessage = getMessage(bytes, descriptor);
         statsDClient.recordExecutionTime("stencil.exec.time,name=" + stencilClient.getAppName(), Instant.now().toEpochMilli() - start.toEpochMilli() );
         return parsedMessage;
     }
 
-    private DynamicMessage getMessage(byte[] bytes, Descriptors.Descriptor descriptor) throws InvalidProtocolBufferException {
-        DynamicMessage parsedMessage = DynamicMessage.parseFrom(descriptor, bytes);
-        if (!hasUnknownFields(parsedMessage)) {
-            return parsedMessage;
-        }
+    private Descriptors.Descriptor getRefreshedDescriptor() {
         stencilClient.refresh();
-        return DynamicMessage.parseFrom(descriptor, bytes);
+        return getDescriptor();
     }
 
     private Descriptors.Descriptor getDescriptor() {
-        Descriptors.Descriptor descriptor = stencilClient.get(protoClassName);
-        if (descriptor != null) {
-            return descriptor;
+        descriptor = stencilClient.get(protoClassName);
+        if (descriptor == null) {
+            throw new StencilRuntimeException(new Throwable(String.format("No Descriptors found for %s", protoClassName)));
         }
-        stencilClient.refresh();
-        return stencilClient.get(protoClassName);
+        return descriptor;
     }
 
     private boolean hasUnknownFields(DynamicMessage parsedMessage) {

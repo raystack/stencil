@@ -13,3 +13,8 @@ message TestKey {
 message TestMessage {
     string sample_string = 1;
 }
+
+message TestMessageSuperset {
+    string sample_string = 1;
+    bool success = 9;
+}

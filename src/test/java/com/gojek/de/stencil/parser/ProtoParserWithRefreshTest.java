@@ -5,6 +5,7 @@ import com.gojek.de.stencil.client.StencilClient;
 import com.gojek.de.stencil.exception.StencilRuntimeException;
 import com.gojek.de.stencil.models.DescriptorAndTypeName;
 import com.gojek.stencil.TestMessage;
+import com.gojek.stencil.TestMessageSuperset;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -52,9 +53,7 @@ public class ProtoParserWithRefreshTest {
         when(stencilClient.get(LOOKUP_KEY)).thenReturn(descriptorMap.get(LOOKUP_KEY).getDescriptor());
         ProtoParserWithRefresh protoParser = new ProtoParserWithRefresh(stencilClient, LOOKUP_KEY);
 
-        //simulate TestMessage.newBuilder().setSampleString("sample_string").setSampleSecondString("second").build().toByteArray();
-        byte[] testData = Hex.decodeHex("0a0d73616d706c655f737472696e6712067365636f6e64".toCharArray());
-
+        byte[] testData = TestMessageSuperset.newBuilder().setSampleString("sample_string").setSuccess(true).build().toByteArray();
         DynamicMessage parsed = protoParser.parse(testData);
         assertNotNull(parsed);
         verify(stencilClient, times(1)).refresh();
