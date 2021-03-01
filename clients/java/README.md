@@ -1,4 +1,4 @@
-# Stencil
+# Java Client for Stencil
 
 Stencil is dynamic schema registry for protobuf. Protobuf is a great efficient and fast mechanism for serializing structured data. The challenge with protobuf is that for every change it requires to recompile the package to generate the necessary classes. This is not a big challenge if you have protobuf enclosed in your application and compile at startup. But if you have thousands of protos stored in central registry and 100s of applications use them. Updating depndencies of compiled proto jar can soon become a nightmare.
 
