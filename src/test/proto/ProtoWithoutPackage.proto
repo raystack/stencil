@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "com.gojek.stencil";
+option java_multiple_files = true;
+option java_outer_classname = "ProtoWithoutPackage";
+
+message RootField {
+    string string_field = 1;
+    NestedField nested_field = 2;
+    uint32 int_field = 3;
+}
+
+message NestedField {
+    string string_field = 1;
+    uint32 int_field = 2;
+}

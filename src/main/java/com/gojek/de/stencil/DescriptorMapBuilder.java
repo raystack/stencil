@@ -35,11 +35,13 @@ public class DescriptorMapBuilder {
 
     private Map<String, DescriptorAndTypeName> getFlattenedDescriptors(Descriptors.Descriptor descriptor, String javaPackage, String protoPackage, String parentClassName, Map<String, DescriptorAndTypeName> initialDescriptorMap) {
         String className = getClassName(descriptor, parentClassName);
+        String javaClassName = javaPackage.isEmpty() ? className : String.format("%s.%s", javaPackage, className);
+        String typeName = protoPackage.isEmpty() ? String.format(".%s", className) : String.format(".%s.%s", protoPackage, className);
         initialDescriptorMap.put(
-                String.format("%s.%s", javaPackage, className),
+                javaClassName,
                 new DescriptorAndTypeName(
                         descriptor,
-                        String.format(".%s.%s", protoPackage, className)
+                        typeName
                 ));
         descriptor.getNestedTypes()
                 .forEach(desc -> getFlattenedDescriptors(desc, javaPackage, protoPackage, className, initialDescriptorMap));

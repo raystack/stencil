@@ -57,4 +57,15 @@ public class DescriptorMapBuilderTest {
         assertNotNull(RECORD.getDescriptor().findFieldByName("record"));
     }
 
+    @Test
+    public void TestDescriptorsWithoutPackageName() throws IOException, Descriptors.DescriptorValidationException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String descriptorFilePath = "__files/descriptors.bin";
+        InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
+        Map<String, DescriptorAndTypeName> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
+
+        final DescriptorAndTypeName protoWithoutPackage = descriptorMap.get("com.gojek.stencil.RootField");
+        assertEquals(".RootField", protoWithoutPackage.getTypeName());
+    }
+
 }
