@@ -23,8 +23,7 @@ jobs:
         run: cd clients/java/ && chmod +x gradlew
       - name: Publish artifacts
         run: |
-          mkdir -p /tmp/gnupg
-          printf "$GPG_SIGNING_KEY" | base64 --decode > /tmp/gnupg/private.key
+          printf "$GPG_SIGNING_KEY" | base64 --decode > clients/java/private.key
           cd clients/java && sh ./deploy.sh
         env:
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
