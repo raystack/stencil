@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set env
-          run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
+      - uses: olegtarasov/get-tag@v2.1
+        id: tagName
       – name: Initialize mandatory git config
         run: |
           git config user.name "GitHub Actions"
@@ -32,14 +32,14 @@ jobs:
           GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          VERSION_NAME: ${{ steps.vars.outputs.tag }}
+          VERSION_NAME: ${{ steps.tagName.outputs.tag }}
       – name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.vars.outputs.tag }}
-          release_name: v${{ steps.vars.outputs.tag }}
+          tag_name: ${{ steps.tagName.outputs.tag }}
+          release_name: v${{ steps.tagName.outputs.tag }}
           draft: false
           prerelease: false
