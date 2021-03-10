@@ -19,7 +19,6 @@ jobs:
         run: |
           cd clients/java
           printf "$GPG_SIGNING_KEY" | base64 --decode > private.key
-          ./gradlew clean  publishToSonatype closeAndReleaseStagingRepository -PossrhUsername=${SONATYPE_USERNAME} -PossrhPassword=${SONATYPE_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_KEY_PASSPHRASE} -Psigning.secretKeyRingFile=private.key --console=verbose
         env:
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
