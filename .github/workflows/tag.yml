@@ -10,7 +10,7 @@ jobs:
     if: github.type == 'CreateEvent' && github.payload.ref_type == 'tag'
     steps:
       - uses: actions/checkout@v2
-      - uses: hmarr/debug-action
+      - uses: hmarr/debug-action@v1.0.0
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
