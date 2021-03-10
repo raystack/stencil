@@ -10,6 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set tag
+        id: vars
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
       – name: Initialize mandatory git config
         run: |
