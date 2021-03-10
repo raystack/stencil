@@ -9,9 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set tag
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Set env
+          run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
       – name: Initialize mandatory git config
         run: |
           git config user.name "GitHub Actions"
