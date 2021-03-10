@@ -17,8 +17,10 @@ plugins {
     id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
 }
 
+def tagVersion = project.hasProperty('tagVersion') ? project.property('tagVersion') : ''
+
 group 'com.gojek'
-version '4.2.2'
+version tagVersion
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
