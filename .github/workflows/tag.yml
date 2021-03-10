@@ -9,10 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      – name: Initialize mandatory git config
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
       - name: Set output
         id: vars
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
