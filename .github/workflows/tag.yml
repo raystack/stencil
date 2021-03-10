@@ -30,13 +30,3 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           VERSION_NAME: ${{ steps.vars.outputs.tag }}
-      – name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.vars.outputs.tag }}
-          release_name: v${{ steps.vars.outputs.tag }}
-          draft: false
-          prerelease: false
