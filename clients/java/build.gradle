@@ -14,10 +14,11 @@ plugins {
     id 'maven-publish'
     id 'com.jfrog.artifactory' version "4.7.1"
     id "com.google.protobuf" version "0.8.7"
+    id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
 }
 
 group 'com.gojek'
-version '4.2.1'
+version '4.2.2'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -77,56 +78,50 @@ artifacts {
 def ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : ''
 def ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : ''
 
-uploadArchives {
-    repositories {
-        mavenLocal()
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'Stencil'
-                packaging 'jar'
-                description 'Library to pull latest proto descriptors from a remote server'
-                url 'https://github.com/gojekfarm/stencil'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                name = 'Stencil'
+                description = 'Library to pull latest proto descriptors from a remote server'
+                url = 'https://github.com/odpf/stencil'
 
                 scm {
-                    url 'https://github.com/gojekfarm/stencil.git'
+                    url = 'https://github.com/odpf/stencil.git'
                 }
 
                 licenses {
                     license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
 
                 developers {
                     developer {
-                        name 'Data Engineering'
-                        email 'de-devs@go-jek.com'
+                        name = 'Data Engineering'
+                        email = 'de@go-jek.com'
                     }
                 }
+                from(components.java)
+                artifact(sourcesJar)
+                artifact(javadocJar)
             }
         }
     }
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+signing {
+    sign publishing.publications.maven
 }
 
-signing {
-    sign configurations.archives
+nexusPublishing {
+    packageGroup = "com.gojek"
+    repositories {
+        sonatype {
+            stagingProfileId = "9bf6aebae3df9b"
+            username = ossrhUsername
+            password = ossrhPassword
+        }
+    }
 }
