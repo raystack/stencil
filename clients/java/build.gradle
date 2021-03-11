@@ -87,7 +87,7 @@ publishing {
                 url = 'https://github.com/gojekfarm/stencil'
 
                 scm {
-                    url = 'https://github.com/gojekfarm/stencil.git'
+                    url = 'https://github.com/odpf/stencil.git'
                 }
 
                 licenses {
