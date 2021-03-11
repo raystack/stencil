@@ -84,7 +84,7 @@ publishing {
             pom {
                 name = 'Stencil'
                 description = 'Library to pull latest proto descriptors from a remote server'
-                url = 'https://github.com/gojekfarm/stencil'
+                url = 'https://github.com/odpf/stencil'
 
                 scm {
                     url = 'https://github.com/odpf/stencil.git'
