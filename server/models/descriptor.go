@@ -5,7 +5,7 @@ import (
 	"mime/multipart"
 )
 
-type FileMetadata struct {
+type FileDownload struct {
 	Name    string `uri:"name" binding:"required"`
 	Version string `uri:"version" binding:"required,versionWithLatest"`
 	OrgID   string

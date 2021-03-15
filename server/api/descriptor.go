@@ -44,7 +44,7 @@ func (a *API) Upload(c *gin.Context) {
 //Download downloads file
 func (a *API) Download(c *gin.Context) {
 	orgID := c.GetHeader("x-scope-orgid")
-	payload := models.FileMetadata{
+	payload := models.FileDownload{
 		OrgID: orgID,
 	}
 	if err := c.ShouldBindUri(&payload); err != nil {

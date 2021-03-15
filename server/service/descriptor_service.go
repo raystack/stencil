@@ -38,7 +38,7 @@ func (d *DescriptorService) Upload(ctx context.Context, payload *models.Descript
 }
 
 //Download downloads the file
-func (d *DescriptorService) Download(ctx context.Context, payload *models.FileMetadata) (*models.FileData, error) {
+func (d *DescriptorService) Download(ctx context.Context, payload *models.FileDownload) (*models.FileData, error) {
 	filename := path.Join(payload.OrgID, payload.Name, payload.Version)
 	data, err := d.Store.Get(ctx, filename)
 	if err != nil {

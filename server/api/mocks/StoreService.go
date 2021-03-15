@@ -15,11 +15,11 @@ type StoreService struct {
 }
 
 // Download provides a mock function with given fields: _a0, _a1
-func (_m *StoreService) Download(_a0 context.Context, _a1 *models.FileMetadata) (*models.FileData, error) {
+func (_m *StoreService) Download(_a0 context.Context, _a1 *models.FileDownload) (*models.FileData, error) {
 	ret := _m.Called(_a0, _a1)
 
 	var r0 *models.FileData
-	if rf, ok := ret.Get(0).(func(context.Context, *models.FileMetadata) *models.FileData); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.FileDownload) *models.FileData); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
@@ -28,7 +28,7 @@ func (_m *StoreService) Download(_a0 context.Context, _a1 *models.FileMetadata) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *models.FileMetadata) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *models.FileDownload) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

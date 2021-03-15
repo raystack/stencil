@@ -11,7 +11,7 @@ type StoreService interface {
 	ListNames(...string) []string
 	ListVersions(...string) []string
 	Upload(context.Context, *models.DescriptorPayload) error
-	Download(context.Context, *models.FileMetadata) (*models.FileData, error)
+	Download(context.Context, *models.FileDownload) (*models.FileData, error)
 }
 
 //API holds all handlers
