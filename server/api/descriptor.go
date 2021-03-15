@@ -52,11 +52,11 @@ func (a *API) Download(c *gin.Context) {
 		return
 	}
 	data, err := a.Store.Download(c.Request.Context(), &payload)
-	defer data.Reader.Close()
 	if err != nil {
 		c.Error(err).SetMeta(models.ErrDownloadFailed)
 		return
 	}
+	defer data.Reader.Close()
 	fileName := c.Param("version")
 	headers := map[string]string{
 		"Content-Disposition": fmt.Sprintf(`attachment; filename="%s"; filename*=UTF-8''%s`, fileName, url.PathEscape(fileName)),
