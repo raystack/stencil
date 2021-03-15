@@ -21,5 +21,22 @@ type DescriptorPayload struct {
 	Name    string                `form:"name" binding:"required"`
 	Version string                `form:"version" binding:"required,version"`
 	File    *multipart.FileHeader `form:"file" binding:"required"`
+	Latest  bool                  `form:"latest"`
 	OrgID   string
+}
+
+type GetMetadata struct {
+	OrgID string
+	Name  string `uri:"name"`
+}
+
+type MetadataPayload struct {
+	Version string `form:"version" json:"version" binding:"required,version"`
+	OrgID   string
+	Name    string `json:"name" binding:"required"`
+}
+
+type MetadataFile struct {
+	Version string `json:"version"`
+	Updated string `json:"updated"`
 }

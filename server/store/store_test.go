@@ -24,6 +24,14 @@ func seedData(s *store.Store, filename, contents string) {
 	ctx := context.Background()
 	s.Put(ctx, filename, reader)
 }
+
+func verifyData(t *testing.T, s *store.Store, path, data string) {
+	ctx := context.Background()
+	reader, _ := s.Get(ctx, path)
+	result, _ := ioutil.ReadAll(reader)
+	assert.Equal(t, []byte(data), result)
+}
+
 func TestListFiles(t *testing.T) {
 	s := setupStorage()
 	seedData(s, "/n/k/v", "file data")
@@ -47,4 +55,12 @@ func TestGet(t *testing.T) {
 	reader, _ := s.Get(ctx, "/n/k/v")
 	result, _ := ioutil.ReadAll(reader)
 	assert.Equal(t, []byte("file data"), result)
+}
+
+func TestCopy(t *testing.T) {
+	s := setupStorage()
+	seedData(s, "/n/k/v1", "file data")
+	ctx := context.Background()
+	_ = s.Copy(ctx, "/n/k/v1", "/n/k/v2")
+	verifyData(t, s, "/n/k/v2", "file data")
 }

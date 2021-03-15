@@ -30,7 +30,6 @@ func errorHandle() gin.HandlerFunc {
 
 		if err, ok := err.Meta.(models.APIError); ok {
 			c.AbortWithStatusJSON(err.Code, gin.H{"message": err.Message})
-			c.Abort()
 			return
 		}
 	}

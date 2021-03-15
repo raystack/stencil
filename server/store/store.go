@@ -82,8 +82,8 @@ func (s *Store) Put(ctx context.Context, filename string, r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	w.Close()
-	return nil
+	err = w.Close()
+	return err
 }
 
 //Get Download file
@@ -93,6 +93,16 @@ func (s *Store) Get(ctx context.Context, filename string) (*blob.Reader, error) 
 		return nil, err
 	}
 	return reader, nil
+}
+
+//Copy copy one file to another file
+func (s *Store) Copy(ctx context.Context, fromFile, toFile string) error {
+	reader, err := s.Get(ctx, fromFile)
+	if err != nil {
+		return err
+	}
+	defer reader.Close()
+	return s.Put(ctx, toFile, reader)
 }
 
 //Close Closes bucket connection

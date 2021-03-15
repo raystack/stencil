@@ -12,6 +12,8 @@ type StoreService interface {
 	ListVersions(...string) []string
 	Upload(context.Context, *models.DescriptorPayload) error
 	Download(context.Context, *models.FileDownload) (*models.FileData, error)
+	StoreMetadata(ctx context.Context, payload *models.MetadataPayload) error
+	GetMetadata(ctx context.Context, payload *models.GetMetadata) (*models.MetadataFile, error)
 }
 
 //API holds all handlers

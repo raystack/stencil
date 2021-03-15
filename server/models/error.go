@@ -15,6 +15,14 @@ var (
 		Code:    500,
 		Message: "Download failed",
 	}
+	ErrMetadataUpdateFailed = APIError{
+		Code:    500,
+		Message: "Metadata update failed",
+	}
+	ErrGetMetadataFailed = APIError{
+		Code:    500,
+		Message: "Unable to get metadata information",
+	}
 )
 
 type APIError struct {
@@ -24,5 +32,5 @@ type APIError struct {
 }
 
 func (a APIError) Error() string {
-	return fmt.Sprintf("%d %s %s", a.Code, a.Message, a.error.Error())
+	return fmt.Sprintf("%d %s", a.Code, a.Message)
 }

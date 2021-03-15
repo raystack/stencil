@@ -13,4 +13,6 @@ func registerRoutes(router *gin.Engine, handlers *api.API) {
 	apiV1.GET("/descriptors", handlers.ListNames)
 	apiV1.GET("/descriptors/:name", handlers.ListVersions)
 	apiV1.GET("/descriptors/:name/:version", handlers.Download)
+	apiV1.GET("/metadata/:name", handlers.GetVersion)
+	apiV1.POST("/metadata", handlers.UpdateLatestVersion)
 }

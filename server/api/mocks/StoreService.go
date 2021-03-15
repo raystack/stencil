@@ -37,6 +37,29 @@ func (_m *StoreService) Download(_a0 context.Context, _a1 *models.FileDownload) 
 	return r0, r1
 }
 
+// GetMetadata provides a mock function with given fields: ctx, payload
+func (_m *StoreService) GetMetadata(ctx context.Context, payload *models.GetMetadata) (*models.MetadataFile, error) {
+	ret := _m.Called(ctx, payload)
+
+	var r0 *models.MetadataFile
+	if rf, ok := ret.Get(0).(func(context.Context, *models.GetMetadata) *models.MetadataFile); ok {
+		r0 = rf(ctx, payload)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.MetadataFile)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.GetMetadata) error); ok {
+		r1 = rf(ctx, payload)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ListNames provides a mock function with given fields: _a0
 func (_m *StoreService) ListNames(_a0 ...string) []string {
 	_va := make([]interface{}, len(_a0))
@@ -76,6 +99,20 @@ func (_m *StoreService) ListVersions(_a0 ...string) []string {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]string)
 		}
+	}
+
+	return r0
+}
+
+// StoreMetadata provides a mock function with given fields: ctx, payload
+func (_m *StoreService) StoreMetadata(ctx context.Context, payload *models.MetadataPayload) error {
+	ret := _m.Called(ctx, payload)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *models.MetadataPayload) error); ok {
+		r0 = rf(ctx, payload)
+	} else {
+		r0 = ret.Error(0)
 	}
 
 	return r0

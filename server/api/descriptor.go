@@ -63,3 +63,37 @@ func (a *API) Download(c *gin.Context) {
 	}
 	c.DataFromReader(http.StatusOK, data.ContentLength, "application/octet-stream", data.Reader, headers)
 }
+
+//GetVersion return latest version number
+func (a *API) GetVersion(c *gin.Context) {
+	orgID := c.GetHeader("x-scope-orgid")
+	name := c.Param("name")
+	data := &models.GetMetadata{
+		OrgID: orgID,
+		Name:  name,
+	}
+	version, err := a.Store.GetMetadata(c.Request.Context(), data)
+	if err != nil {
+		c.Error(err).SetMeta(models.ErrGetMetadataFailed)
+		return
+	}
+	c.JSON(http.StatusOK, version)
+}
+
+//UpdateLatestVersion return latest version number
+func (a *API) UpdateLatestVersion(c *gin.Context) {
+	orgID := c.GetHeader("x-scope-orgid")
+	payload := &models.MetadataPayload{
+		OrgID: orgID,
+	}
+	if err := c.ShouldBind(payload); err != nil {
+		c.Error(err).SetMeta(models.ErrMissingFormData)
+		return
+	}
+	err := a.Store.StoreMetadata(c.Request.Context(), payload)
+	if err != nil {
+		c.Error(err).SetMeta(models.ErrMetadataUpdateFailed)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "success"})
+}
