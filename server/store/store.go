@@ -22,7 +22,7 @@ func directoryFilter(obj *blob.ListObject) bool {
 }
 
 func fileFilter(obj *blob.ListObject) bool {
-	return !obj.IsDir
+	return !obj.IsDir && !strings.HasSuffix(obj.Key, "meta.json")
 }
 
 func filterMap(prefix string, filter func(*blob.ListObject) bool) func(*blob.ListObject) (bool, string) {
