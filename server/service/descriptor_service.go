@@ -18,17 +18,15 @@ type DescriptorService struct {
 }
 
 //ListNames returns list of directories
-func (d *DescriptorService) ListNames(prefixes ...string) []string {
+func (d *DescriptorService) ListNames(prefixes ...string) ([]string, error) {
 	prefix := path.Join(prefixes...)
-	paths, _ := d.Store.ListDir(prefix + "/")
-	return paths
+	return d.Store.ListDir(prefix + "/")
 }
 
 //ListVersions returns list of versions for specified org and name
-func (d *DescriptorService) ListVersions(prefixes ...string) []string {
+func (d *DescriptorService) ListVersions(prefixes ...string) ([]string, error) {
 	prefix := path.Join(prefixes...)
-	paths, _ := d.Store.ListFiles(prefix + "/")
-	return paths
+	return d.Store.ListFiles(prefix + "/")
 }
 
 //Upload uploads the file
@@ -65,7 +63,12 @@ func (d *DescriptorService) Download(ctx context.Context, payload *models.FileDo
 //StoreMetadata stores latest version number
 func (d *DescriptorService) StoreMetadata(ctx context.Context, payload *models.MetadataPayload) error {
 	prefix := path.Join(payload.OrgID, payload.Name)
-	filename := path.Join(prefix, "meta.json")
+	metafile := path.Join(prefix, "meta.json")
+	filename := path.Join(prefix, payload.Version)
+	fileExists, err := d.Store.Exists(ctx, filename)
+	if !fileExists {
+		return models.WrapAPIError(models.ErrNotFound, err)
+	}
 	updated := time.Now().UTC().Format(time.RFC3339)
 	fileData := &models.MetadataFile{
 		Version: payload.Version,
@@ -76,11 +79,11 @@ func (d *DescriptorService) StoreMetadata(ctx context.Context, payload *models.M
 		return err
 	}
 	reader := bytes.NewReader(data)
-	err = d.Store.Put(ctx, filename, reader)
+	err = d.Store.Put(ctx, metafile, reader)
 	if err != nil {
 		return err
 	}
-	return d.Store.Copy(ctx, path.Join(prefix, payload.Version), path.Join(prefix, "latest"))
+	return d.Store.Copy(ctx, filename, path.Join(prefix, "latest"))
 }
 
 //GetMetadata gets latest version number

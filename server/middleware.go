@@ -23,13 +23,17 @@ func orgHeaderCheck() gin.HandlerFunc {
 func errorHandle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
-		err := c.Errors.Last()
-		if err == nil {
+		ginErr := c.Errors.Last()
+		if ginErr == nil {
+			return
+		}
+		if err, ok := ginErr.Err.(models.APIError); ok {
+			c.AbortWithStatusJSON(err.Code(), gin.H{"message": err.Message()})
 			return
 		}
 
-		if err, ok := err.Meta.(models.APIError); ok {
-			c.AbortWithStatusJSON(err.Code, gin.H{"message": err.Message})
+		if err, ok := ginErr.Meta.(models.APIError); ok {
+			c.AbortWithStatusJSON(err.Code(), gin.H{"message": err.Message()})
 			return
 		}
 	}

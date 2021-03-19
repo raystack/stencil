@@ -12,7 +12,11 @@ import (
 // ListNames lists descriptor entries
 func (a *API) ListNames(c *gin.Context) {
 	orgID := c.GetHeader("x-scope-orgid")
-	result := a.Store.ListNames(orgID)
+	result, err := a.Store.ListNames(orgID)
+	if err != nil {
+		c.Error(err).SetMeta(models.ErrUnknown)
+		return
+	}
 	c.JSON(http.StatusOK, result)
 }
 
@@ -20,7 +24,11 @@ func (a *API) ListNames(c *gin.Context) {
 func (a *API) ListVersions(c *gin.Context) {
 	orgID := c.GetHeader("x-scope-orgid")
 	name := c.Param("name")
-	result := a.Store.ListVersions(orgID, name)
+	result, err := a.Store.ListVersions(orgID, name)
+	if err != nil {
+		c.Error(err).SetMeta(models.ErrUnknown)
+		return
+	}
 	c.JSON(http.StatusOK, result)
 }
 

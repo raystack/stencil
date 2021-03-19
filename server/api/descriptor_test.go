@@ -23,10 +23,9 @@ import (
 )
 
 var (
-	formError     = models.ErrMissingFormData.Message
-	uploadError   = models.ErrUploadFailed.Message
-	downloadError = models.ErrDownloadFailed.Message
-	success       = "success"
+	formError   = models.ErrMissingFormData.Message()
+	uploadError = models.ErrUploadFailed.Message()
+	success     = "success"
 )
 
 func setup() (*gin.Engine, *mocks.StoreService, *api.API) {
@@ -72,19 +71,30 @@ func mockFileData(contents string) *models.FileData {
 }
 
 func TestList(t *testing.T) {
-	t.Run("should return list", func(t *testing.T) {
-		router, mockService, _ := setup()
-		mockService.On("ListNames", "org").Return([]string{"name1", "name2"})
+	for _, test := range []struct {
+		desc         string
+		err          error
+		values       []string
+		expectedCode int
+		expectedResp string
+	}{
+		{"should return list", nil, []string{"n1", "n2"}, 200, `["n1", "n2"]`},
+		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
+	} {
+		t.Run(test.desc, func(t *testing.T) {
+			router, mockService, _ := setup()
+			mockService.On("ListNames", "org").Return(test.values, test.err)
 
-		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/v1/descriptors", nil)
-		req.Header.Set("x-scope-orgid", "org")
-		router.ServeHTTP(w, req)
+			w := httptest.NewRecorder()
+			req, _ := http.NewRequest("GET", "/v1/descriptors", nil)
+			req.Header.Set("x-scope-orgid", "org")
+			router.ServeHTTP(w, req)
 
-		assert.Equal(t, 200, w.Code)
-		assert.JSONEq(t, `["name1", "name2"]`, w.Body.String())
-		mockService.AssertExpectations(t)
-	})
+			assert.Equal(t, test.expectedCode, w.Code)
+			assert.JSONEq(t, test.expectedResp, w.Body.String())
+			mockService.AssertExpectations(t)
+		})
+	}
 
 	t.Run("should return 400 if org id not specified", func(t *testing.T) {
 		router, _, _ := setup()
@@ -100,19 +110,30 @@ func TestList(t *testing.T) {
 }
 
 func TestListVersions(t *testing.T) {
-	t.Run("should return list", func(t *testing.T) {
-		router, mockService, _ := setup()
-		mockService.On("ListVersions", "org", "example").Return([]string{"name1", "name2"})
+	for _, test := range []struct {
+		desc         string
+		err          error
+		values       []string
+		expectedCode int
+		expectedResp string
+	}{
+		{"should return list", nil, []string{"n1", "n2"}, 200, `["n1", "n2"]`},
+		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
+	} {
+		t.Run(test.desc, func(t *testing.T) {
+			router, mockService, _ := setup()
+			mockService.On("ListVersions", "org", "example").Return(test.values, test.err)
 
-		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/v1/descriptors/example", nil)
-		req.Header.Set("x-scope-orgid", "org")
-		router.ServeHTTP(w, req)
+			w := httptest.NewRecorder()
+			req, _ := http.NewRequest("GET", "/v1/descriptors/example", nil)
+			req.Header.Set("x-scope-orgid", "org")
+			router.ServeHTTP(w, req)
 
-		assert.Equal(t, 200, w.Code)
-		assert.JSONEq(t, `["name1", "name2"]`, w.Body.String())
-		mockService.AssertExpectations(t)
-	})
+			assert.Equal(t, test.expectedCode, w.Code)
+			assert.JSONEq(t, test.expectedResp, w.Body.String())
+			mockService.AssertExpectations(t)
+		})
+	}
 }
 
 func TestUpload(t *testing.T) {

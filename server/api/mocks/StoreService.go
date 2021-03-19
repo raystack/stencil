@@ -61,7 +61,7 @@ func (_m *StoreService) GetMetadata(ctx context.Context, payload *models.GetMeta
 }
 
 // ListNames provides a mock function with given fields: _a0
-func (_m *StoreService) ListNames(_a0 ...string) []string {
+func (_m *StoreService) ListNames(_a0 ...string) ([]string, error) {
 	_va := make([]interface{}, len(_a0))
 	for _i := range _a0 {
 		_va[_i] = _a0[_i]
@@ -79,11 +79,18 @@ func (_m *StoreService) ListNames(_a0 ...string) []string {
 		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(...string) error); ok {
+		r1 = rf(_a0...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // ListVersions provides a mock function with given fields: _a0
-func (_m *StoreService) ListVersions(_a0 ...string) []string {
+func (_m *StoreService) ListVersions(_a0 ...string) ([]string, error) {
 	_va := make([]interface{}, len(_a0))
 	for _i := range _a0 {
 		_va[_i] = _a0[_i]
@@ -101,7 +108,14 @@ func (_m *StoreService) ListVersions(_a0 ...string) []string {
 		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(...string) error); ok {
+		r1 = rf(_a0...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // StoreMetadata provides a mock function with given fields: ctx, payload

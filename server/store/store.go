@@ -9,7 +9,9 @@ import (
 	"strings"
 
 	"github.com/odpf/stencil/server/config"
+	"github.com/odpf/stencil/server/models"
 	"gocloud.dev/blob"
+	"gocloud.dev/gcerrors"
 
 	// Required by blob module
 	_ "gocloud.dev/blob/fileblob"
@@ -35,6 +37,21 @@ func filterMap(prefix string, filter func(*blob.ListObject) bool) func(*blob.Lis
 	}
 }
 
+func handleErr(e error) error {
+	switch err := gcerrors.Code(e); err {
+	case gcerrors.NotFound:
+		return models.WrapAPIError(models.ErrNotFound, e)
+	case gcerrors.Canceled:
+		return models.WrapAPIError(models.ErrCancel, e)
+	case gcerrors.DeadlineExceeded:
+		return models.WrapAPIError(models.ErrTimeout, e)
+	case gcerrors.OK:
+		return e
+	default:
+		return models.WrapAPIError(models.ErrStoreInternal, e)
+	}
+}
+
 //Store Backend storage
 type Store struct {
 	Bucket *blob.Bucket
@@ -51,7 +68,7 @@ func (s *Store) list(prefix string, filterMap func(*blob.ListObject) (bool, stri
 			break
 		}
 		if err != nil {
-			return nil, err
+			return nil, handleErr(err)
 		}
 		if ok, key := filterMap(obj); ok {
 			keys = append(keys, key)
@@ -88,7 +105,7 @@ func (s *Store) Put(ctx context.Context, filename string, r io.Reader) error {
 func (s *Store) Get(ctx context.Context, filename string) (*blob.Reader, error) {
 	reader, err := s.Bucket.NewReader(ctx, filename, nil)
 	if err != nil {
-		return nil, err
+		return nil, handleErr(err)
 	}
 	return reader, nil
 }
@@ -97,10 +114,15 @@ func (s *Store) Get(ctx context.Context, filename string) (*blob.Reader, error) 
 func (s *Store) Copy(ctx context.Context, fromFile, toFile string) error {
 	reader, err := s.Get(ctx, fromFile)
 	if err != nil {
-		return err
+		return handleErr(err)
 	}
 	defer reader.Close()
 	return s.Put(ctx, toFile, reader)
+}
+
+func (s *Store) Exists(ctx context.Context, filename string) (bool, error) {
+	ok, err := s.Bucket.Exists(ctx, filename)
+	return ok, handleErr(err)
 }
 
 //Close Closes bucket connection

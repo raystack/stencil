@@ -64,3 +64,20 @@ func TestCopy(t *testing.T) {
 	_ = s.Copy(ctx, "/n/k/v1", "/n/k/v2")
 	verifyData(t, s, "/n/k/v2", "file data")
 }
+
+func TestExists(t *testing.T) {
+	t.Run("should return true if file exists", func(t *testing.T) {
+		s := setupStorage()
+		seedData(s, "/n/k/v", "file data")
+		ctx := context.Background()
+		ok, err := s.Exists(ctx, "/n/k/v")
+		assert.Equal(t, true, ok)
+		assert.Nil(t, err)
+	})
+	t.Run("should return error if file not exists", func(t *testing.T) {
+		s := setupStorage()
+		ctx := context.Background()
+		ok, _ := s.Exists(ctx, "/unknown")
+		assert.Equal(t, false, ok)
+	})
+}
