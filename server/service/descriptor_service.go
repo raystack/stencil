@@ -35,7 +35,7 @@ func (d *DescriptorService) Upload(ctx context.Context, payload *models.Descript
 	filename := path.Join(orgID, name, version)
 	fileReader, err := payload.File.Open()
 	if err != nil {
-		return err
+		return models.WrapAPIError(models.ErrUploadInvalidFile, err)
 	}
 	err = d.Store.Put(ctx, filename, fileReader)
 	if err != nil {
