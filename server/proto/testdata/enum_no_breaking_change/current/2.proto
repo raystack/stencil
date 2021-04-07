@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package a;
+
+enum Move {
+  TEN_2 = 0;
+}
+
+enum Move2 {
+  TEN_1 = 0;
+}

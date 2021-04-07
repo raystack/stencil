@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package a;
+
+import "google/protobuf/duration.proto";
+
+message Test {
+  int32 field1 = 1;
+  google.protobuf.Duration field2 = 2;
+}

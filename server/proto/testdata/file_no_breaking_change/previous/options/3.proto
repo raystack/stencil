@@ -1,0 +1,5 @@
+syntax="proto3";
+package filebreaking.options;
+
+option java_package="com.stenciltest";
+option java_outer_classname="Teststencil";

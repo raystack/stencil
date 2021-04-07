@@ -1,0 +1,6 @@
+syntax="proto3";
+package filebreaking.options;
+
+option java_package="com.stenciltest.change";
+option java_outer_classname="Teststencil.change";
+option go_package="com.stenciltest.change";
