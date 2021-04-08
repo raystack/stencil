@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/server/proto"
 	"github.com/odpf/stencil/server/store"
 )
 
@@ -33,11 +34,15 @@ func (d *DescriptorService) ListVersions(prefixes ...string) ([]string, error) {
 func (d *DescriptorService) Upload(ctx context.Context, payload *models.DescriptorPayload) error {
 	orgID, name, version := payload.OrgID, payload.Name, payload.Version
 	filename := path.Join(orgID, name, version)
-	fileReader, err := payload.File.Open()
+	data, err := readDataFromMultiPartFile(payload.File)
 	if err != nil {
 		return models.WrapAPIError(models.ErrUploadInvalidFile, err)
 	}
-	err = d.Store.Put(ctx, filename, fileReader)
+	err = d.isBackwardCompatible(ctx, payload, data)
+	if err != nil {
+		return err
+	}
+	err = d.Store.PutData(ctx, filename, data)
 	if err != nil {
 		return err
 	}
@@ -104,4 +109,29 @@ func (d *DescriptorService) GetMetadata(ctx context.Context, payload *models.Get
 		return nil, err
 	}
 	return file, nil
+}
+
+func (d *DescriptorService) isBackwardCompatible(ctx context.Context, payload *models.DescriptorPayload, data []byte) error {
+	metadataPayload := &models.GetMetadata{OrgID: payload.OrgID, Name: payload.Name}
+	metadata, err := d.GetMetadata(ctx, metadataPayload)
+	if err != nil {
+		if isNotFoundErr(err) {
+			return nil
+		}
+		return err
+	}
+	filename := path.Join(payload.OrgID, payload.Name, metadata.Version)
+	reader, err := d.Store.Get(ctx, filename)
+	if err != nil {
+		return err
+	}
+	prevData, err := readDataFromReader(reader)
+	if err != nil {
+		return err
+	}
+	err = proto.Compare(data, prevData)
+	if err != nil {
+		return models.NewAPIError(400, err.Error(), err)
+	}
+	return err
 }

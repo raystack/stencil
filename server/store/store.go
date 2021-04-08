@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"path"
@@ -32,7 +31,7 @@ func filterMap(prefix string, filter func(*blob.ListObject) bool) func(*blob.Lis
 		if ok := filter(obj); !ok {
 			return false, ""
 		}
-		key := path.Join(strings.Replace(obj.Key, fmt.Sprintf("%s", prefix), "", 1))
+		key := path.Join(strings.Replace(obj.Key, prefix, "", 1))
 		return key != "", key
 	}
 }
@@ -94,6 +93,20 @@ func (s *Store) Put(ctx context.Context, filename string, r io.Reader) error {
 		return err
 	}
 	_, err = w.ReadFrom(r)
+	if err != nil {
+		return err
+	}
+	err = w.Close()
+	return err
+}
+
+//PutData Uploads file from r io.Reader with specified name
+func (s *Store) PutData(ctx context.Context, filename string, data []byte) error {
+	w, err := s.Bucket.NewWriter(ctx, filename, nil)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(data)
 	if err != nil {
 		return err
 	}
