@@ -14,9 +14,16 @@ func Compare(current, prev []byte) error {
 	if previousRegistry, err = getRegistry(prev); err != nil {
 		return err
 	}
+	c := make(chan error, len(Rules))
 	for _, rule := range Rules {
-		ruleErr := rule.Check(currentRegistry, previousRegistry)
-		err = multierr.Combine(err, ruleErr)
+		r := rule
+		go func() {
+			ruleErr := r.Check(currentRegistry, previousRegistry)
+			c <- ruleErr
+		}()
+	}
+	for i := 0; i < len(Rules); i++ {
+		err = multierr.Combine(err, <-c)
 	}
 	return err
 }
