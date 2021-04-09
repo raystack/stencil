@@ -17,8 +17,8 @@ plugins {
     id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
 }
 
-group 'com.gojek'
-version '4.2.2'
+group 'io.odpf'
+version '5.0.0'
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
@@ -116,7 +116,7 @@ signing {
 }
 
 nexusPublishing {
-    packageGroup = "com.gojek"
+    packageGroup = "io.odpf"
     repositories {
         sonatype {
             stagingProfileId = "9bf6aebae3df9b"

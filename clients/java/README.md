@@ -8,7 +8,7 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 
 #### Add stencil as gradle dependency
 
-- `compile group: 'com.gojek.de', name: 'stencil', version: '2.0.14'`
+- `compile group: 'io.odpf', name: 'stencil', version: '5.0.0'`
 
 #### Creating a stencil Client instance
 
