@@ -57,21 +57,23 @@ func TestCompare(t *testing.T) {
 	for _, test := range []struct {
 		rule        string
 		isErrNil    bool
+		skipRules   []string
 		errContains []string
 	}{
-		{"FILE_NO_BREAKING_CHANGE", false, []string{"all file options have been removed in options/3.proto current version", "java package for options/4.proto changed from com.stenciltest to com.stenciltest.change",
+		{"FILE_NO_BREAKING_CHANGE", false, []string{}, []string{"all file options have been removed in options/3.proto current version", "java package for options/4.proto changed from com.stenciltest to com.stenciltest.change",
 			"java outer classname for options/4.proto changed from Teststencil to Teststencil.change", "go package for options/4.proto changed from com.stenciltest to com.stenciltest.change",
 			"package for package.proto changed from filebreakingchange to filebreaking", "syntax for syntax.proto changed from proto2 to proto3", "\"b/notfound.proto\" file has been deleted in current version"}},
-		{"ENUM_NO_BREAKING_CHANGE", false, []string{"a.Two enum has been removed from current version", "enumValue a.Three.SEVEN_SPECIFIED deleted from current version", "a.Three.Eight enum has been removed from current version",
+		{"ENUM_NO_BREAKING_CHANGE", false, []string{}, []string{"a.Two enum has been removed from current version", "enumValue a.Three.SEVEN_SPECIFIED deleted from current version", "a.Three.Eight enum has been removed from current version",
 			"enumValue a.Three.ONE number changed from 0 to 1", "enumValue a.Three.TWO number changed from 1 to 0", "a.Three.Four.Five enum has been removed from current version", "enumValue a.TEN_1 deleted from current version",
 			"enumValue a.TEN_2 deleted from current version"}},
-		{"MESSAGE_NO_DELETE", false, []string{"a.Two has been removed in current version", "a.Three.Four.Five has been removed in current version", "a.Three.Seven has been removed in current version"}},
-		{"FIELD_NO_BREAKING_CHANGE", false, []string{"a.One has been removed in current version", "a.Nine has been removed in current version", "field a.One.one is removed in current version", "field a.Two.three is removed in current version",
+		{"MESSAGE_NO_DELETE", false, []string{}, []string{"a.Two has been removed in current version", "a.Three.Four.Five has been removed in current version", "a.Three.Seven has been removed in current version"}},
+		{"FIELD_NO_BREAKING_CHANGE", false, []string{}, []string{"a.One has been removed in current version", "a.Nine has been removed in current version", "field a.One.one is removed in current version", "field a.Two.three is removed in current version",
 			"number changed for a.Two.four from 4 to 5", "type has changed for a.Two.five from int32 to string", "label changed for a.Two.six from repeated to optional", "json name changed for a.Two.eigth from foo to baz", "field a.Two.nine is removed in current version",
 			"field a.Three.three is removed in current version", "number changed for a.Three.four from 4 to 5", "type has changed for a.Three.five from int32 to string", "label changed for a.Three.six from repeated to optional", "json name changed for a.Three.eigth from foo to baz",
 			"field a.Three.Four.Five.three is removed in current version", "field a.Three.Four.Six.three is removed in current version", "number changed for a.Three.Four.Six.four from 4 to 5", "type has changed for a.Three.Four.Six.five from int32 to string", "label changed for a.Three.Four.Six.six from repeated to optional",
 			"json name changed for a.Three.Four.Six.eigth from foo to baz", "field a.Three.Seven.three is removed in current version", "field a.Three.Eight.two is removed in current version", "field a.Nine.one is removed in current version", "field a.Nine.two is removed in current version", "field a.Nine.three is removed in current version", "field a.One2.three is removed in current version"}},
-		{"valid", true, []string{}},
+		{"MESSAGE_NO_DELETE", true, []string{"MESSAGE_NO_DELETE", "FIELD_NO_BREAKING_CHANGE", "ENUM_NO_BREAKING_CHANGE", "FILE_NO_BREAKING_CHANGE"}, []string{}},
+		{"valid", true, []string{}, []string{}},
 	} {
 		t.Run(test.rule, func(t *testing.T) {
 			rule := strings.ToLower(test.rule)
@@ -84,7 +86,7 @@ func TestCompare(t *testing.T) {
 			assert.NoError(t, err)
 			current, _ := ioutil.ReadFile(currentFileName)
 			prev, _ := ioutil.ReadFile(prevFileName)
-			err = proto.Compare(current, prev)
+			err = proto.Compare(current, prev, test.skipRules)
 			if test.isErrNil {
 				assert.Nil(t, err)
 				return
@@ -96,7 +98,7 @@ func TestCompare(t *testing.T) {
 	}
 
 	t.Run("should return err if passed data is not valid file descriptor set", func(t *testing.T) {
-		err := proto.Compare([]byte("invalid bytes"), []byte("invalid bytes"))
+		err := proto.Compare([]byte("invalid bytes"), []byte("invalid bytes"), []string{})
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "descriptor set file is not valid.")
 	})
@@ -112,11 +114,11 @@ func TestCompare(t *testing.T) {
 		data, _ := ioutil.ReadFile(fileName)
 		withImportsData, _ := ioutil.ReadFile(withImports)
 
-		err = proto.Compare(data, withImportsData)
+		err = proto.Compare(data, withImportsData, []string{})
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "file is not fully contained descriptor file")
 
-		err = proto.Compare(withImportsData, data)
+		err = proto.Compare(withImportsData, data, []string{})
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "file is not fully contained descriptor file")
 	})

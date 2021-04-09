@@ -18,11 +18,12 @@ type FileData struct {
 }
 
 type DescriptorPayload struct {
-	Name    string                `form:"name" binding:"required"`
-	Version string                `form:"version" binding:"required,version"`
-	File    *multipart.FileHeader `form:"file" binding:"required"`
-	Latest  bool                  `form:"latest"`
-	OrgID   string
+	Name      string                `form:"name" binding:"required"`
+	Version   string                `form:"version" binding:"required,version"`
+	File      *multipart.FileHeader `form:"file" binding:"required"`
+	Latest    bool                  `form:"latest"`
+	SkipRules []string              `form:"skiprules"`
+	OrgID     string
 }
 
 type GetMetadata struct {

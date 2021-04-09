@@ -129,7 +129,7 @@ func (d *DescriptorService) isBackwardCompatible(ctx context.Context, payload *m
 	if err != nil {
 		return err
 	}
-	err = proto.Compare(data, prevData)
+	err = proto.Compare(data, prevData, payload.SkipRules)
 	if err != nil {
 		return models.NewAPIError(400, err.Error(), err)
 	}
