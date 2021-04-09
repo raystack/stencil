@@ -9,11 +9,10 @@ buildscript {
 plugins {
     id 'idea'
     id 'java-library'
-    id 'maven'
     id 'signing'
     id 'maven-publish'
-    id 'com.jfrog.artifactory' version "4.7.1"
-    id "com.google.protobuf" version "0.8.7"
+    id 'com.jfrog.artifactory' version "4.21.0"
+    id "com.google.protobuf" version "0.8.15"
     id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
 }
 
@@ -21,20 +20,18 @@ group 'io.odpf'
 version '5.0.0'
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.5.1'
-    compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
-    compile group: 'com.timgroup', name: 'java-statsd-client', version: '3.1.0'
-    compile group: 'org.aeonbits.owner', name: 'owner', version: '1.0.9'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.5.1'
+    implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+    implementation group: 'com.timgroup', name: 'java-statsd-client', version: '3.1.0'
+    implementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.9'
 
-    testCompile 'junit:junit:4.12'
-    testCompile "com.github.tomakehurst:wiremock:2.18.0"
-    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '12.0-rc2'
-    testImplementation 'org.mockito:mockito-core:3.1.0'
-    compile 'com.google.protobuf:protobuf-java:3.1.0'
-    compile 'com.google.protobuf:protobuf-java-util:3.1.0'
+    testImplementation group: 'junit', name: 'junit' , version: '4.12'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.18.0'
+    testImplementation group: 'com.google.guava', name: 'guava-testlib', version: '12.0-rc2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
 }
 
 buildscript.repositories.each { repositories.add(it) }
