@@ -17,35 +17,31 @@ import java.util.List;
 import java.util.Map;
 
 public class StencilClientFactory {
-    public static StencilClient getClient(String url, Map<String, String> config, StatsDClient statsDClient) {
-        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, stencilConfig.shouldAutoRefreshCache());
-        return new URLStencilClient(url, stencilConfig, cacheLoader);
+    public static StencilClient getClient(String url, StencilConfig config, StatsDClient statsDClient) {
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, config.getCacheAutoRefresh());
+        return new URLStencilClient(url, config, cacheLoader);
     }
 
-    public static StencilClient getClient(String url, Map<String, String> config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
-        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, stencilConfig.shouldAutoRefreshCache());
-        return new URLStencilClient(url, stencilConfig, cacheLoader);
+    public static StencilClient getClient(String url, StencilConfig config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, config.getCacheAutoRefresh());
+        return new URLStencilClient(url, config, cacheLoader);
     }
 
-    public static StencilClient getClient(List<String> urls, Map<String, String> config, StatsDClient statsDClient) {
-        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, stencilConfig.shouldAutoRefreshCache());
-        return new MultiURLStencilClient(urls, stencilConfig, cacheLoader);
+    public static StencilClient getClient(List<String> urls, StencilConfig config, StatsDClient statsDClient) {
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, config.getCacheAutoRefresh());
+        return new MultiURLStencilClient(urls, config, cacheLoader);
     }
 
-    public static StencilClient getClient(List<String> urls, Map<String, String> config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
-        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, stencilConfig.shouldAutoRefreshCache());
-        return new MultiURLStencilClient(urls, stencilConfig, cacheLoader);
+    public static StencilClient getClient(List<String> urls, StencilConfig config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
+        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, config.getCacheAutoRefresh());
+        return new MultiURLStencilClient(urls, config, cacheLoader);
     }
 
-    public static StencilClient getClient(String url, Map<String, String> config) {
+    public static StencilClient getClient(String url, StencilConfig config) {
         return getClient(url, config, new NoOpStatsDClient());
     }
 
-    public static StencilClient getClient(List<String> urls, Map<String, String> config) {
+    public static StencilClient getClient(List<String> urls, StencilConfig config) {
         return getClient(urls, config, new NoOpStatsDClient());
     }
 

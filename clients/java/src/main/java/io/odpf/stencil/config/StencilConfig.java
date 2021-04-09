@@ -1,25 +1,19 @@
 package io.odpf.stencil.config;
 
-import org.aeonbits.owner.Config;
+import lombok.Builder;
+import lombok.Getter;
 
-public interface StencilConfig extends Config{
-    @Key("STENCIL_TIMEOUT_MS")
-    @DefaultValue("10000")
-    Integer getStencilTimeoutMs();
-
-    @Key("STENCIL_RETRIES")
-    @DefaultValue("4")
-    Integer getStencilRetries();
-
-    @Key("STENCIL_BACKOFF_MS_MIN")
-    @DefaultValue("0")
-    Integer getStencilBackoff();
-
-    @Key("REFRESH_CACHE")
-    @DefaultValue("false")
-    Boolean shouldAutoRefreshCache();
-
-    @Key("TIL_IN_MINUTES")
-    @DefaultValue("0")
-    Long getTilInMinutes();
+@Getter
+@Builder
+public class StencilConfig {
+    @Builder.Default
+    Integer fetchTimeoutMs = 10000;
+    @Builder.Default
+    Integer fetchRetries = 4;
+    @Builder.Default
+    Long fetchBackoffMinMs = 0L;
+    @Builder.Default
+    Boolean cacheAutoRefresh = false;
+    @Builder.Default
+    Long cacheTtlMs = 0L;
 }

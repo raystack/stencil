@@ -20,13 +20,12 @@ public class RetryHttpClient {
     private static final int DEFAULT_STENCIL_BACKOFF_MS_MIN = 2000;
     private static final int DEFAULT_STENCIL_BACKOFF_MS_MAX = 5000;
 
-    public CloseableHttpClient create(Map<String, String> config) {
-        StencilConfig stencilConfig = ConfigFactory.create(StencilConfig.class, config);
+    public CloseableHttpClient create(StencilConfig stencilConfig) {
 
-        int timeout = stencilConfig.getStencilTimeoutMs();
-        int backoffMs = stencilConfig.getStencilBackoff() != 0 ? stencilConfig.getStencilBackoff() :
+        int timeout = stencilConfig.getFetchTimeoutMs();
+        long backoffMs = stencilConfig.getFetchBackoffMinMs() != 0 ? stencilConfig.getFetchBackoffMinMs() :
                 new RandomUtils().getRandomNumberInRange(DEFAULT_STENCIL_BACKOFF_MS_MIN, DEFAULT_STENCIL_BACKOFF_MS_MAX);
-        int retries = stencilConfig.getStencilRetries();
+        int retries = stencilConfig.getFetchRetries();
 
         logger.info("initialising HTTP client with timeout: {}ms, backoff: {}ms, max retry attempts: {}", timeout, backoffMs, retries);
 
@@ -40,7 +39,7 @@ public class RetryHttpClient {
                 .setDefaultRequestConfig(requestConfig)
                 .setConnectionManagerShared(true)
                 .setServiceUnavailableRetryStrategy(new ServiceUnavailableRetryStrategy() {
-                    int waitPeriod = backoffMs;
+                    long waitPeriod = backoffMs;
 
                     @Override
                     public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {

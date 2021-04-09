@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import io.odpf.stencil.client.StencilClient;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.config.StencilConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +35,7 @@ public class MultiURLStencilClientTest {
     public void shouldReturnDescriptor() {
         ArrayList<String> urls = new ArrayList<String>();
         urls.add("http://localhost:8082/descriptors.bin");
-        Map<String, String> config = new HashMap<>();
-        StencilClient c = StencilClientFactory.getClient(urls, config);
+        StencilClient c = StencilClientFactory.getClient(urls, StencilConfig.builder().build());
         Map<String, Descriptors.Descriptor> descMap = c.getAll();
         assertNotNull(descMap);
         Descriptors.Descriptor desc = c.get("io.odpf.stencil.TestMessage");

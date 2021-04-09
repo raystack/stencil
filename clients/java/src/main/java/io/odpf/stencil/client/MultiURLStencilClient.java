@@ -19,7 +19,7 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
     private boolean shouldAutoRefreshCache;
 
     public MultiURLStencilClient(List<String> urls, StencilConfig config, DescriptorCacheLoader cacheLoader) {
-        shouldAutoRefreshCache = config.shouldAutoRefreshCache();
+        shouldAutoRefreshCache = config.getCacheAutoRefresh();
         stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());
     }
 

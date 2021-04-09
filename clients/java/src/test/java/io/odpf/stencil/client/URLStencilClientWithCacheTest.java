@@ -40,7 +40,7 @@ public class URLStencilClientWithCacheTest {
         DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
         when(cacheLoader.load(LOOKUP_KEY)).thenReturn(descriptorMap);
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, new HashMap<>()), cacheLoader);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, StencilConfig.builder().build(), cacheLoader);
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
 
         verify(cacheLoader, times(1)).load(LOOKUP_KEY);
@@ -53,7 +53,7 @@ public class URLStencilClientWithCacheTest {
         DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
         when(cacheLoader.load(LOOKUP_KEY)).thenThrow(new StencilRuntimeException(new Throwable()));
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, new HashMap<>()), cacheLoader);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, StencilConfig.builder().build(), cacheLoader);
         stencilClient.get(LOOKUP_KEY);
     }
 
@@ -64,7 +64,7 @@ public class URLStencilClientWithCacheTest {
 
         FakeTicker fakeTicker = new FakeTicker();
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, new HashMap<>()), cacheLoader, fakeTicker);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, StencilConfig.builder().build(), cacheLoader, fakeTicker);
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
 
         fakeTicker.advance(1000, TimeUnit.MINUTES);
@@ -81,10 +81,9 @@ public class URLStencilClientWithCacheTest {
         when(cacheLoader.load(LOOKUP_KEY)).thenReturn(descriptorMap);
 
         FakeTicker fakeTicker = new FakeTicker();
-        Map<String, String> config = new HashMap<>();
-        config.put("REFRESH_CACHE", "true");
+        StencilConfig stencilConfig = StencilConfig.builder().cacheAutoRefresh(true).build();
 
-        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, ConfigFactory.create(StencilConfig.class, config), cacheLoader, fakeTicker);
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, stencilConfig, cacheLoader, fakeTicker);
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
         assertNotNull(result);
 
