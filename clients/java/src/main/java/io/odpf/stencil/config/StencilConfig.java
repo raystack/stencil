@@ -16,4 +16,5 @@ public class StencilConfig {
     Boolean cacheAutoRefresh = false;
     @Builder.Default
     Long cacheTtlMs = 0L;
+    String fetchAuthBearerToken;
 }

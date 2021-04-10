@@ -2,17 +2,19 @@ package io.odpf.stencil.http;
 
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.utils.RandomUtils;
-import org.aeonbits.owner.ConfigFactory;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import java.util.*;
 
 public class RetryHttpClient {
     private final Logger logger = LoggerFactory.getLogger(RemoteFileImpl.class);
@@ -26,6 +28,12 @@ public class RetryHttpClient {
         long backoffMs = stencilConfig.getFetchBackoffMinMs() != 0 ? stencilConfig.getFetchBackoffMinMs() :
                 new RandomUtils().getRandomNumberInRange(DEFAULT_STENCIL_BACKOFF_MS_MIN, DEFAULT_STENCIL_BACKOFF_MS_MAX);
         int retries = stencilConfig.getFetchRetries();
+        List<Header> defaultHeaders = new ArrayList<>();
+
+        if (stencilConfig.getFetchAuthBearerToken() != null) {
+            String authHeaderValue = "Bearer " + stencilConfig.getFetchAuthBearerToken();
+            defaultHeaders.add(new BasicHeader(HttpHeaders.AUTHORIZATION, authHeaderValue));
+        }
 
         logger.info("initialising HTTP client with timeout: {}ms, backoff: {}ms, max retry attempts: {}", timeout, backoffMs, retries);
 
@@ -37,6 +45,7 @@ public class RetryHttpClient {
 
         return HttpClientBuilder.create()
                 .setDefaultRequestConfig(requestConfig)
+                .setDefaultHeaders(defaultHeaders)
                 .setConnectionManagerShared(true)
                 .setServiceUnavailableRetryStrategy(new ServiceUnavailableRetryStrategy() {
                     long waitPeriod = backoffMs;
