@@ -1,7 +1,7 @@
 package io.odpf.stencil;
 
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.junit.Test;
 
 import java.io.FileInputStream;

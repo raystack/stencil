@@ -1,5 +1,7 @@
 package io.odpf.stencil;
 
+import com.timgroup.statsd.NoOpStatsDClient;
+import com.timgroup.statsd.StatsDClient;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.cache.ProtoUpdateListener;
 import io.odpf.stencil.client.ClassLoadStencilClient;
@@ -9,12 +11,8 @@ import io.odpf.stencil.client.URLStencilClient;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.http.RemoteFileImpl;
 import io.odpf.stencil.http.RetryHttpClient;
-import com.timgroup.statsd.NoOpStatsDClient;
-import com.timgroup.statsd.StatsDClient;
-import org.aeonbits.owner.ConfigFactory;
 
 import java.util.List;
-import java.util.Map;
 
 public class StencilClientFactory {
     public static StencilClient getClient(String url, StencilConfig config, StatsDClient statsDClient) {

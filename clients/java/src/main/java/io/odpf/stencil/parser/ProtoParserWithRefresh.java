@@ -1,12 +1,12 @@
 package io.odpf.stencil.parser;
 
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.exception.StencilRuntimeException;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.timgroup.statsd.NoOpStatsDClient;
 import com.timgroup.statsd.StatsDClient;
+import io.odpf.stencil.client.StencilClient;
+import io.odpf.stencil.exception.StencilRuntimeException;
 
 import java.time.Instant;
 

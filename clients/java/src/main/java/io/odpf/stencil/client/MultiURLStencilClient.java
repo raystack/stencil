@@ -1,9 +1,9 @@
 package io.odpf.stencil.client;
 
+import com.google.protobuf.Descriptors;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.models.DescriptorAndTypeName;
-import com.google.protobuf.Descriptors;
 
 import java.io.IOException;
 import java.io.Serializable;

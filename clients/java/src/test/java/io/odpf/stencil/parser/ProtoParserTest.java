@@ -1,13 +1,13 @@
 package io.odpf.stencil.parser;
 
-import io.odpf.stencil.DescriptorMapBuilder;
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.models.DescriptorAndTypeName;
-import io.odpf.stencil.TestMessage;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.odpf.stencil.DescriptorMapBuilder;
+import io.odpf.stencil.TestMessage;
+import io.odpf.stencil.client.StencilClient;
+import io.odpf.stencil.exception.StencilRuntimeException;
+import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.junit.Before;
 import org.junit.Test;
 

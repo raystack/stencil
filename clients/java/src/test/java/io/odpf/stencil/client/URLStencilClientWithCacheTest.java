@@ -1,20 +1,18 @@
 package io.odpf.stencil.client;
 
+import com.google.common.testing.FakeTicker;
+import com.google.protobuf.Descriptors;
 import io.odpf.stencil.DescriptorMapBuilder;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import io.odpf.stencil.models.DescriptorAndTypeName;
-import com.google.common.testing.FakeTicker;
-import com.google.protobuf.Descriptors;
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 

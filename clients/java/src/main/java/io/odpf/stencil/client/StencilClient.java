@@ -1,7 +1,7 @@
 package io.odpf.stencil.client;
 
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.models.DescriptorAndTypeName;
 
 import java.io.Closeable;
 import java.util.Map;

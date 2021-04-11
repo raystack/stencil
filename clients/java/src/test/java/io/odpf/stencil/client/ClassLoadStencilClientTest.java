@@ -1,14 +1,15 @@
 package io.odpf.stencil.client;
 
-import io.odpf.stencil.StencilClientFactory;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.StencilClientFactory;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class ClassLoadStencilClientTest {
 

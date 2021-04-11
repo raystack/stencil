@@ -2,18 +2,17 @@ package io.odpf.stencil;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import io.odpf.stencil.client.StencilClient;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.client.StencilClient;
 import io.odpf.stencil.config.StencilConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class URLStencilClientTest {
     private WireMockServer wireMockServer;

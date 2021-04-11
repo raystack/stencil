@@ -1,8 +1,8 @@
 package io.odpf.stencil;
 
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.models.DescriptorAndTypeName;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,7 +1,7 @@
 package io.odpf.stencil.utils;
 
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import com.google.protobuf.Descriptors;
+import io.odpf.stencil.models.DescriptorAndTypeName;
 
 import java.util.HashMap;
 import java.util.Map;

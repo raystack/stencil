@@ -14,7 +14,8 @@ import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RetryHttpClient {
     private final Logger logger = LoggerFactory.getLogger(RemoteFileImpl.class);

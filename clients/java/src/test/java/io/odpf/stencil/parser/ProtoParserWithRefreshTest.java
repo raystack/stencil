@@ -1,14 +1,14 @@
 package io.odpf.stencil.parser;
 
-import io.odpf.stencil.DescriptorMapBuilder;
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.models.DescriptorAndTypeName;
-import io.odpf.stencil.TestMessage;
-import io.odpf.stencil.TestMessageSuperset;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.odpf.stencil.DescriptorMapBuilder;
+import io.odpf.stencil.TestMessage;
+import io.odpf.stencil.TestMessageSuperset;
+import io.odpf.stencil.client.StencilClient;
+import io.odpf.stencil.exception.StencilRuntimeException;
+import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.apache.commons.codec.DecoderException;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +19,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 
 public class ProtoParserWithRefreshTest {
