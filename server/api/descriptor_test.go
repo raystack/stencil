@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	server2 "github.com/odpf/stencil/server/server"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -14,7 +15,6 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server"
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/api/mocks"
 	"github.com/odpf/stencil/server/models"
@@ -33,7 +33,7 @@ func setup() (*gin.Engine, *mocks.StoreService, *api.API) {
 	v1 := &api.API{
 		Store: mockService,
 	}
-	router := server.Router(v1)
+	router := server2.Router(v1)
 	return router, mockService, v1
 }
 

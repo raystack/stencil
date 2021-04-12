@@ -17,8 +17,8 @@ func Router(api *api.API) *gin.Engine {
 	return router
 }
 
-// Main Entry point to start the server
-func Main() {
+// Start Entry point to start the server
+func Start() {
 	config := config.LoadConfig()
 	store := store.New(config)
 	dService := &service.DescriptorService{Store: store}
