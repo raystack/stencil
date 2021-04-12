@@ -1,5 +1,5 @@
 #!/bin/bash
-NAME="github.com/odpf/stencil"
+NAME="github.com/odpf/stencil/server"
 VERSION=$(git describe --always --tags 2>/dev/null)
 
 SYS="linux"
