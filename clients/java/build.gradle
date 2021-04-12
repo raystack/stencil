@@ -3,12 +3,13 @@ plugins {
     id 'java-library'
     id 'signing'
     id 'maven-publish'
-    id "com.google.protobuf" version "0.8.15"
-    id "io.freefair.lombok" version "5.3.3.3"
+    id 'com.google.protobuf' version '0.8.15'
+    id 'io.freefair.lombok' version '5.3.3.3'
+    id 'com.palantir.git-version' version '0.12.3'
 }
 
 group 'io.odpf'
-version '5.0.0'
+version gitVersion()
 
 repositories {
     mavenLocal()

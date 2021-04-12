@@ -1,0 +1,20 @@
+name: Test stencil clients
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  test-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: adopt
+          java-version: 8
+      - name: Run tests
+        run: cd clients/java/ && ./gradlew test
