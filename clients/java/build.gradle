@@ -1,7 +1,6 @@
 plugins {
     id 'idea'
     id 'java-library'
-    id 'signing'
     id 'maven-publish'
     id 'com.google.protobuf' version '0.8.15'
     id 'io.freefair.lombok' version '5.3.3.3'
@@ -14,7 +13,6 @@ version gitVersion()
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
