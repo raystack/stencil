@@ -1,9 +1,13 @@
 name: Test stencil clients
 on:
   push:
+    paths:
+      - "clients/**"
     branches:
       - master
   pull_request:
+    paths:
+      - "clients/**"
     branches:
       - master
 jobs:
