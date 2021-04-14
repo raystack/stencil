@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Provides methods to generate a map of Protobuf
+ * descriptor and it's name for future lookups
+ */
 public class DescriptorMapBuilder {
 
     public Map<String, DescriptorAndTypeName> buildFrom(InputStream stream) throws IOException, Descriptors.DescriptorValidationException {

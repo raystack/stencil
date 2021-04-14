@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@link StencilClient} implementation that can fetch descriptor from Protobuf Descritor classes in classpath
+ */
 public class ClassLoadStencilClient implements Serializable, StencilClient {
 
     transient private Map<String, Descriptors.Descriptor> descriptorMap;

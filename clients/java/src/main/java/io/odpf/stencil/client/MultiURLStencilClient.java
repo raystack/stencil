@@ -13,11 +13,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+* {@link StencilClient} implementation that can fetch descriptor sets from multiple URLs
+*/
 public class MultiURLStencilClient implements Serializable, StencilClient {
 
     private List<StencilClient> stencilClients;
     private boolean shouldAutoRefreshCache;
 
+    /**
+     * @param urls List of URLs to fetch protobuf descriptor sets from
+     * @param config Stencil configs
+     * @param cacheLoader Extension of Guava {@link com.google.common.cache.CacheLoader} for Proto Descriptor sets
+     */
     public MultiURLStencilClient(List<String> urls, StencilConfig config, DescriptorCacheLoader cacheLoader) {
         shouldAutoRefreshCache = config.getCacheAutoRefresh();
         stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());

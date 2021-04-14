@@ -90,4 +90,3 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
         executor.shutdown();
     }
 }
-
