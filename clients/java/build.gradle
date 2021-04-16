@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'io.odpf'
-version gitVersion()
+version gitVersion().substring(1)
 
 repositories {
     mavenLocal()
