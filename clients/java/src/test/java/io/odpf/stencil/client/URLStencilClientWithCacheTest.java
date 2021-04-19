@@ -85,7 +85,7 @@ public class URLStencilClientWithCacheTest {
         Descriptors.Descriptor result = stencilClient.get(LOOKUP_KEY);
         assertNotNull(result);
 
-        fakeTicker.advance(stencilClient.getTTL().toMinutes() + 1, TimeUnit.MINUTES);
+        fakeTicker.advance(stencilClient.getTTLMs() + 1000, TimeUnit.MILLISECONDS);
         Descriptors.Descriptor reloadedResult = stencilClient.get(LOOKUP_KEY);
 
         verify(cacheLoader, times(1)).load(LOOKUP_KEY);

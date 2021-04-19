@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -30,7 +29,7 @@ public class URLStencilClient implements Serializable, StencilClient {
     private String url;
     private DescriptorCacheLoader cacheLoader;
     private LoadingCache<String, Map<String, DescriptorAndTypeName>> descriptorCache;
-    private Duration ttl;
+    private long ttlMs;
     private static final long DEFAULT_TTL_MIN = TimeUnit.MINUTES.toMillis(30);
     private static final long DEFAULT_TTL_MAX = TimeUnit.MINUTES.toMillis(60);
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
@@ -53,16 +52,16 @@ public class URLStencilClient implements Serializable, StencilClient {
      */
     public URLStencilClient(String url, StencilConfig stencilConfig, DescriptorCacheLoader cacheLoader, Ticker ticker) {
         this.shouldAutoRefreshCache = stencilConfig.getCacheAutoRefresh();
-        this.ttl = stencilConfig.getCacheTtlMs() != 0 ? Duration.ofMillis(stencilConfig.getCacheTtlMs()) :
-                getDefaultTTL();
+        this.ttlMs = stencilConfig.getCacheTtlMs() != 0 ? stencilConfig.getCacheTtlMs() :
+                getDefaultTTLMs();
         this.url = url;
         this.cacheLoader = cacheLoader;
 
         if (stencilConfig.getCacheAutoRefresh()) {
             descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                    .refreshAfterWrite(ttl.toMillis(), TimeUnit.MILLISECONDS)
+                    .refreshAfterWrite(ttlMs, TimeUnit.MILLISECONDS)
                     .build(cacheLoader);
-            logger.info("configuring URL Stencil client with TTL: {} milliseconds", ttl.toMillis());
+            logger.info("configuring URL Stencil client with TTL: {} milliseconds", ttlMs);
         } else {
             descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
                     .build(cacheLoader);
@@ -133,14 +132,12 @@ public class URLStencilClient implements Serializable, StencilClient {
         descriptorCache.refresh(url);
     }
 
-    public Duration getTTL() {
-        return ttl;
+    public long getTTLMs() {
+        return ttlMs;
     }
 
-    private Duration getDefaultTTL() {
-        long randomNumberInRange = new RandomUtils().getRandomNumberInRange(DEFAULT_TTL_MIN, DEFAULT_TTL_MAX);
-        return Duration.ofMillis(randomNumberInRange);
-
+    private long getDefaultTTLMs() {
+        return new RandomUtils().getRandomNumberInRange(DEFAULT_TTL_MIN, DEFAULT_TTL_MAX);
     }
 
     @Override
