@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package test;
+
+message ExtendableMessage {
+  optional int64 field_extra = 2;
+  extensions 10 to 20;
+}
+
+message Extender {
+  required int64 field_one = 1;
+  extend ExtendableMessage {
+    optional string field_two = 11;
+  }
+}

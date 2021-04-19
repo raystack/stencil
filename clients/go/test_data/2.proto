@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package test;
+
+message Three {
+  int64 field_one = 1;
+}
