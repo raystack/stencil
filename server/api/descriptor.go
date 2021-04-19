@@ -11,8 +11,8 @@ import (
 
 // ListNames lists descriptor entries
 func (a *API) ListNames(c *gin.Context) {
-	orgID := c.GetHeader("x-scope-orgid")
-	result, err := a.Store.ListNames(orgID)
+	namespace := c.Param("namespace")
+	result, err := a.Store.ListNames(namespace)
 	if err != nil {
 		c.Error(err).SetMeta(models.ErrUnknown)
 		return
@@ -22,9 +22,9 @@ func (a *API) ListNames(c *gin.Context) {
 
 // ListVersions lists version numbers for specific name
 func (a *API) ListVersions(c *gin.Context) {
-	orgID := c.GetHeader("x-scope-orgid")
+	namespace := c.Param("namespace")
 	name := c.Param("name")
-	result, err := a.Store.ListVersions(orgID, name)
+	result, err := a.Store.ListVersions(namespace, name)
 	if err != nil {
 		c.Error(err).SetMeta(models.ErrUnknown)
 		return
@@ -34,9 +34,9 @@ func (a *API) ListVersions(c *gin.Context) {
 
 //Upload uploads file
 func (a *API) Upload(c *gin.Context) {
-	orgID := c.GetHeader("x-scope-orgid")
+	namespace := c.Param("namespace")
 	payload := models.DescriptorPayload{
-		OrgID: orgID,
+		Namespace: namespace,
 	}
 	if err := c.ShouldBind(&payload); err != nil {
 		c.Error(err).SetMeta(models.ErrMissingFormData)
@@ -51,9 +51,9 @@ func (a *API) Upload(c *gin.Context) {
 
 //Download downloads file
 func (a *API) Download(c *gin.Context) {
-	orgID := c.GetHeader("x-scope-orgid")
+	namespace := c.Param("namespace")
 	payload := models.FileDownload{
-		OrgID: orgID,
+		Namespace: namespace,
 	}
 	if err := c.ShouldBindUri(&payload); err != nil {
 		c.Error(err).SetMeta(models.ErrMissingFormData)
@@ -74,11 +74,11 @@ func (a *API) Download(c *gin.Context) {
 
 //GetVersion return latest version number
 func (a *API) GetVersion(c *gin.Context) {
-	orgID := c.GetHeader("x-scope-orgid")
+	namespace := c.Param("namespace")
 	name := c.Param("name")
 	data := &models.GetMetadata{
-		OrgID: orgID,
-		Name:  name,
+		Namespace: namespace,
+		Name:      name,
 	}
 	version, err := a.Store.GetMetadata(c.Request.Context(), data)
 	if err != nil {
@@ -90,9 +90,9 @@ func (a *API) GetVersion(c *gin.Context) {
 
 //UpdateLatestVersion return latest version number
 func (a *API) UpdateLatestVersion(c *gin.Context) {
-	orgID := c.GetHeader("x-scope-orgid")
+	namespace := c.Param("namespace")
 	payload := &models.MetadataPayload{
-		OrgID: orgID,
+		Namespace: namespace,
 	}
 	if err := c.ShouldBind(payload); err != nil {
 		c.Error(err).SetMeta(models.ErrMissingFormData)

@@ -6,13 +6,12 @@ import (
 )
 
 func registerRoutes(router *gin.Engine, handlers *api.API) {
-	apiV1 := router.Group("/v1")
-	apiV1.Use(orgHeaderCheck())
+	apiV1 := router.Group("/v1/namespaces/:namespace")
 	router.GET("/ping", api.Ping)
 	apiV1.POST("/descriptors", handlers.Upload)
 	apiV1.GET("/descriptors", handlers.ListNames)
-	apiV1.GET("/descriptors/:name", handlers.ListVersions)
-	apiV1.GET("/descriptors/:name/:version", handlers.Download)
+	apiV1.GET("/descriptors/:name/versions", handlers.ListVersions)
+	apiV1.GET("/descriptors/:name/versions/:version", handlers.Download)
 	apiV1.GET("/metadata/:name", handlers.GetVersion)
 	apiV1.POST("/metadata", handlers.UpdateLatestVersion)
 }

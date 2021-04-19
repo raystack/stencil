@@ -24,7 +24,7 @@ func (d *DescriptorService) ListNames(prefixes ...string) ([]string, error) {
 	return d.Store.ListDir(prefix + "/")
 }
 
-//ListVersions returns list of versions for specified org and name
+//ListVersions returns list of versions for specified prefixes
 func (d *DescriptorService) ListVersions(prefixes ...string) ([]string, error) {
 	prefix := path.Join(prefixes...)
 	return d.Store.ListFiles(prefix + "/")
@@ -32,8 +32,8 @@ func (d *DescriptorService) ListVersions(prefixes ...string) ([]string, error) {
 
 //Upload uploads the file
 func (d *DescriptorService) Upload(ctx context.Context, payload *models.DescriptorPayload) error {
-	orgID, name, version := payload.OrgID, payload.Name, payload.Version
-	filename := path.Join(orgID, name, version)
+	namespace, name, version := payload.Namespace, payload.Name, payload.Version
+	filename := path.Join(namespace, name, version)
 	data, err := readDataFromMultiPartFile(payload.File)
 	if err != nil {
 		return models.WrapAPIError(models.ErrUploadInvalidFile, err)
@@ -47,14 +47,14 @@ func (d *DescriptorService) Upload(ctx context.Context, payload *models.Descript
 		return err
 	}
 	if payload.Latest {
-		return d.StoreMetadata(ctx, &models.MetadataPayload{Version: version, Name: name, OrgID: orgID})
+		return d.StoreMetadata(ctx, &models.MetadataPayload{Version: version, Name: name, Namespace: namespace})
 	}
 	return nil
 }
 
 //Download downloads the file
 func (d *DescriptorService) Download(ctx context.Context, payload *models.FileDownload) (*models.FileData, error) {
-	filename := path.Join(payload.OrgID, payload.Name, payload.Version)
+	filename := path.Join(payload.Namespace, payload.Name, payload.Version)
 	data, err := d.Store.Get(ctx, filename)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (d *DescriptorService) Download(ctx context.Context, payload *models.FileDo
 
 //StoreMetadata stores latest version number
 func (d *DescriptorService) StoreMetadata(ctx context.Context, payload *models.MetadataPayload) error {
-	prefix := path.Join(payload.OrgID, payload.Name)
+	prefix := path.Join(payload.Namespace, payload.Name)
 	metafile := path.Join(prefix, "meta.json")
 	filename := path.Join(prefix, payload.Version)
 	fileExists, err := d.Store.Exists(ctx, filename)
@@ -93,7 +93,7 @@ func (d *DescriptorService) StoreMetadata(ctx context.Context, payload *models.M
 
 //GetMetadata gets latest version number
 func (d *DescriptorService) GetMetadata(ctx context.Context, payload *models.GetMetadata) (*models.MetadataFile, error) {
-	filename := path.Join(payload.OrgID, payload.Name, "meta.json")
+	filename := path.Join(payload.Namespace, payload.Name, "meta.json")
 	data, err := d.Store.Get(ctx, filename)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func (d *DescriptorService) GetMetadata(ctx context.Context, payload *models.Get
 }
 
 func (d *DescriptorService) isBackwardCompatible(ctx context.Context, payload *models.DescriptorPayload, data []byte) error {
-	metadataPayload := &models.GetMetadata{OrgID: payload.OrgID, Name: payload.Name}
+	metadataPayload := &models.GetMetadata{Namespace: payload.Namespace, Name: payload.Name}
 	metadata, err := d.GetMetadata(ctx, metadataPayload)
 	if err != nil {
 		if isNotFoundErr(err) {
@@ -120,7 +120,7 @@ func (d *DescriptorService) isBackwardCompatible(ctx context.Context, payload *m
 		}
 		return err
 	}
-	filename := path.Join(payload.OrgID, payload.Name, metadata.Version)
+	filename := path.Join(payload.Namespace, payload.Name, metadata.Version)
 	reader, err := d.Store.Get(ctx, filename)
 	if err != nil {
 		return err

@@ -6,9 +6,9 @@ import (
 )
 
 type FileDownload struct {
-	Name    string `uri:"name" binding:"required"`
-	Version string `uri:"version" binding:"required,versionWithLatest"`
-	OrgID   string
+	Name      string `uri:"name" binding:"required"`
+	Version   string `uri:"version" binding:"required,versionWithLatest"`
+	Namespace string
 }
 
 type FileData struct {
@@ -23,18 +23,18 @@ type DescriptorPayload struct {
 	File      *multipart.FileHeader `form:"file" binding:"required"`
 	Latest    bool                  `form:"latest"`
 	SkipRules []string              `form:"skiprules"`
-	OrgID     string
+	Namespace string
 }
 
 type GetMetadata struct {
-	OrgID string
-	Name  string `uri:"name"`
+	Namespace string
+	Name      string `uri:"name"`
 }
 
 type MetadataPayload struct {
-	Version string `form:"version" json:"version" binding:"required,version"`
-	OrgID   string
-	Name    string `json:"name" binding:"required"`
+	Version   string `form:"version" json:"version" binding:"required,version"`
+	Namespace string
+	Name      string `json:"name" binding:"required"`
 }
 
 type MetadataFile struct {

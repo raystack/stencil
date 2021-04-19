@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	server2 "github.com/odpf/stencil/server/server"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -13,6 +12,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	server2 "github.com/odpf/stencil/server/server"
 
 	"github.com/gin-gonic/gin"
 	"github.com/odpf/stencil/server/api"
@@ -83,11 +84,10 @@ func TestList(t *testing.T) {
 	} {
 		t.Run(test.desc, func(t *testing.T) {
 			router, mockService, _ := setup()
-			mockService.On("ListNames", "org").Return(test.values, test.err)
+			mockService.On("ListNames", "namespace").Return(test.values, test.err)
 
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", "/v1/descriptors", nil)
-			req.Header.Set("x-scope-orgid", "org")
+			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors", nil)
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, test.expectedCode, w.Code)
@@ -95,17 +95,6 @@ func TestList(t *testing.T) {
 			mockService.AssertExpectations(t)
 		})
 	}
-
-	t.Run("should return 400 if org id not specified", func(t *testing.T) {
-		router, _, _ := setup()
-
-		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/v1/descriptors", nil)
-		router.ServeHTTP(w, req)
-
-		assert.Equal(t, 400, w.Code)
-		assert.JSONEq(t, `{"message": "x-scope-orgid header should be present"}`, w.Body.String())
-	})
 
 }
 
@@ -122,11 +111,10 @@ func TestListVersions(t *testing.T) {
 	} {
 		t.Run(test.desc, func(t *testing.T) {
 			router, mockService, _ := setup()
-			mockService.On("ListVersions", "org", "example").Return(test.values, test.err)
+			mockService.On("ListVersions", "namespace", "example").Return(test.values, test.err)
 
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", "/v1/descriptors/example", nil)
-			req.Header.Set("x-scope-orgid", "org")
+			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/example/versions", nil)
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, test.expectedCode, w.Code)
@@ -156,8 +144,7 @@ func TestUpload(t *testing.T) {
 			mockService.On("Upload", mock.Anything, mock.Anything).Return(test.uploadErr)
 			w := httptest.NewRecorder()
 			body, writer, _ := createMultipartBody(test.name, test.version)
-			req, _ := http.NewRequest("POST", "/v1/descriptors", body)
-			req.Header.Set("x-scope-orgid", "org")
+			req, _ := http.NewRequest("POST", "/v1/namespaces/namespace/descriptors", body)
 			req.Header.Set("Content-Type", writer.FormDataContentType())
 
 			router.ServeHTTP(w, req)
@@ -188,8 +175,7 @@ func TestDownload(t *testing.T) {
 			fileData := mockFileData("File contents")
 			mockService.On("Download", mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/descriptors/%s/%s", test.name, test.version), nil)
-			req.Header.Set("x-scope-orgid", "org")
+			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/descriptors/%s/versions/%s", test.name, test.version), nil)
 
 			router.ServeHTTP(w, req)
 
@@ -220,8 +206,7 @@ func TestGetVersion(t *testing.T) {
 			mockService.On("GetMetadata", mock.Anything, mock.Anything).Return(metadata, test.err)
 			w := httptest.NewRecorder()
 
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/metadata/%s", test.name), nil)
-			req.Header.Set("x-scope-orgid", "org")
+			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/metadata/%s", test.name), nil)
 
 			router.ServeHTTP(w, req)
 
@@ -254,8 +239,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			w := httptest.NewRecorder()
 
 			body := bytes.NewReader([]byte(fmt.Sprintf(`{"name": "%s", "version": "%s"}`, test.name, test.version)))
-			req, _ := http.NewRequest("POST", "/v1/metadata", body)
-			req.Header.Set("x-scope-orgid", "org")
+			req, _ := http.NewRequest("POST", "/v1/namespaces/namespace/metadata", body)
 			req.Header.Set("Content-Type", "application/json")
 
 			router.ServeHTTP(w, req)

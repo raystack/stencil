@@ -2,23 +2,11 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/odpf/stencil/server/models"
 )
-
-func orgHeaderCheck() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		orgID := c.GetHeader("x-scope-orgid")
-		if orgID == "" {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "x-scope-orgid header should be present"})
-			return
-		}
-		c.Next()
-	}
-}
 
 func errorHandle() gin.HandlerFunc {
 	return func(c *gin.Context) {
