@@ -1,48 +1,38 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
-}
-
 plugins {
     id 'idea'
     id 'java-library'
-    id 'maven'
-    id 'signing'
     id 'maven-publish'
-    id 'com.jfrog.artifactory' version "4.7.1"
-    id "com.google.protobuf" version "0.8.7"
-    id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
+    id 'com.google.protobuf' version '0.8.15'
+    id 'io.freefair.lombok' version '5.3.3.3'
+    id 'com.palantir.git-version' version '0.12.3'
 }
 
-group 'com.gojek'
-version '4.2.2'
+group 'io.odpf'
+version gitVersion().substring(1)
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.5.1'
-    compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
-    compile group: 'com.timgroup', name: 'java-statsd-client', version: '3.1.0'
-    compile group: 'org.aeonbits.owner', name: 'owner', version: '1.0.9'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.5.1'
+    implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+    implementation group: 'com.timgroup', name: 'java-statsd-client', version: '3.1.0'
 
-    testCompile 'junit:junit:4.12'
-    testCompile "com.github.tomakehurst:wiremock:2.18.0"
-    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '12.0-rc2'
-    testImplementation 'org.mockito:mockito-core:3.1.0'
-    compile 'com.google.protobuf:protobuf-java:3.1.0'
-    compile 'com.google.protobuf:protobuf-java-util:3.1.0'
+    testImplementation group: 'junit', name: 'junit' , version: '4.12'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.18.0'
+    testImplementation group: 'com.google.guava', name: 'guava-testlib', version: '12.0-rc2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
 }
-
-buildscript.repositories.each { repositories.add(it) }
 
 protobuf {
     generatedFilesBaseDir = "$projectDir/src/test/generated"
     protoc {
-        artifact = "com.google.protobuf:protoc:3.1.0"
+        artifact = "com.google.protobuf:protoc:3.5.1"
     }
     generateProtoTasks {
         all().each { task ->
@@ -60,25 +50,23 @@ idea {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-def ossrhUsername = project.hasProperty('ossrhUsername') ? project.property('ossrhUsername') : ''
-def ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : ''
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/odpf/stencil"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
     publications {
         maven(MavenPublication) {
             pom {
@@ -96,32 +84,8 @@ publishing {
                         url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
-
-                developers {
-                    developer {
-                        name = 'Data Engineering'
-                        email = 'de@go-jek.com'
-                    }
-                }
-                from(components.java)
-                artifact(sourcesJar)
-                artifact(javadocJar)
+                from components.java
             }
-        }
-    }
-}
-
-signing {
-    sign publishing.publications.maven
-}
-
-nexusPublishing {
-    packageGroup = "com.gojek"
-    repositories {
-        sonatype {
-            stagingProfileId = "9bf6aebae3df9b"
-            username = ossrhUsername
-            password = ossrhPassword
         }
     }
 }
