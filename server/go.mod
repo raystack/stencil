@@ -9,6 +9,7 @@ require (
 	github.com/jeremywohl/flatten v1.0.1
 	github.com/mcuadros/go-defaults v1.2.0
 	github.com/mitchellh/mapstructure v1.4.1
+	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.6.0

@@ -12,9 +12,12 @@ import (
 
 //Config Server config
 type Config struct {
-	Port      string `default:"8080"`
-	Timeout   int    `default:"60"`
-	BucketURL string
+	Port            string `default:"8080"`
+	Timeout         int    `default:"60"`
+	BucketURL       string
+	Scheme          string `default:"https"`
+	Host            string `default:"localhost"`
+	AuthBearerToken string
 }
 
 // LoadConfig returns application configuration
