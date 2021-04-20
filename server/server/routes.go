@@ -7,6 +7,7 @@ import (
 
 func registerRoutes(router *gin.Engine, handlers *api.API) {
 	apiV1 := router.Group("/v1/namespaces/:namespace")
+	router.NoRoute(api.NoRoute)
 	router.GET("/ping", api.Ping)
 	apiV1.POST("/descriptors", handlers.Upload)
 	apiV1.GET("/descriptors", handlers.ListNames)
