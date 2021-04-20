@@ -34,6 +34,10 @@ func (d *DescriptorService) ListVersions(prefixes ...string) ([]string, error) {
 func (d *DescriptorService) Upload(ctx context.Context, payload *models.DescriptorPayload) error {
 	namespace, name, version := payload.Namespace, payload.Name, payload.Version
 	filename := path.Join(namespace, name, version)
+	exists, _ := d.Store.Exists(ctx, filename)
+	if exists {
+		return models.ErrConflict
+	}
 	data, err := readDataFromMultiPartFile(payload.File)
 	if err != nil {
 		return models.WrapAPIError(models.ErrUploadInvalidFile, err)
@@ -112,17 +116,12 @@ func (d *DescriptorService) GetMetadata(ctx context.Context, payload *models.Get
 }
 
 func (d *DescriptorService) isBackwardCompatible(ctx context.Context, payload *models.DescriptorPayload, data []byte) error {
-	metadataPayload := &models.GetMetadata{Namespace: payload.Namespace, Name: payload.Name}
-	metadata, err := d.GetMetadata(ctx, metadataPayload)
+	filename := path.Join(payload.Namespace, payload.Name, "latest")
+	reader, err := d.Store.Get(ctx, filename)
 	if err != nil {
 		if isNotFoundErr(err) {
 			return nil
 		}
-		return err
-	}
-	filename := path.Join(payload.Namespace, payload.Name, metadata.Version)
-	reader, err := d.Store.Get(ctx, filename)
-	if err != nil {
 		return err
 	}
 	prevData, err := readDataFromReader(reader)
