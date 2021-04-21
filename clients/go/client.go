@@ -33,7 +33,8 @@ type Client interface {
 
 // HTTPOptions options for http client
 type HTTPOptions struct {
-	// Timeout specifies a time limit for requests made by this client.
+	// Timeout specifies a time limit for requests made by this client. Default to 10s.
+	// `0` duration not allowed. Client will set to default value (i.e. 10s).
 	Timeout time.Duration
 	// Headers provide extra headers to be added in requests made by this client
 	Headers map[string]string
@@ -43,10 +44,20 @@ type HTTPOptions struct {
 type Options struct {
 	// AutoRefresh boolean to enable or disable autorefresh. Default to false
 	AutoRefresh bool
-	// RefreshInterval refresh interval to fetch descriptor file from server.
+	// RefreshInterval refresh interval to fetch descriptor file from server. Default to 12h.
+	// `0` duration not allowed. Client will set to default value (i.e. 12h).
 	RefreshInterval time.Duration
 	// HTTPOptions options for http client
 	HTTPOptions
+}
+
+func (o *Options) setDefaults() {
+	if o.RefreshInterval == 0 {
+		o.RefreshInterval = 12 * time.Hour
+	}
+	if o.HTTPOptions.Timeout == 0 {
+		o.HTTPOptions.Timeout = 10 * time.Second
+	}
 }
 
 type stencilClient struct {
@@ -98,6 +109,7 @@ func (s *stencilClient) load(opts Options) error {
 // NewClient creates stencil client
 func NewClient(url string, options Options) (Client, error) {
 	s := &stencilClient{store: newStore(), urls: []string{url}}
+	options.setDefaults()
 	err := s.load(options)
 	return s, err
 }
@@ -105,6 +117,7 @@ func NewClient(url string, options Options) (Client, error) {
 // NewMultiURLClient creates stencil client with multiple urls
 func NewMultiURLClient(urls []string, options Options) (Client, error) {
 	s := &stencilClient{store: newStore(), urls: urls}
+	options.setDefaults()
 	err := s.load(options)
 	return s, err
 }

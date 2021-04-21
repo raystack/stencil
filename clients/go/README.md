@@ -41,7 +41,7 @@ type Client interface {
 }
 ```
 
-### func [NewClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L99>)
+### func [NewClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L110>)
 
 ```go
 func NewClient(url string, options Options) (Client, error)
@@ -49,7 +49,7 @@ func NewClient(url string, options Options) (Client, error)
 
 NewClient creates stencil client
 
-### func [NewMultiURLClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L106>)
+### func [NewMultiURLClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L118>)
 
 ```go
 func NewMultiURLClient(urls []string, options Options) (Client, error)
@@ -57,20 +57,21 @@ func NewMultiURLClient(urls []string, options Options) (Client, error)
 
 NewMultiURLClient creates stencil client with multiple urls
 
-## type [HTTPOptions](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L35-L40>)
+## type [HTTPOptions](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L35-L41>)
 
 HTTPOptions options for http client
 
 ```go
 type HTTPOptions struct {
-    // Timeout specifies a time limit for requests made by this client.
+    // Timeout specifies a time limit for requests made by this client. Default to 10s.
+    // `0` duration not allowed. Client will set to default value (i.e. 10s).
     Timeout time.Duration
     // Headers provide extra headers to be added in requests made by this client
     Headers map[string]string
 }
 ```
 
-## type [Options](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L43-L50>)
+## type [Options](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L44-L52>)
 
 Options options for stencil client
 
@@ -78,7 +79,8 @@ Options options for stencil client
 type Options struct {
     // AutoRefresh boolean to enable or disable autorefresh. Default to false
     AutoRefresh bool
-    // RefreshInterval refresh interval to fetch descriptor file from server.
+    // RefreshInterval refresh interval to fetch descriptor file from server. Default to 12h.
+    // `0` duration not allowed. Client will set to default value (i.e. 12h).
     RefreshInterval time.Duration
     // HTTPOptions options for http client
     HTTPOptions
