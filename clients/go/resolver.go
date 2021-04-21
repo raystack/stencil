@@ -10,7 +10,7 @@ type resolverBuilder struct {
 	types *protoregistry.Types
 }
 
-func (r *resolverBuilder) AddExtensions(exts protoreflect.ExtensionDescriptors) *resolverBuilder {
+func (r *resolverBuilder) addExtensions(exts protoreflect.ExtensionDescriptors) *resolverBuilder {
 	for i := 0; i < exts.Len(); i++ {
 		ext := exts.Get(i)
 		r.types.RegisterExtension(dynamicpb.NewExtensionType(ext))
@@ -18,19 +18,19 @@ func (r *resolverBuilder) AddExtensions(exts protoreflect.ExtensionDescriptors) 
 	return r
 }
 
-func (r *resolverBuilder) AddFromMessages(msgs protoreflect.MessageDescriptors) *resolverBuilder {
+func (r *resolverBuilder) addFromMessages(msgs protoreflect.MessageDescriptors) *resolverBuilder {
 	for i := 0; i < msgs.Len(); i++ {
 		msg := msgs.Get(i)
-		r.AddFromMessages(msg.Messages()).
-			AddExtensions(msg.Extensions())
+		r.addFromMessages(msg.Messages()).
+			addExtensions(msg.Extensions())
 	}
 	return r
 }
 
-func (r *resolverBuilder) RegisterFile(file protoreflect.FileDescriptor) *resolverBuilder {
+func (r *resolverBuilder) registerFile(file protoreflect.FileDescriptor) *resolverBuilder {
 	return r.
-		AddExtensions(file.Extensions()).
-		AddFromMessages(file.Messages())
+		addExtensions(file.Extensions()).
+		addFromMessages(file.Messages())
 }
 
 func getResolver(files *protoregistry.Files) *protoregistry.Types {
@@ -39,7 +39,7 @@ func getResolver(files *protoregistry.Files) *protoregistry.Types {
 		types: types,
 	}
 	files.RangeFiles(func(file protoreflect.FileDescriptor) bool {
-		builder.RegisterFile(file)
+		builder.registerFile(file)
 		return true
 	})
 	return builder.types
