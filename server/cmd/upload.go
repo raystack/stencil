@@ -65,7 +65,9 @@ func upload(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(body))
+	if res.StatusCode >= 400 {
+		return fmt.Errorf("Error: respose code %d from stencil server: %s", res.StatusCode, string(body))
+	}
 	return nil
 }
 
