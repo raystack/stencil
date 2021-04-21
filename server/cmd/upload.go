@@ -34,14 +34,15 @@ func upload(cmd *cobra.Command, args []string) error {
 	namespace := args[0]
 	name := args[1]
 	version := args[2]
-	descriptorFile := filePath
+	return uploadDescriptor(config, namespace, name, version, filePath)
+}
+
+func uploadDescriptor(config *config.Config, namespace string, name string, version string, descriptorFile string) error {
 	url := url.URL{
 		Scheme: config.Scheme,
 		Host:   config.Host + ":" + config.Port,
 		Path:   path.Join("v1", "namespaces", namespace, "descriptors/"),
 	}
-
-	fmt.Println(url.String())
 	req, err := newfileUploadRequest(
 		url.String(),
 		map[string]string{
@@ -68,6 +69,7 @@ func upload(cmd *cobra.Command, args []string) error {
 	if res.StatusCode >= 400 {
 		return fmt.Errorf("Error: respose code %d from stencil server: %s", res.StatusCode, string(body))
 	}
+	fmt.Println(string(body))
 	return nil
 }
 
