@@ -29,6 +29,8 @@ type Client interface {
 	GetDescriptor(string) (protoreflect.MessageDescriptor, error)
 	// Close stops background refresh if configured.
 	Close()
+	// Refresh downloads latest proto definitions
+	Refresh() error
 }
 
 // HTTPOptions options for http client
@@ -61,9 +63,10 @@ func (o *Options) setDefaults() {
 }
 
 type stencilClient struct {
-	timer io.Closer
-	urls  []string
-	store *descriptorStore
+	timer   io.Closer
+	urls    []string
+	store   *descriptorStore
+	options Options
 }
 
 func (s *stencilClient) Parse(className string, data []byte) (protoreflect.ProtoMessage, error) {
@@ -90,34 +93,33 @@ func (s *stencilClient) Close() {
 	}
 }
 
-func (s *stencilClient) refresh(opts Options) error {
+func (s *stencilClient) Refresh() error {
 	var err error
 	for _, url := range s.urls {
-		err = multierr.Combine(err, s.store.loadFromURI(url, opts))
+		err = multierr.Combine(err, s.store.loadFromURI(url, s.options))
 	}
 	return err
 }
 
-func (s *stencilClient) load(opts Options) error {
-	if opts.AutoRefresh {
-		s.timer = setInterval(opts.RefreshInterval, func() { s.refresh(opts) })
+func (s *stencilClient) load() error {
+	s.options.setDefaults()
+	if s.options.AutoRefresh {
+		s.timer = setInterval(s.options.RefreshInterval, func() { s.Refresh() })
 	}
-	err := s.refresh(opts)
+	err := s.Refresh()
 	return err
 }
 
 // NewClient creates stencil client
 func NewClient(url string, options Options) (Client, error) {
-	s := &stencilClient{store: newStore(), urls: []string{url}}
-	options.setDefaults()
-	err := s.load(options)
+	s := &stencilClient{store: newStore(), urls: []string{url}, options: options}
+	err := s.load()
 	return s, err
 }
 
 // NewMultiURLClient creates stencil client with multiple urls
 func NewMultiURLClient(urls []string, options Options) (Client, error) {
-	s := &stencilClient{store: newStore(), urls: urls}
-	options.setDefaults()
-	err := s.load(options)
+	s := &stencilClient{store: newStore(), urls: urls, options: options}
+	err := s.load()
 	return s, err
 }
