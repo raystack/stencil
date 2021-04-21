@@ -1,4 +1,4 @@
-package stencilclient_test
+package stencil_test
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	stencilclient "github.com/odpf/stencil/clients/go"
+	stencil "github.com/odpf/stencil/clients/go"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -70,13 +70,13 @@ func getDescriptorData(t *testing.T, includeImports bool) ([]byte, error) {
 func TestNewClient(t *testing.T) {
 	t.Run("should return error if url is not valid", func(t *testing.T) {
 		url := "h_ttp://invalidurl"
-		_, err := stencilclient.NewClient(url, stencilclient.Options{})
+		_, err := stencil.NewClient(url, stencil.Options{})
 		assert.Contains(t, err.Error(), "invalid request")
 	})
 
 	t.Run("should return error if request fails", func(t *testing.T) {
 		url := "ithttp://localhost"
-		_, err := stencilclient.NewClient(url, stencilclient.Options{})
+		_, err := stencil.NewClient(url, stencil.Options{})
 		assert.Contains(t, err.Error(), "request failed")
 	})
 
@@ -86,7 +86,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		_, err := stencilclient.NewClient(url, stencilclient.Options{})
+		_, err := stencil.NewClient(url, stencil.Options{})
 		assert.Contains(t, err.Error(), "request failed.")
 	})
 
@@ -97,7 +97,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		_, err := stencilclient.NewClient(url, stencilclient.Options{})
+		_, err := stencil.NewClient(url, stencil.Options{})
 		assert.Contains(t, err.Error(), "invalid file descriptorset file.")
 	})
 
@@ -109,7 +109,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		_, err = stencilclient.NewClient(url, stencilclient.Options{})
+		_, err = stencil.NewClient(url, stencil.Options{})
 		if assert.NotNil(t, err) {
 			assert.Contains(t, err.Error(), "file is not fully contained descriptor file.")
 		}
@@ -123,7 +123,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencilclient.NewClient(url, stencilclient.Options{})
+		client, err := stencil.NewClient(url, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 	})
@@ -139,7 +139,7 @@ func TestNewClient(t *testing.T) {
 			}
 			w.Write(data)
 		}))
-		client, err := stencilclient.NewClient(ts.URL, stencilclient.Options{HTTPOptions: stencilclient.HTTPOptions{Headers: headers}})
+		client, err := stencil.NewClient(ts.URL, stencil.Options{HTTPOptions: stencil.HTTPOptions{Headers: headers}})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 	})
@@ -151,7 +151,7 @@ func TestNewClient(t *testing.T) {
 			callCount++
 			w.Write(data)
 		}))
-		client, _ := stencilclient.NewClient(ts.URL, stencilclient.Options{AutoRefresh: true, RefreshInterval: 5 * time.Millisecond})
+		client, _ := stencil.NewClient(ts.URL, stencil.Options{AutoRefresh: true, RefreshInterval: 5 * time.Millisecond})
 		time.Sleep(6 * time.Millisecond)
 		client.Close()
 		assert.Equal(t, 2, callCount)
@@ -171,7 +171,7 @@ func TestNewMultiURLClient(t *testing.T) {
 	}))
 	defer ts2.Close()
 	url2 := ts2.URL
-	_, err = stencilclient.NewMultiURLClient([]string{url, url2}, stencilclient.Options{})
+	_, err = stencil.NewMultiURLClient([]string{url, url2}, stencil.Options{})
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), "request failed.")
 }
@@ -185,14 +185,14 @@ func TestClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencilclient.NewClient(url, stencilclient.Options{})
+		client, err := stencil.NewClient(url, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 		t.Run("should return notFoundErr if not found", func(t *testing.T) {
 			msg, err := client.GetDescriptor("test.stencil.Two.Unknown")
 			assert.Nil(t, msg)
 			assert.NotNil(t, err)
-			assert.Equal(t, stencilclient.ErrNotFound, err)
+			assert.Equal(t, stencil.ErrNotFound, err)
 		})
 		t.Run("should get nested message descriptor from fully qualified java classname", func(t *testing.T) {
 			msg, err := client.GetDescriptor("test.stencil.Two.Four")
@@ -215,14 +215,14 @@ func TestClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencilclient.NewClient(url, stencilclient.Options{})
+		client, err := stencil.NewClient(url, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 		t.Run("should return notFoundErr if not found", func(t *testing.T) {
 			msg, err := client.Parse("test.stencil.Two.Unknown", []byte(""))
 			assert.Nil(t, msg)
 			assert.NotNil(t, err)
-			assert.Equal(t, stencilclient.ErrNotFound, err)
+			assert.Equal(t, stencil.ErrNotFound, err)
 		})
 
 		t.Run("should parse wire format data given className", func(t *testing.T) {

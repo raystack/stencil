@@ -1,4 +1,7 @@
-package stencilclient
+// Package stencil helps to download and refresh protobuf descriptors from remote server
+// and provides helper functions to get protobuf schema descriptors and can parse the messages
+// dynamically.
+package stencil
 
 import (
 	"errors"
@@ -12,12 +15,13 @@ import (
 )
 
 var (
+	//ErrNotFound default sentinel error if proto not found
 	ErrNotFound = errors.New("not found")
 )
 
-// StencilClient provides utility functions to parse protobuf messages at runtime.
+// Client provides utility functions to parse protobuf messages at runtime.
 // protobuf messages can be identified by specifying fully qualified generated proto java class name.
-type StencilClient interface {
+type Client interface {
 	// Parse parses protobuf message from wire format to protoreflect.Message given fully qualified name of proto message.
 	// Returns ErrNotFound error if given class name is not found
 	Parse(string, []byte) (protoreflect.ProtoMessage, error)
@@ -29,7 +33,7 @@ type StencilClient interface {
 
 // HTTPOptions options for http client
 type HTTPOptions struct {
-	// Timeout specifies a time limit for requests made by this client
+	// Timeout specifies a time limit for requests made by this client.
 	Timeout time.Duration
 	// Headers provide extra headers to be added in requests made by this client
 	Headers map[string]string
@@ -45,13 +49,13 @@ type Options struct {
 	HTTPOptions
 }
 
-type stencilclient struct {
+type stencilClient struct {
 	timer io.Closer
 	urls  []string
 	store *descriptorStore
 }
 
-func (s *stencilclient) Parse(className string, data []byte) (protoreflect.ProtoMessage, error) {
+func (s *stencilClient) Parse(className string, data []byte) (protoreflect.ProtoMessage, error) {
 	desc, ok := s.store.get(className)
 	if !ok {
 		return nil, ErrNotFound
@@ -61,7 +65,7 @@ func (s *stencilclient) Parse(className string, data []byte) (protoreflect.Proto
 	return m, err
 }
 
-func (s *stencilclient) GetDescriptor(className string) (protoreflect.MessageDescriptor, error) {
+func (s *stencilClient) GetDescriptor(className string) (protoreflect.MessageDescriptor, error) {
 	desc, ok := s.store.get(className)
 	if !ok {
 		return nil, ErrNotFound
@@ -69,13 +73,13 @@ func (s *stencilclient) GetDescriptor(className string) (protoreflect.MessageDes
 	return desc, nil
 }
 
-func (s *stencilclient) Close() {
+func (s *stencilClient) Close() {
 	if s.timer != nil {
 		s.timer.Close()
 	}
 }
 
-func (s *stencilclient) refresh(opts Options) error {
+func (s *stencilClient) refresh(opts Options) error {
 	var err error
 	for _, url := range s.urls {
 		err = multierr.Combine(err, s.store.loadFromURI(url, opts))
@@ -83,7 +87,7 @@ func (s *stencilclient) refresh(opts Options) error {
 	return err
 }
 
-func (s *stencilclient) load(opts Options) error {
+func (s *stencilClient) load(opts Options) error {
 	if opts.AutoRefresh {
 		s.timer = setInterval(opts.RefreshInterval, func() { s.refresh(opts) })
 	}
@@ -92,15 +96,15 @@ func (s *stencilclient) load(opts Options) error {
 }
 
 // NewClient creates stencil client
-func NewClient(url string, options Options) (StencilClient, error) {
-	s := &stencilclient{store: newStore(), urls: []string{url}}
+func NewClient(url string, options Options) (Client, error) {
+	s := &stencilClient{store: newStore(), urls: []string{url}}
 	err := s.load(options)
 	return s, err
 }
 
 // NewMultiURLClient creates stencil client with multiple urls
-func NewMultiURLClient(urls []string, options Options) (StencilClient, error) {
-	s := &stencilclient{store: newStore(), urls: urls}
+func NewMultiURLClient(urls []string, options Options) (Client, error) {
+	s := &stencilClient{store: newStore(), urls: urls}
 	err := s.load(options)
 	return s, err
 }

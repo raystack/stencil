@@ -1,4 +1,4 @@
-package stencilclient
+package stencil
 
 import (
 	"google.golang.org/protobuf/reflect/protoreflect"

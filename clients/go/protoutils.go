@@ -1,4 +1,4 @@
-package stencilclient
+package stencil
 
 import (
 	"strings"
