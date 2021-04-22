@@ -125,14 +125,17 @@ func (s *stencilClient) load() error {
 	return err
 }
 
-// NewClient creates stencil client
+// NewClient creates stencil client. Downloads proto descriptor file from given url and stores the definitions.
+// It will throw error if download fails or downloaded file is not fully contained descriptor file
 func NewClient(url string, options Options) (Client, error) {
 	s := &stencilClient{store: newStore(), urls: []string{url}, options: options}
 	err := s.load()
 	return s, err
 }
 
-// NewMultiURLClient creates stencil client with multiple urls
+// NewMultiURLClient creates stencil client with multiple urls. Downloads proto descriptor file from given urls and stores the definitions.
+// If descriptor files from multiple urls has different schema definitions with same name, last downloaded proto descriptor will override previous entries.
+// It will throw error if any of the download fails or any downloaded file is not fully contained descriptor file
 func NewMultiURLClient(urls []string, options Options) (Client, error) {
 	s := &stencilClient{store: newStore(), urls: urls, options: options}
 	err := s.load()
