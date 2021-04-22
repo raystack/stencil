@@ -7,12 +7,10 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-func forEachMessage(msgs protoreflect.MessageDescriptors, f func(protoreflect.MessageDescriptor) bool) {
+func forEachMessage(msgs protoreflect.MessageDescriptors, f func(protoreflect.MessageDescriptor)) {
 	for i := 0; i < msgs.Len(); i++ {
 		msg := msgs.Get(i)
-		if !f(msg) {
-			return
-		}
+		f(msg)
 		forEachMessage(msg.Messages(), f)
 	}
 }

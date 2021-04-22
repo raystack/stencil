@@ -22,6 +22,7 @@ func runProtoc(
 	rootDir string,
 	includeImports bool,
 	descSetOut string,
+	filePaths []string,
 ) error {
 	protocBinPath, err := exec.LookPath("protoc")
 	if err != nil {
@@ -44,10 +45,7 @@ func runProtoc(
 	if includeImports {
 		args = append(args, "--include_imports")
 	}
-	protoFiles, _ := filepath.Glob(filepath.Join(rootDir, "./**/*.proto"))
-	rootFiles, _ := filepath.Glob(filepath.Join(rootDir, "./*.proto"))
-	args = append(args, rootFiles...)
-	args = append(args, protoFiles...)
+	args = append(args, filePaths...)
 	stderr := bytes.NewBuffer(nil)
 	cmd := exec.Command(protocBinPath, args...)
 	cmd.Stdout = stderr
@@ -58,13 +56,43 @@ func runProtoc(
 	return nil
 }
 
-func getDescriptorData(t *testing.T, includeImports bool) ([]byte, error) {
-	root, _ := filepath.Abs("./test_data")
+func getDescriptorDataByPath(t *testing.T, includeImports bool, rootPath string) ([]byte, error) {
+	root, _ := filepath.Abs(rootPath)
 	fileName := filepath.Join(t.TempDir(), "file.desc")
-	err := runProtoc(root, includeImports, fileName)
+	rootFiles, _ := filepath.Glob(filepath.Join(root, "./*.proto"))
+	err := runProtoc(root, includeImports, fileName, rootFiles)
 	assert.NoError(t, err)
 	data, err := ioutil.ReadFile(fileName)
 	return data, err
+}
+
+func getDescriptorData(t *testing.T, includeImports bool) ([]byte, error) {
+	return getDescriptorDataByPath(t, includeImports, "./test_data")
+}
+
+func getUpdatedDescriptorDataAndMsgData(t *testing.T, includeImports bool) ([]byte, []byte) {
+	data, err := getDescriptorDataByPath(t, includeImports, "./test_data/updated")
+	assert.NoError(t, err)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(data)
+	}))
+	defer ts.Close()
+	url := ts.URL
+	client, err := stencil.NewClient(url, stencil.Options{})
+	assert.Nil(t, err)
+	assert.NotNil(t, client)
+	msgDesc, err := client.GetDescriptor("test.stencil.One")
+	assert.NoError(t, err)
+	//construct message
+	msg := dynamicpb.NewMessage(msgDesc).New()
+	fieldOne := msgDesc.Fields().ByName("field_one")
+	msg.Set(fieldOne, protoreflect.ValueOfInt64(200))
+	fieldTwo := msgDesc.Fields().ByName("field_two")
+	msg.Set(fieldTwo, protoreflect.ValueOfInt64(300))
+
+	msgData, err := proto.Marshal(msg.Interface())
+	assert.NoError(t, err)
+	return data, msgData
 }
 
 func TestNewClient(t *testing.T) {
@@ -270,6 +298,78 @@ func TestClient(t *testing.T) {
 			val2 := parsed.ProtoReflect().Get(fieldTwo)
 			assert.Equal(t, "field_two_value", val2.String())
 			assert.Nil(t, parsed.ProtoReflect().GetUnknown())
+		})
+	})
+	t.Run("ParseWithRefresh", func(t *testing.T) {
+
+		t.Run("should return notFoundErr if not found", func(t *testing.T) {
+			data, err := getDescriptorData(t, true)
+			assert.NoError(t, err)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write(data)
+			}))
+			defer ts.Close()
+			url := ts.URL
+			client, err := stencil.NewClient(url, stencil.Options{})
+			assert.Nil(t, err)
+			assert.NotNil(t, client)
+			msg, err := client.ParseWithRefresh("test.stencil.Two.Unknown", []byte(""))
+			assert.Nil(t, msg)
+			assert.NotNil(t, err)
+			assert.Equal(t, stencil.ErrNotFound, err)
+		})
+
+		t.Run("should return error if refresh fails", func(t *testing.T) {
+			_, msgData := getUpdatedDescriptorDataAndMsgData(t, true)
+			data, err := getDescriptorData(t, true)
+			assert.NoError(t, err)
+			count := 0
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if count == 1 {
+					http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+					count++
+					return
+				}
+				count++
+				w.Write(data)
+			}))
+			defer ts.Close()
+			url := ts.URL
+			client, err := stencil.NewClient(url, stencil.Options{})
+			assert.Nil(t, err)
+			assert.NotNil(t, client)
+			_, err = client.ParseWithRefresh("test.stencil.One", msgData)
+			assert.NotNil(t, err)
+		})
+
+		t.Run("should refresh proto definitions should parse without any UnknownFields", func(t *testing.T) {
+			data, msgData := getUpdatedDescriptorDataAndMsgData(t, true)
+			oldData, err := getDescriptorData(t, true)
+			count := 0
+			ts2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if count == 0 {
+					w.Write(oldData)
+					count++
+					return
+				}
+				w.Write(data)
+			}))
+			defer ts2.Close()
+			newClient, err := stencil.NewClient(ts2.URL, stencil.Options{})
+			parsed, err := newClient.Parse("test.stencil.One", msgData)
+			assert.NotNil(t, parsed.ProtoReflect().GetUnknown())
+			parsed, err = newClient.ParseWithRefresh("test.stencil.One", msgData)
+			assert.Nil(t, err)
+			assert.Nil(t, parsed.ProtoReflect().GetUnknown())
+			parsed.ProtoReflect().Range(func(field protoreflect.FieldDescriptor, value protoreflect.Value) bool {
+				if field.Name() == "field_one" {
+					assert.Equal(t, int64(200), value.Int())
+				}
+				if field.Name() == "field_two" {
+					assert.Equal(t, int64(300), value.Int())
+				}
+				return true
+			})
 		})
 	})
 }

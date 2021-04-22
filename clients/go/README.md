@@ -25,23 +25,29 @@ var (
 )
 ```
 
-## type [Client](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L24-L32>)
+## type [Client](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L24-L38>)
 
 Client provides utility functions to parse protobuf messages at runtime\. protobuf messages can be identified by specifying fully qualified generated proto java class name\.
 
 ```go
 type Client interface {
-    // Parse parses protobuf message from wire format to protoreflect.Message given fully qualified name of proto message.
+    // Parse parses protobuf message from wire format to protoreflect.ProtoMessage given fully qualified name of proto message.
     // Returns ErrNotFound error if given class name is not found
     Parse(string, []byte) (protoreflect.ProtoMessage, error)
+    // ParseWithRefresh parses protobuf message from wire format to `protoreflect.ProtoMessage` given fully qualified name of proto message.
+    // Refreshes proto definitions if parsed message has unknown fields and parses the message again.
+    // Returns ErrNotFound error if given class name is not found.
+    ParseWithRefresh(string, []byte) (protoreflect.ProtoMessage, error)
     // GetDescriptor returns protoreflect.MessageDescriptor given fully qualified proto java class name
     GetDescriptor(string) (protoreflect.MessageDescriptor, error)
     // Close stops background refresh if configured.
     Close()
+    // Refresh downloads latest proto definitions
+    Refresh() error
 }
 ```
 
-### func [NewClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L110>)
+### func [NewClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L129>)
 
 ```go
 func NewClient(url string, options Options) (Client, error)
@@ -49,7 +55,7 @@ func NewClient(url string, options Options) (Client, error)
 
 NewClient creates stencil client
 
-### func [NewMultiURLClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L118>)
+### func [NewMultiURLClient](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L136>)
 
 ```go
 func NewMultiURLClient(urls []string, options Options) (Client, error)
@@ -57,7 +63,7 @@ func NewMultiURLClient(urls []string, options Options) (Client, error)
 
 NewMultiURLClient creates stencil client with multiple urls
 
-## type [HTTPOptions](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L35-L41>)
+## type [HTTPOptions](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L41-L47>)
 
 HTTPOptions options for http client
 
@@ -71,7 +77,7 @@ type HTTPOptions struct {
 }
 ```
 
-## type [Options](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L44-L52>)
+## type [Options](<https://github.com/odpf/stencil/blob/master/clients/go/client.go#L50-L58>)
 
 Options options for stencil client
 

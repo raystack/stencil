@@ -40,10 +40,9 @@ func (s *descriptorStore) load(data []byte, getKeyFn func(protoreflect.FileDescr
 	}
 	newData := make(map[string]protoreflect.MessageDescriptor)
 	files.RangeFiles(func(file protoreflect.FileDescriptor) bool {
-		forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) bool {
+		forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) {
 			key := getKeyFn(file, msg)
 			newData[key] = msg
-			return true
 		})
 		return true
 	})

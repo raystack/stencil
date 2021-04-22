@@ -22,9 +22,13 @@ var (
 // Client provides utility functions to parse protobuf messages at runtime.
 // protobuf messages can be identified by specifying fully qualified generated proto java class name.
 type Client interface {
-	// Parse parses protobuf message from wire format to protoreflect.Message given fully qualified name of proto message.
+	// Parse parses protobuf message from wire format to protoreflect.ProtoMessage given fully qualified name of proto message.
 	// Returns ErrNotFound error if given class name is not found
 	Parse(string, []byte) (protoreflect.ProtoMessage, error)
+	// ParseWithRefresh parses protobuf message from wire format to `protoreflect.ProtoMessage` given fully qualified name of proto message.
+	// Refreshes proto definitions if parsed message has unknown fields and parses the message again.
+	// Returns ErrNotFound error if given class name is not found.
+	ParseWithRefresh(string, []byte) (protoreflect.ProtoMessage, error)
 	// GetDescriptor returns protoreflect.MessageDescriptor given fully qualified proto java class name
 	GetDescriptor(string) (protoreflect.MessageDescriptor, error)
 	// Close stops background refresh if configured.
@@ -77,6 +81,17 @@ func (s *stencilClient) Parse(className string, data []byte) (protoreflect.Proto
 	m := dynamicpb.NewMessage(desc).New().Interface()
 	err := proto.UnmarshalOptions{Resolver: s.store.extensionResolver}.Unmarshal(data, m)
 	return m, err
+}
+
+func (s *stencilClient) ParseWithRefresh(className string, data []byte) (protoreflect.ProtoMessage, error) {
+	m, err := s.Parse(className, data)
+	if err != nil || m.ProtoReflect().GetUnknown() == nil {
+		return m, err
+	}
+	if err = s.Refresh(); err != nil {
+		return m, err
+	}
+	return s.Parse(className, data)
 }
 
 func (s *stencilClient) GetDescriptor(className string) (protoreflect.MessageDescriptor, error) {
