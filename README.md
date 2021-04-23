@@ -7,7 +7,7 @@ Protobuf allows you to define a whole proto file using [google.protobuf.FileDesc
 ## Clients
 
  - [Java](clients/java)
- - Go (planned)
+ - [Go](clients/go)
  - TypeScript (planned)
 
 ### Managing descriptors behind an HTTP Server
