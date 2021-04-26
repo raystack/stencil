@@ -34,6 +34,10 @@ var (
 		code:    404,
 		message: "Not found",
 	}
+	ErrConflict = &apiErr{
+		code:    409,
+		message: "Resource already exist",
+	}
 	ErrCancel = &apiErr{
 		code:    500,
 		message: "Operation was cancelled",
