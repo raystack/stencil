@@ -11,12 +11,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPing(t *testing.T) {
+func TestNoRoute(t *testing.T) {
 	router := server2.Router(&api.API{})
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/ping", nil)
+	req, _ := http.NewRequest("GET", "/random", nil)
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, 200, w.Code)
-	assert.JSONEq(t, `{"message": "pong"}`, w.Body.String())
+	assert.Equal(t, 404, w.Code)
+	assert.JSONEq(t, `{"message": "page not found"}`, w.Body.String())
 }
