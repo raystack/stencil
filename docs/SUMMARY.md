@@ -1,24 +1,23 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [Roadmap](roadmap.md)
-* [Changelog](https://github.com/odpf/stencil/blob/main/CHANGELOG.md)
+* [Quick Start Guide](guides/quick_start.md)
+* [Changelog](https://github.com/odpf/stencil/blob/master/CHANGELOG.md)
 
-## Guides
+## Stencil server
 
-* [Overview](guides/overview.md)
-* [Deployment](guides/deployment.md)
+* [Overview](server/overview.md)
+* [Deployment](server/deployment.md)
+* [Rules](server/rules.md)
+* [API](server/api.md)
 
-## Concepts
+## Clients
 
-* [Overview](concepts/overview.md)
-* [Architecture](concepts/architecture.md)
-
-## Reference
-
-* [Configurations](reference/configuration.md)
+* [Overview](clients/overview.md)
+* [Go](clients/go.md)
+* [Java](clients/java.md)
+* [JavaScript](clients/js.md)
 
 ## Contribute
 
 * [Contribution Process](contribute/contribution.md)
-* [Development Guide](contribute/development.md)
