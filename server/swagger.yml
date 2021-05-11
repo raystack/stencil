@@ -1,0 +1,187 @@
+info:
+  title: Stencil server
+  version: 0.1.0
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /ping:
+    get:
+      summary: service health check
+      operationId: ping
+      responses:
+        "200":
+          description: "returns pong message"
+  /v1/namespaces/{namespace}/descriptors:
+    post:
+      summary: upload descriptors
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      tags:
+        - descriptors
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "formData"
+          required: true
+          type: "string"
+        - name: "version"
+          in: "formData"
+          description: "version number for descriptor file. This should follow semantic version compatability"
+          required: true
+          type: "string"
+        - name: "latest"
+          in: "formData"
+          description: "mark this descriptor file as latest"
+          required: false
+          type: "boolean"
+        - name: "skiprules"
+          in: "formData"
+          description: "list of rules to skip"
+          required: false
+          type: "array"
+          items:
+            type: string
+            enum:
+              - FILE_NO_BREAKING_CHANGE
+              - MESSAGE_NO_DELETE
+              - FIELD_NO_BREAKING_CHANGE
+              - ENUM_NO_BREAKING_CHANGE
+        - name: "file"
+          in: "formData"
+          description: "descriptorset file to upload"
+          required: true
+          type: "file"
+      responses:
+        "200":
+          description: "Success response"
+        "409":
+          description: "Conflict"
+    get:
+      summary: list all available descriptor names under one namespace
+      tags:
+        - descriptors
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "returns list of descriptor names"
+          schema:
+            type: "array"
+            items:
+              type: string
+  /v1/namespaces/{namespace}/descriptors/{name}/versions:
+    get:
+      summary: list all available versions for specified descriptor
+      tags:
+        - descriptors
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "returns list of versions"
+          schema:
+            type: "array"
+            items:
+              type: string
+  /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}:
+    get:
+      summary: download specified descriptor file
+      tags:
+        - descriptors
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "version"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "download response"
+  /v1/namespaces/{namespace}/metadata:
+    post:
+      summary: update metadata
+      tags:
+        - metadata
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "body"
+          in: "body"
+          description: "specify name and version in payload"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataPayload"
+      responses:
+        "200":
+          description: "Success response"
+  /v1/namespaces/{namespace}/metadata/{name}:
+    get:
+      summary: get latest version for specified descriptor
+      tags:
+        - metadata
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Success response"
+          schema:
+            $ref: "#/definitions/MetadataResponse"
+
+tags:
+  - name: "descriptors"
+    description: "Manage descriptors"
+  - name: "metadata"
+    description: "manage latest versions for uploaded descriptor files"
+definitions:
+  MetadataResponse:
+    properties:
+      updated:
+        type: string
+      version:
+        type: string
+    type: object
+  MetadataPayload:
+    properties:
+      name:
+        type: string
+      version:
+        type: string
+    type: object
+schemes:
+  - http
+swagger: "2.0"
