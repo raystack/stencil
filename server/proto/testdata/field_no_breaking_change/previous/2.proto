@@ -8,4 +8,5 @@ message One2 {
   repeated Two one = 1;
   optional Three two = 2;
   optional Three three = 3;
+  optional int32 Two2 = 4;
 }

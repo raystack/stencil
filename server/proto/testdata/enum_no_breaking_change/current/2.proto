@@ -8,4 +8,7 @@ enum Move {
 
 enum Move2 {
   TEN_1 = 0;
+  TEN_3 = 1;
 }
+
+message MoveType {}
