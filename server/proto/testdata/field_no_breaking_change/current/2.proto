@@ -7,4 +7,5 @@ import "1.proto";
 message One2 {
   repeated Two one = 1;
   optional Three two = 2;
+  message Two2 {}
 }

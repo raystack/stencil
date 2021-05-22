@@ -109,14 +109,14 @@ func checkFileNoBreakingChange(current, prev *protoregistry.Files) error {
 			err = multierr.Combine(err, fmt.Errorf("all file options have been removed in %s current version", path))
 			return true
 		}
-		if prevFileOptions.JavaPackage != currentFileOptions.JavaPackage {
-			err = multierr.Combine(err, fmt.Errorf("java package for %s changed from %s to %s", path, *prevFileOptions.JavaPackage, *currentFileOptions.JavaPackage))
+		if prevFileOptions.GetJavaPackage() != currentFileOptions.GetJavaPackage() {
+			err = multierr.Combine(err, fmt.Errorf("java package for %s changed from %s to %s", path, prevFileOptions.GetJavaPackage(), currentFileOptions.GetJavaPackage()))
 		}
-		if *prevFileOptions.JavaOuterClassname != *currentFileOptions.JavaOuterClassname {
-			err = multierr.Combine(err, fmt.Errorf("java outer classname for %s changed from %s to %s", path, *prevFileOptions.JavaOuterClassname, *currentFileOptions.JavaOuterClassname))
+		if prevFileOptions.GetJavaOuterClassname() != currentFileOptions.GetJavaOuterClassname() {
+			err = multierr.Combine(err, fmt.Errorf("java outer classname for %s changed from %s to %s", path, prevFileOptions.GetJavaOuterClassname(), currentFileOptions.GetJavaOuterClassname()))
 		}
-		if *prevFileOptions.GoPackage != *currentFileOptions.GoPackage {
-			err = multierr.Combine(err, fmt.Errorf("go package for %s changed from %s to %s", path, *prevFileOptions.GoPackage, *currentFileOptions.GoPackage))
+		if prevFileOptions.GetGoPackage() != currentFileOptions.GetGoPackage() {
+			err = multierr.Combine(err, fmt.Errorf("go package for %s changed from %s to %s", path, prevFileOptions.GetGoPackage(), currentFileOptions.GetGoPackage()))
 		}
 		return true
 	})

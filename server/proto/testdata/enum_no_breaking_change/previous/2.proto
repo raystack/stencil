@@ -9,3 +9,7 @@ enum Move {
 enum Move2 {
   TEN_2 = 0;
 }
+
+enum MoveType {
+  TEN_3 = 0;
+}

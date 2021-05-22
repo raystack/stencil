@@ -1,0 +1,8 @@
+syntax="proto3";
+package filebreaking.options;
+
+option java_outer_classname="Teststencil.valid";
+option go_package="com.stenciltest.valid2";
+option java_package="com.stenciltest.valid";
+
+message One {}

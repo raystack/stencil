@@ -10,3 +10,7 @@ message Three {
   }
   message Eight{}
 }
+
+enum CheckSameFullName {
+  Nine = 0;
+}

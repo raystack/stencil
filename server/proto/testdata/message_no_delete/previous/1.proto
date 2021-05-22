@@ -14,3 +14,5 @@ message Three {
   message Seven{}
   message Eight{}
 }
+
+message Nine {}
