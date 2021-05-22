@@ -1,6 +1,10 @@
 package proto
 
 import (
+	"fmt"
+	"log"
+	"runtime/debug"
+
 	"go.uber.org/multierr"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
@@ -33,6 +37,14 @@ func Compare(current, prev []byte, rulesToSkip []string) error {
 	for _, rule := range filteredRules {
 		r := rule
 		go func() {
+			// Only the panic in the current calling process can be captured in golang. If it is another goroutine, it cannot catch exceptions.
+			// So gin.Recovery() won't be able to catch panics generated from rule checks.
+			defer func() {
+				if e := recover(); e != nil {
+					log.Println(e, debug.Stack())
+					c <- fmt.Errorf("internal error: %s validation rule failed", r.ID())
+				}
+			}()
 			ruleErr := r.Check(currentRegistry, previousRegistry)
 			c <- ruleErr
 		}()
