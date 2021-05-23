@@ -9,6 +9,8 @@ require (
 	github.com/jeremywohl/flatten v1.0.1
 	github.com/mcuadros/go-defaults v1.2.0
 	github.com/mitchellh/mapstructure v1.4.1
+	github.com/newrelic/go-agent/v3 v3.12.0
+	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.6.0

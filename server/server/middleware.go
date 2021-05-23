@@ -36,6 +36,7 @@ func getLogger() gin.HandlerFunc {
 }
 
 func addMiddleware(router *gin.Engine) {
+	router.Use(getNewRelicMiddleware())
 	router.Use(gin.Recovery())
 	router.Use(getLogger())
 	router.Use(errorHandle())

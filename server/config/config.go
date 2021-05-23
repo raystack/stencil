@@ -10,11 +10,19 @@ import (
 	"github.com/spf13/viper"
 )
 
+// NewRelicConfig contains the New Relic go-agent configuration
+type NewRelicConfig struct {
+	Enabled bool   `default:"false"`
+	AppName string `default:"stencil"`
+	License string
+}
+
 //Config Server config
 type Config struct {
 	Port      string `default:"8080"`
 	Timeout   int    `default:"60"`
 	BucketURL string
+	NewRelic  NewRelicConfig
 }
 
 // LoadConfig returns application configuration
