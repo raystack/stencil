@@ -1,3 +1,21 @@
+## [v0.1.1](https://github.com/odpf/stencil/compare/v0.1.0...v0.1.1) (2021-05-23)
+
+
+### Features
+
+* **server:** add newrelic support ([553fd38](https://github.com/odpf/stencil/commit/553fd38da38477a3e4e460958c12e0e0dff1ff97))
+
+
+### Bug Fixes
+
+* **server:** comparison of proto file options ([7f6ea6d](https://github.com/odpf/stencil/commit/7f6ea6dde78f4bcfb4f1a8cdd536d261e83b8b25))
+* **server:** handle panics from rule checks ([1aa37ad](https://github.com/odpf/stencil/commit/1aa37ade94f428c5ef1147155ae4cf8d0b2682e3))
+
+
+### Reverts
+
+* Revert "chore: upload descriptors to new stencil service" ([ec1d4b4](https://github.com/odpf/stencil/commit/ec1d4b42c04775b0cd9668e146027c997c64cdb3))
+
 ##  (2021-05-11)
 
 
