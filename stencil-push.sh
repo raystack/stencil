@@ -55,4 +55,8 @@ ACTION="Updating metadata to set latest version to $project_version"
 log_info $ACTION
 curl -sS -w "\n" -u $STENCIL_USERNAME:$STENCIL_PASSWORD -X PUT --fail "https://$STENCIL_HOSTNAME/metadata/proto-descriptors/$proto_repo/version" -d value="$project_version" > /dev/null
 
+ACTION="Upload proto descriptor to stencil service as version $project_version"
+log_info $ACTION
+curl -sS -w "\n" -u $STENCIL_USERNAME:$STENCIL_PASSWORD -X POST --fail "https://$STENCIL_HOSTNAME/v1/descriptors" -F "file=@$file_path" -F "version=$project_version" -F "name=$proto_repo" -F "latest=true" -H "Content-Type: multipart/form-data" > /dev/null
+
 trap - EXIT
