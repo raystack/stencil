@@ -1,3 +1,15 @@
+## [v0.1.2](https://github.com/odpf/stencil/compare/v0.1.1...v0.1.2) (2021-06-03)
+
+
+### Features
+
+* **server:** make graceful shutdown period configurable ([4a11332](https://github.com/odpf/stencil/commit/4a1133201ea865d6940e1e9007d5a8cabd70f241))
+
+
+### Bug Fixes
+
+* **server:** newrelic config not working with envs ([e29f048](https://github.com/odpf/stencil/commit/e29f0488aeb972f9511cc93a9eaeb580360fbd99))
+
 ## [v0.1.1](https://github.com/odpf/stencil/compare/v0.1.0...v0.1.1) (2021-05-23)
 
 
