@@ -47,9 +47,11 @@ jobs:
           distribution: adopt
           java-version: 8
       - name: Publish java client
-        run: cd clients/java && ./gradlew clean publish --console=verbose
+        run: ./gradlew clean publish --console=verbose
+        working-directory: clients/java
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
   publish-js-client:
     runs-on: ubuntu-latest
     needs: create-release

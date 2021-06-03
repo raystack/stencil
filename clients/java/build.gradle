@@ -58,11 +58,11 @@ java {
 publishing {
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/odpf/stencil"
+            name = "OSSRH"
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
             }
         }
     }
