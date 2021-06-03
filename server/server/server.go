@@ -27,5 +27,5 @@ func Start() {
 	}
 	router := Router(api, config)
 
-	runWithGracefulShutdown(config.Port, router, store.Close)
+	runWithGracefulShutdown(config, router, store.Close)
 }

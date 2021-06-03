@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/jeremywohl/flatten"
 	"github.com/mcuadros/go-defaults"
@@ -19,8 +20,10 @@ type NewRelicConfig struct {
 
 //Config Server config
 type Config struct {
-	Port      string `default:"8080"`
-	Timeout   int    `default:"60"`
+	Port string `default:"8080"`
+	//Timeout represents graceful shutdown period.
+	//Default is 60 seconds.
+	Timeout   time.Duration `default:"60s"`
 	BucketURL string
 	NewRelic  NewRelicConfig
 }
