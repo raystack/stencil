@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/odpf/stencil/server/config"
 	"github.com/odpf/stencil/server/models"
 )
 
@@ -35,8 +36,8 @@ func getLogger() gin.HandlerFunc {
 	})
 }
 
-func addMiddleware(router *gin.Engine) {
-	router.Use(getNewRelicMiddleware())
+func addMiddleware(router *gin.Engine, config *config.Config) {
+	router.Use(getNewRelicMiddleware(config))
 	router.Use(gin.Recovery())
 	router.Use(getLogger())
 	router.Use(errorHandle())

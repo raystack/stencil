@@ -7,15 +7,10 @@ import (
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/odpf/stencil/server/config"
-	"github.com/spf13/viper"
 )
 
-func getNewRelicMiddleware() gin.HandlerFunc {
-	var newRelicConfig config.NewRelicConfig
-	err := viper.UnmarshalKey("newrelic", &newRelicConfig)
-	if err != nil {
-		log.Fatal(err)
-	}
+func getNewRelicMiddleware(config *config.Config) gin.HandlerFunc {
+	newRelicConfig := config.NewRelic
 	app, err := newrelic.NewApplication(
 		newrelic.ConfigAppName(newRelicConfig.AppName),
 		newrelic.ConfigLicense(newRelicConfig.License),

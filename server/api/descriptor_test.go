@@ -13,6 +13,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/odpf/stencil/server/config"
 	server2 "github.com/odpf/stencil/server/server"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,7 @@ func setup() (*gin.Engine, *mocks.StoreService, *api.API) {
 	v1 := &api.API{
 		Store: mockService,
 	}
-	router := server2.Router(v1)
+	router := server2.Router(v1, &config.Config{})
 	return router, mockService, v1
 }
 

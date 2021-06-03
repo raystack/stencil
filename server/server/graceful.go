@@ -9,14 +9,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/odpf/stencil/server/config"
 )
 
-func runWithGracefulShutdown(port string, router *gin.Engine, cleanUp func()) {
+func runWithGracefulShutdown(config *config.Config, router *gin.Engine, cleanUp func()) {
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
+		Addr:    fmt.Sprintf(":%s", config.Port),
 		Handler: router,
 	}
 	go func() {
@@ -31,7 +31,7 @@ func runWithGracefulShutdown(port string, router *gin.Engine, cleanUp func()) {
 	<-quit
 	log.Println("Shutting down server...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), config.Timeout)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {

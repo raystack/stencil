@@ -9,9 +9,9 @@ import (
 )
 
 // Router returns server router
-func Router(api *api.API) *gin.Engine {
+func Router(api *api.API, config *config.Config) *gin.Engine {
 	router := gin.New()
-	addMiddleware(router)
+	addMiddleware(router, config)
 	registerCustomValidations(router)
 	registerRoutes(router, api)
 	return router
@@ -25,7 +25,7 @@ func Start() {
 	api := &api.API{
 		Store: dService,
 	}
-	router := Router(api)
+	router := Router(api, config)
 
-	runWithGracefulShutdown(config.Port, router, store.Close)
+	runWithGracefulShutdown(config, router, store.Close)
 }

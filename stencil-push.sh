@@ -55,8 +55,17 @@ ACTION="Updating metadata to set latest version to $project_version"
 log_info $ACTION
 curl -sS -w "\n" -u $STENCIL_USERNAME:$STENCIL_PASSWORD -X PUT --fail "https://$STENCIL_HOSTNAME/metadata/proto-descriptors/$proto_repo/version" -d value="$project_version" > /dev/null
 
-ACTION="Upload proto descriptor to stencil service as version $project_version"
+ACTION="Upload proto descriptor to stencil service with version number: $project_version"
 log_info $ACTION
-curl -sS -w "\n" -u $STENCIL_USERNAME:$STENCIL_PASSWORD -X POST --fail "https://$STENCIL_HOSTNAME/v1/descriptors" -F "file=@$file_path" -F "version=$project_version" -F "name=$proto_repo" -F "latest=true" -H "Content-Type: multipart/form-data" > /dev/null
-
+response_filename="/tmp/stencil_out_$( cat /dev/urandom | base64 | tr -cd 'a-f0-9' | head -c 16 ).txt"
+http_response=$(curl -s -o $response_filename -w "%{http_code}" -u $STENCIL_USERNAME:$STENCIL_PASSWORD -X POST "https://$STENCIL_HOSTNAME/v1/descriptors" -F "file=@$file_path" -F "version=$project_version" -F "name=$proto_repo" -F "latest=true" -H "Content-Type: multipart/form-data")
+if [ $? != 0 ]; then
+    log_error "curl request failed"
+    exit 1
+elif [[ $http_response =~ ^[4-5][0-9][0-9]$ ]]; then
+    log_error "status_code:" $http_response
+    log_error $(cat $response_filename)
+    rm $response_filename
+    exit 1
+fi
 trap - EXIT
