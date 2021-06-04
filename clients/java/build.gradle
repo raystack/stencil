@@ -1,6 +1,8 @@
 plugins {
     id 'idea'
     id 'java-library'
+    id 'maven'
+    id 'signing'
     id 'maven-publish'
     id 'com.google.protobuf' version '0.8.15'
     id 'io.freefair.lombok' version '5.3.3.3'
@@ -100,4 +102,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.maven
 }
