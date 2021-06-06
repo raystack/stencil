@@ -1,6 +1,8 @@
 plugins {
     id 'idea'
     id 'java-library'
+    id 'maven'
+    id 'signing'
     id 'maven-publish'
     id 'com.google.protobuf' version '0.8.15'
     id 'io.freefair.lombok' version '5.3.3.3'
@@ -84,8 +86,24 @@ publishing {
                         url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
+                developers {
+                    developer {
+                        id = 'harikrishnakanchi'
+                        name = 'Hari Krishna'
+                        email = 'harikrishnakanchi@gmail.com'
+                    }
+                    developer {
+                        id = 'ravisuhag'
+                        name = 'Ravi Suhag'
+                        email = 'suhag.ravi@gmail.com'
+                    }
+                }
                 from components.java
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.maven
 }
