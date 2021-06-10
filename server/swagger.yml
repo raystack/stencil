@@ -41,6 +41,11 @@ paths:
           description: "mark this descriptor file as latest"
           required: false
           type: "boolean"
+        - name: "dryrun"
+          in: "formData"
+          description: "flag for dryRun"
+          required: false
+          type: "boolean"
         - name: "skiprules"
           in: "formData"
           description: "list of rules to skip"

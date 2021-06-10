@@ -46,6 +46,9 @@ func (d *DescriptorService) Upload(ctx context.Context, payload *models.Descript
 	if err != nil {
 		return err
 	}
+	if payload.DryRun {
+		return nil
+	}
 	err = d.Store.PutData(ctx, filename, data)
 	if err != nil {
 		return err
