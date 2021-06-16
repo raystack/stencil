@@ -18,7 +18,7 @@ public class StencilUtils {
      * @return - map of proto package and java type
      */
     public static Map<String, String> getTypeNameToPackageNameMap(final Map<String, DescriptorAndTypeName> allDescriptors) {
-        Map<String, String> typeNameMap = new HashMap();
+        Map<String, String> typeNameMap = new HashMap<>();
         allDescriptors.entrySet().stream().forEach((mapEntry) -> {
             DescriptorAndTypeName descriptorAndTypeName = (DescriptorAndTypeName) mapEntry.getValue();
             if (descriptorAndTypeName != null) {
@@ -35,7 +35,7 @@ public class StencilUtils {
      * @return - map of type and the respective protobuff descriptor
      */
     public static Map<String, Descriptors.Descriptor> getAllProtobufDescriptors(final Map<String, DescriptorAndTypeName> allDescriptors) {
-        Map<String, Descriptors.Descriptor> descriptorMap = new HashMap();
+        Map<String, Descriptors.Descriptor> descriptorMap = new HashMap<>();
         allDescriptors.entrySet().stream().forEach((mapEntry) -> {
             DescriptorAndTypeName descriptorAndTypeName = (DescriptorAndTypeName) mapEntry.getValue();
             if (descriptorAndTypeName != null) {
