@@ -6,12 +6,14 @@ enum One {
   ONE_UNSPECIFIED = 0;
 }
 
+// Whole enum delete
 enum Two {
   TWO_UNSPECIFIED = 0;
 }
 
 message Three {
   message Four {
+    // Nested enum delete
     enum Five {
       FIVE_UNSPECIFIED = 0;
     }
@@ -21,12 +23,15 @@ message Three {
   }
   enum Seven {
     SEVEN_UNSPECIFIED = 0;
+    // Nested enum value delete
     SEVEN_SPECIFIED = 1;
   }
+  // Nested enum delete
   enum Eight {
     EIGHT_UNSPECIFIED = 0;
   }
   enum Nine {
+    // EnumValue number change
     ONE = 0;
     TWO = 1;
   }
