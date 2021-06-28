@@ -53,53 +53,102 @@ func runProtoc(
 	return nil
 }
 
+func getDescriptorData(t *testing.T, name string) ([]byte, []byte) {
+	rule := strings.ToLower(name)
+	root, _ := filepath.Abs(fmt.Sprintf("./testdata/%s/", rule))
+	currentFileName := filepath.Join(t.TempDir(), "current.desc")
+	prevFileName := filepath.Join(t.TempDir(), "prev.desc")
+	err := runProtoc(filepath.Join(root, "current"), true, currentFileName)
+	assert.NoError(t, err)
+	err = runProtoc(filepath.Join(root, "previous"), true, prevFileName)
+	assert.NoError(t, err)
+	current, _ := ioutil.ReadFile(currentFileName)
+	prev, _ := ioutil.ReadFile(prevFileName)
+	return current, prev
+}
+
+func filter(strs []string, test func(string) bool) []string {
+	var result []string
+	for _, s := range strs {
+		if test(s) {
+			result = append(result, s)
+		}
+	}
+	return result
+}
+
 func TestCompare(t *testing.T) {
 	for _, test := range []struct {
-		rule           string
-		isErrNil       bool
-		skipRules      []string
-		errContains    []string
-		errNotContains []string
+		rule        string
+		expectedErr []string
 	}{
-		{"FILE_NO_BREAKING_CHANGE", false, []string{}, []string{"all file options have been removed in options/3.proto current version", "java package for options/4.proto changed from com.stenciltest to com.stenciltest.change",
-			"java outer classname for options/4.proto changed from Teststencil to Teststencil.change", "go package for options/4.proto changed from com.stenciltest to com.stenciltest.change",
-			"package for package.proto changed from filebreakingchange to filebreaking", "syntax for syntax.proto changed from proto2 to proto3", "\"b/notfound.proto\" file has been deleted in current version"}, []string{"com.stenciltest.valid"}},
-		{"ENUM_NO_BREAKING_CHANGE", false, []string{}, []string{"a.Two enum has been removed from current version", "enumValue a.Three.SEVEN_SPECIFIED deleted from current version", "a.Three.Eight enum has been removed from current version",
-			"enumValue a.Three.ONE number changed from 0 to 1", "enumValue a.Three.TWO number changed from 1 to 0", "a.Three.Four.Five enum has been removed from current version", "enumValue a.TEN_1 deleted from current version",
-			"enumValue a.TEN_2 deleted from current version"}, []string{}},
-		{"MESSAGE_NO_DELETE", false, []string{}, []string{"a.Two has been removed in current version", "a.Three.Four.Five has been removed in current version", "a.Three.Seven has been removed in current version"}, []string{}},
-		{"FIELD_NO_BREAKING_CHANGE", false, []string{}, []string{"a.One has been removed in current version", "a.Nine has been removed in current version", "field a.One.one is removed in current version", "field a.Two.three is removed in current version",
-			"number changed for a.Two.four from 4 to 5", "type has changed for a.Two.five from int32 to string", "label changed for a.Two.six from repeated to optional", "json name changed for a.Two.eigth from foo to baz", "field a.Two.nine is removed in current version",
-			"field a.Three.three is removed in current version", "number changed for a.Three.four from 4 to 5", "type has changed for a.Three.five from int32 to string", "label changed for a.Three.six from repeated to optional", "json name changed for a.Three.eigth from foo to baz",
-			"field a.Three.Four.Five.three is removed in current version", "field a.Three.Four.Six.three is removed in current version", "number changed for a.Three.Four.Six.four from 4 to 5", "type has changed for a.Three.Four.Six.five from int32 to string", "label changed for a.Three.Four.Six.six from repeated to optional",
-			"json name changed for a.Three.Four.Six.eigth from foo to baz", "field a.Three.Seven.three is removed in current version", "field a.Three.Eight.two is removed in current version", "field a.Nine.one is removed in current version", "field a.Nine.two is removed in current version", "field a.Nine.three is removed in current version", "field a.One2.three is removed in current version"}, []string{}},
-		{"MESSAGE_NO_DELETE", true, []string{"MESSAGE_NO_DELETE", "FIELD_NO_BREAKING_CHANGE", "ENUM_NO_BREAKING_CHANGE", "FILE_NO_BREAKING_CHANGE"}, []string{}, []string{}},
-		{"valid", true, []string{}, []string{}, []string{}},
+		{"FILE_NO_BREAKING_CHANGE", []string{
+			`b/notfound.proto: file has been deleted`,
+			`syntax.proto: syntax changed from "proto2" to "proto3"`,
+			`package.proto: package changed from "filebreakingchange" to "filebreaking"`,
+			`options/4.proto: File option "java package" changed from "com.stenciltest" to "com.stenciltest.change"`,
+			`options/4.proto: File option "java outer classname" changed from "Teststencil" to "Teststencil.change"`,
+			`options/5.proto: File option "java outer classname" changed from "Teststencil.valid" to ""`,
+			`options/3.proto: all file options have been removed in current version`,
+		}},
+		{"ENUM_NO_BREAKING_CHANGE", []string{
+			`1.proto: enum "a.Two" has been removed`,
+			`1.proto: enum "a.Three.Four.Five" has been removed`,
+			`1.proto: enum "a.Three.Eight" has been removed`,
+			`1.proto: enumValue "a.Three.ONE" number changed from "0" to "1"`,
+			`1.proto: enumValue "a.Three.TWO" number changed from "1" to "0"`,
+			`1.proto: enumValue "SEVEN_SPECIFIED" deleted from enum "a.Three.Seven"`,
+			`2.proto: enumValue "TEN_1" deleted from enum "a.Move"`,
+			`2.proto: enumValue "TEN_2" deleted from enum "a.Move2"`,
+			`2.proto: enum "a.MoveType" has been removed`,
+		}},
+		{"MESSAGE_NO_DELETE", []string{
+			`1.proto: "a.Two" message has been removed`,
+			`1.proto: "a.Three.Four.Five" message has been removed`,
+			`1.proto: "a.Three.Seven" message has been removed`,
+			`1.proto: "a.Nine" message has been removed`,
+		}},
+		{"FIELD_NO_BREAKING_CHANGE", []string{
+			`1.proto: field "a.Two.three" is removed`,
+			`1.proto: type has changed for "a.Three.three" from "a.Two" to "a.Three.Seven"`,
+			`1.proto: type has changed for "a.Three.four" from "a.GroupEnums" to "a.GroupEnums2"`,
+			`1.proto: number changed for "a.Three.Four.Six.four" from "4" to "5"`,
+			`1.proto: type has changed for "a.Three.Four.Six.five" from "int32" to "string"`,
+			`1.proto: label changed for "a.Three.Four.Six.six" from "repeated" to "optional"`,
+			`1.proto: json name changed for "a.Three.Four.Six.eigth" from "foo" to "baz"`,
+			`1.proto: field "a.Three.Eight.two" is removed`,
+			`2.proto: field "a.One2.three" is removed`,
+			`2.proto: field "a.One2.Two2" is removed`,
+		}},
 	} {
 		t.Run(test.rule, func(t *testing.T) {
-			rule := strings.ToLower(test.rule)
-			root, _ := filepath.Abs(fmt.Sprintf("./testdata/%s/", rule))
-			currentFileName := filepath.Join(t.TempDir(), "current.desc")
-			prevFileName := filepath.Join(t.TempDir(), "prev.desc")
-			err := runProtoc(filepath.Join(root, "current"), true, currentFileName)
-			assert.NoError(t, err)
-			err = runProtoc(filepath.Join(root, "previous"), true, prevFileName)
-			assert.NoError(t, err)
-			current, _ := ioutil.ReadFile(currentFileName)
-			prev, _ := ioutil.ReadFile(prevFileName)
-			err = proto.Compare(current, prev, test.skipRules)
-			if test.isErrNil {
-				assert.Nil(t, err)
+			allRules := []string{"FILE_NO_BREAKING_CHANGE", "ENUM_NO_BREAKING_CHANGE", "MESSAGE_NO_DELETE", "FIELD_NO_BREAKING_CHANGE"}
+			current, prev := getDescriptorData(t, test.rule)
+			skipRules := filter(allRules, func(s string) bool { return s != test.rule })
+			err := proto.Compare(current, prev, skipRules)
+			if err == nil {
+				assert.Fail(t, "%s should return error", test.rule)
 				return
 			}
-			for _, str := range test.errContains {
-				assert.Contains(t, err.Error(), str)
-			}
-			for _, str := range test.errNotContains {
-				assert.NotContains(t, err.Error(), str)
-			}
+			errMsgs := strings.Split(err.Error(), "; ")
+
+			assert.ElementsMatch(t, test.expectedErr, errMsgs)
 		})
 	}
+
+	t.Run("should be able to skip rules", func(t *testing.T) {
+		rule := "ENUM_NO_BREAKING_CHANGE"
+		current, prev := getDescriptorData(t, rule)
+		err := proto.Compare(current, prev, []string{rule})
+		assert.Nil(t, err)
+	})
+
+	t.Run("should return nil if passed descriptors are backward compatibile", func(t *testing.T) {
+		name := "valid"
+		current, prev := getDescriptorData(t, name)
+		err := proto.Compare(current, prev, []string{name})
+		assert.Nil(t, err)
+	})
 
 	t.Run("should return err if passed data is not valid file descriptor set", func(t *testing.T) {
 		err := proto.Compare([]byte("invalid bytes"), []byte("invalid bytes"), []string{})

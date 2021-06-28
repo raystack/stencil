@@ -4,14 +4,18 @@ package a;
 
 message One {}
 
+// Message delete
 message Two {}
 
 message Three {
   message Four {
+    // Nested message delete
     message Five {}
     message Six {}
   }
+  // Nested message delete
   message Seven{}
+
   message Eight{}
 }
 

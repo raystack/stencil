@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"go.uber.org/multierr"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -27,6 +26,11 @@ func getRegistry(data []byte) (*protoregistry.Files, error) {
 	return files, err
 }
 
+func isFileDescriptor(val protoreflect.Descriptor) (protoreflect.FileDescriptor, bool) {
+	value, ok := val.(protoreflect.FileDescriptor)
+	return value, ok
+}
+
 func isMsgDescriptor(val protoreflect.Descriptor) (protoreflect.MessageDescriptor, bool) {
 	value, ok := val.(protoreflect.MessageDescriptor)
 	return value, ok
@@ -34,10 +38,6 @@ func isMsgDescriptor(val protoreflect.Descriptor) (protoreflect.MessageDescripto
 
 func isEnumDescriptor(val protoreflect.Descriptor) (protoreflect.EnumDescriptor, bool) {
 	value, ok := val.(protoreflect.EnumDescriptor)
-	return value, ok
-}
-func isFieldDescriptor(val protoreflect.Descriptor) (protoreflect.FieldDescriptor, bool) {
-	value, ok := val.(protoreflect.FieldDescriptor)
 	return value, ok
 }
 
@@ -63,18 +63,6 @@ func getEnumDescriptorFromFiles(files *protoregistry.Files, name protoreflect.Fu
 		return nil, ErrCast
 	}
 	return enum, nil
-}
-
-func getFieldDescriptorFromFiles(files *protoregistry.Files, name protoreflect.FullName) (protoreflect.FieldDescriptor, error) {
-	val, err := files.FindDescriptorByName(name)
-	if err != nil {
-		return nil, err
-	}
-	field, ok := isFieldDescriptor(val)
-	if !ok {
-		return nil, ErrCast
-	}
-	return field, nil
 }
 
 func forEachMessage(msgs protoreflect.MessageDescriptors, f func(msg protoreflect.MessageDescriptor) bool) {
@@ -104,7 +92,7 @@ func forEachEnumValues(enumValues protoreflect.EnumValueDescriptors, f func(prot
 	}
 }
 
-func forEachField(fields protoreflect.FieldDescriptors, f func(enum protoreflect.FieldDescriptor) bool) {
+func forEachField(fields protoreflect.FieldDescriptors, f func(protoreflect.FieldDescriptor) bool) {
 	for i := 0; i < fields.Len(); i++ {
 		field := fields.Get(i)
 		if !f(field) {
@@ -121,29 +109,31 @@ func forEachEnumsFromFile(file protoreflect.FileDescriptor, f func(protoreflect.
 	})
 }
 
-func forEachFieldsFromFile(file protoreflect.FileDescriptor, f func(protoreflect.FieldDescriptor) bool) {
-	forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) bool {
-		forEachField(msg.Fields(), f)
+func checkMessagePair(current, prev *protoregistry.Files, f func(protoreflect.MessageDescriptor, protoreflect.MessageDescriptor) bool) {
+	prev.RangeFiles(func(prevFile protoreflect.FileDescriptor) bool {
+		forEachMessage(prevFile.Messages(), func(prevMsg protoreflect.MessageDescriptor) bool {
+			msgName := prevMsg.FullName()
+			currentMsg, err := getMsgDescriptorFromFiles(current, msgName)
+			if err != nil {
+				return true
+			}
+			return f(currentMsg, prevMsg)
+		})
 		return true
 	})
 }
 
-func compareEnums(current, prev protoreflect.EnumDescriptor) error {
-	var err error
-
-	forEachEnumValues(prev.Values(), func(value protoreflect.EnumValueDescriptor) bool {
-		fullName := value.FullName()
-		name := fullName.Name()
-		currentEnumValue := current.Values().ByName(name)
-		if currentEnumValue == nil {
-			err = multierr.Combine(err, fmt.Errorf("enumValue %s deleted from current version", value.FullName()))
-			return true
+func getFileDescriptor(desc protoreflect.Descriptor) protoreflect.FileDescriptor {
+	f := desc.ParentFile()
+	if f != nil && f.Parent() == nil {
+		return f
+	}
+	if desc.Parent() == nil {
+		f, ok := isFileDescriptor(desc)
+		if ok {
+			return f
 		}
-		if currentEnumValue.Number() != value.Number() {
-			err = multierr.Combine(err, fmt.Errorf("enumValue %s number changed from %d to %d", value.FullName(), value.Number(), currentEnumValue.Number()))
-			return true
-		}
-		return true
-	})
-	return err
+		return getFileDescriptor(desc.Parent())
+	}
+	return getFileDescriptor(desc.Parent())
 }

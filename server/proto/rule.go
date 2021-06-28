@@ -4,8 +4,10 @@ import (
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
+// CheckFunc rule entry point
 type CheckFunc func(current, prev *protoregistry.Files) error
 
+// Rule interface
 type Rule interface {
 	ID() string
 	Check(*protoregistry.Files, *protoregistry.Files) error
