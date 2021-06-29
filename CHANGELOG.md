@@ -1,3 +1,19 @@
+## [v0.1.3](https://github.com/odpf/stencil/compare/v0.1.2...v0.1.3) (2021-06-29)
+
+
+### Features
+
+* **java-client:** replace java-statsd-client dependency with java-dogstatsd-client ([fed8f35](https://github.com/odpf/stencil/commit/fed8f3512465417187dd01ed262a2929c87491a9))
+* **server:** add dryrun flag for upload API ([7e697ab](https://github.com/odpf/stencil/commit/7e697abbc25a12e674f43ccf7fd2c5d286bea72d))
+
+
+### Bug Fixes
+
+* **java-client:** expose protobuf lib as transitive dependency for consumers ([22b410d](https://github.com/odpf/stencil/commit/22b410da54cc75c2527d42548f0595a96dffeb64))
+* **java-client:** expose statsd lib as transitive dependency for consumers ([9bd2108](https://github.com/odpf/stencil/commit/9bd21082490a9a080f85e859850daef738a60026))
+* **java-client:** specify type in stencilUtils ([f33a868](https://github.com/odpf/stencil/commit/f33a868d95f8f369cf402a342e7c5d480a25af86))
+* **server:** check message and enum names for enum and message field types ([ce328d8](https://github.com/odpf/stencil/commit/ce328d829b76a83e2fc93679127030220a10cd33))
+
 ## [v0.1.2](https://github.com/odpf/stencil/compare/v0.1.1...v0.1.2) (2021-06-03)
 
 
