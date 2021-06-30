@@ -14,3 +14,4 @@ classpath
 .project
 .settings/
 bin/
+private.key
