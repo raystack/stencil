@@ -12,7 +12,7 @@ Protobuf allows you to define a whole proto file using [google.protobuf.FileDesc
 <p align="center"><img src="./docs/assets/overview.svg" /></p>
 
 ## Key Features
-Discover why users choose Firehose as their main Kafka Consumer
+Discover why users choose Stencil as their main schema registry
 
 * **Version history** Stencil stores versioned history of proto descriptor file on specified namespace and name
 * **Backward compatibility** enforce backward compatability check on upload by default
