@@ -1,9 +1,7 @@
 package main
 
-import (
-	"github.com/odpf/stencil/server/server"
-)
+import "github.com/odpf/stencil/server/cmd"
 
 func main() {
-	server.Start()
+	cmd.Execute()
 }

@@ -18,6 +18,12 @@ type NewRelicConfig struct {
 	License string
 }
 
+// DBConfig contains DB connection details
+type DBConfig struct {
+	ConnectionString string
+	MigrationsPath   string
+}
+
 //Config Server config
 type Config struct {
 	Port string `default:"8080"`
@@ -26,6 +32,7 @@ type Config struct {
 	Timeout   time.Duration `default:"60s"`
 	BucketURL string
 	NewRelic  NewRelicConfig
+	DB        DBConfig
 }
 
 // LoadConfig returns application configuration
