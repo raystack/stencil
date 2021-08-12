@@ -1,20 +1,18 @@
 package models
 
 import (
-	"io"
 	"mime/multipart"
 )
 
 type FileDownload struct {
-	Name      string `uri:"name" binding:"required"`
-	Version   string `uri:"version" binding:"required,versionWithLatest"`
-	Namespace string
+	Name             string `uri:"name" binding:"required"`
+	Version          string `uri:"version" binding:"required,versionWithLatest"`
+	Namespace        string
+	MessageFullNames []string
 }
 
 type FileData struct {
-	ContentLength int64
-	ContentType   string
-	Reader        io.ReadCloser
+	Data []byte
 }
 
 type DescriptorPayload struct {

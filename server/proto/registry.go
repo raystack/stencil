@@ -137,3 +137,23 @@ func getFileDescriptor(desc protoreflect.Descriptor) protoreflect.FileDescriptor
 	}
 	return getFileDescriptor(desc.Parent())
 }
+
+func getMessageList(file protoreflect.FileDescriptor) []string {
+	var messages []string
+	forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) bool {
+		messages = append(messages, string(msg.FullName()))
+		return true
+	})
+	return messages
+}
+
+func getAllDependencies(file protoreflect.FileDescriptor) []string {
+	var fileImports []string
+	fileImports = append(fileImports, file.Path())
+	for i := 0; i < file.Imports().Len(); i++ {
+		imp := file.Imports().Get(i)
+		dependentImports := getAllDependencies(imp)
+		fileImports = append(fileImports, dependentImports...)
+	}
+	return fileImports
+}

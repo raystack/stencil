@@ -53,7 +53,8 @@ func (a *API) Upload(c *gin.Context) {
 func (a *API) Download(c *gin.Context) {
 	namespace := c.Param("namespace")
 	payload := models.FileDownload{
-		Namespace: namespace,
+		Namespace:        namespace,
+		MessageFullNames: c.QueryArray("names"),
 	}
 	if err := c.ShouldBindUri(&payload); err != nil {
 		c.Error(err).SetMeta(models.ErrMissingFormData)
@@ -64,12 +65,9 @@ func (a *API) Download(c *gin.Context) {
 		c.Error(err).SetMeta(models.ErrDownloadFailed)
 		return
 	}
-	defer data.Reader.Close()
 	fileName := c.Param("version")
-	headers := map[string]string{
-		"Content-Disposition": fmt.Sprintf(`attachment; filename="%s"; filename*=UTF-8''%s`, fileName, url.PathEscape(fileName)),
-	}
-	c.DataFromReader(http.StatusOK, data.ContentLength, "application/octet-stream", data.Reader, headers)
+	c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"; filename*=UTF-8''%s`, fileName, url.PathEscape(fileName)))
+	c.Data(http.StatusOK, "application/octet-stream", data.Data)
 }
 
 //GetVersion return latest version number
