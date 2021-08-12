@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -63,11 +62,8 @@ func createMultipartBody(name string, version string) (*bytes.Buffer, *multipart
 }
 
 func mockFileData(contents string) *models.FileData {
-	reader := bytes.NewReader([]byte(contents))
-	r := ioutil.NopCloser(reader)
 	fileData := &models.FileData{
-		Reader:        r,
-		ContentLength: reader.Size(),
+		Data: []byte(contents),
 	}
 	return fileData
 }

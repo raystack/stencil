@@ -15,26 +15,29 @@ import (
 
 //DescriptorService Interacts with backend store
 type DescriptorService struct {
-	Store *store.Store
+	Store        *store.Store
+	ProtoService *proto.Service
 }
 
 //ListNames returns list of directories
 func (d *DescriptorService) ListNames(prefixes ...string) ([]string, error) {
-	prefix := path.Join(prefixes...)
-	return d.Store.ListDir(prefix + "/")
+	return d.ProtoService.GetNames(context.Background(), prefixes[0])
 }
 
 //ListVersions returns list of versions for specified prefixes
 func (d *DescriptorService) ListVersions(prefixes ...string) ([]string, error) {
-	prefix := path.Join(prefixes...)
-	return d.Store.ListFiles(prefix + "/")
+	return d.ProtoService.GetVersions(context.Background(), prefixes[0], prefixes[1])
 }
 
 //Upload uploads the file
 func (d *DescriptorService) Upload(ctx context.Context, payload *models.DescriptorPayload) error {
 	namespace, name, version := payload.Namespace, payload.Name, payload.Version
-	filename := path.Join(namespace, name, version)
-	exists, _ := d.Store.Exists(ctx, filename)
+	snapshot := &proto.Snapshot{
+		Namespace: namespace,
+		Name:      name,
+		Version:   version,
+	}
+	exists := d.ProtoService.Exists(ctx, snapshot)
 	if exists {
 		return models.ErrConflict
 	}
@@ -49,26 +52,17 @@ func (d *DescriptorService) Upload(ctx context.Context, payload *models.Descript
 	if payload.DryRun {
 		return nil
 	}
-	err = d.Store.PutData(ctx, filename, data)
-	if err != nil {
-		return err
-	}
-	if payload.Latest {
-		return d.StoreMetadata(ctx, &models.MetadataPayload{Version: version, Name: name, Namespace: namespace})
-	}
-	return nil
+	return d.ProtoService.Put(ctx, &proto.Snapshot{Namespace: namespace, Name: name, Version: version, Latest: payload.Latest}, data, payload.DryRun)
 }
 
 //Download downloads the file
 func (d *DescriptorService) Download(ctx context.Context, payload *models.FileDownload) (*models.FileData, error) {
-	filename := path.Join(payload.Namespace, payload.Name, payload.Version)
-	data, err := d.Store.Get(ctx, filename)
+	data, err := d.ProtoService.Get(ctx, &proto.Snapshot{Namespace: payload.Namespace, Name: payload.Name, Version: payload.Version}, payload.MessageFullNames)
 	if err != nil {
 		return nil, err
 	}
 	return &models.FileData{
-		ContentLength: data.Size(),
-		Reader:        data,
+		Data: data,
 	}, nil
 }
 
@@ -119,15 +113,12 @@ func (d *DescriptorService) GetMetadata(ctx context.Context, payload *models.Get
 }
 
 func (d *DescriptorService) isBackwardCompatible(ctx context.Context, payload *models.DescriptorPayload, data []byte) error {
-	filename := path.Join(payload.Namespace, payload.Name, "latest")
-	reader, err := d.Store.Get(ctx, filename)
-	if err != nil {
-		if isNotFoundErr(err) {
-			return nil
-		}
-		return err
+	snapshot := &proto.Snapshot{Namespace: payload.Namespace, Name: payload.Name, Version: "latest"}
+	exists := d.ProtoService.Exists(ctx, snapshot)
+	if !exists {
+		return nil
 	}
-	prevData, err := readDataFromReader(reader)
+	prevData, err := d.ProtoService.Get(ctx, snapshot, []string{})
 	if err != nil {
 		return err
 	}
