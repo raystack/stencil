@@ -28,12 +28,12 @@ func (s *Service) Validate(ctx context.Context, cs *snapshot.Snapshot, data []by
 // Insert stores proto schema details in DB after backward compatible check succeeds
 func (s *Service) Insert(ctx context.Context, snapshot *snapshot.Snapshot, data []byte) error {
 	files, _ := getRegistry(data)
-	dbFiles := ToProtobufDBFiles(files)
+	dbFiles := toProtobufDBFiles(files)
 	err := s.repo.Put(ctx, snapshot, dbFiles)
-	if err == nil {
-		return s.snapshotRepo.UpdateLatestVersion(ctx, snapshot)
+	if err != nil {
+		return err
 	}
-	return err
+	return s.snapshotRepo.UpdateLatestVersion(ctx, snapshot)
 }
 
 // Get returns proto schema details from DB
@@ -42,7 +42,7 @@ func (s *Service) Get(ctx context.Context, snapshot *snapshot.Snapshot, names []
 	if err != nil {
 		return
 	}
-	data, err = FromByteArrayToFileDescriptorSet(dbData)
+	data, err = fromByteArrayToFileDescriptorSet(dbData)
 	return
 }
 
