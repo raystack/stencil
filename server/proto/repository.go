@@ -5,6 +5,7 @@ import (
 
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4"
+	"github.com/odpf/stencil/server/snapshot"
 	"github.com/odpf/stencil/server/store"
 )
 
@@ -79,50 +80,17 @@ type Repository struct {
 	db *store.DB
 }
 
-// ListNames returns names
-func (r *Repository) ListNames(ctx context.Context, namespace string) ([]string, error) {
-	var names []string
-	err := pgxscan.Select(ctx, r.db, &names, `SELECT DISTINCT(name) from snapshots where namespace=$1`, namespace)
-	return names, err
-}
-
-// ListVersions returns versions
-func (r *Repository) ListVersions(ctx context.Context, namespace string, name string) ([]string, error) {
-	var names []string
-	err := pgxscan.Select(ctx, r.db, &names, `SELECT version from snapshots where namespace=$1 and name=$2`, namespace, name)
-	return names, err
-}
-
-// Exists checks if mentioned version is present or not
-func (r *Repository) Exists(ctx context.Context, snapshot *Snapshot) bool {
-	var count int64
-	err := r.db.QueryRow(ctx, `SELECT count(id) from snapshots where namespace=$1 and name=$2 and version=$3`,
-		snapshot.Namespace, snapshot.Name, snapshot.Version).Scan(&count)
-	if err != nil {
-		return false
-	}
-	return count != 0
-}
-
-// LatestVersion returns latest version number
-func (r *Repository) LatestVersion(ctx context.Context, namespace string, name string) (string, error) {
-	var version string
-	err := pgxscan.Select(ctx, r.db, &version, `SELECT version from snapshots where namespace=$1 and name=$2 and latest=true`, namespace, name)
-	return version, err
-}
-
 // Put inserts fileDescriptorset information in DB
-func (r *Repository) Put(ctx context.Context, snapshot *Snapshot, dbFiles []*ProtobufDBFile) error {
+func (r *Repository) Put(ctx context.Context, snapshot *snapshot.Snapshot, dbFiles []*ProtobufDBFile) error {
 	return r.db.Pool.BeginFunc(ctx, func(t pgx.Tx) error {
-		var snapshotID int64
-		err := t.QueryRow(ctx, snapshotInsertQuery, snapshot.Namespace, snapshot.Name, snapshot.Version).Scan(&snapshotID)
+		err := t.QueryRow(ctx, snapshotInsertQuery, snapshot.Namespace, snapshot.Name, snapshot.Version).Scan(&snapshot.ID)
 		if err != nil {
 			return err
 		}
 
 		batch := &pgx.Batch{}
 		for _, file := range dbFiles {
-			batch.Queue(fileInsertQuery, snapshotID, file.SearchData, file.Data)
+			batch.Queue(fileInsertQuery, snapshot.ID, file.SearchData, file.Data)
 		}
 		res := t.SendBatch(ctx, batch)
 		for i := 0; i < len(dbFiles); i++ {
@@ -132,52 +100,19 @@ func (r *Repository) Put(ctx context.Context, snapshot *Snapshot, dbFiles []*Pro
 			}
 		}
 		err = res.Close()
-		if err != nil {
-			return err
-		}
-		if snapshot.Latest {
-			var previoudLatestSnapshotID int64
-			err := t.QueryRow(ctx, `SELECT id from snapshots where namespace=$1 and name=$2 and latest=true`, snapshot.Namespace, snapshot.Name).Scan(&previoudLatestSnapshotID)
-			if err != nil && err != pgx.ErrNoRows {
-				return err
-			}
-			_, err = t.Exec(ctx, `UPDATE snapshots set latest=false where id=$1`, previoudLatestSnapshotID)
-			if err != nil {
-				return err
-			}
-			_, err = t.Exec(ctx, `UPDATE snapshots set latest=true where id=$1`, snapshotID)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
+		return err
 	})
 }
 
 // Get Fullycontained descriptorset file given list of fully qualified message names.
 // If message names are empty then whole fileDescriptorSet data returned
-func (r *Repository) Get(ctx context.Context, snapshot *Snapshot, names []string) ([][]byte, error) {
+func (r *Repository) Get(ctx context.Context, snapshot *snapshot.Snapshot, names []string) ([][]byte, error) {
 	var totalData [][]byte
-	var snapshotID int64
 	var err error
-	if snapshot.Version == "latest" {
-		err = r.db.QueryRow(ctx, `SELECT id from snapshots where namespace=$1 and name=$2 and latest=$3`, snapshot.Namespace, snapshot.Name, true).Scan(&snapshotID)
-	} else {
-		err = r.db.QueryRow(ctx, `SELECT id from snapshots where namespace=$1 and name=$2 and version=$3`, snapshot.Namespace, snapshot.Name, snapshot.Version).Scan(&snapshotID)
-	}
-	if err != nil {
-		return totalData, err
-	}
 	if len(names) > 0 {
-		err = pgxscan.Select(ctx, r.db, &totalData, getDataForSpecificMessages, snapshotID, names)
-		if err != nil {
-			return totalData, err
-		}
+		err = pgxscan.Select(ctx, r.db, &totalData, getDataForSpecificMessages, snapshot.ID, names)
 	} else {
-		err = pgxscan.Select(ctx, r.db, &totalData, getWholeFDS, snapshotID)
-		if err != nil {
-			return totalData, err
-		}
+		err = pgxscan.Select(ctx, r.db, &totalData, getWholeFDS, snapshot.ID)
 	}
 	return totalData, err
 }

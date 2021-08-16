@@ -3,20 +3,27 @@ package api
 import (
 	"context"
 
-	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/server/snapshot"
 )
 
-//StoreService Service Interface for interacting with backend store
+//StoreService Service Interface for storage and validation
 type StoreService interface {
-	ListNames(...string) ([]string, error)
-	ListVersions(...string) ([]string, error)
-	Upload(context.Context, *models.DescriptorPayload) error
-	Download(context.Context, *models.FileDownload) (*models.FileData, error)
-	StoreMetadata(ctx context.Context, payload *models.MetadataPayload) error
-	GetMetadata(ctx context.Context, payload *models.GetMetadata) (*models.MetadataFile, error)
+	Validate(context.Context, *snapshot.Snapshot, []byte, []string) error
+	Insert(context.Context, *snapshot.Snapshot, []byte) error
+	Get(context.Context, *snapshot.Snapshot, []string) ([]byte, error)
+}
+
+// MetadataService Service Interface for metadata store
+type MetadataService interface {
+	Exists(context.Context, *snapshot.Snapshot) bool
+	ListNames(context.Context, string) ([]string, error)
+	ListVersions(context.Context, string, string) ([]string, error)
+	GetSnapshot(context.Context, string, string, string, bool) (*snapshot.Snapshot, error)
+	UpdateLatestVersion(context.Context, *snapshot.Snapshot) error
 }
 
 //API holds all handlers
 type API struct {
-	Store StoreService
+	Store    StoreService
+	Metadata MetadataService
 }

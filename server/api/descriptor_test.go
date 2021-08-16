@@ -2,7 +2,6 @@ package api_test
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/odpf/stencil/server/config"
 	server2 "github.com/odpf/stencil/server/server"
+	"github.com/odpf/stencil/server/snapshot"
 
 	"github.com/gin-gonic/gin"
 	"github.com/odpf/stencil/server/api"
@@ -29,13 +29,15 @@ var (
 	success     = "success"
 )
 
-func setup() (*gin.Engine, *mocks.StoreService, *api.API) {
+func setup() (*gin.Engine, *mocks.StoreService, *mocks.MetadataService, *api.API) {
 	mockService := &mocks.StoreService{}
+	mockMetadataService := &mocks.MetadataService{}
 	v1 := &api.API{
-		Store: mockService,
+		Store:    mockService,
+		Metadata: mockMetadataService,
 	}
 	router := server2.Router(v1, &config.Config{})
-	return router, mockService, v1
+	return router, mockService, mockMetadataService, v1
 }
 
 func createMultipartBody(name string, version string) (*bytes.Buffer, *multipart.Writer, error) {
@@ -61,13 +63,6 @@ func createMultipartBody(name string, version string) (*bytes.Buffer, *multipart
 	return buf, writer, err
 }
 
-func mockFileData(contents string) *models.FileData {
-	fileData := &models.FileData{
-		Data: []byte(contents),
-	}
-	return fileData
-}
-
 func TestList(t *testing.T) {
 	for _, test := range []struct {
 		desc         string
@@ -80,8 +75,8 @@ func TestList(t *testing.T) {
 		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
 	} {
 		t.Run(test.desc, func(t *testing.T) {
-			router, mockService, _ := setup()
-			mockService.On("ListNames", "namespace").Return(test.values, test.err)
+			router, _, mockService, _ := setup()
+			mockService.On("ListNames", mock.Anything, "namespace").Return(test.values, test.err)
 
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors", nil)
@@ -107,8 +102,8 @@ func TestListVersions(t *testing.T) {
 		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
 	} {
 		t.Run(test.desc, func(t *testing.T) {
-			router, mockService, _ := setup()
-			mockService.On("ListVersions", "namespace", "example").Return(test.values, test.err)
+			router, _, mockService, _ := setup()
+			mockService.On("ListVersions", mock.Anything, "namespace", "example").Return(test.values, test.err)
 
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/example/versions", nil)
@@ -126,19 +121,22 @@ func TestUpload(t *testing.T) {
 		desc         string
 		name         string
 		version      string
-		uploadErr    error
+		validateErr  error
+		insertErr    error
 		expectedCode int
 		responseMsg  string
 	}{
-		{"should return 400 if name is missing", "", "1.0.1", nil, 400, formError},
-		{"should return 400 if version is missing", "name1", "", nil, 400, formError},
-		{"should return 400 if version is invalid semantic version", "name1", "invalid", nil, 400, formError},
-		{"should return 500 if upload fails", "name1", "1.0.1", errors.New("upload fail"), 500, uploadError},
-		{"should return 200 if upload succeeded", "name1", "1.0.1", nil, 200, success},
+		{"should return 400 if name is missing", "", "1.0.1", nil, nil, 400, formError},
+		{"should return 400 if version is missing", "name1", "", nil, nil, 400, formError},
+		{"should return 400 if version is invalid semantic version", "name1", "invalid", nil, nil, 400, formError},
+		{"should return 400 if backward check fails", "name1", "1.0.1", errors.New("validation"), nil, 400, "validation"},
+		{"should return 500 if insert fails", "name1", "1.0.1", nil, errors.New("insert fail"), 500, uploadError},
+		{"should return 200 if upload succeeded", "name1", "1.0.1", nil, nil, 200, success},
 	} {
 		t.Run(test.desc, func(t *testing.T) {
-			router, mockService, _ := setup()
-			mockService.On("Upload", mock.Anything, mock.Anything).Return(test.uploadErr)
+			router, mockService, _, _ := setup()
+			mockService.On("Validate", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(test.validateErr)
+			mockService.On("Insert", mock.Anything, mock.Anything, mock.Anything).Return(test.insertErr)
 			w := httptest.NewRecorder()
 			body, writer, _ := createMultipartBody(test.name, test.version)
 			req, _ := http.NewRequest("POST", "/v1/namespaces/namespace/descriptors", body)
@@ -167,10 +165,11 @@ func TestDownload(t *testing.T) {
 		{"should be able to download with latest version", "name1", "latest", nil, 200},
 	} {
 		t.Run(test.desc, func(t *testing.T) {
-			router, mockService, _ := setup()
+			router, mockService, mockMetadata, _ := setup()
 
-			fileData := mockFileData("File contents")
-			mockService.On("Download", mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
+			fileData := []byte("File contents")
+			mockMetadata.On("GetSnapshot", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.downloadErr)
+			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/descriptors/%s/versions/%s", test.name, test.version), nil)
 
@@ -198,9 +197,8 @@ func TestGetVersion(t *testing.T) {
 		{"should return latest version number", "name1", "1.0.2", nil, 200},
 	} {
 		t.Run(test.desc, func(t *testing.T) {
-			router, mockService, _ := setup()
-			metadata := &models.MetadataFile{Version: test.latestVersion, Updated: "2021-03-15T10:51:15Z"}
-			mockService.On("GetMetadata", mock.Anything, mock.Anything).Return(metadata, test.err)
+			router, _, mockService, _ := setup()
+			mockService.On("GetSnapshot", mock.Anything, "namespace", test.name, "", true).Return(&snapshot.Snapshot{Version: test.latestVersion}, test.err)
 			w := httptest.NewRecorder()
 
 			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/metadata/%s", test.name), nil)
@@ -209,7 +207,7 @@ func TestGetVersion(t *testing.T) {
 
 			assert.Equal(t, test.expectedCode, w.Code)
 			if test.expectedCode == 200 {
-				expectedData, _ := json.Marshal(metadata)
+				expectedData := []byte(fmt.Sprintf(`{"version":"%s"}`, test.latestVersion))
 				assert.Equal(t, expectedData, w.Body.Bytes())
 			}
 		})
@@ -231,8 +229,8 @@ func TestUpdateLatestVersion(t *testing.T) {
 		{"should return success if update succeeds", "name1", "1.0.2", nil, 200},
 	} {
 		t.Run(test.desc, func(t *testing.T) {
-			router, mockService, _ := setup()
-			mockService.On("StoreMetadata", mock.Anything, mock.Anything).Return(test.err)
+			router, _, mockService, _ := setup()
+			mockService.On("UpdateLatestVersion", mock.Anything, mock.Anything).Return(test.err)
 			w := httptest.NewRecorder()
 
 			body := bytes.NewReader([]byte(fmt.Sprintf(`{"name": "%s", "version": "%s"}`, test.name, test.version)))

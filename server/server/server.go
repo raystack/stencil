@@ -5,7 +5,7 @@ import (
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/config"
 	"github.com/odpf/stencil/server/proto"
-	"github.com/odpf/stencil/server/service"
+	"github.com/odpf/stencil/server/snapshot"
 	"github.com/odpf/stencil/server/store"
 )
 
@@ -21,18 +21,18 @@ func Router(api *api.API, config *config.Config) *gin.Engine {
 // Start Entry point to start the server
 func Start() {
 	config := config.LoadConfig()
-	gcsStore := store.New(config)
 	db := store.NewDBStore(config)
-	repo := proto.NewProtoRepository(db)
-	ser := proto.NewService(repo)
-	dService := &service.DescriptorService{Store: gcsStore, ProtoService: ser}
+	stRepo := snapshot.NewSnapshotRepository(db)
+	stSvc := snapshot.NewSnapshotService(stRepo)
+	protoRepo := proto.NewProtoRepository(db)
+	protoService := proto.NewService(protoRepo, stRepo)
 	api := &api.API{
-		Store: dService,
+		Store:    protoService,
+		Metadata: stSvc,
 	}
 	router := Router(api, config)
 
 	runWithGracefulShutdown(config, router, func() {
-		gcsStore.Close()
 		db.Pool.Close()
 	})
 }
