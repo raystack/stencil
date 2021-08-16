@@ -3,46 +3,41 @@ package proto
 import (
 	"context"
 
-	"google.golang.org/protobuf/reflect/protoregistry"
+	"github.com/odpf/stencil/server/snapshot"
 )
 
 // Service handles proto CRUD operations
 type Service struct {
-	repo *Repository
+	repo         *Repository
+	snapshotRepo *snapshot.Repository
 }
 
-// GetNames returns list of available proto descriptorset names under specified namespace
-func (s *Service) GetNames(ctx context.Context, namespace string) ([]string, error) {
-	return s.repo.ListNames(ctx, namespace)
-}
-
-// GetVersions returns list of available versions
-func (s *Service) GetVersions(ctx context.Context, namespace, name string) ([]string, error) {
-	return s.repo.ListVersions(ctx, namespace, name)
-}
-
-// GetLatestVersion returns latest version number
-func (s *Service) GetLatestVersion(ctx context.Context, namespace, name string) (string, error) {
-	return s.repo.LatestVersion(ctx, namespace, name)
-}
-
-func (s *Service) Exists(ctx context.Context, snapshot *Snapshot) bool {
-	return s.repo.Exists(ctx, snapshot)
-}
-
-// Put stores proto schema details in DB
-func (s *Service) Put(ctx context.Context, snapshot *Snapshot, currentData []byte, dryRun bool) error {
+// Validate checks if current data is backward compatible against previous stable data
+func (s *Service) Validate(ctx context.Context, cs *snapshot.Snapshot, data []byte, rulesToSkip []string) error {
 	var err error
-	var files *protoregistry.Files
-	if files, err = getRegistry(currentData); err != nil {
-		return err
+	prevSt, err := s.snapshotRepo.GetSnapshot(ctx, cs.Namespace, cs.Name, "", true)
+	if err == snapshot.ErrNotFound {
+		return nil
 	}
+	// no need to handle error here. Since without snapshot data won't exist.
+	// If snapshot exist and data is nil, then validation still passes as it's treated as completely new
+	prevData, _ := s.Get(ctx, prevSt, []string{})
+	return Compare(data, prevData, rulesToSkip)
+}
+
+// Insert stores proto schema details in DB after backward compatible check succeeds
+func (s *Service) Insert(ctx context.Context, snapshot *snapshot.Snapshot, data []byte) error {
+	files, _ := getRegistry(data)
 	dbFiles := ToProtobufDBFiles(files)
-	return s.repo.Put(ctx, snapshot, dbFiles)
+	err := s.repo.Put(ctx, snapshot, dbFiles)
+	if err == nil {
+		return s.snapshotRepo.UpdateLatestVersion(ctx, snapshot)
+	}
+	return err
 }
 
 // Get returns proto schema details from DB
-func (s *Service) Get(ctx context.Context, snapshot *Snapshot, names []string) (data []byte, err error) {
+func (s *Service) Get(ctx context.Context, snapshot *snapshot.Snapshot, names []string) (data []byte, err error) {
 	dbData, err := s.repo.Get(ctx, snapshot, names)
 	if err != nil {
 		return
@@ -52,6 +47,6 @@ func (s *Service) Get(ctx context.Context, snapshot *Snapshot, names []string) (
 }
 
 // NewService creates new instance of proto service
-func NewService(r *Repository) *Service {
-	return &Service{r}
+func NewService(r *Repository, sr *snapshot.Repository) *Service {
+	return &Service{repo: r, snapshotRepo: sr}
 }

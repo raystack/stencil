@@ -19,11 +19,12 @@ type DB struct {
 // NewDBStore create DB store
 func NewDBStore(dbConfig *config.Config) *DB {
 	cc, _ := pgxpool.ParseConfig(dbConfig.DB.ConnectionString)
-	defaultConfig := zap.NewProductionConfig()
-	defaultConfig.Level = zap.NewAtomicLevelAt(zap.ErrorLevel)
-	logger, _ := zap.NewProductionConfig().Build()
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatal(err)
+	}
 	cc.ConnConfig.Logger = zapadapter.NewLogger(logger)
-	cc.ConnConfig.LogLevel = pgx.LogLevelError
+	cc.ConnConfig.LogLevel = pgx.LogLevelInfo
 
 	pgxPool, err := pgxpool.ConnectConfig(context.Background(), cc)
 	if err != nil {
