@@ -50,4 +50,17 @@ func TestDownload(t *testing.T) {
 			}
 		})
 	}
+	t.Run("should return 404 if file content not found", func(t *testing.T) {
+		router, mockService, mockMetadata, _ := setup()
+		fileData := []byte("")
+		mockMetadata.On("GetSnapshot", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, nil)
+		mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, nil)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/n/versions/latest", nil)
+
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, 404, w.Code)
+		assert.Equal(t, []byte(`{"message":"not found"}`), w.Body.Bytes())
+	})
 }
