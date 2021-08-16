@@ -35,6 +35,10 @@ func (a *API) Download(c *gin.Context) {
 		c.Error(err).SetMeta(models.ErrDownloadFailed)
 		return
 	}
+	if len(data) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": "not found"})
+		return
+	}
 	fileName := payload.Version
 	c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"; filename*=UTF-8''%s`, fileName, url.PathEscape(fileName)))
 	c.Data(http.StatusOK, "application/octet-stream", data)
