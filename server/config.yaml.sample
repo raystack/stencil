@@ -1,2 +1,9 @@
 port: 8000
-bucketURL: "provider specific url" // check more here https://gocloud.dev/concepts/urls/
+timeout: 5s
+newrelic:
+  appname: example
+  enabled: false
+  license: "<key>"
+db:
+  connectionstring: "postgres://postgres@localhost:5432/db"
+  migrationspath: "file:///path/to/server/migrations"

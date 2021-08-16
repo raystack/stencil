@@ -1,310 +1,351 @@
+<h1 id="stencil-server">Stencil server v0.1.4</h1>
 
+> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
+<h1 id="stencil-server-default">Default</h1>
 
-# Stencil server
-  
+## ping
 
-## Informations
+<a id="opIdping"></a>
 
-### Version
+> Code samples
 
-0.1.0
+```shell
+# You can also use wget
+curl -X GET /ping
 
-## Tags
+```
 
-  ### <span id="tag-descriptors"></span>descriptors
+`GET /ping`
+
+*service health check*
+
+<h3 id="ping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|returns pong message|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+<h1 id="stencil-server-descriptors">descriptors</h1>
 
 Manage descriptors
 
-  ### <span id="tag-metadata"></span>metadata
+## post__v1_namespaces_{namespace}_descriptors
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /v1/namespaces/{namespace}/descriptors \
+  -H 'Content-Type: multipart/form-data'
+
+```
+
+`POST /v1/namespaces/{namespace}/descriptors`
+
+*upload descriptors*
+
+> Body parameter
+
+```yaml
+name: string
+version: string
+latest: true
+dryrun: true
+skiprules:
+  - FILE_NO_BREAKING_CHANGE
+file: string
+
+```
+
+<h3 id="post__v1_namespaces_{namespace}_descriptors-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|body|body|object|true|none|
+|» name|body|string|true|none|
+|» version|body|string|true|version number for descriptor file. This should follow semantic version compatability|
+|» latest|body|boolean|false|mark this descriptor file as latest|
+|» dryrun|body|boolean|false|flag for dryRun|
+|» skiprules|body|[string]|false|list of rules to skip|
+|» file|body|string(binary)|true|descriptorset file to upload|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» skiprules|FILE_NO_BREAKING_CHANGE|
+|» skiprules|MESSAGE_NO_DELETE|
+|» skiprules|FIELD_NO_BREAKING_CHANGE|
+|» skiprules|ENUM_NO_BREAKING_CHANGE|
+
+<h3 id="post__v1_namespaces_{namespace}_descriptors-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response|None|
+|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|Conflict|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__v1_namespaces_{namespace}_descriptors
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /v1/namespaces/{namespace}/descriptors \
+  -H 'Accept: application/json'
+
+```
+
+`GET /v1/namespaces/{namespace}/descriptors`
+
+*list all available descriptor names under one namespace*
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  "string"
+]
+```
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|returns list of descriptor names|Inline|
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors-responseschema">Response Schema</h3>
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__v1_namespaces_{namespace}_descriptors_{name}_versions
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /v1/namespaces/{namespace}/descriptors/{name}/versions \
+  -H 'Accept: application/json'
+
+```
+
+`GET /v1/namespaces/{namespace}/descriptors/{name}/versions`
+
+*list all available versions for specified descriptor*
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|name|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  "string"
+]
+```
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|returns list of versions|Inline|
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions-responseschema">Response Schema</h3>
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## get__v1_namespaces_{namespace}_descriptors_{name}_versions_{version}
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}
+
+```
+
+`GET /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}`
+
+*download specified descriptor file*
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions_{version}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|name|path|string|true|none|
+|version|path|string|true|none|
+|fullnames|query|array[string]|false|Proto fullnames|
+
+<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions_{version}-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|download response|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+<h1 id="stencil-server-metadata">metadata</h1>
 
 manage latest versions for uploaded descriptor files
 
-## Content negotiation
+## post__v1_namespaces_{namespace}_metadata
 
-### URI Schemes
-  * http
+> Code samples
 
-### Consumes
-  * application/json
-  * multipart/form-data
-
-### Produces
-  * application/octet-stream
-  * application/json
-
-## All endpoints
-
-###  descriptors
-
-  
-
-| Method  | URI     | Name   | Summary |
-|---------|---------|--------|---------|
-| GET | /v1/namespaces/{namespace}/descriptors | [get v1 namespaces namespace descriptors](#get-v1-namespaces-namespace-descriptors) | list all available descriptor names under one namespace |
-| GET | /v1/namespaces/{namespace}/descriptors/{name}/versions | [get v1 namespaces namespace descriptors name versions](#get-v1-namespaces-namespace-descriptors-name-versions) | list all available versions for specified descriptor |
-| GET | /v1/namespaces/{namespace}/descriptors/{name}/versions/{version} | [get v1 namespaces namespace descriptors name versions version](#get-v1-namespaces-namespace-descriptors-name-versions-version) | download specified descriptor file |
-| POST | /v1/namespaces/{namespace}/descriptors | [post v1 namespaces namespace descriptors](#post-v1-namespaces-namespace-descriptors) | upload descriptors |
-  
-
-
-###  metadata
-
-  
-
-| Method  | URI     | Name   | Summary |
-|---------|---------|--------|---------|
-| GET | /v1/namespaces/{namespace}/metadata/{name} | [get v1 namespaces namespace metadata name](#get-v1-namespaces-namespace-metadata-name) | get latest version for specified descriptor |
-| POST | /v1/namespaces/{namespace}/metadata | [post v1 namespaces namespace metadata](#post-v1-namespaces-namespace-metadata) | update metadata |
-  
-
-
-###  operations
-
-| Method  | URI     | Name   | Summary |
-|---------|---------|--------|---------|
-| GET | /ping | [ping](#ping) | service health check |
-  
-
-
-## Paths
-
-### <span id="get-v1-namespaces-namespace-descriptors"></span> list all available descriptor names under one namespace (*GetV1NamespacesNamespaceDescriptors*)
+```shell
+# You can also use wget
+curl -X POST /v1/namespaces/{namespace}/metadata \
+  -H 'Content-Type: application/json'
 
 ```
-GET /v1/namespaces/{namespace}/descriptors
+
+`POST /v1/namespaces/{namespace}/metadata`
+
+*update metadata*
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "version": "string"
+}
 ```
 
-#### Parameters
+<h3 id="post__v1_namespaces_{namespace}_metadata-parameters">Parameters</h3>
 
-| Name | Source | Type | Go type | Separator | Required | Default | Description |
-|------|--------|------|---------|-----------| :------: |---------|-------------|
-| namespace | `path` | string | `string` |  | ✓ |  |  |
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|body|body|[MetadataPayload](#schemametadatapayload)|true|specify name and version in payload|
 
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#get-v1-namespaces-namespace-descriptors-200) | OK | returns list of descriptor names |  | [schema](#get-v1-namespaces-namespace-descriptors-200-schema) |
+<h3 id="post__v1_namespaces_{namespace}_metadata-responses">Responses</h3>
 
-#### Responses
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response|None|
 
+<aside class="success">
+This operation does not require authentication
+</aside>
 
-##### <span id="get-v1-namespaces-namespace-descriptors-200"></span> 200 - returns list of descriptor names
-Status: OK
+## get__v1_namespaces_{namespace}_metadata_{name}
 
-###### <span id="get-v1-namespaces-namespace-descriptors-200-schema"></span> Schema
-   
-  
+> Code samples
 
-[]string
-
-### <span id="get-v1-namespaces-namespace-descriptors-name-versions"></span> list all available versions for specified descriptor (*GetV1NamespacesNamespaceDescriptorsNameVersions*)
-
-```
-GET /v1/namespaces/{namespace}/descriptors/{name}/versions
-```
-
-#### Parameters
-
-| Name | Source | Type | Go type | Separator | Required | Default | Description |
-|------|--------|------|---------|-----------| :------: |---------|-------------|
-| name | `path` | string | `string` |  | ✓ |  |  |
-| namespace | `path` | string | `string` |  | ✓ |  |  |
-
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#get-v1-namespaces-namespace-descriptors-name-versions-200) | OK | returns list of versions |  | [schema](#get-v1-namespaces-namespace-descriptors-name-versions-200-schema) |
-
-#### Responses
-
-
-##### <span id="get-v1-namespaces-namespace-descriptors-name-versions-200"></span> 200 - returns list of versions
-Status: OK
-
-###### <span id="get-v1-namespaces-namespace-descriptors-name-versions-200-schema"></span> Schema
-   
-  
-
-[]string
-
-### <span id="get-v1-namespaces-namespace-descriptors-name-versions-version"></span> download specified descriptor file (*GetV1NamespacesNamespaceDescriptorsNameVersionsVersion*)
+```shell
+# You can also use wget
+curl -X GET /v1/namespaces/{namespace}/metadata/{name} \
+  -H 'Accept: application/json'
 
 ```
-GET /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}
+
+`GET /v1/namespaces/{namespace}/metadata/{name}`
+
+*get latest version for specified descriptor*
+
+<h3 id="get__v1_namespaces_{namespace}_metadata_{name}-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|namespace|path|string|true|none|
+|name|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "version": "string"
+}
 ```
 
-#### Produces
-  * application/octet-stream
+<h3 id="get__v1_namespaces_{namespace}_metadata_{name}-responses">Responses</h3>
 
-#### Parameters
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response|[MetadataResponse](#schemametadataresponse)|
 
-| Name | Source | Type | Go type | Separator | Required | Default | Description |
-|------|--------|------|---------|-----------| :------: |---------|-------------|
-| name | `path` | string | `string` |  | ✓ |  |  |
-| namespace | `path` | string | `string` |  | ✓ |  |  |
-| version | `path` | string | `string` |  | ✓ |  |  |
+<aside class="success">
+This operation does not require authentication
+</aside>
 
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#get-v1-namespaces-namespace-descriptors-name-versions-version-200) | OK | download response |  | [schema](#get-v1-namespaces-namespace-descriptors-name-versions-version-200-schema) |
+# Schemas
 
-#### Responses
+<h2 id="tocS_MetadataResponse">MetadataResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemametadataresponse"></a>
+<a id="schema_MetadataResponse"></a>
+<a id="tocSmetadataresponse"></a>
+<a id="tocsmetadataresponse"></a>
 
-
-##### <span id="get-v1-namespaces-namespace-descriptors-name-versions-version-200"></span> 200 - download response
-Status: OK
-
-###### <span id="get-v1-namespaces-namespace-descriptors-name-versions-version-200-schema"></span> Schema
-
-### <span id="get-v1-namespaces-namespace-metadata-name"></span> get latest version for specified descriptor (*GetV1NamespacesNamespaceMetadataName*)
+```json
+{
+  "version": "string"
+}
 
 ```
-GET /v1/namespaces/{namespace}/metadata/{name}
-```
 
-#### Parameters
+### Properties
 
-| Name | Source | Type | Go type | Separator | Required | Default | Description |
-|------|--------|------|---------|-----------| :------: |---------|-------------|
-| name | `path` | string | `string` |  | ✓ |  |  |
-| namespace | `path` | string | `string` |  | ✓ |  |  |
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|version|string|false|none|none|
 
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#get-v1-namespaces-namespace-metadata-name-200) | OK | Success response |  | [schema](#get-v1-namespaces-namespace-metadata-name-200-schema) |
+<h2 id="tocS_MetadataPayload">MetadataPayload</h2>
+<!-- backwards compatibility -->
+<a id="schemametadatapayload"></a>
+<a id="schema_MetadataPayload"></a>
+<a id="tocSmetadatapayload"></a>
+<a id="tocsmetadatapayload"></a>
 
-#### Responses
-
-
-##### <span id="get-v1-namespaces-namespace-metadata-name-200"></span> 200 - Success response
-Status: OK
-
-###### <span id="get-v1-namespaces-namespace-metadata-name-200-schema"></span> Schema
-   
-  
-
-[MetadataResponse](#metadata-response)
-
-### <span id="post-v1-namespaces-namespace-descriptors"></span> upload descriptors (*PostV1NamespacesNamespaceDescriptors*)
+```json
+{
+  "name": "string",
+  "version": "string"
+}
 
 ```
-POST /v1/namespaces/{namespace}/descriptors
-```
 
-#### Consumes
-  * multipart/form-data
+### Properties
 
-#### Produces
-  * application/json
-
-#### Parameters
-
-| Name | Source | Type | Go type | Separator | Required | Default | Description |
-|------|--------|------|---------|-----------| :------: |---------|-------------|
-| namespace | `path` | string | `string` |  | ✓ |  |  |
-| file | `formData` | file | `io.ReadCloser` |  | ✓ |  | descriptorset file to upload |
-| latest | `formData` | boolean | `bool` |  |  |  | mark this descriptor file as latest |
-| name | `formData` | string | `string` |  | ✓ |  |  |
-| skiprules | `formData` | []string | `[]string` |  |  |  | list of rules to skip |
-| version | `formData` | string | `string` |  | ✓ |  | version number for descriptor file. This should follow semantic version compatability |
-
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#post-v1-namespaces-namespace-descriptors-200) | OK | Success response |  | [schema](#post-v1-namespaces-namespace-descriptors-200-schema) |
-| [409](#post-v1-namespaces-namespace-descriptors-409) | Conflict | Conflict |  | [schema](#post-v1-namespaces-namespace-descriptors-409-schema) |
-
-#### Responses
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|version|string|false|none|none|
 
 
-##### <span id="post-v1-namespaces-namespace-descriptors-200"></span> 200 - Success response
-Status: OK
-
-###### <span id="post-v1-namespaces-namespace-descriptors-200-schema"></span> Schema
-
-##### <span id="post-v1-namespaces-namespace-descriptors-409"></span> 409 - Conflict
-Status: Conflict
-
-###### <span id="post-v1-namespaces-namespace-descriptors-409-schema"></span> Schema
-
-### <span id="post-v1-namespaces-namespace-metadata"></span> update metadata (*PostV1NamespacesNamespaceMetadata*)
-
-```
-POST /v1/namespaces/{namespace}/metadata
-```
-
-#### Parameters
-
-| Name | Source | Type | Go type | Separator | Required | Default | Description |
-|------|--------|------|---------|-----------| :------: |---------|-------------|
-| namespace | `path` | string | `string` |  | ✓ |  |  |
-| body | `body` | [MetadataPayload](#metadata-payload) | `models.MetadataPayload` | | ✓ | | specify name and version in payload |
-
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#post-v1-namespaces-namespace-metadata-200) | OK | Success response |  | [schema](#post-v1-namespaces-namespace-metadata-200-schema) |
-
-#### Responses
-
-
-##### <span id="post-v1-namespaces-namespace-metadata-200"></span> 200 - Success response
-Status: OK
-
-###### <span id="post-v1-namespaces-namespace-metadata-200-schema"></span> Schema
-
-### <span id="ping"></span> service health check (*ping*)
-
-```
-GET /ping
-```
-
-#### All responses
-| Code | Status | Description | Has headers | Schema |
-|------|--------|-------------|:-----------:|--------|
-| [200](#ping-200) | OK | returns pong message |  | [schema](#ping-200-schema) |
-
-#### Responses
-
-
-##### <span id="ping-200"></span> 200 - returns pong message
-Status: OK
-
-###### <span id="ping-200-schema"></span> Schema
-
-## Models
-
-### <span id="metadata-payload"></span> MetadataPayload
-
-
-  
-
-
-
-**Properties**
-
-| Name | Type | Go type | Required | Default | Description | Example |
-|------|------|---------|:--------:| ------- |-------------|---------|
-| name | string| `string` |  | |  |  |
-| version | string| `string` |  | |  |  |
-
-
-
-### <span id="metadata-response"></span> MetadataResponse
-
-
-  
-
-
-
-**Properties**
-
-| Name | Type | Go type | Required | Default | Description | Example |
-|------|------|---------|:--------:| ------- |-------------|---------|
-| updated | string| `string` |  | |  |  |
-| version | string| `string` |  | |  |  |
 
 
