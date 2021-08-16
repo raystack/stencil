@@ -29,10 +29,9 @@ type Config struct {
 	Port string `default:"8080"`
 	//Timeout represents graceful shutdown period.
 	//Default is 60 seconds.
-	Timeout   time.Duration `default:"60s"`
-	BucketURL string
-	NewRelic  NewRelicConfig
-	DB        DBConfig
+	Timeout  time.Duration `default:"60s"`
+	NewRelic NewRelicConfig
+	DB       DBConfig
 }
 
 // LoadConfig returns application configuration

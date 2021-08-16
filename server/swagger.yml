@@ -125,6 +125,13 @@ paths:
           in: "path"
           required: true
           type: "string"
+        - name: "fullnames"
+          in: "query"
+          type: "array"
+          description: "Proto fullnames"
+          items:
+            type: string
+          collectionFormat: "multi"
       responses:
         "200":
           description: "download response"
@@ -175,8 +182,6 @@ tags:
 definitions:
   MetadataResponse:
     properties:
-      updated:
-        type: string
       version:
         type: string
     type: object

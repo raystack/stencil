@@ -11,14 +11,14 @@ Stencil is dynamic protobuf schema registry. It provides REST interface for stor
  - stores versioned history of proto descriptor file on specified namespace and name
  - enforce backward compatability check on upload by default
  - ability to skip some of the backward compatability checks while upload
- - ability to download proto descriptor files
+ - ability to download fully contained proto descriptor file for specified proto message [fullName](https://pkg.go.dev/google.golang.org/protobuf@v1.27.1/reflect/protoreflect#FullName)
  - provides metadata API to retrieve latest version number given a name and namespace
- - support for multiple backend storage services (Local storage, Google cloud storage, S3, Azure blob storage and in-memory storage)
 
 
-  
-## Installation 
+## Requirements
+ - postgres 11
 
+## Installation
 
 Run the following commands to run from docker image
 ```bash
@@ -37,20 +37,14 @@ $ ./stencil # specify envs before executing this command
 
 To run the stencil server, you will need to add the following environment variables
 
-`BUCKETURL` is common across different backend stores. Please refer URL structure [here](https://gocloud.dev/concepts/urls/) for configuring different backend stores.
-
-`PORT` port number default to `8080`
-
-Following table represents required variables to authenticate for different backend stores
-
-
-| Backend store | ENV variable     | Description                |
-| :-------- | :------- | :------------------------- |
-| Google cloud storage | `GOOGLE_APPLICATION_CREDENTIALS` | Value should point to service account key file. Refer [here](https://cloud.google.com/storage/docs/reference/libraries#setting_up_authentication) to generate key file |
-| Azure cloud storage | `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_STORAGE_SAS_TOKEN` | `AZURE_STORAGE_ACCOUNT` is required, along with one of the other two. refer [here](https://gocloud.dev/howto/blob/#azure) for more details |
-| AWS cloud storage | refer [here](https://docs.aws.amazon.com/sdk-for-go/api/aws/session/) for list of envs needed | [reference](https://gocloud.dev/howto/blob/#s3) |
-| Local storage | none | No extra env required |
-
+| ENV          | Description          |
+| :------------ | :--------------------- |
+| `PORT` | port number default to `8080` |
+| `TIMEOUT` | graceful time to wait before shutting down the server. Takes `time.Duration` format. Eg: `30s` or `20m` |
+| `DB_CONNECTIONSTRING` | postgres db connection [url](https://www.postgresql.org/docs/11/libpq-connect.html#LIBPQ-CONNSTRING). Eg: `postgres://postgres@localhost:5432/db_name` |
+| `NEWRELIC_ENABLED` | boolean to enable newrelic |
+| `NEWRELIC_APPNAME` | appname |
+| `NEWRELIC_LICENSE` | License key for newrelic |
 
 ## Quick start API usage examples
 
@@ -84,6 +78,6 @@ $ curl -X GET http://localhost:8080/v1/namespaces/quickstart/descriptors/example
 $ curl -X GET http://localhost:8080/v1/namespaces/quickstart/metadata/example
 
 # modify latest version number of particular descriptor
-$ curl -X POST 'http://localhost:8080/v1/namespaces/quickstart' -H 'Content-Type: application/json' --data-raw '{"name": "example","version": "0.0.1"}'
+$ curl -X POST 'http://localhost:8080/v1/namespaces/quickstart/metadata' -H 'Content-Type: application/json' --data-raw '{"name": "example","version": "0.0.1"}'
 ```
 
