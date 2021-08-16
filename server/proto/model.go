@@ -31,8 +31,8 @@ type Snapshot struct {
 	Latest    bool
 }
 
-// ToProtobufDBFiles creates DB compatible types
-func ToProtobufDBFiles(files *protoregistry.Files) []*ProtobufDBFile {
+// toProtobufDBFiles creates DB compatible types
+func toProtobufDBFiles(files *protoregistry.Files) []*ProtobufDBFile {
 	var dbFiles []*ProtobufDBFile
 	files.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		f := ToProtobufDBFile(fd)
@@ -56,8 +56,8 @@ func ToProtobufDBFile(file protoreflect.FileDescriptor) *ProtobufDBFile {
 	}
 }
 
-// FromByteArrayToFileDescriptorSet converts list of FileDescriptorProto []byte to FileDescriptorSet
-func FromByteArrayToFileDescriptorSet(byteFiles [][]byte) ([]byte, error) {
+// fromByteArrayToFileDescriptorSet converts list of FileDescriptorProto []byte to FileDescriptorSet
+func fromByteArrayToFileDescriptorSet(byteFiles [][]byte) ([]byte, error) {
 	fds := &descriptorpb.FileDescriptorSet{}
 	for _, byteFile := range byteFiles {
 		fd := &descriptorpb.FileDescriptorProto{}
