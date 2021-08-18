@@ -1,11 +1,16 @@
 # Stencil go client
 
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/odpf/stencil/clients/go.svg)](https://pkg.go.dev/github.com/odpf/stencil/clients/go)
+
 Stencil go client package provides a store to lookup protobuf descriptors and options to keep the protobuf descriptors upto date.
 
 It has following features
  - Deserialize protobuf messages directly by specifying protobuf message name
  - Ability to refresh protobuf descriptors in specified intervals
  - Support to download descriptors from multiple urls
+
+
 ## Requirements
 
  - go 1.16
@@ -22,8 +27,7 @@ Then import the stencil package into your own code as mentioned below
 import stencil "github.com/odpf/stencil/clients/go"
 ```
 
-## Usage and Documentation
-[![Go Reference](https://pkg.go.dev/badge/github.com/odpf/stencil/clients/go.svg)](https://pkg.go.dev/github.com/odpf/stencil/clients/go)
+## Usage
 
 ### Creating a client
 
