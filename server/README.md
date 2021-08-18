@@ -46,6 +46,11 @@ To run the stencil server, you will need to add the following environment variab
 | `NEWRELIC_APPNAME` | appname |
 | `NEWRELIC_LICENSE` | License key for newrelic |
 
+## Reference
+
+- [API](./docs/api.md)
+- [Rules](./docs/rules.md)
+
 ## Quick start API usage examples
 
 The following assumes you have Stencil server up and running at port 8080 and `protoc` is installed.

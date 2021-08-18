@@ -1,13 +1,15 @@
 # Stencil
 
+
 ![test workflow](https://github.com/odpf/stencil/actions/workflows/server-test.yaml/badge.svg)
 ![release workflow](https://github.com/odpf/stencil/actions/workflows/release.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/odpf/stencil?logo=semantic-release)](Version)
 
-Stencil is dynamic schema registry for protobuf. Protobuf is a great efficient and fast mechanism for serializing structured data. The challenge with protobuf is that for every change it requires to recompile the package to generate the necessary classes. This is not a big challenge if you have protobuf enclosed in your application and compile at startup. But if you have thousands of protos stored in central registry and 100s of applications use them. Updating dependencies of compiled proto jar can soon become a nightmare.
 
-Protobuf allows you to define a whole proto file using [google.protobuf.FileDescriptorProto](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto#L62). A [google.protobuf.FileDescriptorSet](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto#L57) contains list of FileDescriptorProto. Stencil heavily make use of this feature to update proto schemas in runtime.
+Stencil is dynamic schema registry for protobuf. [Protobuf](https://developers.google.com/protocol-buffers) is a Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data. The challenge with using generated source code from protobuf is that for every change in proto definition, it requires to recompile dependent services/packages. This approach works for most applications but it's difficult for general purpose applications that needs to operate on arbitrary protobuf schemas. Stencil enables the developers to specifically tackle this problem.
+
+To work with arbitrary proto schema, application need to load proto schema definition at runtime. Protobuf allows you to define a whole proto file using [google.protobuf.FileDescriptorProto](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto#L62). A [google.protobuf.FileDescriptorSet](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/descriptor.proto#L57) contains list of FileDescriptorProtos. `protoc` can generate descriptorset file from proto files. Stencil heavily make use of this feature to update proto schemas in runtime.
 
 <p align="center"><img src="./docs/assets/overview.svg" /></p>
 
@@ -19,7 +21,8 @@ Discover why users choose Stencil as their main schema registry
 * **Flexbility** ability to skip some of the backward compatability checks while upload
 * **Descriptor fetch** ability to download proto descriptor files
 * **Metadata** provides metadata API to retrieve latest version number given a name and namespace
-* **Multiple backends** support for multiple backend storage services (Local storage, Google cloud storage, S3, Azure blob storage and in-memory storage)
+* **Clients in multiple languages** Stencil provides clients in GO, JAVA, JS languages to interact with Stencil server and deserialize messages using dynamic schema
+
 
 ## Usage
 
@@ -34,52 +37,6 @@ Explore the following resources to get started with Stencil:
  - [Java](clients/java)
  - [Go](clients/go)
  - [Javascript](clients/js)
-
-### Managing descriptors behind an HTTP Server
-
-For serving the protobuf descriptor set artifacts and their versions use a Stencil Server.
-This also helps to easily update the descriptor sets by allowing us to push Protobuf Descriptor sets directly.
-
-#### Endpoints
-
-```http
-GET https://stencil-hostname.example.com/artifactory/proto-descriptors/:stencil_repo/:version
-PUT https://stencil-hostname.example.com/artifactory/proto-descriptors/:stencil_repo/:version
-GET https://stencil-hostname.example.com/metadata/proto-descriptors/:stencil_repo/version
-PUT https://stencil-hostname.example.com/metadata/proto-descriptors/:stencil_repo/version
-```
-The section avoids handling/recommending AUTH mechanism as it is left to the user. The samples below assume that basic Auth set up.
-
-Attribute reference -
- - stencil_repo - A set of protbuf definitions that will be bundled together in a descriptor set
- - version - Artifact version promoted for production use
-
-#### Example Usage
-
-To push a new version of proto descriptor -
-
-```sh
-curl -u test:pasword -X PUT "https://stencil-hostname.example.com/artifactory/proto-descriptors/test-stencil-repo/0.0.5" -T /path/to/protobuf/descriptor/set/file
-```
-
-
-To set version of latest promoted artifact -
-```sh
-curl -u test:password -X PUT "https://stencil-hostname.example.com/metadata/proto-descriptors/test-stencil-repo/version" -d value="0.0.5"
-```
-
-#### CI/CD
-
-Use the script `stencil-push.sh` in CI for uploading Protobuf descriptor sets -
-
-```sh
-# Should be set these as secrets in CI
-export STENCIL_HOSTNAME=stencil-hostname.example.com
-export STENCIL_USERNAME=test-stencil-repo
-export STENCIL_PASSWORD=test-password
-
-./stencil-push.sh 0.0.1 test-stencil-repo /path/to/protobuf/descriptor/set/file
-```
 
 ## Contribute
 
