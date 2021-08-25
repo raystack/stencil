@@ -28,8 +28,8 @@ func (_m *MetadataService) Exists(_a0 context.Context, _a1 *snapshot.Snapshot) b
 	return r0
 }
 
-// GetSnapshot provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4
-func (_m *MetadataService) GetSnapshot(_a0 context.Context, _a1 string, _a2 string, _a3 string, _a4 bool) (*snapshot.Snapshot, error) {
+// GetSnapshotByFields provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4
+func (_m *MetadataService) GetSnapshotByFields(_a0 context.Context, _a1 string, _a2 string, _a3 string, _a4 bool) (*snapshot.Snapshot, error) {
 	ret := _m.Called(_a0, _a1, _a2, _a3, _a4)
 
 	var r0 *snapshot.Snapshot
@@ -51,21 +51,21 @@ func (_m *MetadataService) GetSnapshot(_a0 context.Context, _a1 string, _a2 stri
 	return r0, r1
 }
 
-// ListNames provides a mock function with given fields: _a0, _a1
-func (_m *MetadataService) ListNames(_a0 context.Context, _a1 string) ([]string, error) {
+// GetSnapshotByID provides a mock function with given fields: _a0, _a1
+func (_m *MetadataService) GetSnapshotByID(_a0 context.Context, _a1 int64) (*snapshot.Snapshot, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 []string
-	if rf, ok := ret.Get(0).(func(context.Context, string) []string); ok {
+	var r0 *snapshot.Snapshot
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *snapshot.Snapshot); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]string)
+			r0 = ret.Get(0).(*snapshot.Snapshot)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -74,22 +74,22 @@ func (_m *MetadataService) ListNames(_a0 context.Context, _a1 string) ([]string,
 	return r0, r1
 }
 
-// ListVersions provides a mock function with given fields: _a0, _a1, _a2
-func (_m *MetadataService) ListVersions(_a0 context.Context, _a1 string, _a2 string) ([]string, error) {
-	ret := _m.Called(_a0, _a1, _a2)
+// List provides a mock function with given fields: _a0, _a1
+func (_m *MetadataService) List(_a0 context.Context, _a1 *snapshot.Snapshot) ([]*snapshot.Snapshot, error) {
+	ret := _m.Called(_a0, _a1)
 
-	var r0 []string
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) []string); ok {
-		r0 = rf(_a0, _a1, _a2)
+	var r0 []*snapshot.Snapshot
+	if rf, ok := ret.Get(0).(func(context.Context, *snapshot.Snapshot) []*snapshot.Snapshot); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]string)
+			r0 = ret.Get(0).([]*snapshot.Snapshot)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
-		r1 = rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(1).(func(context.Context, *snapshot.Snapshot) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}

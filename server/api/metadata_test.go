@@ -41,31 +41,31 @@ func TestList(t *testing.T) {
 
 }
 
-func TestListVersions(t *testing.T) {
-	for _, test := range []struct {
-		desc         string
-		err          error
-		values       []string
-		expectedCode int
-		expectedResp string
-	}{
-		{"should return list", nil, []string{"n1", "n2"}, 200, `["n1", "n2"]`},
-		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
-	} {
-		t.Run(test.desc, func(t *testing.T) {
-			router, _, mockService, _ := setup()
-			mockService.On("ListVersions", mock.Anything, "namespace", "example").Return(test.values, test.err)
+// func TestListVersions(t *testing.T) {
+// 	for _, test := range []struct {
+// 		desc         string
+// 		err          error
+// 		values       []string
+// 		expectedCode int
+// 		expectedResp string
+// 	}{
+// 		{"should return list", nil, []string{"n1", "n2"}, 200, `["n1", "n2"]`},
+// 		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
+// 	} {
+// 		t.Run(test.desc, func(t *testing.T) {
+// 			router, _, mockService, _ := setup()
+// 			mockService.On("ListVersions", mock.Anything, "namespace", "example").Return(test.values, test.err)
 
-			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/example/versions", nil)
-			router.ServeHTTP(w, req)
+// 			w := httptest.NewRecorder()
+// 			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/example/versions", nil)
+// 			router.ServeHTTP(w, req)
 
-			assert.Equal(t, test.expectedCode, w.Code)
-			assert.JSONEq(t, test.expectedResp, w.Body.String())
-			mockService.AssertExpectations(t)
-		})
-	}
-}
+// 			assert.Equal(t, test.expectedCode, w.Code)
+// 			assert.JSONEq(t, test.expectedResp, w.Body.String())
+// 			mockService.AssertExpectations(t)
+// 		})
+// 	}
+// }
 
 func TestGetVersion(t *testing.T) {
 	for _, test := range []struct {
