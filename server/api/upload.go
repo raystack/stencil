@@ -11,6 +11,8 @@ import (
 	"github.com/odpf/stencil/server/api/v1/genproto"
 	"github.com/odpf/stencil/server/models"
 	"github.com/odpf/stencil/server/snapshot"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // HTTPUpload http handler to schema data with metadata information
@@ -45,6 +47,8 @@ func (a *API) Upload(ctx context.Context, req *genproto.UploadRequest) (*genprot
 	}
 	s := fromProtoToSnapshot(req.Snapshot)
 	if err := a.upload(ctx, s, req.Data, req.Skiprules, req.Dryrun); err != nil {
+		res.Success = false
+		res.Errors = err.Error()
 		return res, err
 	}
 	res.Success = true
@@ -53,18 +57,18 @@ func (a *API) Upload(ctx context.Context, req *genproto.UploadRequest) (*genprot
 
 func (a *API) upload(ctx context.Context, snapshot *snapshot.Snapshot, data []byte, skipRules []string, dryrun bool) error {
 	if ok := a.Metadata.Exists(ctx, snapshot); ok {
-		return models.ErrConflict
+		return status.Error(codes.AlreadyExists, "Resource already exists")
 	}
 	err := a.Store.Validate(ctx, snapshot, data, skipRules)
 	if err != nil {
-		return models.NewAPIError(400, "", err)
+		return status.Error(codes.InvalidArgument, err.Error())
 	}
 	if dryrun {
 		return nil
 	}
 	err = a.Store.Insert(ctx, snapshot, data)
 	if err != nil {
-		return models.ErrUploadFailed
+		return status.Error(codes.Internal, err.Error())
 	}
 	return nil
 }

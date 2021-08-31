@@ -35,7 +35,7 @@ func TestDownload(t *testing.T) {
 			router, mockService, mockMetadata, _ := setup()
 
 			fileData := []byte("File contents")
-			mockMetadata.On("GetSnapshot", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
+			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
 			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/descriptors/%s/versions/%s", test.name, test.version), nil)
@@ -53,7 +53,7 @@ func TestDownload(t *testing.T) {
 	t.Run("should return 404 if file content not found", func(t *testing.T) {
 		router, mockService, mockMetadata, _ := setup()
 		fileData := []byte("")
-		mockMetadata.On("GetSnapshot", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, nil)
+		mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, nil)
 		mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, nil)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/n/versions/latest", nil)

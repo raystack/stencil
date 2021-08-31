@@ -14,134 +14,14 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// SnapshotServiceClient is the client API for SnapshotService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type SnapshotServiceClient interface {
-	List(ctx context.Context, in *ListSnapshotRequest, opts ...grpc.CallOption) (*SnapshotList, error)
-	UpdateLatest(ctx context.Context, in *UpdateLatestRequest, opts ...grpc.CallOption) (*Snapshot, error)
-}
-
-type snapshotServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewSnapshotServiceClient(cc grpc.ClientConnInterface) SnapshotServiceClient {
-	return &snapshotServiceClient{cc}
-}
-
-func (c *snapshotServiceClient) List(ctx context.Context, in *ListSnapshotRequest, opts ...grpc.CallOption) (*SnapshotList, error) {
-	out := new(SnapshotList)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.SnapshotService/List", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *snapshotServiceClient) UpdateLatest(ctx context.Context, in *UpdateLatestRequest, opts ...grpc.CallOption) (*Snapshot, error) {
-	out := new(Snapshot)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.SnapshotService/UpdateLatest", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// SnapshotServiceServer is the server API for SnapshotService service.
-// All implementations must embed UnimplementedSnapshotServiceServer
-// for forward compatibility
-type SnapshotServiceServer interface {
-	List(context.Context, *ListSnapshotRequest) (*SnapshotList, error)
-	UpdateLatest(context.Context, *UpdateLatestRequest) (*Snapshot, error)
-	mustEmbedUnimplementedSnapshotServiceServer()
-}
-
-// UnimplementedSnapshotServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedSnapshotServiceServer struct {
-}
-
-func (UnimplementedSnapshotServiceServer) List(context.Context, *ListSnapshotRequest) (*SnapshotList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
-}
-func (UnimplementedSnapshotServiceServer) UpdateLatest(context.Context, *UpdateLatestRequest) (*Snapshot, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateLatest not implemented")
-}
-func (UnimplementedSnapshotServiceServer) mustEmbedUnimplementedSnapshotServiceServer() {}
-
-// UnsafeSnapshotServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to SnapshotServiceServer will
-// result in compilation errors.
-type UnsafeSnapshotServiceServer interface {
-	mustEmbedUnimplementedSnapshotServiceServer()
-}
-
-func RegisterSnapshotServiceServer(s grpc.ServiceRegistrar, srv SnapshotServiceServer) {
-	s.RegisterService(&SnapshotService_ServiceDesc, srv)
-}
-
-func _SnapshotService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListSnapshotRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SnapshotServiceServer).List(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/odpf.stencil.v1.SnapshotService/List",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SnapshotServiceServer).List(ctx, req.(*ListSnapshotRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SnapshotService_UpdateLatest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateLatestRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SnapshotServiceServer).UpdateLatest(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/odpf.stencil.v1.SnapshotService/UpdateLatest",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SnapshotServiceServer).UpdateLatest(ctx, req.(*UpdateLatestRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// SnapshotService_ServiceDesc is the grpc.ServiceDesc for SnapshotService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var SnapshotService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "odpf.stencil.v1.SnapshotService",
-	HandlerType: (*SnapshotServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "List",
-			Handler:    _SnapshotService_List_Handler,
-		},
-		{
-			MethodName: "UpdateLatest",
-			Handler:    _SnapshotService_UpdateLatest_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "opdf/stencil/stencil.proto",
-}
-
 // StencilServiceClient is the client API for StencilService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StencilServiceClient interface {
 	Upload(ctx context.Context, in *UploadRequest, opts ...grpc.CallOption) (*UploadResponse, error)
 	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (*DownloadResponse, error)
+	List(ctx context.Context, in *ListSnapshotRequest, opts ...grpc.CallOption) (*SnapshotList, error)
+	UpdateLatest(ctx context.Context, in *UpdateLatestRequest, opts ...grpc.CallOption) (*Snapshot, error)
 }
 
 type stencilServiceClient struct {
@@ -170,12 +50,32 @@ func (c *stencilServiceClient) Download(ctx context.Context, in *DownloadRequest
 	return out, nil
 }
 
+func (c *stencilServiceClient) List(ctx context.Context, in *ListSnapshotRequest, opts ...grpc.CallOption) (*SnapshotList, error) {
+	out := new(SnapshotList)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/List", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceClient) UpdateLatest(ctx context.Context, in *UpdateLatestRequest, opts ...grpc.CallOption) (*Snapshot, error) {
+	out := new(Snapshot)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/UpdateLatest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StencilServiceServer is the server API for StencilService service.
 // All implementations must embed UnimplementedStencilServiceServer
 // for forward compatibility
 type StencilServiceServer interface {
 	Upload(context.Context, *UploadRequest) (*UploadResponse, error)
 	Download(context.Context, *DownloadRequest) (*DownloadResponse, error)
+	List(context.Context, *ListSnapshotRequest) (*SnapshotList, error)
+	UpdateLatest(context.Context, *UpdateLatestRequest) (*Snapshot, error)
 	mustEmbedUnimplementedStencilServiceServer()
 }
 
@@ -188,6 +88,12 @@ func (UnimplementedStencilServiceServer) Upload(context.Context, *UploadRequest)
 }
 func (UnimplementedStencilServiceServer) Download(context.Context, *DownloadRequest) (*DownloadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Download not implemented")
+}
+func (UnimplementedStencilServiceServer) List(context.Context, *ListSnapshotRequest) (*SnapshotList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedStencilServiceServer) UpdateLatest(context.Context, *UpdateLatestRequest) (*Snapshot, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateLatest not implemented")
 }
 func (UnimplementedStencilServiceServer) mustEmbedUnimplementedStencilServiceServer() {}
 
@@ -238,6 +144,42 @@ func _StencilService_Download_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StencilService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSnapshotRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilService/List",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceServer).List(ctx, req.(*ListSnapshotRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilService_UpdateLatest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateLatestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceServer).UpdateLatest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilService/UpdateLatest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceServer).UpdateLatest(ctx, req.(*UpdateLatestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StencilService_ServiceDesc is the grpc.ServiceDesc for StencilService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,6 +194,14 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Download",
 			Handler:    _StencilService_Download_Handler,
+		},
+		{
+			MethodName: "List",
+			Handler:    _StencilService_List_Handler,
+		},
+		{
+			MethodName: "UpdateLatest",
+			Handler:    _StencilService_UpdateLatest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

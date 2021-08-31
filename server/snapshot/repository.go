@@ -83,7 +83,11 @@ func (r *Repository) UpdateLatestVersion(ctx context.Context, snapshot *Snapshot
 			return err
 		}
 		_, err = t.Exec(ctx, `UPDATE snapshots set latest=true where id=$1`, snapshot.ID)
-		return err
+		if err != nil {
+			return err
+		}
+		snapshot.Latest = true
+		return nil
 	})
 }
 
@@ -95,13 +99,10 @@ func (r *Repository) GetSnapshotByFields(ctx context.Context, namespace, name, v
 	}
 	var query strings.Builder
 	var args []interface{}
-	query.WriteString(`SELECT id, version, latest from snapshots where namespace=$1 and name=$2`)
-	args = append(args, namespace, name)
-	if latest {
-		query.WriteString(` and latest=true`)
-	}
+	query.WriteString(`SELECT id, version, latest from snapshots where namespace=$1 and name=$2 and latest=$3`)
+	args = append(args, namespace, name, latest)
 	if version != "" {
-		query.WriteString(` and version=$3`)
+		query.WriteString(` and version=$4`)
 		args = append(args, version)
 	}
 	err := r.db.QueryRow(ctx, query.String(), args...).Scan(&snapshot.ID, &snapshot.Version, &snapshot.Latest)

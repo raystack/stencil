@@ -10,6 +10,8 @@ import (
 	"github.com/odpf/stencil/server/api/v1/genproto"
 	"github.com/odpf/stencil/server/models"
 	"github.com/odpf/stencil/server/snapshot"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 //HTTPDownload http handler to download requested schema data
@@ -25,15 +27,7 @@ func (a *API) HTTPDownload(c *gin.Context) {
 	s := payload.ToSnapshot()
 	data, err := a.download(ctx, s, payload.FullNames)
 	if err != nil {
-		if err == snapshot.ErrNotFound {
-			c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
-			return
-		}
-		c.Error(err).SetMeta(models.ErrDownloadFailed)
-		return
-	}
-	if len(data) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"message": "not found"})
+		c.Error(err)
 		return
 	}
 	fileName := payload.Version
@@ -50,10 +44,21 @@ func (a *API) Download(ctx context.Context, req *genproto.DownloadRequest) (*gen
 }
 
 func (a *API) download(ctx context.Context, s *snapshot.Snapshot, fullNames []string) ([]byte, error) {
+	notfoundErr := status.Error(codes.NotFound, "not found")
 	var data []byte
 	st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, s.Latest)
 	if err != nil {
-		return data, err
+		if err == snapshot.ErrNotFound {
+			return data, notfoundErr
+		}
+		return data, status.Convert(err).Err()
 	}
-	return a.Store.Get(ctx, st, fullNames)
+	data, err = a.Store.Get(ctx, st, fullNames)
+	if err != nil {
+		return data, status.Convert(err).Err()
+	}
+	if len(data) == 0 {
+		return data, notfoundErr
+	}
+	return data, nil
 }

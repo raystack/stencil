@@ -5,8 +5,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/odpf/stencil/server/config"
 	"github.com/odpf/stencil/server/models"
+	"google.golang.org/grpc/status"
 )
 
 func errorHandle() gin.HandlerFunc {
@@ -14,6 +16,15 @@ func errorHandle() gin.HandlerFunc {
 		c.Next()
 		ginErr := c.Errors.Last()
 		if ginErr == nil {
+			return
+		}
+		if err, ok := status.FromError(ginErr.Err); ok {
+			code := runtime.HTTPStatusFromCode(err.Code())
+			msg := err.Message()
+			if code >= 500 {
+				msg = "Internal error"
+			}
+			c.AbortWithStatusJSON(code, gin.H{"message": msg})
 			return
 		}
 		if err, ok := ginErr.Err.(models.APIError); ok {

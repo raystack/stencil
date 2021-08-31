@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/odpf/stencil/server/config"
@@ -24,7 +23,6 @@ func NewDBStore(dbConfig *config.Config) *DB {
 		log.Fatal(err)
 	}
 	cc.ConnConfig.Logger = zapadapter.NewLogger(logger)
-	cc.ConnConfig.LogLevel = pgx.LogLevelInfo
 
 	pgxPool, err := pgxpool.ConnectConfig(context.Background(), cc)
 	if err != nil {

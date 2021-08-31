@@ -1,131 +1,133 @@
 package api_test
 
 import (
-	"bytes"
+	"context"
 	"errors"
-	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
-	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/server/api/v1/genproto"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestList(t *testing.T) {
-	for _, test := range []struct {
-		desc         string
-		err          error
-		values       []string
-		expectedCode int
-		expectedResp string
-	}{
-		{"should return list", nil, []string{"n1", "n2"}, 200, `["n1", "n2"]`},
-		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
-	} {
-		t.Run(test.desc, func(t *testing.T) {
-			router, _, mockService, _ := setup()
-			mockService.On("ListNames", mock.Anything, "namespace").Return(test.values, test.err)
+	t.Run("should return list", func(t *testing.T) {
+		ctx := context.Background()
+		_, _, mockService, v1 := setup()
+		st := []*snapshot.Snapshot{
+			{
+				Namespace: "t",
+				Name:      "na",
+			},
+		}
+		req := genproto.ListSnapshotRequest{
+			Namespace: "t",
+		}
+		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(st, nil)
+		res, err := v1.List(ctx, &req)
+		assert.Nil(t, err)
+		assert.Equal(t, "t", res.Snapshots[0].Namespace)
+		assert.Equal(t, "na", res.Snapshots[0].Name)
+	})
 
-			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors", nil)
-			router.ServeHTTP(w, req)
-
-			assert.Equal(t, test.expectedCode, w.Code)
-			assert.JSONEq(t, test.expectedResp, w.Body.String())
-			mockService.AssertExpectations(t)
-		})
-	}
-
-}
-
-// func TestListVersions(t *testing.T) {
-// 	for _, test := range []struct {
-// 		desc         string
-// 		err          error
-// 		values       []string
-// 		expectedCode int
-// 		expectedResp string
-// 	}{
-// 		{"should return list", nil, []string{"n1", "n2"}, 200, `["n1", "n2"]`},
-// 		{"should return 404 if path not found", models.ErrNotFound, []string{}, 404, `{"message": "Not found"}`},
-// 	} {
-// 		t.Run(test.desc, func(t *testing.T) {
-// 			router, _, mockService, _ := setup()
-// 			mockService.On("ListVersions", mock.Anything, "namespace", "example").Return(test.values, test.err)
-
-// 			w := httptest.NewRecorder()
-// 			req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/example/versions", nil)
-// 			router.ServeHTTP(w, req)
-
-// 			assert.Equal(t, test.expectedCode, w.Code)
-// 			assert.JSONEq(t, test.expectedResp, w.Body.String())
-// 			mockService.AssertExpectations(t)
-// 		})
-// 	}
-// }
-
-func TestGetVersion(t *testing.T) {
-	for _, test := range []struct {
-		desc          string
-		name          string
-		latestVersion string
-		err           error
-		expectedCode  int
-	}{
-		{"should return 500 if fetch version fails", "name1", "1.0.1", errors.New("fetch fail"), 500},
-		{"should return latest version number", "name1", "1.0.2", nil, 200},
-	} {
-		t.Run(test.desc, func(t *testing.T) {
-			router, _, mockService, _ := setup()
-			mockService.On("GetSnapshot", mock.Anything, "namespace", test.name, "", true).Return(&snapshot.Snapshot{Version: test.latestVersion}, test.err)
-			w := httptest.NewRecorder()
-
-			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/metadata/%s", test.name), nil)
-
-			router.ServeHTTP(w, req)
-
-			assert.Equal(t, test.expectedCode, w.Code)
-			if test.expectedCode == 200 {
-				expectedData := []byte(fmt.Sprintf(`{"version":"%s"}`, test.latestVersion))
-				assert.Equal(t, expectedData, w.Body.Bytes())
-			}
-		})
-	}
+	t.Run("should return error if getting a list fails", func(t *testing.T) {
+		ctx := context.Background()
+		_, _, mockService, v1 := setup()
+		req := genproto.ListSnapshotRequest{
+			Namespace: "t",
+		}
+		err := errors.New("list failed")
+		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(nil, err)
+		res, err := v1.List(ctx, &req)
+		assert.NotNil(t, err)
+		assert.Equal(t, 0, len(res.Snapshots))
+	})
 }
 
 func TestUpdateLatestVersion(t *testing.T) {
-	for _, test := range []struct {
-		desc         string
-		name         string
-		version      string
-		err          error
-		expectedCode int
-	}{
-		{"should return 400 if name is missing", "", "1.0.1", nil, 400},
-		{"should return 400 if version is missing", "name1", "", nil, 400},
-		{"should return 400 if version not follows semantic verioning", "name1", "invalid0.1.0", nil, 400},
-		{"should return 500 if store fails", "name1", "1.0.1", errors.New("store fail"), 500},
-		{"should return success if update succeeds", "name1", "1.0.2", nil, 200},
-	} {
-		t.Run(test.desc, func(t *testing.T) {
-			router, _, mockService, _ := setup()
-			mockService.On("UpdateLatestVersion", mock.Anything, mock.Anything).Return(test.err)
-			w := httptest.NewRecorder()
-
-			body := bytes.NewReader([]byte(fmt.Sprintf(`{"name": "%s", "version": "%s"}`, test.name, test.version)))
-			req, _ := http.NewRequest("POST", "/v1/namespaces/namespace/metadata", body)
-			req.Header.Set("Content-Type", "application/json")
-
-			router.ServeHTTP(w, req)
-
-			assert.Equal(t, test.expectedCode, w.Code)
-			if test.expectedCode == 200 {
-				assert.JSONEq(t, `{"message": "success"}`, w.Body.String())
-				mockService.AssertExpectations(t)
-			}
-		})
-	}
+	t.Run("should update latest tag", func(t *testing.T) {
+		ctx := context.Background()
+		_, _, mockService, v1 := setup()
+		st := &snapshot.Snapshot{
+			ID:        1,
+			Namespace: "t",
+			Name:      "na",
+		}
+		req := &genproto.UpdateLatestRequest{
+			Id:     1,
+			Latest: true,
+		}
+		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, nil)
+		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
+		res, err := v1.UpdateLatest(ctx, req)
+		assert.Nil(t, err)
+		assert.Equal(t, int64(1), res.Id)
+		assert.Equal(t, "t", res.Namespace)
+		assert.Equal(t, "na", res.Name)
+	})
+	t.Run("should return not found err if snapshot not found", func(t *testing.T) {
+		ctx := context.Background()
+		_, _, mockService, v1 := setup()
+		st := &snapshot.Snapshot{
+			ID:        1,
+			Namespace: "t",
+			Name:      "na",
+		}
+		req := &genproto.UpdateLatestRequest{
+			Id:     1,
+			Latest: true,
+		}
+		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, snapshot.ErrNotFound)
+		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
+		_, err := v1.UpdateLatest(ctx, req)
+		assert.NotNil(t, err)
+		s := status.Convert(err)
+		assert.Equal(t, codes.NotFound.String(), s.Code().String())
+		assert.Equal(t, "not found", s.Message())
+	})
+	t.Run("should mark as internal error if get snapshot fails", func(t *testing.T) {
+		ctx := context.Background()
+		_, _, mockService, v1 := setup()
+		st := &snapshot.Snapshot{
+			ID:        1,
+			Namespace: "t",
+			Name:      "na",
+		}
+		req := &genproto.UpdateLatestRequest{
+			Id:     1,
+			Latest: true,
+		}
+		err := errors.New("internal")
+		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, err)
+		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
+		_, err = v1.UpdateLatest(ctx, req)
+		assert.NotNil(t, err)
+		s := status.Convert(err)
+		assert.Equal(t, codes.Internal.String(), s.Code().String())
+		assert.Equal(t, "internal", s.Message())
+	})
+	t.Run("should mark as internal error if update snapshot fails", func(t *testing.T) {
+		ctx := context.Background()
+		_, _, mockService, v1 := setup()
+		st := &snapshot.Snapshot{
+			ID:        1,
+			Namespace: "t",
+			Name:      "na",
+		}
+		req := &genproto.UpdateLatestRequest{
+			Id:     1,
+			Latest: true,
+		}
+		err := errors.New("internal")
+		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, nil)
+		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(err)
+		_, err = v1.UpdateLatest(ctx, req)
+		assert.NotNil(t, err)
+		s := status.Convert(err)
+		assert.Equal(t, codes.Unknown.String(), s.Code().String())
+		assert.Equal(t, "internal", s.Message())
+	})
 }

@@ -5,6 +5,8 @@ import (
 
 	"github.com/odpf/stencil/server/api/v1/genproto"
 	"github.com/odpf/stencil/server/snapshot"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // List returns list of snapshots. If filters applied it will return filtered snapshot list
@@ -25,7 +27,10 @@ func (a *API) UpdateLatest(ctx context.Context, req *genproto.UpdateLatestReques
 	var res *genproto.Snapshot
 	st, err := a.Metadata.GetSnapshotByID(ctx, req.Id)
 	if err != nil {
-		return res, err
+		if err == snapshot.ErrNotFound {
+			return res, status.Error(codes.NotFound, err.Error())
+		}
+		return res, status.Error(codes.Internal, err.Error())
 	}
 	err = a.Metadata.UpdateLatestVersion(ctx, st)
 	if err != nil {

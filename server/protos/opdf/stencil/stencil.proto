@@ -1,0 +1,70 @@
+syntax = "proto3";
+package odpf.stencil.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/descriptor.proto";
+
+
+option go_package = "github.com/odpf/stencil/server/api/v1/genproto";
+
+message Snapshot {
+	int64 id = 1;
+	string namespace = 2;
+	string name = 3;
+	string version = 4;
+	bool latest = 5;
+}
+
+message DownloadRequest {
+	Snapshot snapshot = 1;
+	repeated string fullnames = 2;
+}
+
+message DownloadResponse {
+	bytes data = 1;
+}
+
+message UploadRequest {
+	Snapshot snapshot = 1;
+	bytes data = 4;
+	bool dryrun = 5;
+	repeated string skiprules = 6;
+}
+
+message UploadResponse {
+	bool success = 1;
+	bool dryrun = 2;
+	string errors = 3;
+}
+
+message SnapshotList {
+	repeated Snapshot snapshots = 1;
+}
+
+message ListSnapshotRequest {
+	string namespace = 1;
+	string name = 2;
+	string version = 3;
+	bool latest = 4;
+}
+
+message UpdateLatestRequest {
+	int64 id = 1;
+	bool latest = 2;
+}
+
+service StencilService {
+	rpc Upload (UploadRequest) returns (UploadResponse) {}
+	rpc Download (DownloadRequest) returns (DownloadResponse) {}
+	rpc List(ListSnapshotRequest) returns (SnapshotList) {
+		option (google.api.http) = {
+			get: "/v1/snapshots"
+		};
+	}
+	rpc UpdateLatest(UpdateLatestRequest) returns (Snapshot) {
+		option (google.api.http) = {
+			patch: "/v1/snapshots/{id}",
+			body: "*"
+		};
+	}
+}

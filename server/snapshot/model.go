@@ -1,6 +1,8 @@
 package snapshot
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	//ErrNotFound used when snapshot is not found
@@ -9,9 +11,9 @@ var (
 
 // Snapshot represents specific version of protodescriptorset
 type Snapshot struct {
-	ID        int64
-	Namespace string
-	Name      string
-	Version   string
-	Latest    bool
+	ID        int64  `validate:"required"`
+	Namespace string `validate:"required"`
+	Name      string `validate:"required"`
+	Version   string `validate:"required,version"`
+	Latest    bool   `validate:"required"`
 }

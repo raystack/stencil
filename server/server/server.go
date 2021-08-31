@@ -20,13 +20,23 @@ import (
 	"google.golang.org/grpc"
 )
 
+func proxyToGin(e *gin.Engine) func(http.ResponseWriter, *http.Request, map[string]string) {
+	return func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
+		e.ServeHTTP(rw, r)
+	}
+}
+
 // Router returns server router
-func Router(api *api.API, config *config.Config) *gin.Engine {
+func Router(api *api.API, config *config.Config) *runtime.ServeMux {
+	gwmux := runtime.NewServeMux()
 	router := gin.New()
 	addMiddleware(router, config)
 	registerCustomValidations(router)
 	registerRoutes(router, api)
-	return router
+	gwmux.HandlePath("GET", "/ping", proxyToGin(router))
+	gwmux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
+	gwmux.HandlePath("POST", "/v1/namespaces/{namespace}/descriptors", proxyToGin(router))
+	return gwmux
 }
 
 // Start Entry point to start the server
@@ -42,11 +52,10 @@ func Start() {
 		Metadata: stRepo,
 	}
 	port := fmt.Sprintf(":%s", config.Port)
-	router := Router(api, config)
+	mux := Router(api, config)
 
 	// Create a gRPC server object
 	s := grpc.NewServer()
-	genproto.RegisterSnapshotServiceServer(s, api)
 	genproto.RegisterStencilServiceServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -57,25 +66,9 @@ func Start() {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	gwmux := runtime.NewServeMux()
-	genproto.RegisterSnapshotServiceHandler(ctx, gwmux, conn)
-	gwmux.HandlePath("GET", "/ping", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		router.ServeHTTP(w, r)
-	})
-	gwmux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		router.ServeHTTP(w, r)
-	})
-	gwmux.HandlePath("POST", "/v1/namespaces/{namespace}/descriptors", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		router.ServeHTTP(w, r)
-	})
-	// err = gen.RegisterStencilHandler(context.Background(), gwmux, conn)
-	basemux := http.NewServeMux()
-	basemux.Handle("/", gwmux)
-	if err != nil {
-		log.Fatalln("Failed to register gateway:", err)
-	}
+	genproto.RegisterStencilServiceHandler(ctx, mux, conn)
 
-	runWithGracefulShutdown(config, grpcHandlerFunc(s, basemux), func() {
+	runWithGracefulShutdown(config, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
 		db.Close()

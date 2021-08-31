@@ -25,7 +25,6 @@ type MetadataService interface {
 
 //API holds all handlers
 type API struct {
-	genproto.UnimplementedSnapshotServiceServer
 	genproto.UnimplementedStencilServiceServer
 	Store    StoreService
 	Metadata MetadataService
