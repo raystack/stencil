@@ -9,9 +9,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/odpf/stencil/server/api"
-	"github.com/odpf/stencil/server/api/v1/genproto"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/config"
+	"github.com/odpf/stencil/server/logger"
 	"github.com/odpf/stencil/server/proto"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/odpf/stencil/server/store"
@@ -20,22 +27,13 @@ import (
 	"google.golang.org/grpc"
 )
 
-func proxyToGin(e *gin.Engine) func(http.ResponseWriter, *http.Request, map[string]string) {
-	return func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
-		e.ServeHTTP(rw, r)
-	}
-}
-
 // Router returns server router
 func Router(api *api.API, config *config.Config) *runtime.ServeMux {
 	gwmux := runtime.NewServeMux()
 	router := gin.New()
 	addMiddleware(router, config)
 	registerCustomValidations(router)
-	registerRoutes(router, api)
-	gwmux.HandlePath("GET", "/ping", proxyToGin(router))
-	gwmux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
-	gwmux.HandlePath("POST", "/v1/namespaces/{namespace}/descriptors", proxyToGin(router))
+	registerRoutes(router, gwmux, api)
 	return gwmux
 }
 
@@ -52,11 +50,22 @@ func Start() {
 		Metadata: stRepo,
 	}
 	port := fmt.Sprintf(":%s", config.Port)
+	nr := getNewRelic(config)
 	mux := Router(api, config)
 
+	// init grpc server
+	opts := []grpc.ServerOption{
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_recovery.UnaryServerInterceptor(),
+			grpc_ctxtags.UnaryServerInterceptor(),
+			nrgrpc.UnaryServerInterceptor(nr),
+			grpc_zap.UnaryServerInterceptor(logger.Logger))),
+		grpc.MaxRecvMsgSize(config.GRPCMaxRecvMsgSizeInMB << 20),
+		grpc.MaxSendMsgSize(config.GRPCMaxSendMsgSizeInMB << 20),
+	}
 	// Create a gRPC server object
-	s := grpc.NewServer()
-	genproto.RegisterStencilServiceServer(s, api)
+	s := grpc.NewServer(opts...)
+	pb.RegisterStencilServiceServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
 		fmt.Sprintf("0.0.0.0%s", port),
@@ -66,7 +75,7 @@ func Start() {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	genproto.RegisterStencilServiceHandler(ctx, mux, conn)
+	pb.RegisterStencilServiceHandler(ctx, mux, conn)
 
 	runWithGracefulShutdown(config, grpcHandlerFunc(s, mux), func() {
 		conn.Close()

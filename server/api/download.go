@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server/api/v1/genproto"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/models"
 	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
@@ -36,10 +36,10 @@ func (a *API) HTTPDownload(c *gin.Context) {
 }
 
 // Download grpc handler to download schema data
-func (a *API) Download(ctx context.Context, req *genproto.DownloadRequest) (*genproto.DownloadResponse, error) {
+func (a *API) Download(ctx context.Context, req *pb.DownloadRequest) (*pb.DownloadResponse, error) {
 	s := fromProtoToSnapshot(req.Snapshot)
 	data, err := a.download(ctx, s, req.Fullnames)
-	res := &genproto.DownloadResponse{Data: data}
+	res := &pb.DownloadResponse{Data: data}
 	return res, err
 }
 

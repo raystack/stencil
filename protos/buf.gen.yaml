@@ -1,0 +1,13 @@
+version: v1
+plugins:
+  - name: go
+    out: ../
+    opt: module=github.com/odpf/stencil
+  - name: go-grpc
+    out: ../
+    opt: module=github.com/odpf/stencil
+  - name: grpc-gateway
+    out: ../
+    opt: module=github.com/odpf/stencil
+  - name: openapiv2
+    out: ../

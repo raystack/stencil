@@ -2,11 +2,12 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: opdf/stencil/stencil.proto
+// source: odpf/stencil/stencil.proto
 
-package genproto
+package pb
 
 import (
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -37,7 +38,7 @@ type Snapshot struct {
 func (x *Snapshot) Reset() {
 	*x = Snapshot{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[0]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -50,7 +51,7 @@ func (x *Snapshot) String() string {
 func (*Snapshot) ProtoMessage() {}
 
 func (x *Snapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[0]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -63,7 +64,7 @@ func (x *Snapshot) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Snapshot.ProtoReflect.Descriptor instead.
 func (*Snapshot) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{0}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Snapshot) GetId() int64 {
@@ -113,7 +114,7 @@ type DownloadRequest struct {
 func (x *DownloadRequest) Reset() {
 	*x = DownloadRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[1]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -126,7 +127,7 @@ func (x *DownloadRequest) String() string {
 func (*DownloadRequest) ProtoMessage() {}
 
 func (x *DownloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[1]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +140,7 @@ func (x *DownloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadRequest.ProtoReflect.Descriptor instead.
 func (*DownloadRequest) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{1}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *DownloadRequest) GetSnapshot() *Snapshot {
@@ -167,7 +168,7 @@ type DownloadResponse struct {
 func (x *DownloadResponse) Reset() {
 	*x = DownloadResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[2]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -180,7 +181,7 @@ func (x *DownloadResponse) String() string {
 func (*DownloadResponse) ProtoMessage() {}
 
 func (x *DownloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[2]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -193,7 +194,7 @@ func (x *DownloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadResponse.ProtoReflect.Descriptor instead.
 func (*DownloadResponse) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{2}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DownloadResponse) GetData() []byte {
@@ -217,7 +218,7 @@ type UploadRequest struct {
 func (x *UploadRequest) Reset() {
 	*x = UploadRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[3]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -230,7 +231,7 @@ func (x *UploadRequest) String() string {
 func (*UploadRequest) ProtoMessage() {}
 
 func (x *UploadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[3]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -243,7 +244,7 @@ func (x *UploadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadRequest.ProtoReflect.Descriptor instead.
 func (*UploadRequest) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{3}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UploadRequest) GetSnapshot() *Snapshot {
@@ -287,7 +288,7 @@ type UploadResponse struct {
 func (x *UploadResponse) Reset() {
 	*x = UploadResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[4]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -300,7 +301,7 @@ func (x *UploadResponse) String() string {
 func (*UploadResponse) ProtoMessage() {}
 
 func (x *UploadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[4]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -313,7 +314,7 @@ func (x *UploadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadResponse.ProtoReflect.Descriptor instead.
 func (*UploadResponse) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{4}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UploadResponse) GetSuccess() bool {
@@ -348,7 +349,7 @@ type SnapshotList struct {
 func (x *SnapshotList) Reset() {
 	*x = SnapshotList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[5]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -361,7 +362,7 @@ func (x *SnapshotList) String() string {
 func (*SnapshotList) ProtoMessage() {}
 
 func (x *SnapshotList) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[5]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -374,7 +375,7 @@ func (x *SnapshotList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SnapshotList.ProtoReflect.Descriptor instead.
 func (*SnapshotList) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{5}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SnapshotList) GetSnapshots() []*Snapshot {
@@ -398,7 +399,7 @@ type ListSnapshotRequest struct {
 func (x *ListSnapshotRequest) Reset() {
 	*x = ListSnapshotRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[6]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -411,7 +412,7 @@ func (x *ListSnapshotRequest) String() string {
 func (*ListSnapshotRequest) ProtoMessage() {}
 
 func (x *ListSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[6]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -424,7 +425,7 @@ func (x *ListSnapshotRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSnapshotRequest.ProtoReflect.Descriptor instead.
 func (*ListSnapshotRequest) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{6}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListSnapshotRequest) GetNamespace() string {
@@ -467,7 +468,7 @@ type UpdateLatestRequest struct {
 func (x *UpdateLatestRequest) Reset() {
 	*x = UpdateLatestRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_opdf_stencil_stencil_proto_msgTypes[7]
+		mi := &file_odpf_stencil_stencil_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -480,7 +481,7 @@ func (x *UpdateLatestRequest) String() string {
 func (*UpdateLatestRequest) ProtoMessage() {}
 
 func (x *UpdateLatestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_opdf_stencil_stencil_proto_msgTypes[7]
+	mi := &file_odpf_stencil_stencil_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -493,7 +494,7 @@ func (x *UpdateLatestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateLatestRequest.ProtoReflect.Descriptor instead.
 func (*UpdateLatestRequest) Descriptor() ([]byte, []int) {
-	return file_opdf_stencil_stencil_proto_rawDescGZIP(), []int{7}
+	return file_odpf_stencil_stencil_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *UpdateLatestRequest) GetId() int64 {
@@ -510,16 +511,19 @@ func (x *UpdateLatestRequest) GetLatest() bool {
 	return false
 }
 
-var File_opdf_stencil_stencil_proto protoreflect.FileDescriptor
+var File_odpf_stencil_stencil_proto protoreflect.FileDescriptor
 
-var file_opdf_stencil_stencil_proto_rawDesc = []byte{
-	0x0a, 0x1a, 0x6f, 0x70, 0x64, 0x66, 0x2f, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2f, 0x73,
+var file_odpf_stencil_stencil_proto_rawDesc = []byte{
+	0x0a, 0x1a, 0x6f, 0x64, 0x70, 0x66, 0x2f, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2f, 0x73,
 	0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f, 0x6f, 0x64,
 	0x70, 0x66, 0x2e, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x76, 0x31, 0x1a, 0x1c, 0x67,
 	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61,
 	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x64, 0x65, 0x73,
-	0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x7e, 0x0a,
+	0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2d, 0x67, 0x65, 0x6e, 0x2d, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70,
+	0x69, 0x76, 0x32, 0x2f, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x61, 0x6e, 0x6e, 0x6f,
+	0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x7e, 0x0a,
 	0x08, 0x53, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6e, 0x61, 0x6d,
 	0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6e, 0x61,
@@ -592,26 +596,28 @@ var file_opdf_stencil_stencil_proto_rawDesc = []byte{
 	0x64, 0x70, 0x66, 0x2e, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x76, 0x31, 0x2e, 0x53,
 	0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x22, 0x1d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x17, 0x32,
 	0x12, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x73, 0x2f, 0x7b,
-	0x69, 0x64, 0x7d, 0x3a, 0x01, 0x2a, 0x42, 0x30, 0x5a, 0x2e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x69, 0x64, 0x7d, 0x3a, 0x01, 0x2a, 0x42, 0x4b, 0x5a, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
 	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x64, 0x70, 0x66, 0x2f, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69,
 	0x6c, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x2f,
-	0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x62, 0x92, 0x41, 0x1e, 0x12, 0x07, 0x32, 0x05, 0x30, 0x2e, 0x31, 0x2e, 0x33, 0x2a, 0x01,
+	0x01, 0x72, 0x10, 0x0a, 0x0e, 0x53, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x20, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_opdf_stencil_stencil_proto_rawDescOnce sync.Once
-	file_opdf_stencil_stencil_proto_rawDescData = file_opdf_stencil_stencil_proto_rawDesc
+	file_odpf_stencil_stencil_proto_rawDescOnce sync.Once
+	file_odpf_stencil_stencil_proto_rawDescData = file_odpf_stencil_stencil_proto_rawDesc
 )
 
-func file_opdf_stencil_stencil_proto_rawDescGZIP() []byte {
-	file_opdf_stencil_stencil_proto_rawDescOnce.Do(func() {
-		file_opdf_stencil_stencil_proto_rawDescData = protoimpl.X.CompressGZIP(file_opdf_stencil_stencil_proto_rawDescData)
+func file_odpf_stencil_stencil_proto_rawDescGZIP() []byte {
+	file_odpf_stencil_stencil_proto_rawDescOnce.Do(func() {
+		file_odpf_stencil_stencil_proto_rawDescData = protoimpl.X.CompressGZIP(file_odpf_stencil_stencil_proto_rawDescData)
 	})
-	return file_opdf_stencil_stencil_proto_rawDescData
+	return file_odpf_stencil_stencil_proto_rawDescData
 }
 
-var file_opdf_stencil_stencil_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_opdf_stencil_stencil_proto_goTypes = []interface{}{
+var file_odpf_stencil_stencil_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_odpf_stencil_stencil_proto_goTypes = []interface{}{
 	(*Snapshot)(nil),            // 0: odpf.stencil.v1.Snapshot
 	(*DownloadRequest)(nil),     // 1: odpf.stencil.v1.DownloadRequest
 	(*DownloadResponse)(nil),    // 2: odpf.stencil.v1.DownloadResponse
@@ -621,7 +627,7 @@ var file_opdf_stencil_stencil_proto_goTypes = []interface{}{
 	(*ListSnapshotRequest)(nil), // 6: odpf.stencil.v1.ListSnapshotRequest
 	(*UpdateLatestRequest)(nil), // 7: odpf.stencil.v1.UpdateLatestRequest
 }
-var file_opdf_stencil_stencil_proto_depIdxs = []int32{
+var file_odpf_stencil_stencil_proto_depIdxs = []int32{
 	0, // 0: odpf.stencil.v1.DownloadRequest.snapshot:type_name -> odpf.stencil.v1.Snapshot
 	0, // 1: odpf.stencil.v1.UploadRequest.snapshot:type_name -> odpf.stencil.v1.Snapshot
 	0, // 2: odpf.stencil.v1.SnapshotList.snapshots:type_name -> odpf.stencil.v1.Snapshot
@@ -640,13 +646,13 @@ var file_opdf_stencil_stencil_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_opdf_stencil_stencil_proto_init() }
-func file_opdf_stencil_stencil_proto_init() {
-	if File_opdf_stencil_stencil_proto != nil {
+func init() { file_odpf_stencil_stencil_proto_init() }
+func file_odpf_stencil_stencil_proto_init() {
+	if File_odpf_stencil_stencil_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_opdf_stencil_stencil_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Snapshot); i {
 			case 0:
 				return &v.state
@@ -658,7 +664,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DownloadRequest); i {
 			case 0:
 				return &v.state
@@ -670,7 +676,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DownloadResponse); i {
 			case 0:
 				return &v.state
@@ -682,7 +688,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UploadRequest); i {
 			case 0:
 				return &v.state
@@ -694,7 +700,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UploadResponse); i {
 			case 0:
 				return &v.state
@@ -706,7 +712,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SnapshotList); i {
 			case 0:
 				return &v.state
@@ -718,7 +724,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListSnapshotRequest); i {
 			case 0:
 				return &v.state
@@ -730,7 +736,7 @@ func file_opdf_stencil_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_opdf_stencil_stencil_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_odpf_stencil_stencil_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateLatestRequest); i {
 			case 0:
 				return &v.state
@@ -747,18 +753,18 @@ func file_opdf_stencil_stencil_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_opdf_stencil_stencil_proto_rawDesc,
+			RawDescriptor: file_odpf_stencil_stencil_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_opdf_stencil_stencil_proto_goTypes,
-		DependencyIndexes: file_opdf_stencil_stencil_proto_depIdxs,
-		MessageInfos:      file_opdf_stencil_stencil_proto_msgTypes,
+		GoTypes:           file_odpf_stencil_stencil_proto_goTypes,
+		DependencyIndexes: file_odpf_stencil_stencil_proto_depIdxs,
+		MessageInfos:      file_odpf_stencil_stencil_proto_msgTypes,
 	}.Build()
-	File_opdf_stencil_stencil_proto = out.File
-	file_opdf_stencil_stencil_proto_rawDesc = nil
-	file_opdf_stencil_stencil_proto_goTypes = nil
-	file_opdf_stencil_stencil_proto_depIdxs = nil
+	File_odpf_stencil_stencil_proto = out.File
+	file_odpf_stencil_stencil_proto_rawDesc = nil
+	file_odpf_stencil_stencil_proto_goTypes = nil
+	file_odpf_stencil_stencil_proto_depIdxs = nil
 }

@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/odpf/stencil/server/api/v1/genproto"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
@@ -43,14 +43,14 @@ func upload(cmd *cobra.Command, args []string) {
 		log.Fatalln(err)
 	}
 	defer conn.Close()
-	client := genproto.NewStencilServiceClient(conn)
-	s := &genproto.Snapshot{
+	client := pb.NewStencilServiceClient(conn)
+	s := &pb.Snapshot{
 		Namespace: namespace,
 		Name:      name,
 		Version:   version,
 		Latest:    latest,
 	}
-	ur := &genproto.UploadRequest{
+	ur := &pb.UploadRequest{
 		Snapshot: s,
 		Data:     fileData,
 	}

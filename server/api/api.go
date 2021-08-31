@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/odpf/stencil/server/api/v1/genproto"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/snapshot"
 )
 
@@ -25,7 +25,7 @@ type MetadataService interface {
 
 //API holds all handlers
 type API struct {
-	genproto.UnimplementedStencilServiceServer
+	pb.UnimplementedStencilServiceServer
 	Store    StoreService
 	Metadata MetadataService
 }

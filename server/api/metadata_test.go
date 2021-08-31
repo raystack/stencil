@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/odpf/stencil/server/api/v1/genproto"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -23,7 +23,7 @@ func TestList(t *testing.T) {
 				Name:      "na",
 			},
 		}
-		req := genproto.ListSnapshotRequest{
+		req := pb.ListSnapshotRequest{
 			Namespace: "t",
 		}
 		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(st, nil)
@@ -36,7 +36,7 @@ func TestList(t *testing.T) {
 	t.Run("should return error if getting a list fails", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		req := genproto.ListSnapshotRequest{
+		req := pb.ListSnapshotRequest{
 			Namespace: "t",
 		}
 		err := errors.New("list failed")
@@ -56,7 +56,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &genproto.UpdateLatestRequest{
+		req := &pb.UpdateLatestRequest{
 			Id:     1,
 			Latest: true,
 		}
@@ -76,7 +76,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &genproto.UpdateLatestRequest{
+		req := &pb.UpdateLatestRequest{
 			Id:     1,
 			Latest: true,
 		}
@@ -96,7 +96,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &genproto.UpdateLatestRequest{
+		req := &pb.UpdateLatestRequest{
 			Id:     1,
 			Latest: true,
 		}
@@ -117,7 +117,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &genproto.UpdateLatestRequest{
+		req := &pb.UpdateLatestRequest{
 			Id:     1,
 			Latest: true,
 		}

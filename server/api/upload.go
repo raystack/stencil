@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server/api/v1/genproto"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/models"
 	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
@@ -41,8 +41,8 @@ func (a *API) HTTPUpload(c *gin.Context) {
 }
 
 // Upload grpc handler to upload schema data with metadata information
-func (a *API) Upload(ctx context.Context, req *genproto.UploadRequest) (*genproto.UploadResponse, error) {
-	res := &genproto.UploadResponse{
+func (a *API) Upload(ctx context.Context, req *pb.UploadRequest) (*pb.UploadResponse, error) {
+	res := &pb.UploadResponse{
 		Dryrun: req.Dryrun,
 	}
 	s := fromProtoToSnapshot(req.Snapshot)
