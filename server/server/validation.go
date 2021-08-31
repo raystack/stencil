@@ -19,21 +19,8 @@ func ValidateVersion(fl validator.FieldLevel) bool {
 	return false
 }
 
-//ValidateVersionWithLatest validates if value is equal to latest or valid semantic version
-func ValidateVersionWithLatest(fl validator.FieldLevel) bool {
-	version, ok := fl.Field().Interface().(string)
-	if ok {
-		if _, err := semver.Parse(version); err == nil {
-			return true
-		}
-		return version == "latest"
-	}
-	return false
-}
-
 func registerCustomValidations(e *gin.Engine) {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("version", ValidateVersion)
-		v.RegisterValidation("versionWithLatest", ValidateVersionWithLatest)
 	}
 }

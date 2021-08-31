@@ -1,15 +1,19 @@
 package api_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc/status"
 )
 
 var downloadFail = errors.New("download fail")
@@ -31,7 +35,7 @@ func TestDownload(t *testing.T) {
 		{"should return 200 if download succeeded", "name1", "1.0.1", nil, nil, 200},
 		{"should be able to download with latest version", "name1", "latest", nil, nil, 200},
 	} {
-		t.Run(test.desc, func(t *testing.T) {
+		t.Run(fmt.Sprintf("http: %s", test.desc), func(t *testing.T) {
 			router, mockService, mockMetadata, _ := setup()
 
 			fileData := []byte("File contents")
@@ -47,6 +51,22 @@ func TestDownload(t *testing.T) {
 				expectedHeader := fmt.Sprintf(`attachment; filename="%s"; filename*=UTF-8''%s`, test.version, test.version)
 				assert.Equal(t, []byte("File contents"), w.Body.Bytes())
 				assert.Equal(t, expectedHeader, w.Header().Get("Content-Disposition"))
+			}
+		})
+		t.Run(fmt.Sprintf("gRPC: %s", test.desc), func(t *testing.T) {
+			ctx := context.Background()
+			_, mockService, mockMetadata, a := setup()
+
+			fileData := []byte("File contents")
+			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
+			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
+			req := &pb.DownloadRequest{Namespace: "namespace", Name: test.name, Version: test.version}
+			res, err := a.Download(ctx, req)
+			if test.expectedCode != 200 {
+				e := status.Convert(err)
+				assert.Equal(t, test.expectedCode, runtime.HTTPStatusFromCode(e.Code()))
+			} else {
+				assert.Equal(t, res.Data, []byte("File contents"))
 			}
 		})
 	}

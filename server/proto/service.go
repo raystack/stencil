@@ -19,7 +19,7 @@ func (s *Service) Validate(ctx context.Context, cs *snapshot.Snapshot, data []by
 	if err == snapshot.ErrNotFound {
 		return nil
 	}
-	// no need to handle error here. Since without snapshot data won't exist.
+	// no need to handle error here. Since without snapshot, data won't exist.
 	// If snapshot exist and data is nil, then validation still passes as it's treated as completely new
 	prevData, _ := s.Get(ctx, prevSt, []string{})
 	return Compare(data, prevData, rulesToSkip)

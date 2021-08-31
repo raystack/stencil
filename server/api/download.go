@@ -37,7 +37,12 @@ func (a *API) HTTPDownload(c *gin.Context) {
 
 // Download grpc handler to download schema data
 func (a *API) Download(ctx context.Context, req *pb.DownloadRequest) (*pb.DownloadResponse, error) {
-	s := fromProtoToSnapshot(req.Snapshot)
+	payload := toFileDownloadRequest(req)
+	err := validate.Struct(payload)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	s := payload.ToSnapshot()
 	data, err := a.download(ctx, s, req.Fullnames)
 	res := &pb.DownloadResponse{Data: data}
 	return res, err

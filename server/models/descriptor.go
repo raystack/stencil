@@ -9,7 +9,7 @@ import (
 type FileDownloadRequest struct {
 	Namespace string `uri:"namespace" binding:"required"`
 	Name      string `uri:"name" binding:"required"`
-	Version   string `uri:"version" binding:"required,versionWithLatest"`
+	Version   string `uri:"version" binding:"required,version|eq=latest"`
 	FullNames []string
 }
 

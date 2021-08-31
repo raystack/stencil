@@ -11,9 +11,9 @@ var (
 
 // Snapshot represents specific version of protodescriptorset
 type Snapshot struct {
-	ID        int64  `validate:"required"`
-	Namespace string `validate:"required"`
-	Name      string `validate:"required"`
-	Version   string `validate:"required,version"`
-	Latest    bool   `validate:"required"`
+	ID        int64  `binding:"required"`
+	Namespace string `binding:"required"`
+	Name      string `binding:"required"`
+	Version   string `binding:"required,version"`
+	Latest    bool   `binding:"required"`
 }

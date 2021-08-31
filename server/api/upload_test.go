@@ -2,6 +2,7 @@ package api_test
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -12,9 +13,12 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -87,7 +91,27 @@ func TestUpload(t *testing.T) {
 			} else {
 				assert.JSONEq(t, fmt.Sprintf(`{"message": "%s"}`, test.responseMsg), w.Body.String())
 			}
-
+		})
+		t.Run(fmt.Sprintf("gRPC: %s", test.desc), func(t *testing.T) {
+			_, mockService, metadata, api := setup()
+			metadata.On("Exists", mock.Anything, mock.Anything).Return(test.exists)
+			mockService.On("Validate", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(test.validateErr)
+			mockService.On("Insert", mock.Anything, mock.Anything, mock.Anything).Return(test.insertErr)
+			data, err := os.ReadFile("./testdata/test.desc")
+			assert.Nil(t, err)
+			req := &pb.UploadRequest{
+				Snapshot: &pb.Snapshot{Namespace: "namespace", Name: test.name, Version: test.version},
+				Data:     data,
+			}
+			res, err := api.Upload(context.Background(), req)
+			if test.expectedCode != 200 {
+				e := status.Convert(err)
+				assert.Equal(t, test.expectedCode, runtime.HTTPStatusFromCode(e.Code()))
+			} else {
+				assert.Equal(t, res.Dryrun, false)
+				assert.Equal(t, res.Success, true)
+				assert.Equal(t, res.Errors, "")
+			}
 		})
 	}
 

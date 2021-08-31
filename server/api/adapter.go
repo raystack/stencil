@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/odpf/stencil/server/api/v1/pb"
+	"github.com/odpf/stencil/server/models"
 	"github.com/odpf/stencil/server/snapshot"
 )
 
@@ -22,5 +23,14 @@ func fromSnapshotToProto(g *snapshot.Snapshot) *pb.Snapshot {
 		Name:      g.Name,
 		Version:   g.Version,
 		Latest:    g.Latest,
+	}
+}
+
+func toFileDownloadRequest(g *pb.DownloadRequest) *models.FileDownloadRequest {
+	return &models.FileDownloadRequest{
+		Namespace: g.Namespace,
+		Name:      g.Name,
+		Version:   g.Version,
+		FullNames: g.GetFullnames(),
 	}
 }

@@ -46,6 +46,12 @@ func (a *API) Upload(ctx context.Context, req *pb.UploadRequest) (*pb.UploadResp
 		Dryrun: req.Dryrun,
 	}
 	s := fromProtoToSnapshot(req.Snapshot)
+	err := validate.StructExcept(s, "ID", "Latest")
+	if err != nil {
+		res.Success = false
+		res.Errors = err.Error()
+		return res, status.Error(codes.InvalidArgument, err.Error())
+	}
 	if err := a.upload(ctx, s, req.Data, req.Skiprules, req.Dryrun); err != nil {
 		res.Success = false
 		res.Errors = err.Error()
