@@ -5,6 +5,7 @@ import (
 
 	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/snapshot"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 //StoreService Service Interface for storage and validation
@@ -26,6 +27,7 @@ type MetadataService interface {
 //API holds all handlers
 type API struct {
 	pb.UnimplementedStencilServiceServer
+	grpc_health_v1.UnimplementedHealthServer
 	Store    StoreService
 	Metadata MetadataService
 }

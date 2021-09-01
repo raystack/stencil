@@ -25,6 +25,7 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // Router returns server router
@@ -66,6 +67,7 @@ func Start() {
 	// Create a gRPC server object
 	s := grpc.NewServer(opts...)
 	pb.RegisterStencilServiceServer(s, api)
+	grpc_health_v1.RegisterHealthServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
 		fmt.Sprintf("0.0.0.0%s", port),
