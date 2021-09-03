@@ -26,7 +26,7 @@ func fromSnapshotToProto(g *snapshot.Snapshot) *pb.Snapshot {
 	}
 }
 
-func toFileDownloadRequest(g *pb.DownloadRequest) *models.FileDownloadRequest {
+func toFileDownloadRequest(g *pb.DownloadDescriptorRequest) *models.FileDownloadRequest {
 	return &models.FileDownloadRequest{
 		Namespace: g.Namespace,
 		Name:      g.Name,

@@ -23,11 +23,11 @@ func TestList(t *testing.T) {
 				Name:      "na",
 			},
 		}
-		req := pb.ListSnapshotRequest{
+		req := pb.ListSnapshotsRequest{
 			Namespace: "t",
 		}
 		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(st, nil)
-		res, err := v1.List(ctx, &req)
+		res, err := v1.ListSnapshots(ctx, &req)
 		assert.Nil(t, err)
 		assert.Equal(t, "t", res.Snapshots[0].Namespace)
 		assert.Equal(t, "na", res.Snapshots[0].Name)
@@ -36,12 +36,12 @@ func TestList(t *testing.T) {
 	t.Run("should return error if getting a list fails", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		req := pb.ListSnapshotRequest{
+		req := pb.ListSnapshotsRequest{
 			Namespace: "t",
 		}
 		err := errors.New("list failed")
 		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(nil, err)
-		res, err := v1.List(ctx, &req)
+		res, err := v1.ListSnapshots(ctx, &req)
 		assert.NotNil(t, err)
 		assert.Equal(t, 0, len(res.Snapshots))
 	})
@@ -56,13 +56,12 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.UpdateLatestRequest{
-			Id:     1,
-			Latest: true,
+		req := &pb.PromoteSnapshotRequest{
+			Id: 1,
 		}
 		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, nil)
 		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
-		res, err := v1.UpdateLatest(ctx, req)
+		res, err := v1.PromoteSnapshot(ctx, req)
 		assert.Nil(t, err)
 		assert.Equal(t, int64(1), res.Id)
 		assert.Equal(t, "t", res.Namespace)
@@ -76,13 +75,12 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.UpdateLatestRequest{
-			Id:     1,
-			Latest: true,
+		req := &pb.PromoteSnapshotRequest{
+			Id: 1,
 		}
 		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, snapshot.ErrNotFound)
 		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
-		_, err := v1.UpdateLatest(ctx, req)
+		_, err := v1.PromoteSnapshot(ctx, req)
 		assert.NotNil(t, err)
 		s := status.Convert(err)
 		assert.Equal(t, codes.NotFound.String(), s.Code().String())
@@ -96,14 +94,13 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.UpdateLatestRequest{
-			Id:     1,
-			Latest: true,
+		req := &pb.PromoteSnapshotRequest{
+			Id: 1,
 		}
 		err := errors.New("internal")
 		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, err)
 		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
-		_, err = v1.UpdateLatest(ctx, req)
+		_, err = v1.PromoteSnapshot(ctx, req)
 		assert.NotNil(t, err)
 		s := status.Convert(err)
 		assert.Equal(t, codes.Internal.String(), s.Code().String())
@@ -117,14 +114,13 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.UpdateLatestRequest{
-			Id:     1,
-			Latest: true,
+		req := &pb.PromoteSnapshotRequest{
+			Id: 1,
 		}
 		err := errors.New("internal")
 		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, nil)
 		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(err)
-		_, err = v1.UpdateLatest(ctx, req)
+		_, err = v1.PromoteSnapshot(ctx, req)
 		assert.NotNil(t, err)
 		s := status.Convert(err)
 		assert.Equal(t, codes.Unknown.String(), s.Code().String())

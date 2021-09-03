@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// List returns list of snapshots. If filters applied it will return filtered snapshot list
-func (a *API) List(ctx context.Context, req *pb.ListSnapshotRequest) (*pb.SnapshotList, error) {
-	res := &pb.SnapshotList{}
+// ListSnapshots returns list of snapshots. If filters applied it will return filtered snapshot list
+func (a *API) ListSnapshots(ctx context.Context, req *pb.ListSnapshotsRequest) (*pb.ListSnapshotsResponse, error) {
+	res := &pb.ListSnapshotsResponse{}
 	list, err := a.Metadata.List(ctx, &snapshot.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
 	if err != nil {
 		return res, err
@@ -22,8 +22,8 @@ func (a *API) List(ctx context.Context, req *pb.ListSnapshotRequest) (*pb.Snapsh
 	return res, nil
 }
 
-// UpdateLatest marks specified snapshot as latest
-func (a *API) UpdateLatest(ctx context.Context, req *pb.UpdateLatestRequest) (*pb.Snapshot, error) {
+// PromoteSnapshot marks specified snapshot as latest
+func (a *API) PromoteSnapshot(ctx context.Context, req *pb.PromoteSnapshotRequest) (*pb.Snapshot, error) {
 	var res *pb.Snapshot
 	st, err := a.Metadata.GetSnapshotByID(ctx, req.Id)
 	if err != nil {

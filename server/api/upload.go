@@ -40,20 +40,18 @@ func (a *API) HTTPUpload(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success", "dryrun": payload.DryRun})
 }
 
-// Upload grpc handler to upload schema data with metadata information
-func (a *API) Upload(ctx context.Context, req *pb.UploadRequest) (*pb.UploadResponse, error) {
-	res := &pb.UploadResponse{
+// UploadDescriptor grpc handler to upload schema data with metadata information
+func (a *API) UploadDescriptor(ctx context.Context, req *pb.UploadDescriptorRequest) (*pb.UploadDescriptorResponse, error) {
+	res := &pb.UploadDescriptorResponse{
 		Dryrun: req.Dryrun,
 	}
-	s := fromProtoToSnapshot(req.Snapshot)
+	s := fromProtoToSnapshot(&pb.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
 	err := validate.StructExcept(s, "ID", "Latest")
 	if err != nil {
-		res.Success = false
 		res.Errors = err.Error()
 		return res, status.Error(codes.InvalidArgument, err.Error())
 	}
 	if err := a.upload(ctx, s, req.Data, req.Skiprules, req.Dryrun); err != nil {
-		res.Success = false
 		res.Errors = err.Error()
 		return res, err
 	}

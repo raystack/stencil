@@ -60,8 +60,8 @@ func TestDownload(t *testing.T) {
 			fileData := []byte("File contents")
 			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
 			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
-			req := &pb.DownloadRequest{Namespace: "namespace", Name: test.name, Version: test.version}
-			res, err := a.Download(ctx, req)
+			req := &pb.DownloadDescriptorRequest{Namespace: "namespace", Name: test.name, Version: test.version}
+			res, err := a.DownloadDescriptor(ctx, req)
 			if test.expectedCode != 200 {
 				e := status.Convert(err)
 				assert.Equal(t, test.expectedCode, runtime.HTTPStatusFromCode(e.Code()))

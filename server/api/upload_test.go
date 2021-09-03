@@ -99,11 +99,11 @@ func TestUpload(t *testing.T) {
 			mockService.On("Insert", mock.Anything, mock.Anything, mock.Anything).Return(test.insertErr)
 			data, err := os.ReadFile("./testdata/test.desc")
 			assert.Nil(t, err)
-			req := &pb.UploadRequest{
-				Snapshot: &pb.Snapshot{Namespace: "namespace", Name: test.name, Version: test.version},
-				Data:     data,
+			req := &pb.UploadDescriptorRequest{
+				Namespace: "namespace", Name: test.name, Version: test.version,
+				Data: data,
 			}
-			res, err := api.Upload(context.Background(), req)
+			res, err := api.UploadDescriptor(context.Background(), req)
 			if test.expectedCode != 200 {
 				e := status.Convert(err)
 				assert.Equal(t, test.expectedCode, runtime.HTTPStatusFromCode(e.Code()))

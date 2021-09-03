@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var namespace, name, version, filePath string
+var host, namespace, name, version, filePath string
 var latest bool
 
 func init() {
@@ -20,8 +20,10 @@ func init() {
 		Run:   upload,
 		Args:  cobra.NoArgs,
 	}
+	uploadCmd.Flags().StringVarP(&host, "host", "h", "", "stencil host address eg: localhost:8000")
+	uploadCmd.MarkFlagRequired("host")
 	uploadCmd.Flags().StringVarP(&namespace, "namespace", "g", "", "provide namespace/group or entity name")
-	uploadCmd.MarkFlagRequired("group")
+	uploadCmd.MarkFlagRequired("namespace")
 	uploadCmd.Flags().StringVarP(&name, "name", "n", "", "provide proto repo name")
 	uploadCmd.MarkFlagRequired("name")
 	uploadCmd.Flags().StringVarP(&version, "version", "v", "", "provide semantic version compatible value")
@@ -30,7 +32,6 @@ func init() {
 	uploadCmd.Flags().StringVarP(&filePath, "file", "f", "", "provide path to fully contained file descriptor set file")
 	uploadCmd.MarkFlagRequired("file")
 	rootCmd.AddCommand(uploadCmd)
-
 }
 
 func upload(cmd *cobra.Command, args []string) {
@@ -38,23 +39,20 @@ func upload(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalln("Unable to read provided file", err)
 	}
-	conn, err := grpc.Dial("localhost:8000", grpc.WithInsecure())
+	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer conn.Close()
 	client := pb.NewStencilServiceClient(conn)
-	s := &pb.Snapshot{
+	ur := &pb.UploadDescriptorRequest{
 		Namespace: namespace,
 		Name:      name,
 		Version:   version,
 		Latest:    latest,
+		Data:      fileData,
 	}
-	ur := &pb.UploadRequest{
-		Snapshot: s,
-		Data:     fileData,
-	}
-	res, err := client.Upload(context.Background(), ur)
+	res, err := client.UploadDescriptor(context.Background(), ur)
 	if err != nil {
 		log.Fatalln(err)
 	}

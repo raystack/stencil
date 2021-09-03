@@ -18,10 +18,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StencilServiceClient interface {
-	Upload(ctx context.Context, in *UploadRequest, opts ...grpc.CallOption) (*UploadResponse, error)
-	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (*DownloadResponse, error)
-	List(ctx context.Context, in *ListSnapshotRequest, opts ...grpc.CallOption) (*SnapshotList, error)
-	UpdateLatest(ctx context.Context, in *UpdateLatestRequest, opts ...grpc.CallOption) (*Snapshot, error)
+	UploadDescriptor(ctx context.Context, in *UploadDescriptorRequest, opts ...grpc.CallOption) (*UploadDescriptorResponse, error)
+	DownloadDescriptor(ctx context.Context, in *DownloadDescriptorRequest, opts ...grpc.CallOption) (*DownloadDescriptorResponse, error)
+	ListSnapshots(ctx context.Context, in *ListSnapshotsRequest, opts ...grpc.CallOption) (*ListSnapshotsResponse, error)
+	PromoteSnapshot(ctx context.Context, in *PromoteSnapshotRequest, opts ...grpc.CallOption) (*Snapshot, error)
 }
 
 type stencilServiceClient struct {
@@ -32,36 +32,36 @@ func NewStencilServiceClient(cc grpc.ClientConnInterface) StencilServiceClient {
 	return &stencilServiceClient{cc}
 }
 
-func (c *stencilServiceClient) Upload(ctx context.Context, in *UploadRequest, opts ...grpc.CallOption) (*UploadResponse, error) {
-	out := new(UploadResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/Upload", in, out, opts...)
+func (c *stencilServiceClient) UploadDescriptor(ctx context.Context, in *UploadDescriptorRequest, opts ...grpc.CallOption) (*UploadDescriptorResponse, error) {
+	out := new(UploadDescriptorResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/UploadDescriptor", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stencilServiceClient) Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (*DownloadResponse, error) {
-	out := new(DownloadResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/Download", in, out, opts...)
+func (c *stencilServiceClient) DownloadDescriptor(ctx context.Context, in *DownloadDescriptorRequest, opts ...grpc.CallOption) (*DownloadDescriptorResponse, error) {
+	out := new(DownloadDescriptorResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/DownloadDescriptor", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stencilServiceClient) List(ctx context.Context, in *ListSnapshotRequest, opts ...grpc.CallOption) (*SnapshotList, error) {
-	out := new(SnapshotList)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/List", in, out, opts...)
+func (c *stencilServiceClient) ListSnapshots(ctx context.Context, in *ListSnapshotsRequest, opts ...grpc.CallOption) (*ListSnapshotsResponse, error) {
+	out := new(ListSnapshotsResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/ListSnapshots", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stencilServiceClient) UpdateLatest(ctx context.Context, in *UpdateLatestRequest, opts ...grpc.CallOption) (*Snapshot, error) {
+func (c *stencilServiceClient) PromoteSnapshot(ctx context.Context, in *PromoteSnapshotRequest, opts ...grpc.CallOption) (*Snapshot, error) {
 	out := new(Snapshot)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/UpdateLatest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/PromoteSnapshot", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,10 +72,10 @@ func (c *stencilServiceClient) UpdateLatest(ctx context.Context, in *UpdateLates
 // All implementations must embed UnimplementedStencilServiceServer
 // for forward compatibility
 type StencilServiceServer interface {
-	Upload(context.Context, *UploadRequest) (*UploadResponse, error)
-	Download(context.Context, *DownloadRequest) (*DownloadResponse, error)
-	List(context.Context, *ListSnapshotRequest) (*SnapshotList, error)
-	UpdateLatest(context.Context, *UpdateLatestRequest) (*Snapshot, error)
+	UploadDescriptor(context.Context, *UploadDescriptorRequest) (*UploadDescriptorResponse, error)
+	DownloadDescriptor(context.Context, *DownloadDescriptorRequest) (*DownloadDescriptorResponse, error)
+	ListSnapshots(context.Context, *ListSnapshotsRequest) (*ListSnapshotsResponse, error)
+	PromoteSnapshot(context.Context, *PromoteSnapshotRequest) (*Snapshot, error)
 	mustEmbedUnimplementedStencilServiceServer()
 }
 
@@ -83,17 +83,17 @@ type StencilServiceServer interface {
 type UnimplementedStencilServiceServer struct {
 }
 
-func (UnimplementedStencilServiceServer) Upload(context.Context, *UploadRequest) (*UploadResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Upload not implemented")
+func (UnimplementedStencilServiceServer) UploadDescriptor(context.Context, *UploadDescriptorRequest) (*UploadDescriptorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UploadDescriptor not implemented")
 }
-func (UnimplementedStencilServiceServer) Download(context.Context, *DownloadRequest) (*DownloadResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Download not implemented")
+func (UnimplementedStencilServiceServer) DownloadDescriptor(context.Context, *DownloadDescriptorRequest) (*DownloadDescriptorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DownloadDescriptor not implemented")
 }
-func (UnimplementedStencilServiceServer) List(context.Context, *ListSnapshotRequest) (*SnapshotList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
+func (UnimplementedStencilServiceServer) ListSnapshots(context.Context, *ListSnapshotsRequest) (*ListSnapshotsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSnapshots not implemented")
 }
-func (UnimplementedStencilServiceServer) UpdateLatest(context.Context, *UpdateLatestRequest) (*Snapshot, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateLatest not implemented")
+func (UnimplementedStencilServiceServer) PromoteSnapshot(context.Context, *PromoteSnapshotRequest) (*Snapshot, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PromoteSnapshot not implemented")
 }
 func (UnimplementedStencilServiceServer) mustEmbedUnimplementedStencilServiceServer() {}
 
@@ -108,74 +108,74 @@ func RegisterStencilServiceServer(s grpc.ServiceRegistrar, srv StencilServiceSer
 	s.RegisterService(&StencilService_ServiceDesc, srv)
 }
 
-func _StencilService_Upload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UploadRequest)
+func _StencilService_UploadDescriptor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadDescriptorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StencilServiceServer).Upload(ctx, in)
+		return srv.(StencilServiceServer).UploadDescriptor(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1.StencilService/Upload",
+		FullMethod: "/odpf.stencil.v1.StencilService/UploadDescriptor",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StencilServiceServer).Upload(ctx, req.(*UploadRequest))
+		return srv.(StencilServiceServer).UploadDescriptor(ctx, req.(*UploadDescriptorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StencilService_Download_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DownloadRequest)
+func _StencilService_DownloadDescriptor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DownloadDescriptorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StencilServiceServer).Download(ctx, in)
+		return srv.(StencilServiceServer).DownloadDescriptor(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1.StencilService/Download",
+		FullMethod: "/odpf.stencil.v1.StencilService/DownloadDescriptor",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StencilServiceServer).Download(ctx, req.(*DownloadRequest))
+		return srv.(StencilServiceServer).DownloadDescriptor(ctx, req.(*DownloadDescriptorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StencilService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListSnapshotRequest)
+func _StencilService_ListSnapshots_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSnapshotsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StencilServiceServer).List(ctx, in)
+		return srv.(StencilServiceServer).ListSnapshots(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1.StencilService/List",
+		FullMethod: "/odpf.stencil.v1.StencilService/ListSnapshots",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StencilServiceServer).List(ctx, req.(*ListSnapshotRequest))
+		return srv.(StencilServiceServer).ListSnapshots(ctx, req.(*ListSnapshotsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StencilService_UpdateLatest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateLatestRequest)
+func _StencilService_PromoteSnapshot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PromoteSnapshotRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StencilServiceServer).UpdateLatest(ctx, in)
+		return srv.(StencilServiceServer).PromoteSnapshot(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1.StencilService/UpdateLatest",
+		FullMethod: "/odpf.stencil.v1.StencilService/PromoteSnapshot",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StencilServiceServer).UpdateLatest(ctx, req.(*UpdateLatestRequest))
+		return srv.(StencilServiceServer).PromoteSnapshot(ctx, req.(*PromoteSnapshotRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -188,22 +188,22 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*StencilServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Upload",
-			Handler:    _StencilService_Upload_Handler,
+			MethodName: "UploadDescriptor",
+			Handler:    _StencilService_UploadDescriptor_Handler,
 		},
 		{
-			MethodName: "Download",
-			Handler:    _StencilService_Download_Handler,
+			MethodName: "DownloadDescriptor",
+			Handler:    _StencilService_DownloadDescriptor_Handler,
 		},
 		{
-			MethodName: "List",
-			Handler:    _StencilService_List_Handler,
+			MethodName: "ListSnapshots",
+			Handler:    _StencilService_ListSnapshots_Handler,
 		},
 		{
-			MethodName: "UpdateLatest",
-			Handler:    _StencilService_UpdateLatest_Handler,
+			MethodName: "PromoteSnapshot",
+			Handler:    _StencilService_PromoteSnapshot_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "odpf/stencil/stencil.proto",
+	Metadata: "odpf/stencil/v1/stencil.proto",
 }

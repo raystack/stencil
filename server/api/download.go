@@ -35,8 +35,8 @@ func (a *API) HTTPDownload(c *gin.Context) {
 	c.Data(http.StatusOK, "application/octet-stream", data)
 }
 
-// Download grpc handler to download schema data
-func (a *API) Download(ctx context.Context, req *pb.DownloadRequest) (*pb.DownloadResponse, error) {
+// DownloadDescriptor grpc handler to download schema data
+func (a *API) DownloadDescriptor(ctx context.Context, req *pb.DownloadDescriptorRequest) (*pb.DownloadDescriptorResponse, error) {
 	payload := toFileDownloadRequest(req)
 	err := validate.Struct(payload)
 	if err != nil {
@@ -44,8 +44,7 @@ func (a *API) Download(ctx context.Context, req *pb.DownloadRequest) (*pb.Downlo
 	}
 	s := payload.ToSnapshot()
 	data, err := a.download(ctx, s, req.Fullnames)
-	res := &pb.DownloadResponse{Data: data}
-	return res, err
+	return &pb.DownloadDescriptorResponse{Data: data}, err
 }
 
 func (a *API) download(ctx context.Context, s *snapshot.Snapshot, fullNames []string) ([]byte, error) {

@@ -70,7 +70,7 @@ func Start() {
 	grpc_health_v1.RegisterHealthServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
-		fmt.Sprintf("0.0.0.0%s", port),
+		port,
 		grpc.WithInsecure(),
 	)
 	if err != nil {
