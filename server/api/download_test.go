@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/server/api/v1/pb"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -60,7 +60,7 @@ func TestDownload(t *testing.T) {
 			fileData := []byte("File contents")
 			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
 			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
-			req := &pb.DownloadDescriptorRequest{Namespace: "namespace", Name: test.name, Version: test.version}
+			req := &stencilv1.DownloadDescriptorRequest{Namespace: "namespace", Name: test.name, Version: test.version}
 			res, err := a.DownloadDescriptor(ctx, req)
 			if test.expectedCode != 200 {
 				e := status.Convert(err)

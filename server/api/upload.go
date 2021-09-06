@@ -8,8 +8,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/models"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -41,17 +41,17 @@ func (a *API) HTTPUpload(c *gin.Context) {
 }
 
 // UploadDescriptor grpc handler to upload schema data with metadata information
-func (a *API) UploadDescriptor(ctx context.Context, req *pb.UploadDescriptorRequest) (*pb.UploadDescriptorResponse, error) {
-	res := &pb.UploadDescriptorResponse{
+func (a *API) UploadDescriptor(ctx context.Context, req *stencilv1.UploadDescriptorRequest) (*stencilv1.UploadDescriptorResponse, error) {
+	res := &stencilv1.UploadDescriptorResponse{
 		Dryrun: req.Dryrun,
 	}
-	s := fromProtoToSnapshot(&pb.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
+	s := fromProtoToSnapshot(&stencilv1.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
 	err := validate.StructExcept(s, "ID", "Latest")
 	if err != nil {
 		res.Errors = err.Error()
 		return res, status.Error(codes.InvalidArgument, err.Error())
 	}
-	if err := a.upload(ctx, s, req.Data, req.Skiprules, req.Dryrun); err != nil {
+	if err := a.upload(ctx, s, req.Data, toRulesList(req.Checks), req.Dryrun); err != nil {
 		res.Errors = err.Error()
 		return res, err
 	}

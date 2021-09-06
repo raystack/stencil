@@ -7,8 +7,8 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/models"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,7 +36,7 @@ func (a *API) HTTPDownload(c *gin.Context) {
 }
 
 // DownloadDescriptor grpc handler to download schema data
-func (a *API) DownloadDescriptor(ctx context.Context, req *pb.DownloadDescriptorRequest) (*pb.DownloadDescriptorResponse, error) {
+func (a *API) DownloadDescriptor(ctx context.Context, req *stencilv1.DownloadDescriptorRequest) (*stencilv1.DownloadDescriptorResponse, error) {
 	payload := toFileDownloadRequest(req)
 	err := validate.Struct(payload)
 	if err != nil {
@@ -44,7 +44,7 @@ func (a *API) DownloadDescriptor(ctx context.Context, req *pb.DownloadDescriptor
 	}
 	s := payload.ToSnapshot()
 	data, err := a.download(ctx, s, req.Fullnames)
-	return &pb.DownloadDescriptorResponse{Data: data}, err
+	return &stencilv1.DownloadDescriptorResponse{Data: data}, err
 }
 
 func (a *API) download(ctx context.Context, s *snapshot.Snapshot, fullNames []string) ([]byte, error) {

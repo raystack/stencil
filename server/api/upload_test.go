@@ -14,8 +14,8 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/models"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc/status"
@@ -99,8 +99,8 @@ func TestUpload(t *testing.T) {
 			mockService.On("Insert", mock.Anything, mock.Anything, mock.Anything).Return(test.insertErr)
 			data, err := os.ReadFile("./testdata/test.desc")
 			assert.Nil(t, err)
-			req := &pb.UploadDescriptorRequest{
-				Namespace: "namespace", Name: test.name, Version: test.version,
+			req := &stencilv1.UploadDescriptorRequest{
+				Namespace: "namespace", Name: test.name, Version: test.version, Checks: &stencilv1.Checks{},
 				Data: data,
 			}
 			res, err := api.UploadDescriptor(context.Background(), req)

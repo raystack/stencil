@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/odpf/stencil/server/api/v1/pb"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -23,7 +23,7 @@ func TestList(t *testing.T) {
 				Name:      "na",
 			},
 		}
-		req := pb.ListSnapshotsRequest{
+		req := stencilv1.ListSnapshotsRequest{
 			Namespace: "t",
 		}
 		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(st, nil)
@@ -36,7 +36,7 @@ func TestList(t *testing.T) {
 	t.Run("should return error if getting a list fails", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		req := pb.ListSnapshotsRequest{
+		req := stencilv1.ListSnapshotsRequest{
 			Namespace: "t",
 		}
 		err := errors.New("list failed")
@@ -56,12 +56,13 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.PromoteSnapshotRequest{
+		req := &stencilv1.PromoteSnapshotRequest{
 			Id: 1,
 		}
 		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, nil)
 		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
-		res, err := v1.PromoteSnapshot(ctx, req)
+		sp, err := v1.PromoteSnapshot(ctx, req)
+		res := sp.Snapshot
 		assert.Nil(t, err)
 		assert.Equal(t, int64(1), res.Id)
 		assert.Equal(t, "t", res.Namespace)
@@ -75,7 +76,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.PromoteSnapshotRequest{
+		req := &stencilv1.PromoteSnapshotRequest{
 			Id: 1,
 		}
 		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, snapshot.ErrNotFound)
@@ -94,7 +95,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.PromoteSnapshotRequest{
+		req := &stencilv1.PromoteSnapshotRequest{
 			Id: 1,
 		}
 		err := errors.New("internal")
@@ -114,7 +115,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 			Namespace: "t",
 			Name:      "na",
 		}
-		req := &pb.PromoteSnapshotRequest{
+		req := &stencilv1.PromoteSnapshotRequest{
 			Id: 1,
 		}
 		err := errors.New("internal")

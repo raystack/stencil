@@ -16,9 +16,9 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/odpf/stencil/server/api"
-	"github.com/odpf/stencil/server/api/v1/pb"
 	"github.com/odpf/stencil/server/config"
 	"github.com/odpf/stencil/server/logger"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/proto"
 	"github.com/odpf/stencil/server/snapshot"
 	"github.com/odpf/stencil/server/store"
@@ -61,12 +61,12 @@ func Start() {
 			grpc_ctxtags.UnaryServerInterceptor(),
 			nrgrpc.UnaryServerInterceptor(nr),
 			grpc_zap.UnaryServerInterceptor(logger.Logger))),
-		grpc.MaxRecvMsgSize(config.GRPCMaxRecvMsgSizeInMB << 20),
-		grpc.MaxSendMsgSize(config.GRPCMaxSendMsgSizeInMB << 20),
+		grpc.MaxRecvMsgSize(config.GRPC.MaxRecvMsgSizeInMB << 20),
+		grpc.MaxSendMsgSize(config.GRPC.MaxSendMsgSizeInMB << 20),
 	}
 	// Create a gRPC server object
 	s := grpc.NewServer(opts...)
-	pb.RegisterStencilServiceServer(s, api)
+	stencilv1.RegisterStencilServiceServer(s, api)
 	grpc_health_v1.RegisterHealthServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -77,7 +77,7 @@ func Start() {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	pb.RegisterStencilServiceHandler(ctx, mux, conn)
+	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
 
 	runWithGracefulShutdown(config, grpcHandlerFunc(s, mux), func() {
 		conn.Close()

@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/odpf/stencil/server/api/v1/pb"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
@@ -44,8 +44,8 @@ func upload(cmd *cobra.Command, args []string) {
 		log.Fatalln(err)
 	}
 	defer conn.Close()
-	client := pb.NewStencilServiceClient(conn)
-	ur := &pb.UploadDescriptorRequest{
+	client := stencilv1.NewStencilServiceClient(conn)
+	ur := &stencilv1.UploadDescriptorRequest{
 		Namespace: namespace,
 		Name:      name,
 		Version:   version,

@@ -3,15 +3,15 @@ package api
 import (
 	"context"
 
-	"github.com/odpf/stencil/server/api/v1/pb"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 // ListSnapshots returns list of snapshots. If filters applied it will return filtered snapshot list
-func (a *API) ListSnapshots(ctx context.Context, req *pb.ListSnapshotsRequest) (*pb.ListSnapshotsResponse, error) {
-	res := &pb.ListSnapshotsResponse{}
+func (a *API) ListSnapshots(ctx context.Context, req *stencilv1.ListSnapshotsRequest) (*stencilv1.ListSnapshotsResponse, error) {
+	res := &stencilv1.ListSnapshotsResponse{}
 	list, err := a.Metadata.List(ctx, &snapshot.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
 	if err != nil {
 		return res, err
@@ -23,18 +23,19 @@ func (a *API) ListSnapshots(ctx context.Context, req *pb.ListSnapshotsRequest) (
 }
 
 // PromoteSnapshot marks specified snapshot as latest
-func (a *API) PromoteSnapshot(ctx context.Context, req *pb.PromoteSnapshotRequest) (*pb.Snapshot, error) {
-	var res *pb.Snapshot
+func (a *API) PromoteSnapshot(ctx context.Context, req *stencilv1.PromoteSnapshotRequest) (*stencilv1.PromoteSnapshotResponse, error) {
 	st, err := a.Metadata.GetSnapshotByID(ctx, req.Id)
 	if err != nil {
 		if err == snapshot.ErrNotFound {
-			return res, status.Error(codes.NotFound, err.Error())
+			return nil, status.Error(codes.NotFound, err.Error())
 		}
-		return res, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 	err = a.Metadata.UpdateLatestVersion(ctx, st)
 	if err != nil {
-		return res, err
+		return nil, err
 	}
-	return fromSnapshotToProto(st), nil
+	return &stencilv1.PromoteSnapshotResponse{
+		Snapshot: fromSnapshotToProto(st),
+	}, nil
 }

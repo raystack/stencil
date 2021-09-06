@@ -24,16 +24,21 @@ type DBConfig struct {
 	MigrationsPath   string
 }
 
+//GRPCConfig grpc options
+type GRPCConfig struct {
+	MaxRecvMsgSizeInMB int `default:"10"`
+	MaxSendMsgSizeInMB int `default:"10"`
+}
+
 //Config Server config
 type Config struct {
 	Port string `default:"8080"`
 	//Timeout represents graceful shutdown period.
 	//Default is 60 seconds.
-	Timeout                time.Duration `default:"60s"`
-	GRPCMaxRecvMsgSizeInMB int           `default:"10"`
-	GRPCMaxSendMsgSizeInMB int           `default:"10"`
-	NewRelic               NewRelicConfig
-	DB                     DBConfig
+	Timeout  time.Duration `default:"60s"`
+	GRPC     GRPCConfig
+	NewRelic NewRelicConfig
+	DB       DBConfig
 }
 
 // LoadConfig returns application configuration

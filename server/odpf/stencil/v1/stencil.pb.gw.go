@@ -2,11 +2,11 @@
 // source: odpf/stencil/v1/stencil.proto
 
 /*
-Package pb is a reverse proxy.
+Package stencilv1 is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package pb
+package stencilv1
 
 import (
 	"context"
@@ -154,7 +154,7 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/PromoteSnapshot", runtime.WithHTTPPathPattern("/v1/snapshots/{id}:promote"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/PromoteSnapshot", runtime.WithHTTPPathPattern("/v1/snapshots/{id}/promote"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -236,7 +236,7 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/PromoteSnapshot", runtime.WithHTTPPathPattern("/v1/snapshots/{id}:promote"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/PromoteSnapshot", runtime.WithHTTPPathPattern("/v1/snapshots/{id}/promote"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -258,7 +258,7 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 var (
 	pattern_StencilService_ListSnapshots_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "snapshots"}, ""))
 
-	pattern_StencilService_PromoteSnapshot_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "snapshots", "id"}, "promote"))
+	pattern_StencilService_PromoteSnapshot_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "snapshots", "id", "promote"}, ""))
 )
 
 var (
