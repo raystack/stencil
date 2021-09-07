@@ -28,6 +28,9 @@ func fromSnapshotToProto(g *snapshot.Snapshot) *stencilv1.Snapshot {
 
 func toRulesList(r *stencilv1.Checks) []string {
 	var rules []string
+	if r == nil {
+		return rules
+	}
 	for _, rule := range r.Except {
 		rules = append(rules, rule.String())
 	}

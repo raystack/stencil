@@ -100,7 +100,7 @@ func TestUpload(t *testing.T) {
 			data, err := os.ReadFile("./testdata/test.desc")
 			assert.Nil(t, err)
 			req := &stencilv1.UploadDescriptorRequest{
-				Namespace: "namespace", Name: test.name, Version: test.version, Checks: &stencilv1.Checks{},
+				Namespace: "namespace", Name: test.name, Version: test.version,
 				Data: data,
 			}
 			res, err := api.UploadDescriptor(context.Background(), req)
