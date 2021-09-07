@@ -86,6 +86,9 @@ func (a *apiErr) Error() string {
 	if err == nil {
 		err = errors.New("")
 	}
+	if a.code >= 500 {
+		return a.message
+	}
 	return fmt.Sprintf("Err: %s, Message: %s", err.Error(), a.Message())
 }
 

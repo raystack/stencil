@@ -15,11 +15,11 @@ type Service struct {
 // Validate checks if current data is backward compatible against previous stable data
 func (s *Service) Validate(ctx context.Context, cs *snapshot.Snapshot, data []byte, rulesToSkip []string) error {
 	var err error
-	prevSt, err := s.snapshotRepo.GetSnapshot(ctx, cs.Namespace, cs.Name, "", true)
+	prevSt, err := s.snapshotRepo.GetSnapshotByFields(ctx, cs.Namespace, cs.Name, "", true)
 	if err == snapshot.ErrNotFound {
 		return nil
 	}
-	// no need to handle error here. Since without snapshot data won't exist.
+	// no need to handle error here. Since without snapshot, data won't exist.
 	// If snapshot exist and data is nil, then validation still passes as it's treated as completely new
 	prevData, _ := s.Get(ctx, prevSt, []string{})
 	return Compare(data, prevData, rulesToSkip)

@@ -9,7 +9,7 @@ import (
 type FileDownloadRequest struct {
 	Namespace string `uri:"namespace" binding:"required"`
 	Name      string `uri:"name" binding:"required"`
-	Version   string `uri:"version" binding:"required,versionWithLatest"`
+	Version   string `uri:"version" binding:"required,version|eq=latest"`
 	FullNames []string
 }
 
@@ -45,19 +45,4 @@ func (d *DescriptorUploadRequest) ToSnapshot() *snapshot.Snapshot {
 		Version:   d.Version,
 		Latest:    d.Latest,
 	}
-}
-
-type GetMetadataRequest struct {
-	Namespace string `uri:"namespace" binding:"required"`
-	Name      string `uri:"name" binding:"required"`
-}
-
-type MetadataUpdateRequest struct {
-	Namespace string
-	Name      string `json:"name" binding:"required"`
-	Version   string `json:"version" binding:"required,version"`
-}
-
-type MetadataFile struct {
-	Version string `json:"version"`
 }

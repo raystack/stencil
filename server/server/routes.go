@@ -1,18 +1,25 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/odpf/stencil/server/api"
 )
 
-func registerRoutes(router *gin.Engine, handlers *api.API) {
+func proxyToGin(e *gin.Engine) func(http.ResponseWriter, *http.Request, map[string]string) {
+	return func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
+		e.ServeHTTP(rw, r)
+	}
+}
+
+func registerRoutes(router *gin.Engine, mux *runtime.ServeMux, handlers *api.API) {
 	apiV1 := router.Group("/v1/namespaces/:namespace")
-	router.NoRoute(api.NoRoute)
 	router.GET("/ping", api.Ping)
-	apiV1.POST("/descriptors", handlers.Upload)
-	apiV1.GET("/descriptors", handlers.ListNames)
-	apiV1.GET("/descriptors/:name/versions", handlers.ListVersions)
-	apiV1.GET("/descriptors/:name/versions/:version", handlers.Download)
-	apiV1.GET("/metadata/:name", handlers.GetLatestVersion)
-	apiV1.POST("/metadata", handlers.UpdateLatestVersion)
+	apiV1.POST("/descriptors", handlers.HTTPUpload)
+	apiV1.GET("/descriptors/:name/versions/:version", handlers.HTTPDownload)
+	mux.HandlePath("GET", "/ping", proxyToGin(router))
+	mux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
+	mux.HandlePath("POST", "/v1/namespaces/{namespace}/descriptors", proxyToGin(router))
 }

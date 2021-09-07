@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -8,10 +9,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/odpf/stencil/server/models"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	"github.com/odpf/stencil/server/snapshot"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-//Upload uploads file
-func (a *API) Upload(c *gin.Context) {
+// HTTPUpload http handler to schema data with metadata information
+func (a *API) HTTPUpload(c *gin.Context) {
 	ctx := c.Request.Context()
 	namespace := c.Param("namespace")
 	payload := &models.DescriptorUploadRequest{
@@ -27,25 +32,49 @@ func (a *API) Upload(c *gin.Context) {
 		return
 	}
 	currentSnapshot := payload.ToSnapshot()
-	if ok := a.Metadata.Exists(ctx, currentSnapshot); ok {
-		c.JSON(http.StatusConflict, gin.H{"message": "Resource already exist"})
-		return
-	}
-	err = a.Store.Validate(ctx, currentSnapshot, data, payload.SkipRules)
+	err = a.upload(ctx, currentSnapshot, data, payload.SkipRules, payload.DryRun)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.Error(err)
 		return
 	}
-	if payload.DryRun {
-		c.JSON(http.StatusOK, gin.H{"message": "success", "dryrun": "true"})
-		return
+	c.JSON(http.StatusOK, gin.H{"message": "success", "dryrun": payload.DryRun})
+}
+
+// UploadDescriptor grpc handler to upload schema data with metadata information
+func (a *API) UploadDescriptor(ctx context.Context, req *stencilv1.UploadDescriptorRequest) (*stencilv1.UploadDescriptorResponse, error) {
+	res := &stencilv1.UploadDescriptorResponse{
+		Dryrun: req.Dryrun,
 	}
-	err = a.Store.Insert(ctx, currentSnapshot, data)
+	s := fromProtoToSnapshot(&stencilv1.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
+	err := validate.StructExcept(s, "ID", "Latest")
 	if err != nil {
-		c.Error(err).SetMeta(models.ErrUploadFailed)
-		return
+		res.Errors = err.Error()
+		return res, status.Error(codes.InvalidArgument, err.Error())
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "success"})
+	if err := a.upload(ctx, s, req.Data, toRulesList(req.Checks), req.Dryrun); err != nil {
+		res.Errors = err.Error()
+		return res, err
+	}
+	res.Success = true
+	return res, nil
+}
+
+func (a *API) upload(ctx context.Context, snapshot *snapshot.Snapshot, data []byte, skipRules []string, dryrun bool) error {
+	if ok := a.Metadata.Exists(ctx, snapshot); ok {
+		return status.Error(codes.AlreadyExists, "Resource already exists")
+	}
+	err := a.Store.Validate(ctx, snapshot, data, skipRules)
+	if err != nil {
+		return status.Error(codes.InvalidArgument, err.Error())
+	}
+	if dryrun {
+		return nil
+	}
+	err = a.Store.Insert(ctx, snapshot, data)
+	if err != nil {
+		return status.Error(codes.Internal, err.Error())
+	}
+	return nil
 }
 
 func readDataFromReader(reader io.ReadCloser) ([]byte, error) {

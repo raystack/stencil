@@ -2,7 +2,7 @@
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
-<h1 id="stencil-server-default">Default</h1>
+<h1 id="stencil-server-health">health</h1>
 
 ## ping
 
@@ -30,9 +30,7 @@ curl -X GET /ping
 This operation does not require authentication
 </aside>
 
-<h1 id="stencil-server-descriptors">descriptors</h1>
-
-Manage descriptors
+<h1 id="stencil-server-stencilservice">StencilService</h1>
 
 ## post__v1_namespaces_{namespace}_descriptors
 
@@ -88,95 +86,10 @@ file: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response|None|
-|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|Conflict|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__v1_namespaces_{namespace}_descriptors
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET /v1/namespaces/{namespace}/descriptors \
-  -H 'Accept: application/json'
-
-```
-
-`GET /v1/namespaces/{namespace}/descriptors`
-
-*list all available descriptor names under one namespace*
-
-<h3 id="get__v1_namespaces_{namespace}_descriptors-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|namespace|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  "string"
-]
-```
-
-<h3 id="get__v1_namespaces_{namespace}_descriptors-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|returns list of descriptor names|Inline|
-
-<h3 id="get__v1_namespaces_{namespace}_descriptors-responseschema">Response Schema</h3>
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__v1_namespaces_{namespace}_descriptors_{name}_versions
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET /v1/namespaces/{namespace}/descriptors/{name}/versions \
-  -H 'Accept: application/json'
-
-```
-
-`GET /v1/namespaces/{namespace}/descriptors/{name}/versions`
-
-*list all available versions for specified descriptor*
-
-<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|namespace|path|string|true|none|
-|name|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  "string"
-]
-```
-
-<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|returns list of versions|Inline|
-
-<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions-responseschema">Response Schema</h3>
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response if operation succeded|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Validation error response when user payload has missing required fields or currently being uploaded file is not backward compatible with previously uploaded file|None|
+|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|conflict error reponse if namespace, name and version combination already present|None|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Unexpected internal error reponse|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -215,72 +128,29 @@ curl -X GET /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}
 This operation does not require authentication
 </aside>
 
-<h1 id="stencil-server-metadata">metadata</h1>
+## StencilService_ListSnapshots
 
-manage latest versions for uploaded descriptor files
-
-## post__v1_namespaces_{namespace}_metadata
+<a id="opIdStencilService_ListSnapshots"></a>
 
 > Code samples
 
 ```shell
 # You can also use wget
-curl -X POST /v1/namespaces/{namespace}/metadata \
-  -H 'Content-Type: application/json'
-
-```
-
-`POST /v1/namespaces/{namespace}/metadata`
-
-*update metadata*
-
-> Body parameter
-
-```json
-{
-  "name": "string",
-  "version": "string"
-}
-```
-
-<h3 id="post__v1_namespaces_{namespace}_metadata-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|namespace|path|string|true|none|
-|body|body|[MetadataPayload](#schemametadatapayload)|true|specify name and version in payload|
-
-<h3 id="post__v1_namespaces_{namespace}_metadata-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response|None|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## get__v1_namespaces_{namespace}_metadata_{name}
-
-> Code samples
-
-```shell
-# You can also use wget
-curl -X GET /v1/namespaces/{namespace}/metadata/{name} \
+curl -X GET /v1/snapshots \
   -H 'Accept: application/json'
 
 ```
 
-`GET /v1/namespaces/{namespace}/metadata/{name}`
+`GET /v1/snapshots`
 
-*get latest version for specified descriptor*
-
-<h3 id="get__v1_namespaces_{namespace}_metadata_{name}-parameters">Parameters</h3>
+<h3 id="stencilservice_listsnapshots-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|namespace|path|string|true|none|
-|name|path|string|true|none|
+|namespace|query|string|false|none|
+|name|query|string|false|none|
+|version|query|string|false|none|
+|latest|query|boolean|false|none|
 
 > Example responses
 
@@ -288,15 +158,74 @@ curl -X GET /v1/namespaces/{namespace}/metadata/{name} \
 
 ```json
 {
-  "version": "string"
+  "snapshots": [
+    {
+      "id": "string",
+      "namespace": "string",
+      "name": "string",
+      "version": "string",
+      "latest": true
+    }
+  ]
 }
 ```
 
-<h3 id="get__v1_namespaces_{namespace}_metadata_{name}-responses">Responses</h3>
+<h3 id="stencilservice_listsnapshots-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success response|[MetadataResponse](#schemametadataresponse)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A successful response.|[v1ListSnapshotsResponse](#schemav1listsnapshotsresponse)|
+|default|Default|An unexpected error response.|[rpcStatus](#schemarpcstatus)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## StencilService_PromoteSnapshot
+
+<a id="opIdStencilService_PromoteSnapshot"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X PATCH /v1/snapshots/{id}/promote \
+  -H 'Accept: application/json'
+
+```
+
+`PATCH /v1/snapshots/{id}/promote`
+
+*PromoteSnapshot promotes particular snapshot version as latest*
+
+<h3 id="stencilservice_promotesnapshot-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string(int64)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "snapshot": {
+    "id": "string",
+    "namespace": "string",
+    "name": "string",
+    "version": "string",
+    "latest": true
+  }
+}
+```
+
+<h3 id="stencilservice_promotesnapshot-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A successful response.|[v1PromoteSnapshotResponse](#schemav1promotesnapshotresponse)|
+|default|Default|An unexpected error response.|[rpcStatus](#schemarpcstatus)|
 
 <aside class="success">
 This operation does not require authentication
@@ -304,16 +233,17 @@ This operation does not require authentication
 
 # Schemas
 
-<h2 id="tocS_MetadataResponse">MetadataResponse</h2>
+<h2 id="tocS_protobufAny">protobufAny</h2>
 <!-- backwards compatibility -->
-<a id="schemametadataresponse"></a>
-<a id="schema_MetadataResponse"></a>
-<a id="tocSmetadataresponse"></a>
-<a id="tocsmetadataresponse"></a>
+<a id="schemaprotobufany"></a>
+<a id="schema_protobufAny"></a>
+<a id="tocSprotobufany"></a>
+<a id="tocsprotobufany"></a>
 
 ```json
 {
-  "version": "string"
+  "typeUrl": "string",
+  "value": "string"
 }
 
 ```
@@ -322,19 +252,106 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version|string|false|none|none|
+|typeUrl|string|false|none|none|
+|value|string(byte)|false|none|none|
 
-<h2 id="tocS_MetadataPayload">MetadataPayload</h2>
+<h2 id="tocS_rpcStatus">rpcStatus</h2>
 <!-- backwards compatibility -->
-<a id="schemametadatapayload"></a>
-<a id="schema_MetadataPayload"></a>
-<a id="tocSmetadatapayload"></a>
-<a id="tocsmetadatapayload"></a>
+<a id="schemarpcstatus"></a>
+<a id="schema_rpcStatus"></a>
+<a id="tocSrpcstatus"></a>
+<a id="tocsrpcstatus"></a>
 
 ```json
 {
+  "code": 0,
+  "message": "string",
+  "details": [
+    {
+      "typeUrl": "string",
+      "value": "string"
+    }
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|integer(int32)|false|none|none|
+|message|string|false|none|none|
+|details|[[protobufAny](#schemaprotobufany)]|false|none|none|
+
+<h2 id="tocS_v1ListSnapshotsResponse">v1ListSnapshotsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemav1listsnapshotsresponse"></a>
+<a id="schema_v1ListSnapshotsResponse"></a>
+<a id="tocSv1listsnapshotsresponse"></a>
+<a id="tocsv1listsnapshotsresponse"></a>
+
+```json
+{
+  "snapshots": [
+    {
+      "id": "string",
+      "namespace": "string",
+      "name": "string",
+      "version": "string",
+      "latest": true
+    }
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshots|[[v1Snapshot](#schemav1snapshot)]|false|none|none|
+
+<h2 id="tocS_v1PromoteSnapshotResponse">v1PromoteSnapshotResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemav1promotesnapshotresponse"></a>
+<a id="schema_v1PromoteSnapshotResponse"></a>
+<a id="tocSv1promotesnapshotresponse"></a>
+<a id="tocsv1promotesnapshotresponse"></a>
+
+```json
+{
+  "snapshot": {
+    "id": "string",
+    "namespace": "string",
+    "name": "string",
+    "version": "string",
+    "latest": true
+  }
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshot|[v1Snapshot](#schemav1snapshot)|false|none|none|
+
+<h2 id="tocS_v1Snapshot">v1Snapshot</h2>
+<!-- backwards compatibility -->
+<a id="schemav1snapshot"></a>
+<a id="schema_v1Snapshot"></a>
+<a id="tocSv1snapshot"></a>
+<a id="tocsv1snapshot"></a>
+
+```json
+{
+  "id": "string",
+  "namespace": "string",
   "name": "string",
-  "version": "string"
+  "version": "string",
+  "latest": true
 }
 
 ```
@@ -343,9 +360,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|id|string(int64)|false|none|none|
+|namespace|string|true|none|none|
 |name|string|false|none|none|
 |version|string|false|none|none|
-
-
-
+|latest|boolean|false|none|none|
 

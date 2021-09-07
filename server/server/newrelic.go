@@ -3,13 +3,11 @@ package server
 import (
 	"log"
 
-	"github.com/gin-gonic/gin"
-	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/odpf/stencil/server/config"
 )
 
-func getNewRelicMiddleware(config *config.Config) gin.HandlerFunc {
+func getNewRelic(config *config.Config) *newrelic.Application {
 	newRelicConfig := config.NewRelic
 	app, err := newrelic.NewApplication(
 		newrelic.ConfigAppName(newRelicConfig.AppName),
@@ -19,5 +17,5 @@ func getNewRelicMiddleware(config *config.Config) gin.HandlerFunc {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return nrgin.Middleware(app)
+	return app
 }

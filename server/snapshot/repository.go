@@ -2,6 +2,7 @@ package snapshot
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/georgysavva/scany/pgxscan"
@@ -34,29 +35,39 @@ type Repository struct {
 	db *store.DB
 }
 
-// ListNames returns names
-func (r *Repository) ListNames(ctx context.Context, namespace string) ([]string, error) {
-	var names []string
-	err := pgxscan.Select(ctx, r.db, &names, `SELECT DISTINCT(name) from snapshots where namespace=$1`, namespace)
-	return names, err
-}
-
-// ListVersions returns versions
-func (r *Repository) ListVersions(ctx context.Context, namespace string, name string) ([]string, error) {
-	var names []string
-	err := pgxscan.Select(ctx, r.db, &names, `SELECT version from snapshots where namespace=$1 and name=$2`, namespace, name)
-	return names, err
-}
-
-// Exists checks if mentioned version is present or not
-func (r *Repository) Exists(ctx context.Context, snapshot *Snapshot) bool {
-	var count int64
-	err := r.db.QueryRow(ctx, `SELECT count(id) from snapshots where namespace=$1 and name=$2 and version=$3`,
-		snapshot.Namespace, snapshot.Name, snapshot.Version).Scan(&count)
-	if err != nil {
-		return false
+// List returns list of snapshots
+func (r *Repository) List(ctx context.Context, queryFields *Snapshot) ([]*Snapshot, error) {
+	var snapshots []*Snapshot
+	var query strings.Builder
+	var args []interface{}
+	var conditions []string
+	query.WriteString(`SELECT * from snapshots`)
+	if queryFields.Latest {
+		conditions = append(conditions, "latest=true")
 	}
-	return count != 0
+	if queryFields.Namespace != "" {
+		conditions = append(conditions, fmt.Sprintf("namespace=$%d", len(args)+1))
+		args = append(args, queryFields.Namespace)
+	}
+	if queryFields.Name != "" {
+		conditions = append(conditions, fmt.Sprintf("name=$%d", len(args)+1))
+		args = append(args, queryFields.Name)
+	}
+	if queryFields.Version != "" {
+		conditions = append(conditions, fmt.Sprintf("version=$%d", len(args)+1))
+		args = append(args, queryFields.Version)
+	}
+	if queryFields.ID != 0 {
+		conditions = append(conditions, fmt.Sprintf("id=$%d", len(args)+1))
+		args = append(args, queryFields.ID)
+	}
+	if len(conditions) > 0 {
+		condition := strings.Join(conditions, " AND ")
+		query.WriteString(fmt.Sprintf(` WHERE %s`, condition))
+	}
+
+	err := pgxscan.Select(ctx, r.db, &snapshots, query.String(), args...)
+	return snapshots, err
 }
 
 // UpdateLatestVersion returns latest version number
@@ -72,25 +83,26 @@ func (r *Repository) UpdateLatestVersion(ctx context.Context, snapshot *Snapshot
 			return err
 		}
 		_, err = t.Exec(ctx, `UPDATE snapshots set latest=true where id=$1`, snapshot.ID)
-		return err
+		if err != nil {
+			return err
+		}
+		snapshot.Latest = true
+		return nil
 	})
 }
 
-// GetSnapshot returns full snapshot data
-func (r *Repository) GetSnapshot(ctx context.Context, namespace, name, version string, latest bool) (*Snapshot, error) {
+// GetSnapshotByFields returns full snapshot data
+func (r *Repository) GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest bool) (*Snapshot, error) {
 	snapshot := &Snapshot{
 		Namespace: namespace,
 		Name:      name,
 	}
 	var query strings.Builder
 	var args []interface{}
-	query.WriteString(`SELECT id, version, latest from snapshots where namespace=$1 and name=$2`)
-	args = append(args, namespace, name)
-	if latest {
-		query.WriteString(` and latest=true`)
-	}
+	query.WriteString(`SELECT id, version, latest from snapshots where namespace=$1 and name=$2 and latest=$3`)
+	args = append(args, namespace, name, latest)
 	if version != "" {
-		query.WriteString(` and version=$3`)
+		query.WriteString(` and version=$4`)
 		args = append(args, version)
 	}
 	err := r.db.QueryRow(ctx, query.String(), args...).Scan(&snapshot.ID, &snapshot.Version, &snapshot.Latest)
@@ -98,6 +110,22 @@ func (r *Repository) GetSnapshot(ctx context.Context, namespace, name, version s
 		return snapshot, ErrNotFound
 	}
 	return snapshot, err
+}
+
+// GetSnapshotByID get snapshot by ID
+func (r *Repository) GetSnapshotByID(ctx context.Context, id int64) (*Snapshot, error) {
+	var s Snapshot
+	err := r.db.QueryRow(ctx, `SELECT * FROM snapshots where id=$1`, id).Scan(&s.ID, &s.Namespace, &s.Name, &s.Version, &s.Latest)
+	if err == pgx.ErrNoRows {
+		return &s, ErrNotFound
+	}
+	return &s, err
+}
+
+// Exists checks if snapshot exits in DB or not
+func (r *Repository) Exists(ctx context.Context, st *Snapshot) bool {
+	l, err := r.List(ctx, st)
+	return err == nil && len(l) > 0
 }
 
 // Create inserts snapshot data
