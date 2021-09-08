@@ -43,7 +43,7 @@ func Router(api *api.API, config *Config) *runtime.ServeMux {
 func Start() {
 	ctx := context.Background()
 
-	var cfg *Config
+	var cfg Config
 	loader := config.NewLoader(config.WithPath("./"))
 
 	if err := loader.Load(&cfg); err != nil {
@@ -60,8 +60,8 @@ func Start() {
 		Metadata: stRepo,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
-	nr := getNewRelic(cfg)
-	mux := Router(api, cfg)
+	nr := getNewRelic(&cfg)
+	mux := Router(api, &cfg)
 
 	// init grpc server
 	opts := []grpc.ServerOption{
@@ -88,7 +88,7 @@ func Start() {
 
 	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
 
-	runWithGracefulShutdown(cfg, grpcHandlerFunc(s, mux), func() {
+	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
 		db.Close()
