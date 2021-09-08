@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message Person {
+  message SocialMedia {
+    string facebook = 1;
+    string instagram = 2;
+  }
+  int64 id = 1;
+  string name = 2;
+  SocialMedia social_media = 3;
+}
