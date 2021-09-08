@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/odpf/stencil/server/server"
+	"github.com/odpf/stencil/server"
 	"github.com/spf13/cobra"
 )
 
