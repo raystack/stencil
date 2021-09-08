@@ -5,14 +5,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func init() {
-	rootCmd.AddCommand(&cobra.Command{
-		Use:   "serve",
-		Short: "Run server",
-		Run:   serve,
-	})
-}
-
-func serve(cmd *cobra.Command, args []string) {
-	server.Start()
+// ServeCmd start new stencil server
+func ServeCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "serve",
+		Aliases: []string{"v"},
+		Short:   "Run stencil server",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			server.Start()
+			return nil
+		},
+	}
 }
