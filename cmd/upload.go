@@ -47,7 +47,7 @@ func UploadCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&host, "host", "h", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVarP(&host, "host", "a", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 	cmd.Flags().StringVarP(&namespace, "namespace", "g", "", "provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")

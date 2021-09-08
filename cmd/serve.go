@@ -9,7 +9,7 @@ import (
 func ServeCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:     "serve",
-		Aliases: []string{"v"},
+		Aliases: []string{"s"},
 		Short:   "Run stencil server",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			server.Start()
