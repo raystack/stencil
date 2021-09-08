@@ -1,4 +1,4 @@
-module github.com/odpf/stencil/server
+module github.com/odpf/stencil
 
 go 1.16
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/odpf/stencil/server/cmd"
+	"github.com/odpf/stencil/cmd"
 )
 
 func main() {
