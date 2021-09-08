@@ -11,14 +11,11 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/jackc/pgx/v4 v4.13.0
-	github.com/jeremywohl/flatten v1.0.1
-	github.com/mcuadros/go-defaults v1.2.0
-	github.com/mitchellh/mapstructure v1.4.1
 	github.com/newrelic/go-agent/v3 v3.12.0
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.0
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
+	github.com/odpf/salt v0.0.0-20210907023951-8fae515add1f
 	github.com/spf13/cobra v1.2.1
-	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.19.0

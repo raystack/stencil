@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -15,8 +16,8 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/odpf/salt/config"
 	"github.com/odpf/stencil/server/api"
-	"github.com/odpf/stencil/server/config"
 	"github.com/odpf/stencil/server/logger"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/proto"
@@ -29,7 +30,7 @@ import (
 )
 
 // Router returns server router
-func Router(api *api.API, config *config.Config) *runtime.ServeMux {
+func Router(api *api.API, config *Config) *runtime.ServeMux {
 	gwmux := runtime.NewServeMux()
 	router := gin.New()
 	addMiddleware(router, config)
@@ -41,8 +42,16 @@ func Router(api *api.API, config *config.Config) *runtime.ServeMux {
 // Start Entry point to start the server
 func Start() {
 	ctx := context.Background()
-	config := config.LoadConfig()
-	db := store.NewDBStore(config)
+
+	var cfg *Config
+	loader := config.NewLoader(config.WithPath("./"))
+
+	if err := loader.Load(&cfg); err != nil {
+		fmt.Printf("ERROR: %s\n", err.Error())
+		os.Exit(1)
+	}
+
+	db := store.NewDBStore(cfg.DB.ConnectionString)
 	stRepo := snapshot.NewSnapshotRepository(db)
 	protoRepo := proto.NewProtoRepository(db)
 	protoService := proto.NewService(protoRepo, stRepo)
@@ -50,9 +59,9 @@ func Start() {
 		Store:    protoService,
 		Metadata: stRepo,
 	}
-	port := fmt.Sprintf(":%s", config.Port)
-	nr := getNewRelic(config)
-	mux := Router(api, config)
+	port := fmt.Sprintf(":%s", cfg.Port)
+	nr := getNewRelic(cfg)
+	mux := Router(api, cfg)
 
 	// init grpc server
 	opts := []grpc.ServerOption{
@@ -61,8 +70,8 @@ func Start() {
 			grpc_ctxtags.UnaryServerInterceptor(),
 			nrgrpc.UnaryServerInterceptor(nr),
 			grpc_zap.UnaryServerInterceptor(logger.Logger))),
-		grpc.MaxRecvMsgSize(config.GRPC.MaxRecvMsgSizeInMB << 20),
-		grpc.MaxSendMsgSize(config.GRPC.MaxSendMsgSizeInMB << 20),
+		grpc.MaxRecvMsgSize(cfg.GRPC.MaxRecvMsgSizeInMB << 20),
+		grpc.MaxSendMsgSize(cfg.GRPC.MaxSendMsgSizeInMB << 20),
 	}
 	// Create a gRPC server object
 	s := grpc.NewServer(opts...)
@@ -79,7 +88,7 @@ func Start() {
 
 	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
 
-	runWithGracefulShutdown(config, grpcHandlerFunc(s, mux), func() {
+	runWithGracefulShutdown(cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
 		db.Close()
