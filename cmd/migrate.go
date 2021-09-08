@@ -24,7 +24,7 @@ func init() {
 }
 
 func migrateCmd(cmd *cobra.Command, args []string) {
-	var cfg *server.Config
+	var cfg server.Config
 	loader := config.NewLoader(config.WithPath("./"))
 
 	if err := loader.Load(&cfg); err != nil {
