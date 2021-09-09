@@ -9,9 +9,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/odpf/stencil/config"
 )
 
-func runWithGracefulShutdown(config *Config, router http.Handler, cleanUp func()) {
+func runWithGracefulShutdown(config *config.Config, router http.Handler, cleanUp func()) {
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", config.Port),
 		Handler: router,

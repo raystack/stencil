@@ -1,4 +1,4 @@
-package server
+package config
 
 import "time"
 
@@ -24,8 +24,7 @@ type GRPCConfig struct {
 //Config Server config
 type Config struct {
 	Port string `default:"8080"`
-	//Timeout represents graceful shutdown period.
-	//Default is 60 seconds.
+	// Timeout represents graceful shutdown period. Defaults to 60 seconds.
 	Timeout  time.Duration `default:"60s"`
 	GRPC     GRPCConfig
 	NewRelic NewRelicConfig
