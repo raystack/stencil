@@ -4,10 +4,9 @@ import (
 	"log"
 
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/odpf/stencil/server/config"
 )
 
-func getNewRelic(config *config.Config) *newrelic.Application {
+func getNewRelic(config *Config) *newrelic.Application {
 	newRelicConfig := config.NewRelic
 	app, err := newrelic.NewApplication(
 		newrelic.ConfigAppName(newRelicConfig.AppName),

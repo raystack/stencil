@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/odpf/stencil/server/config"
+	"github.com/odpf/salt/config"
+	"github.com/odpf/stencil/server"
 
 	// Importing postgres driver
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -21,10 +24,17 @@ func init() {
 }
 
 func migrateCmd(cmd *cobra.Command, args []string) {
-	c := config.LoadConfig()
+	var cfg server.Config
+	loader := config.NewLoader(config.WithPath("./"))
+
+	if err := loader.Load(&cfg); err != nil {
+		fmt.Printf("ERROR: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	m, err := migrate.New(
-		c.DB.MigrationsPath,
-		c.DB.ConnectionString)
+		cfg.DB.MigrationsPath,
+		cfg.DB.ConnectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
