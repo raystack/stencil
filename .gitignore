@@ -21,4 +21,4 @@
 # Project specific ignore
 .env
 stencil
-config.yaml
+/config.yaml
