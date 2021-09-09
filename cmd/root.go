@@ -1,20 +1,17 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use: "stencil",
-}
-
-// Execute runs the specified commands
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+func New() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:   "stencil <command> <subcommand> [flags]",
+		Short: "Dynamic schema registry",
 	}
+
+	cmd.AddCommand(ServeCmd())
+	cmd.AddCommand(UploadCmd())
+	cmd.AddCommand(MigrateCmd())
+	return cmd
 }

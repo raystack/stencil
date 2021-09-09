@@ -10,51 +10,53 @@ import (
 	"google.golang.org/grpc"
 )
 
-var host, namespace, name, version, filePath string
-var latest bool
+// UploadCmd creates a new cobra command for upload
+func UploadCmd() *cobra.Command {
 
-func init() {
-	uploadCmd := &cobra.Command{
+	var host, namespace, name, version, filePath string
+	var latest bool
+
+	cmd := &cobra.Command{
 		Use:   "upload",
 		Short: "Upload filedescriptorset file",
-		Run:   upload,
 		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fileData, err := ioutil.ReadFile(filePath)
+			if err != nil {
+				log.Fatalln("Unable to read provided file", err)
+			}
+			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			if err != nil {
+				log.Fatalln(err)
+			}
+			defer conn.Close()
+			client := stencilv1.NewStencilServiceClient(conn)
+			ur := &stencilv1.UploadDescriptorRequest{
+				Namespace: namespace,
+				Name:      name,
+				Version:   version,
+				Latest:    latest,
+				Data:      fileData,
+			}
+			res, err := client.UploadDescriptor(context.Background(), ur)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			log.Println(res)
+			return nil
+		},
 	}
-	uploadCmd.Flags().StringVarP(&host, "host", "h", "", "stencil host address eg: localhost:8000")
-	uploadCmd.MarkFlagRequired("host")
-	uploadCmd.Flags().StringVarP(&namespace, "namespace", "g", "", "provide namespace/group or entity name")
-	uploadCmd.MarkFlagRequired("namespace")
-	uploadCmd.Flags().StringVarP(&name, "name", "n", "", "provide proto repo name")
-	uploadCmd.MarkFlagRequired("name")
-	uploadCmd.Flags().StringVarP(&version, "version", "v", "", "provide semantic version compatible value")
-	uploadCmd.MarkFlagRequired("version")
-	uploadCmd.Flags().BoolVarP(&latest, "latest", "l", false, "mark as latest version")
-	uploadCmd.Flags().StringVarP(&filePath, "file", "f", "", "provide path to fully contained file descriptor set file")
-	uploadCmd.MarkFlagRequired("file")
-	rootCmd.AddCommand(uploadCmd)
-}
 
-func upload(cmd *cobra.Command, args []string) {
-	fileData, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		log.Fatalln("Unable to read provided file", err)
-	}
-	conn, err := grpc.Dial(host, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer conn.Close()
-	client := stencilv1.NewStencilServiceClient(conn)
-	ur := &stencilv1.UploadDescriptorRequest{
-		Namespace: namespace,
-		Name:      name,
-		Version:   version,
-		Latest:    latest,
-		Data:      fileData,
-	}
-	res, err := client.UploadDescriptor(context.Background(), ur)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.Println(res)
+	cmd.Flags().StringVarP(&host, "host", "a", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+	cmd.Flags().StringVarP(&namespace, "namespace", "g", "", "provide namespace/group or entity name")
+	cmd.MarkFlagRequired("namespace")
+	cmd.Flags().StringVarP(&name, "name", "n", "", "provide proto repo name")
+	cmd.MarkFlagRequired("name")
+	cmd.Flags().StringVarP(&version, "version", "v", "", "provide semantic version compatible value")
+	cmd.MarkFlagRequired("version")
+	cmd.Flags().BoolVarP(&latest, "latest", "l", false, "mark as latest version")
+	cmd.Flags().StringVarP(&filePath, "file", "f", "", "provide path to fully contained file descriptor set file")
+	cmd.MarkFlagRequired("file")
+	return cmd
 }
