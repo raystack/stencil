@@ -6,10 +6,11 @@ import (
 
 func New() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "stencil <command> <subcommand> [flags]",
-		Short: "Dynamic schema registry",
+		Use:           "stencil <command> <subcommand> [flags]",
+		Short:         "Dynamic schema registry",
+		SilenceUsage:  true,
+		SilenceErrors: true,
 	}
-
 	cmd.AddCommand(ServeCmd())
 	cmd.AddCommand(UploadCmd())
 	cmd.AddCommand(MigrateCmd())
