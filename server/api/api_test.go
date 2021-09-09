@@ -3,6 +3,7 @@ package api_test
 import (
 	"net/http"
 
+	"github.com/odpf/stencil/config"
 	"github.com/odpf/stencil/server"
 
 	"github.com/odpf/stencil/server/api"
@@ -16,6 +17,6 @@ func setup() (http.Handler, *mocks.StoreService, *mocks.MetadataService, *api.AP
 		Store:    mockService,
 		Metadata: mockMetadataService,
 	}
-	router := server.Router(v1, &server.Config{})
+	router := server.Router(v1, &config.Config{})
 	return router, mockService, mockMetadataService, v1
 }

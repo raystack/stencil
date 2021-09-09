@@ -8,7 +8,7 @@ DIST_PATH=out
 all: build
 
 build:
-	go build -ldflags "-X main.Version=${VERSION}" ${NAME}
+	go build -ldflags "-X config.Version=${VERSION}" ${NAME}
 
 clean:
 	rm -rf stencil dist/

@@ -4,8 +4,7 @@ import (
 	"log"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/odpf/salt/config"
-	"github.com/odpf/stencil/server"
+	"github.com/odpf/stencil/config"
 
 	// Importing postgres driver
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -15,14 +14,15 @@ import (
 
 // MigrateCmd start new stencil server
 func MigrateCmd() *cobra.Command {
-	return &cobra.Command{
+	var configFile string
+
+	cmd := &cobra.Command{
 		Use:   "migrate",
-		Short: "Run migrations",
+		Short: "Run database migrations",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var cfg server.Config
-			loader := config.NewLoader(config.WithPath("./"))
-			if err := loader.Load(&cfg); err != nil {
-				log.Fatal(err)
+			cfg, err := config.Load(configFile)
+			if err != nil {
+				return err
 			}
 			m, err := migrate.New(
 				cfg.DB.MigrationsPath,
@@ -36,4 +36,7 @@ func MigrateCmd() *cobra.Command {
 			return nil
 		},
 	}
+
+	cmd.Flags().StringVarP(&configFile, "config", "c", "./config.yaml", "Config file path")
+	return cmd
 }

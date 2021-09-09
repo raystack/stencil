@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
+	"github.com/odpf/stencil/config"
 	"github.com/odpf/stencil/server/models"
 	"google.golang.org/grpc/status"
 )
@@ -47,7 +48,7 @@ func getLogger() gin.HandlerFunc {
 	})
 }
 
-func addMiddleware(router *gin.Engine, config *Config) {
+func addMiddleware(router *gin.Engine, config *config.Config) {
 	router.Use(nrgin.Middleware(getNewRelic(config)))
 	router.Use(gin.Recovery())
 	router.Use(getLogger())

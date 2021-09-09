@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+	"github.com/odpf/stencil/config"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/odpf/salt/config"
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/logger"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
@@ -30,7 +29,7 @@ import (
 )
 
 // Router returns server router
-func Router(api *api.API, config *Config) *runtime.ServeMux {
+func Router(api *api.API, config *config.Config) *runtime.ServeMux {
 	gwmux := runtime.NewServeMux()
 	router := gin.New()
 	addMiddleware(router, config)
@@ -40,16 +39,8 @@ func Router(api *api.API, config *Config) *runtime.ServeMux {
 }
 
 // Start Entry point to start the server
-func Start() {
+func Start(cfg config.Config) {
 	ctx := context.Background()
-
-	var cfg Config
-	loader := config.NewLoader(config.WithPath("./"))
-
-	if err := loader.Load(&cfg); err != nil {
-		fmt.Printf("ERROR: %s\n", err.Error())
-		os.Exit(1)
-	}
 
 	db := store.NewDBStore(cfg.DB.ConnectionString)
 	stRepo := snapshot.NewSnapshotRepository(db)
