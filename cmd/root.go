@@ -14,5 +14,6 @@ func New() *cobra.Command {
 	cmd.AddCommand(ServeCmd())
 	cmd.AddCommand(UploadCmd())
 	cmd.AddCommand(MigrateCmd())
+	cmd.AddCommand(DownloadCmd())
 	return cmd
 }
