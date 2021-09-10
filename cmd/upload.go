@@ -23,6 +23,9 @@ func UploadCmd() *cobra.Command {
 		Use:   "upload",
 		Short: "Upload filedescriptorset file",
 		Args:  cobra.NoArgs,
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fileData, err := ioutil.ReadFile(filePath)
 			if err != nil {
