@@ -23,5 +23,3 @@ newrelic:
 db:
   # Connection string for postgres database
   connectionstring: "postgres://postgres@localhost:5432/db"
-  # Path to database migration files
-  migrationspath: "file:///path/to/server/migrations"
