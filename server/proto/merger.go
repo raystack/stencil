@@ -16,9 +16,6 @@ var (
 
 func getFileDescriptorProto(fds *protoregistry.Files, path string) *descriptorpb.FileDescriptorProto {
 	var fdp *descriptorpb.FileDescriptorProto
-	fds.RangeFiles(func(descriptor protoreflect.FileDescriptor) bool {
-		return true
-	})
 	fds.RangeFiles(func(fileDescriptor protoreflect.FileDescriptor) bool {
 		if fileDescriptor.Path() == path {
 			fdp = protodesc.ToFileDescriptorProto(fileDescriptor)
@@ -98,7 +95,6 @@ func addNewFiles(
 	previousRegistry *protoregistry.Files,
 	fileDescriptorProtos []*descriptorpb.FileDescriptorProto,
 ) []*descriptorpb.FileDescriptorProto {
-
 	currentRegistry.RangeFiles(func(currentFD protoreflect.FileDescriptor) bool {
 		currentFileDP := protodesc.ToFileDescriptorProto(currentFD)
 		if getFileDescriptorProto(previousRegistry, currentFD.Path()) == nil {
@@ -200,7 +196,6 @@ func addNewFields(previousDP *descriptorpb.DescriptorProto, currentDP *descripto
 			maxPreviousNumber = *previousFieldDP.Number
 		}
 	}
-
 	// add new fields
 	for _, currentFieldDP := range currentDP.Field {
 		isNew := true

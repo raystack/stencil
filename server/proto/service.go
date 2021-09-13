@@ -25,6 +25,10 @@ func (s *Service) Validate(ctx context.Context, cs *snapshot.Snapshot, data []by
 	return Compare(data, prevData, rulesToSkip)
 }
 
+func (s *Service) Merge(ctx context.Context, prevData, data []byte, rulesToSkip []string) ([]byte, error) {
+	return Merge(data, prevData, rulesToSkip)
+}
+
 // Insert stores proto schema details in DB after backward compatible check succeeds
 func (s *Service) Insert(ctx context.Context, snapshot *snapshot.Snapshot, data []byte) error {
 	files, _ := getRegistry(data)

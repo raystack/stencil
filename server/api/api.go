@@ -11,6 +11,7 @@ import (
 //StoreService Service Interface for storage and validation
 type StoreService interface {
 	Validate(context.Context, *snapshot.Snapshot, []byte, []string) error
+	Merge(context.Context, []byte, []byte, []string) ([]byte, error)
 	Insert(context.Context, *snapshot.Snapshot, []byte) error
 	Get(context.Context, *snapshot.Snapshot, []string) ([]byte, error)
 }
