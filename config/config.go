@@ -12,7 +12,6 @@ type NewRelicConfig struct {
 // DBConfig contains DB connection details
 type DBConfig struct {
 	ConnectionString string
-	MigrationsPath   string
 }
 
 //GRPCConfig grpc options
