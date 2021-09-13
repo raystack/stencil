@@ -19,6 +19,9 @@ func DownloadCmd() *cobra.Command {
 		Use:   "download",
 		Short: "Download filedescriptorset file",
 		Args:  cobra.NoArgs,
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {

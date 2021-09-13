@@ -17,6 +17,9 @@ func Snapshot() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "snapshot",
 		Short: "list, update snapshot details",
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
 	}
 	cmd.PersistentFlags().String("host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkPersistentFlagRequired("host")
@@ -31,6 +34,9 @@ func listCmd() *cobra.Command {
 		Use:   "list",
 		Short: "list snapshots with optional filters",
 		Args:  cobra.NoArgs,
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			host, _ := cmd.Flags().GetString("host")
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
@@ -62,6 +68,9 @@ func promoteCmd() *cobra.Command {
 		Use:   "promote",
 		Short: "promote specified snapshot to latest",
 		Args:  cobra.NoArgs,
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			host, _ := cmd.Flags().GetString("host")
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
