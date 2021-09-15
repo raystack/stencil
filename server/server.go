@@ -11,6 +11,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
+	"github.com/odpf/stencil/storage/postgres"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -21,7 +22,6 @@ import (
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/proto"
 	"github.com/odpf/stencil/server/snapshot"
-	"github.com/odpf/stencil/server/store"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
@@ -42,13 +42,12 @@ func Router(api *api.API, config *config.Config) *runtime.ServeMux {
 func Start(cfg config.Config) {
 	ctx := context.Background()
 
-	db := store.NewDBStore(cfg.DB.ConnectionString)
-	stRepo := snapshot.NewSnapshotRepository(db)
-	protoRepo := proto.NewProtoRepository(db)
-	protoService := proto.NewService(protoRepo, stRepo)
+	store := postgres.NewStore(cfg.DB.ConnectionString)
+	protoService := proto.NewService(store)
+	metaService := snapshot.NewService(store)
 	api := &api.API{
 		Store:    protoService,
-		Metadata: stRepo,
+		Metadata: metaService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
@@ -82,7 +81,7 @@ func Start(cfg config.Config) {
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
-		db.Close()
+		store.Close()
 	})
 }
 

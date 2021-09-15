@@ -2,8 +2,6 @@ package models
 
 import (
 	"mime/multipart"
-
-	"github.com/odpf/stencil/server/snapshot"
 )
 
 type FileDownloadRequest struct {
@@ -14,8 +12,8 @@ type FileDownloadRequest struct {
 }
 
 // ToSnapshot creates snapshot
-func (f *FileDownloadRequest) ToSnapshot() *snapshot.Snapshot {
-	s := &snapshot.Snapshot{
+func (f *FileDownloadRequest) ToSnapshot() *Snapshot {
+	s := &Snapshot{
 		Namespace: f.Namespace,
 		Name:      f.Name,
 	}
@@ -38,8 +36,8 @@ type DescriptorUploadRequest struct {
 }
 
 // ToSnapshot creates sanpshot
-func (d *DescriptorUploadRequest) ToSnapshot() *snapshot.Snapshot {
-	return &snapshot.Snapshot{
+func (d *DescriptorUploadRequest) ToSnapshot() *Snapshot {
+	return &Snapshot{
 		Namespace: d.Namespace,
 		Name:      d.Name,
 		Version:   d.Version,

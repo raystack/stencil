@@ -1,13 +1,12 @@
 package api
 
 import (
-	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/snapshot"
 )
 
-func fromProtoToSnapshot(g *stencilv1.Snapshot) *snapshot.Snapshot {
-	return &snapshot.Snapshot{
+func fromProtoToSnapshot(g *stencilv1.Snapshot) *models.Snapshot {
+	return &models.Snapshot{
 		ID:        g.GetId(),
 		Namespace: g.GetNamespace(),
 		Name:      g.GetName(),
@@ -16,7 +15,7 @@ func fromProtoToSnapshot(g *stencilv1.Snapshot) *snapshot.Snapshot {
 	}
 }
 
-func fromSnapshotToProto(g *snapshot.Snapshot) *stencilv1.Snapshot {
+func fromSnapshotToProto(g *models.Snapshot) *stencilv1.Snapshot {
 	return &stencilv1.Snapshot{
 		Id:        g.ID,
 		Namespace: g.Namespace,

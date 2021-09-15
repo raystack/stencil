@@ -7,9 +7,8 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -47,12 +46,12 @@ func (a *API) DownloadDescriptor(ctx context.Context, req *stencilv1.DownloadDes
 	return &stencilv1.DownloadDescriptorResponse{Data: data}, err
 }
 
-func (a *API) download(ctx context.Context, s *snapshot.Snapshot, fullNames []string) ([]byte, error) {
+func (a *API) download(ctx context.Context, s *models.Snapshot, fullNames []string) ([]byte, error) {
 	notfoundErr := status.Error(codes.NotFound, "not found")
 	var data []byte
 	st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, s.Latest)
 	if err != nil {
-		if err == snapshot.ErrNotFound {
+		if err == models.ErrSnapshotNotFound {
 			return data, notfoundErr
 		}
 		return data, status.Convert(err).Err()

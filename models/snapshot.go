@@ -1,12 +1,10 @@
-package snapshot
+package models
 
-import (
-	"errors"
-)
+import "errors"
 
 var (
-	//ErrNotFound used when snapshot is not found
-	ErrNotFound = errors.New("not found")
+	//ErrSnapshotNotFound used when snapshot is not found
+	ErrSnapshotNotFound = errors.New("not found")
 )
 
 // Snapshot represents specific version of protodescriptorset

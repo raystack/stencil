@@ -1,4 +1,4 @@
-package store
+package postgres
 
 import (
 	"context"
@@ -23,13 +23,13 @@ const (
 	resourcePath = "migrations"
 )
 
-// DB db instance
+// DB represents postgres database instance
 type DB struct {
 	*pgxpool.Pool
 }
 
-// NewDBStore create DB store
-func NewDBStore(conn string) *DB {
+// NewStore create a postgres store
+func NewStore(conn string) *Store {
 	cc, _ := pgxpool.ParseConfig(conn)
 	cc.ConnConfig.Logger = zapadapter.NewLogger(logger.Logger)
 
@@ -37,7 +37,10 @@ func NewDBStore(conn string) *DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &DB{Pool: pgxPool}
+
+	return &Store{
+		db: &DB{Pool: pgxPool},
+	}
 }
 
 // NewHTTPFSMigrator reads the migrations from httpfs and returns the migrate.Migrate
