@@ -4,11 +4,13 @@
 package stencil
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"time"
 
 	"go.uber.org/multierr"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/dynamicpb"
@@ -35,6 +37,8 @@ type Client interface {
 	Close()
 	// Refresh downloads latest proto definitions
 	Refresh() error
+	// Serialize serializes data to bytes given fully qualified name of proto message.
+	Serialize(string, interface{}) ([]byte, error)
 }
 
 // HTTPOptions options for http client
@@ -114,6 +118,26 @@ func (s *stencilClient) Refresh() error {
 		err = multierr.Combine(err, s.store.loadFromURI(url, s.options))
 	}
 	return err
+}
+
+func (s *stencilClient) Serialize(className string, data interface{}) ([]byte, error) {
+	// message to json
+	jsonBytes, _ := json.Marshal(data)
+
+	// get descriptor
+	desc, err := s.GetDescriptor(className)
+	if err != nil {
+		return nil, err
+	}
+
+	// construct proto message
+	m := dynamicpb.NewMessage(desc).New().Interface()
+	if err = protojson.Unmarshal(jsonBytes, m); err != nil {
+		return nil, err
+	}
+
+	// from proto message to bytes[]
+	return proto.Marshal(m)
 }
 
 func (s *stencilClient) load() error {

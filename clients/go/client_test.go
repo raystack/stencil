@@ -372,4 +372,46 @@ func TestClient(t *testing.T) {
 			})
 		})
 	})
+
+	t.Run("Serialize", func(t *testing.T) {
+		data, err := getDescriptorData(t, true)
+		assert.NoError(t, err)
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write(data)
+		}))
+		defer ts.Close()
+		url := ts.URL
+		client, err := stencil.NewClient(url, stencil.Options{})
+		assert.Nil(t, err)
+		assert.NotNil(t, client)
+
+		validData := map[string]interface{}{
+			"field_one": 23,
+		}
+
+		t.Run("should return error when unable to get descriptor", func(t *testing.T) {
+			result, err := client.Serialize("invalidClass", validData)
+			assert.Nil(t, result)
+			assert.Equal(t, stencil.ErrNotFound, err)
+		})
+		t.Run("should return error when unable to serialize to bytes", func(t *testing.T) {
+			className := "test.stencil.One"
+
+			mapData := make(map[string]interface{})
+			mapData["key1"] = "value1"
+
+			result, err := client.Serialize(className, mapData)
+			assert.Nil(t, result)
+			assert.Error(t, err)
+		})
+		t.Run("should return bytes", func(t *testing.T) {
+			className := "test.stencil.One"
+
+			result, err := client.Serialize(className, validData)
+			assert.NoError(t, err)
+
+			expected := []byte{0x8, 0x17}
+			assert.Equal(t, expected, result)
+		})
+	})
 }
