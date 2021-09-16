@@ -14,7 +14,7 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

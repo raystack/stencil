@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc/status"
@@ -29,7 +29,7 @@ func TestDownload(t *testing.T) {
 	}{
 		{"should return 400 if name is missing", "", "1.0.1", nil, nil, 400},
 		{"should return 400 if version is invalid", "name1", "invalid", nil, nil, 400},
-		{"should return 404 if version is not found", "name1", "3.3.1", snapshot.ErrNotFound, nil, 404},
+		{"should return 404 if version is not found", "name1", "3.3.1", models.ErrSnapshotNotFound, nil, 404},
 		{"should return 500 if finding snapshot fails", "name1", "3.3.1", errors.New("get snapshot fail"), nil, 500},
 		{"should return 500 if download fails", "name1", "1.0.1", nil, downloadFail, 500},
 		{"should return 200 if download succeeded", "name1", "1.0.1", nil, nil, 200},
@@ -39,7 +39,7 @@ func TestDownload(t *testing.T) {
 			router, mockService, mockMetadata, _ := setup()
 
 			fileData := []byte("File contents")
-			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
+			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&models.Snapshot{}, test.notFoundErr)
 			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/descriptors/%s/versions/%s", test.name, test.version), nil)
@@ -58,7 +58,7 @@ func TestDownload(t *testing.T) {
 			_, mockService, mockMetadata, a := setup()
 
 			fileData := []byte("File contents")
-			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, test.notFoundErr)
+			mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&models.Snapshot{}, test.notFoundErr)
 			mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, test.downloadErr)
 			req := &stencilv1.DownloadDescriptorRequest{Namespace: "namespace", Name: test.name, Version: test.version}
 			res, err := a.DownloadDescriptor(ctx, req)
@@ -73,7 +73,7 @@ func TestDownload(t *testing.T) {
 	t.Run("should return 404 if file content not found", func(t *testing.T) {
 		router, mockService, mockMetadata, _ := setup()
 		fileData := []byte("")
-		mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&snapshot.Snapshot{}, nil)
+		mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&models.Snapshot{}, nil)
 		mockService.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(fileData, nil)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", "/v1/namespaces/namespace/descriptors/n/versions/latest", nil)

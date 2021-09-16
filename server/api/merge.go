@@ -4,8 +4,7 @@ import (
     "context"
     "fmt"
     "github.com/gin-gonic/gin"
-    "github.com/odpf/stencil/server/models"
-    "github.com/odpf/stencil/server/snapshot"
+    "github.com/odpf/stencil/models"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/status"
     "net/http"
@@ -40,12 +39,12 @@ func (a *API) HTTPMerge(c *gin.Context) {
     c.Data(http.StatusOK, "application/octet-stream", data)
 }
 
-func (a *API) merge(ctx context.Context, s *snapshot.Snapshot, data []byte, skipRules []string) ([]byte, error) {
+func (a *API) merge(ctx context.Context, s *models.Snapshot, data []byte, skipRules []string) ([]byte, error) {
     notfoundErr := status.Error(codes.NotFound, "not found")
     var prevData []byte
     st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, s.Latest)
     if err != nil {
-        if err == snapshot.ErrNotFound {
+        if err == models.ErrSnapshotNotFound {
             return data, notfoundErr
         }
         return data, status.Convert(err).Err()
