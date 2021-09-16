@@ -16,7 +16,7 @@ type Service struct {
 func (s *Service) Validate(ctx context.Context, cs *models.Snapshot, data []byte, rulesToSkip []string) error {
 	var err error
 	prevSt, err := s.store.GetSnapshotByFields(ctx, cs.Namespace, cs.Name, "", true)
-	if err == models.ErrNotFound {
+	if err == models.ErrSnapshotNotFound {
 		return nil
 	}
 	// no need to handle error here. Since without snapshot, data won't exist.
