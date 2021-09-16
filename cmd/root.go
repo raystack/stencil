@@ -26,6 +26,7 @@ func New() *cobra.Command {
 			$ stencil download 
 			$ stencil snapshot list
 			$ stencil serve
+			$ stencil protoc
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -42,5 +43,6 @@ func New() *cobra.Command {
 	cmd.AddCommand(MigrateCmd())
 	cmd.AddCommand(DownloadCmd())
 	cmd.AddCommand(Snapshot())
+	cmd.AddCommand(ProtocCmd())
 	return cmd
 }
