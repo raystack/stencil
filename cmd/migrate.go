@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"github.com/odpf/stencil/config"
-	"github.com/odpf/stencil/storage/postgres"
+	"github.com/odpf/stencil/storage"
 
 	// Importing postgres driver
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/cobra"
 )
@@ -25,11 +26,9 @@ func MigrateCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
-			if err := postgres.Migrate(cfg.DB.ConnectionString); err != nil {
+			if err := storage.FactoryMigrate(cfg.DB); err != nil {
 				return err
 			}
-
 			return nil
 		},
 	}

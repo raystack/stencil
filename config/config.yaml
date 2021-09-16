@@ -23,3 +23,5 @@ newrelic:
 db:
   # Connection string for postgres database
   connectionstring: "postgres://postgres@localhost:5432/db"
+  # Specifies the type of database to be used, available: postgres, sqlite
+  type: postgres
