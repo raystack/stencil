@@ -1,0 +1,25 @@
+# ODPF Stencil Configuration
+#
+#
+# !!WARNING!!
+# This configuration file is for documentation purposes only. Do not use it in production.
+#
+# Stencil can be configured using a configuration file and passing the file location using `--config path/to/config.yaml`.
+# Per default, Stencil will look up and load file ~/.stencil.yaml. All configuration keys can be set using environment
+# variables as well.
+#
+
+# server controls the configuration for the GRPC server.
+# The port to listen on. Defaults to 8080
+port: 8080
+# Timeout represents graceful shutdown period. Defaults to 60 sec
+timeout: 5s
+# Configuration for profiling application with new relic
+newrelic:
+  appname: example
+  enabled: false
+  license: "<key>"
+# Database configurations for stencil backend 
+db:
+  # Connection string for postgres database
+  connectionstring: "postgres://postgres@localhost:5432/db"

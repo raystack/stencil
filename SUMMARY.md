@@ -6,9 +6,9 @@
 
 ## Stencil server
 
-* [Overview](server/README.md)
-* [Rules](server/docs/rules.md)
-* [API](server/docs/api.md)
+* [Overview](docs/server/overview.md)
+* [Rules](docs/server/rules.md)
+* [API](docs/server/api.md)
 
 ## Clients
 

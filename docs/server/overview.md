@@ -48,8 +48,8 @@ To run the stencil server, you will need to add the following environment variab
 
 ## Reference
 
-- [API](./docs/api.md)
-- [Rules](./docs/rules.md)
+- [API](./api.md)
+- [Rules](./rules.md)
 
 ## Quick start API usage examples
 

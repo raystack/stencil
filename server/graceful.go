@@ -10,7 +10,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/odpf/stencil/server/config"
+	"github.com/odpf/stencil/config"
 )
 
 func runWithGracefulShutdown(config *config.Config, router http.Handler, cleanUp func()) {
