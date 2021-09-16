@@ -29,7 +29,7 @@ func (s *Service) Validate(ctx context.Context, cs *models.Snapshot, data []byte
 func (s *Service) Insert(ctx context.Context, snapshot *models.Snapshot, data []byte) error {
 	files, _ := getRegistry(data)
 	dbFiles := toProtobufDBFiles(files)
-	err := s.store.PutPBFiles(ctx, snapshot, dbFiles)
+	err := s.store.PutSchema(ctx, snapshot, dbFiles)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func (s *Service) Insert(ctx context.Context, snapshot *models.Snapshot, data []
 
 // Get returns proto schema details from DB
 func (s *Service) Get(ctx context.Context, snapshot *models.Snapshot, names []string) (data []byte, err error) {
-	dbData, err := s.store.GetPBFiles(ctx, snapshot, names)
+	dbData, err := s.store.GetSchema(ctx, snapshot, names)
 	if err != nil {
 		return
 	}

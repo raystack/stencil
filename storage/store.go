@@ -29,9 +29,9 @@ type Store interface {
 	// DeleteSnapshot deletes the snapshot.
 	DeleteSnapshot(ctx context.Context, snapshot *models.Snapshot) error
 
-	// GetPBFiles returns the protobuf file with the given name.
-	GetPBFiles(ctx context.Context, snapshot *models.Snapshot, names []string) ([][]byte, error)
+	// GetSchema returns the protobuf file with the given name.
+	GetSchema(ctx context.Context, snapshot *models.Snapshot, names []string) ([][]byte, error)
 
-	// PutPBFile puts the protobuf file with the given name.
-	PutPBFiles(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error
+	// PutSchema puts the protobuf file with the given name.
+	PutSchema(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error
 }

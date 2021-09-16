@@ -123,8 +123,8 @@ func (r *Store) DeleteSnapshot(ctx context.Context, snapshot *models.Snapshot) e
 	return err
 }
 
-// Put inserts fileDescriptorset information in DB
-func (r *Store) PutPBFiles(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error {
+// PutSchema inserts Schema information in DB
+func (r *Store) PutSchema(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error {
 	return r.db.Pool.BeginFunc(ctx, func(t pgx.Tx) error {
 		err := t.QueryRow(ctx, snapshotInsertQuery, snapshot.Namespace, snapshot.Name, snapshot.Version).Scan(&snapshot.ID)
 		if err != nil {
@@ -147,9 +147,9 @@ func (r *Store) PutPBFiles(ctx context.Context, snapshot *models.Snapshot, dbFil
 	})
 }
 
-// GetPBFiles Fullycontained descriptorset file given list of fully qualified message names.
+// GetSchema Fullycontained descriptorset file given list of fully qualified message names.
 // If message names are empty then whole fileDescriptorSet data returned
-func (r *Store) GetPBFiles(ctx context.Context, snapshot *models.Snapshot, names []string) ([][]byte, error) {
+func (r *Store) GetSchema(ctx context.Context, snapshot *models.Snapshot, names []string) ([][]byte, error) {
 	var totalData [][]byte
 	var err error
 	if len(names) > 0 {
