@@ -3,8 +3,8 @@ package api
 import (
 	"context"
 
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -12,7 +12,7 @@ import (
 // ListSnapshots returns list of snapshots. If filters applied it will return filtered snapshot list
 func (a *API) ListSnapshots(ctx context.Context, req *stencilv1.ListSnapshotsRequest) (*stencilv1.ListSnapshotsResponse, error) {
 	res := &stencilv1.ListSnapshotsResponse{}
-	list, err := a.Metadata.List(ctx, &snapshot.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
+	list, err := a.Metadata.List(ctx, &models.Snapshot{Namespace: req.Namespace, Name: req.Name, Version: req.Version, Latest: req.Latest})
 	if err != nil {
 		return res, err
 	}
@@ -26,7 +26,7 @@ func (a *API) ListSnapshots(ctx context.Context, req *stencilv1.ListSnapshotsReq
 func (a *API) PromoteSnapshot(ctx context.Context, req *stencilv1.PromoteSnapshotRequest) (*stencilv1.PromoteSnapshotResponse, error) {
 	st, err := a.Metadata.GetSnapshotByID(ctx, req.Id)
 	if err != nil {
-		if err == snapshot.ErrNotFound {
+		if err == models.ErrSnapshotNotFound {
 			return nil, status.Error(codes.NotFound, err.Error())
 		}
 		return nil, status.Error(codes.Internal, err.Error())

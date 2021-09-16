@@ -8,9 +8,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/odpf/stencil/server/models"
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/snapshot"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -59,7 +58,7 @@ func (a *API) UploadDescriptor(ctx context.Context, req *stencilv1.UploadDescrip
 	return res, nil
 }
 
-func (a *API) upload(ctx context.Context, snapshot *snapshot.Snapshot, data []byte, skipRules []string, dryrun bool) error {
+func (a *API) upload(ctx context.Context, snapshot *models.Snapshot, data []byte, skipRules []string, dryrun bool) error {
 	if ok := a.Metadata.Exists(ctx, snapshot); ok {
 		return status.Error(codes.AlreadyExists, "Resource already exists")
 	}

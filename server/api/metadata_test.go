@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/odpf/stencil/models"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/snapshot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc/codes"
@@ -17,7 +17,7 @@ func TestList(t *testing.T) {
 	t.Run("should return list", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		st := []*snapshot.Snapshot{
+		st := []*models.Snapshot{
 			{
 				Namespace: "t",
 				Name:      "na",
@@ -26,7 +26,7 @@ func TestList(t *testing.T) {
 		req := stencilv1.ListSnapshotsRequest{
 			Namespace: "t",
 		}
-		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(st, nil)
+		mockService.On("List", mock.Anything, &models.Snapshot{Namespace: "t"}).Return(st, nil)
 		res, err := v1.ListSnapshots(ctx, &req)
 		assert.Nil(t, err)
 		assert.Equal(t, "t", res.Snapshots[0].Namespace)
@@ -40,7 +40,7 @@ func TestList(t *testing.T) {
 			Namespace: "t",
 		}
 		err := errors.New("list failed")
-		mockService.On("List", mock.Anything, &snapshot.Snapshot{Namespace: "t"}).Return(nil, err)
+		mockService.On("List", mock.Anything, &models.Snapshot{Namespace: "t"}).Return(nil, err)
 		res, err := v1.ListSnapshots(ctx, &req)
 		assert.NotNil(t, err)
 		assert.Equal(t, 0, len(res.Snapshots))
@@ -51,7 +51,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 	t.Run("should update latest tag", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		st := &snapshot.Snapshot{
+		st := &models.Snapshot{
 			ID:        1,
 			Namespace: "t",
 			Name:      "na",
@@ -71,7 +71,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 	t.Run("should return not found err if snapshot not found", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		st := &snapshot.Snapshot{
+		st := &models.Snapshot{
 			ID:        1,
 			Namespace: "t",
 			Name:      "na",
@@ -79,7 +79,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 		req := &stencilv1.PromoteSnapshotRequest{
 			Id: 1,
 		}
-		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, snapshot.ErrNotFound)
+		mockService.On("GetSnapshotByID", mock.Anything, int64(1)).Return(st, models.ErrSnapshotNotFound)
 		mockService.On("UpdateLatestVersion", mock.Anything, st).Return(nil)
 		_, err := v1.PromoteSnapshot(ctx, req)
 		assert.NotNil(t, err)
@@ -90,7 +90,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 	t.Run("should mark as internal error if get snapshot fails", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		st := &snapshot.Snapshot{
+		st := &models.Snapshot{
 			ID:        1,
 			Namespace: "t",
 			Name:      "na",
@@ -110,7 +110,7 @@ func TestUpdateLatestVersion(t *testing.T) {
 	t.Run("should mark as internal error if update snapshot fails", func(t *testing.T) {
 		ctx := context.Background()
 		_, _, mockService, v1 := setup()
-		st := &snapshot.Snapshot{
+		st := &models.Snapshot{
 			ID:        1,
 			Namespace: "t",
 			Name:      "na",
