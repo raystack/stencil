@@ -15,7 +15,7 @@ type Service struct {
 // Validate checks if current data is backward compatible against previous stable data
 func (s *Service) Validate(ctx context.Context, cs *models.Snapshot, data []byte, rulesToSkip []string) error {
 	var err error
-	prevSt, err := s.store.GetSnapshotByFields(ctx, cs.Namespace, cs.Name, "", true)
+	prevSt, err := s.store.GetSnapshotByFields(ctx, cs.Namespace, cs.Name, "", nil)
 	if err == models.ErrSnapshotNotFound {
 		return nil
 	}

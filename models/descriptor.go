@@ -11,6 +11,18 @@ type FileDownloadRequest struct {
 	FullNames []string
 }
 
+// IsLatest should return nil if we don't know its latest or not
+func (f *FileDownloadRequest) IsLatest() *bool {
+	var (
+		isLatest *bool = nil
+		trueBool       = true
+	)
+	if f.Version == "latest" {
+		isLatest = &trueBool
+	}
+	return isLatest
+}
+
 // ToSnapshot creates snapshot
 func (f *FileDownloadRequest) ToSnapshot() *Snapshot {
 	s := &Snapshot{
