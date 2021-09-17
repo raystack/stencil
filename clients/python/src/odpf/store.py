@@ -12,11 +12,7 @@ class Store:
         return self.data.get(name)
     
     def load(self, url):
-        result = requests.get(url)
-        fds = FileDescriptorSet.FromString(result.text)
+        result = requests.get(url, stream=True)
+        fds = FileDescriptorSet.FromString(result.raw.read())
         messages = GetMessages([file for file in fds.file])
         self.data.update(messages)
-        
-
-        
-        

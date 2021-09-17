@@ -1,15 +1,13 @@
-from clients.python.src.odpf import store
+from .store import Store
 from schedule import Scheduler
 from google.protobuf.message import Message
 
-from store import Store
 class MultiUrlClient:
     def __init__(self, urls:list, interval=3600, auto_refresh=False) -> None:
         self._store = Store()
         self._urls = urls
         self._interval = interval
         self._auto_refresh = auto_refresh
-        self._init_data()
         self._schduler = Scheduler()
         if self._auto_refresh:
             self._schduler.every(self._interval).seconds.do(self.refresh)
