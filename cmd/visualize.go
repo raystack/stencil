@@ -67,25 +67,23 @@ func Visualize() *cobra.Command {
 
 			di := dot.NewGraph(dot.Directed)
 			files.RangeFiles(func(file protoreflect.FileDescriptor) bool {
-				subgraph := di.Subgraph(fmt.Sprintf("%s/%s", file.Package(), file.Path()), dot.ClusterOption{})
-				subgraph.Attr("shape", "box")
-				subgraph.Attr("fontsize", "12")
-				forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) {
-					group := subgraph.Subgraph(string(msg.FullName()), dot.ClusterOption{})
-					group.Attr("fontsize", "10")
-					forEachField(msg.Fields(), func(field protoreflect.FieldDescriptor) {
-						node := group.Node(string(field.FullName()))
-						node.Attr("label", string(field.FullName()))
-						node.Attr("shape", "box")
-						node.Attr("color", "#b20400")
-						node.Attr("fillcolor", "#edd6d5")
-						node.Attr("fontsize", "10")
-					})
+				childNode := di.Node(fmt.Sprintf("%s\n%s", string(file.Package()), file.Path()))
+				childNode.Attr("shape", "note")
+				childNode.Attr("style", "filled")
+				childNode.Attr("fillcolor", "cornsilk")
 
-				})
+				for i := 0; i < file.Imports().Len(); i++ {
+					imp := file.Imports().Get(i)
+					parentNode := di.Node(fmt.Sprintf("%s\n%s", string(imp.Package()), imp.Path()))
+					parentNode.Attr("shape", "note")
+					parentNode.Attr("style", "filled")
+					parentNode.Attr("fillcolor", "cornsilk")
+					di.Edge(childNode, parentNode, "depends on")
+				}
 				return true
 			})
 			err = os.WriteFile(filePath, []byte(di.String()), 0666)
+			fmt.Println(".dot file has been created in", filePath)
 			return err
 		},
 	}
@@ -98,7 +96,7 @@ func Visualize() *cobra.Command {
 	cmd.MarkFlagRequired("name")
 	cmd.Flags().StringVar(&req.Version, "version", "", "provide semantic version compatible value")
 	cmd.MarkFlagRequired("version")
-	cmd.Flags().StringVar(&filePath, "output", "", "write to file")
+	cmd.Flags().StringVar(&filePath, "output", "./proto_vis.dot", "write to file")
 	cmd.Flags().StringSliceVar(&req.Fullnames, "fullnames", []string{}, "provide fully qualified proto full names. You can provide multiple names separated by \",\" Eg: google.protobuf.FileDescriptorProto,google.protobuf.FileDescriptorSet")
 	return cmd
 }
