@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS protobuf_files(
-	id BIGSERIAL PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	search_data JSONB,
 	data bytea
 );

@@ -21,7 +21,7 @@ newrelic:
   license: "<key>"
 # Database configurations for stencil backend 
 db:
-  # Connection string for postgres database
+  # postgres: connection string to connect to the db | sqlite: file name for the sqlite
   connectionstring: "postgres://postgres@localhost:5432/db"
   # Specifies the type of database to be used, available: postgres, sqlite
   type: postgres
