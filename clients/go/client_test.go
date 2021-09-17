@@ -403,11 +403,23 @@ func TestClient(t *testing.T) {
 			assert.Equal(t, stencil.ErrInvalidDescriptor, err)
 		})
 		t.Run("should return bytes", func(t *testing.T) {
-			result, err := client.Serialize("test.stencil.One", validData)
+			className := "test.stencil.One"
+			bytes, err := client.Serialize(className, validData)
 			assert.NoError(t, err)
 
-			expected := []byte{0x8, 0x17}
-			assert.Equal(t, expected, result)
+			parsed, err := client.Parse(className, bytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			descriptor, err := client.GetDescriptor(className)
+			if err != nil {
+				t.Fatal(err)
+			}
+			fieldOneValue := validData["field_one"].(int)
+			fieldOne := descriptor.Fields().ByName("field_one")
+			val := parsed.ProtoReflect().Get(fieldOne)
+
+			assert.Equal(t, int64(fieldOneValue), val.Int())
 		})
 	})
 	t.Run("SerializeWithRefresh", func(t *testing.T) {
@@ -415,6 +427,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		validData := map[string]interface{}{
 			"field_one": 23,
 		}
@@ -480,11 +493,23 @@ func TestClient(t *testing.T) {
 			url := ts.URL
 			client, err := stencil.NewClient(url, stencil.Options{})
 
-			result, err := client.SerializeWithRefresh("test.stencil.One", validData)
+			className := "test.stencil.One"
+			bytes, err := client.SerializeWithRefresh(className, validData)
 			assert.NoError(t, err)
 
-			expected := []byte{0x8, 0x17}
-			assert.Equal(t, expected, result)
+			parsed, err := client.Parse(className, bytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			descriptor, err := client.GetDescriptor(className)
+			if err != nil {
+				t.Fatal(err)
+			}
+			fieldOneValue := validData["field_one"].(int)
+			fieldOne := descriptor.Fields().ByName("field_one")
+			val := parsed.ProtoReflect().Get(fieldOne)
+
+			assert.Equal(t, int64(fieldOneValue), val.Int())
 		})
 	})
 }
