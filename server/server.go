@@ -11,6 +11,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
+	"github.com/odpf/stencil/models"
+	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/storage/postgres"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -26,6 +28,8 @@ import (
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/protobuf/types/descriptorpb"
+	gproto "google.golang.org/protobuf/proto"
 )
 
 // Router returns server router
@@ -83,6 +87,11 @@ func Start(cfg config.Config) {
 		s.GracefulStop()
 		store.Close()
 	})
+	cache := search.NewInMemoryStore()
+	err = buildSchemaIndex(ctx, cache, api)
+	if err != nil {
+		panic(nil)
+	}
 }
 
 // grpcHandlerFunc returns an http.Handler that delegates to grpcServer on incoming gRPC
@@ -96,4 +105,33 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 			otherHandler.ServeHTTP(w, r)
 		}
 	}), &http2.Server{})
+}
+
+
+func buildSchemaIndex(ctx context.Context, cache *search.InMemoryStore, api *api.API) error {
+	
+	snapshots, err := api.Metadata.List(ctx, &models.Snapshot{})
+	if err == nil{
+		fmt.Errorf("error fetching snapshots", err)
+		return err
+	}
+	for _, ss := range snapshots{
+
+		descriptorSetBytes, err := api.Store.Get(ctx, ss, []string{})
+
+		if err != nil {
+			fmt.Errorf("error fetching schema", err)
+			return err
+		}
+
+		fds := &descriptorpb.FileDescriptorSet{}
+		err = gproto.Unmarshal(descriptorSetBytes, fds)
+		if err != nil {
+			return err
+		}
+		for _, proto := range fds.File{
+			
+		}
+	}
+	return nil
 }
