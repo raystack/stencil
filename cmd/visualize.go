@@ -67,16 +67,19 @@ func Visualize() *cobra.Command {
 
 			di := dot.NewGraph(dot.Directed)
 			files.RangeFiles(func(file protoreflect.FileDescriptor) bool {
-
 				subgraph := di.Subgraph(fmt.Sprintf("%s/%s", file.Package(), file.Path()), dot.ClusterOption{})
+				subgraph.Attr("shape", "box")
+				subgraph.Attr("fontsize", "12")
 				forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) {
 					group := subgraph.Subgraph(string(msg.FullName()), dot.ClusterOption{})
+					group.Attr("fontsize", "10")
 					forEachField(msg.Fields(), func(field protoreflect.FieldDescriptor) {
 						node := group.Node(string(field.FullName()))
 						node.Attr("label", string(field.FullName()))
-						node.Attr("shape", "record")
-						node.Attr("color", "0.650 0.700 0.700")
-						node.Attr("ratio", "compress")
+						node.Attr("shape", "box")
+						node.Attr("color", "#b20400")
+						node.Attr("fillcolor", "#edd6d5")
+						node.Attr("fontsize", "10")
 					})
 
 				})
