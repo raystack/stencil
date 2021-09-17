@@ -5,29 +5,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/emicklei/dot"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	"github.com/odpf/stencil/visualize"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/reflect/protodesc"
-	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
-
-func forEachMessage(msgs protoreflect.MessageDescriptors, f func(protoreflect.MessageDescriptor)) {
-	for i := 0; i < msgs.Len(); i++ {
-		msg := msgs.Get(i)
-		f(msg)
-		forEachMessage(msg.Messages(), f)
-	}
-}
-func forEachField(fields protoreflect.FieldDescriptors, f func(protoreflect.FieldDescriptor)) {
-	for i := 0; i < fields.Len(); i++ {
-		field := fields.Get(i)
-		f(field)
-	}
-}
 
 // Visualize creates a new cobra command for visualize descriptor
 func Visualize() *cobra.Command {
@@ -60,31 +44,16 @@ func Visualize() *cobra.Command {
 				return fmt.Errorf("invalid file descriptorset file. %w", err)
 			}
 
-			files, err := protodesc.NewFiles(msg)
+			graph, err := visualize.GetProtoFileDependencyGraph(msg)
 			if err != nil {
-				return fmt.Errorf("file is not fully contained descriptor file.%w", err)
+				return err
+			}
+			if err = os.WriteFile(filePath, []byte(graph.String()), 0666); err != nil {
+				return err
 			}
 
-			di := dot.NewGraph(dot.Directed)
-			files.RangeFiles(func(file protoreflect.FileDescriptor) bool {
-				childNode := di.Node(fmt.Sprintf("%s\n%s", string(file.Package()), file.Path()))
-				childNode.Attr("shape", "note")
-				childNode.Attr("style", "filled")
-				childNode.Attr("fillcolor", "cornsilk")
-
-				for i := 0; i < file.Imports().Len(); i++ {
-					imp := file.Imports().Get(i)
-					parentNode := di.Node(fmt.Sprintf("%s\n%s", string(imp.Package()), imp.Path()))
-					parentNode.Attr("shape", "note")
-					parentNode.Attr("style", "filled")
-					parentNode.Attr("fillcolor", "cornsilk")
-					di.Edge(childNode, parentNode, "depends on")
-				}
-				return true
-			})
-			err = os.WriteFile(filePath, []byte(di.String()), 0666)
 			fmt.Println(".dot file has been created in", filePath)
-			return err
+			return nil
 		},
 	}
 
