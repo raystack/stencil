@@ -17,6 +17,7 @@ func proxyToGin(e *gin.Engine) func(http.ResponseWriter, *http.Request, map[stri
 func registerRoutes(router *gin.Engine, mux *runtime.ServeMux, handlers *api.API) {
 	apiV1 := router.Group("/v1/namespaces/:namespace")
 	router.GET("/ping", api.Ping)
+	router.GET("/v1/search", handlers.Search)
 	apiV1.POST("/descriptors", handlers.HTTPUpload)
 	apiV1.GET("/descriptors/:name/versions/:version", handlers.HTTPDownload)
 	apiV1.PATCH("/descriptors/:name/versions/:version", handlers.HTTPMerge)
@@ -24,4 +25,5 @@ func registerRoutes(router *gin.Engine, mux *runtime.ServeMux, handlers *api.API
 	mux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
 	mux.HandlePath("POST", "/v1/namespaces/{namespace}/descriptors", proxyToGin(router))
 	mux.HandlePath("PATCH", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
+	mux.HandlePath("GET", "/v1/search", proxyToGin(router))
 }

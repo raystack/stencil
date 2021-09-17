@@ -13,15 +13,16 @@ type SearchRequest struct {
 }
 
 type SearchResponse struct {
-	Schemas []*Schema
+	Schemas []*Schema `json:"schema"`
 }
 
 type Schema struct {
-	Namespace string
-	Version   string
-	Message   string
-	Name      string
-	Latest    bool
+	Namespace string `json:"namespace"`
+	Version   string `json:"version"`
+	Message   string `json:"message"`
+	Name      string `json:"name"`
+	Latest    bool	 `json:"latest"`
+	Package   string `json:"package"`
 }
 
 type IndexRequest struct {
@@ -31,4 +32,5 @@ type IndexRequest struct {
 	Message   string
 	Name      string
 	Latest    bool
+	Package   string
 }

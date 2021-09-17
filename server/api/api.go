@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/odpf/stencil/models"
+	"github.com/odpf/stencil/search"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -31,4 +32,5 @@ type API struct {
 	grpc_health_v1.UnimplementedHealthServer
 	Store    StoreService
 	Metadata MetadataService
+	SearchService search.SearchStore
 }

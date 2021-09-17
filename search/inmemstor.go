@@ -61,6 +61,7 @@ func (m *InMemoryStore) Index(ctx context.Context, req *IndexRequest) error {
 			Message:   req.Message,
 			Name:      req.Name,
 			Latest:    req.Latest,
+			Package:   req.Package,
 		}] = struct{}{}
 		namespaceMap[field] = fieldMap
 	}
