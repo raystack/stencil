@@ -36,8 +36,8 @@ type Client interface {
 	// Serialize serializes data to bytes given fully qualified name of proto message.
 	// Returns ErrNotFound error if given class name is not found
 	Serialize(string, interface{}) ([]byte, error)
-	// Serialize serializes data to bytes given fully qualified name of proto message.
-	// Refreshes proto definitions if parsed message has unknown fields and parses the message again.
+	// SerializeWithRefresh serializes data to bytes given fully qualified name of proto message.
+	// Refreshes proto definitions if message has unknown fields and serialized the message again.
 	// Returns ErrNotFound error if given class name is not found.
 	SerializeWithRefresh(string, interface{}) ([]byte, error)
 	// GetDescriptor returns protoreflect.MessageDescriptor given fully qualified proto java class name
@@ -120,11 +120,12 @@ func (s *stencilClient) Serialize(className string, data interface{}) (bytes []b
 
 	// construct proto message
 	m := dynamicpb.NewMessage(desc).New().Interface()
-	if err = protojson.Unmarshal(jsonBytes, m); err != nil {
+	err = protojson.UnmarshalOptions{Resolver: s.store.extensionResolver}.Unmarshal(jsonBytes, m)
+	if err != nil {
 		return bytes, ErrInvalidDescriptor
 	}
 
-	// from proto message to bytes[]
+	// from proto message to byte[]
 	return proto.Marshal(m)
 }
 

@@ -7,6 +7,7 @@ Stencil go client package provides a store to lookup protobuf descriptors and op
 
 It has following features
  - Deserialize protobuf messages directly by specifying protobuf message name
+ - Serialize data by specifying protobuf message name
  - Ability to refresh protobuf descriptors in specified intervals
  - Support to download descriptors from multiple urls
 
@@ -69,7 +70,20 @@ if err != nil {
     return
 }
 data := []byte("")
-desc, err := client.Parse("google.protobuf.DescriptorProto", data)
+parsedMsg, err := client.Parse("google.protobuf.DescriptorProto", data)
+```
+
+### Serialize data.
+```go
+import stencil "github.com/odpf/stencil/clients/go"
+
+url := "http://url/to/proto/descriptorset/file"
+client, err := stencil.NewClient(url, stencil.Options{})
+if err != nil {
+    return
+}
+data := map[string]interface{}{}
+serializedMsg, err := client.Serialize("google.protobuf.DescriptorProto", data)
 ```
 
 Refer to [go documentation](https://pkg.go.dev/github.com/odpf/stencil/clients/go) for all available methods and options.
