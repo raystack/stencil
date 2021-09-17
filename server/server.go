@@ -130,7 +130,7 @@ func buildSchemaIndex(ctx context.Context, cache *search.InMemoryStore, api *api
 
 		for _, proto := range fds.File {
 
-			for _, m := range proto.MessageType {
+			for _, m := range proto.GetMessageType() {
 				fields := make([]string, 0)
 
 				for _, f := range m.Field {

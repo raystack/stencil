@@ -27,13 +27,13 @@ func (m *InMemoryStore) Search(ctx context.Context, req *SearchRequest) (*Search
 	schemas := make([]*Schema, 0)
 
 	namespaceMap, ok := m.indexMap[req.Namespace]
-	if ok{
+	if ok && req.Namespace != "" {
 		schemas = append(schemas, search(namespaceMap, req)...)
-	}else{
-		allNamespaceMap, _ := m.indexMap["*"]
-		schemas = append(schemas,search(allNamespaceMap, req)...)
+	} else if req.Namespace == "" {
+		allNamespaceMap := m.indexMap["*"]
+		schemas = append(schemas, search(allNamespaceMap, req)...)
 	}
-	
+
 	return &SearchResponse{Schemas: schemas}, nil
 }
 
@@ -71,7 +71,6 @@ func (m *InMemoryStore) Index(ctx context.Context, req *IndexRequest) error {
 	m.indexMap["*"] = allNamespaceMap
 	return nil
 }
-
 
 func search(namespaceMap map[string]map[Schema]struct{}, req *SearchRequest) []*Schema {
 	fieldMap, ok := namespaceMap[req.Field]
