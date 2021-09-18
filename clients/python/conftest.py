@@ -11,4 +11,3 @@ def protoc_setup():
     
     input_dir = os.path.join(current_dir, 'test/data')
     run(['protoc',f'--descriptor_set_out={output_file}','--include_imports',f'--proto_path={input_dir}','one.proto'], cwd=current_dir)
-    
