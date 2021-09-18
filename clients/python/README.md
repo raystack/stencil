@@ -1,6 +1,6 @@
 # Stencil Python client
 
-[![PyPI version](https://badge.fury.io/py/stencil-python-client.svg)](https://badge.fury.io/py/stencil-python-client)
+[![PyPI version](https://badge.fury.io/py/stencil-python-client.svg)](https://pypi.org/project/stencil-python-client)
 
 Stencil Python client package provides a store to lookup protobuf descriptors and options to keep the protobuf descriptors upto date.
 
