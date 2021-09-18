@@ -1,0 +1,6 @@
+protobuf==3.17.3
+pytest==6.0.1
+pytest-cov==2.12.1
+mock==4.0.3
+schedule==1.1.0
+requests==2.26.0
