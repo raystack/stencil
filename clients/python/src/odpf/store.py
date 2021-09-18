@@ -11,8 +11,13 @@ class Store:
     def get(self, name) -> Message:
         return self.data.get(name)
     
-    def load(self, url):
+    def _load_from_url(self, url):
         result = requests.get(url, stream=True)
-        fds = FileDescriptorSet.FromString(result.raw.read())
+        return result.raw.read()
+    
+    def load(self, url:str=None, data:bytes=None):
+        if url:
+            data = self._load_from_url(url)
+        fds = FileDescriptorSet.FromString(data)
         messages = GetMessages([file for file in fds.file])
         self.data.update(messages)

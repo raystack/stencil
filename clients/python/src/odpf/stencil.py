@@ -16,7 +16,7 @@ class MultiUrlClient:
 
     def refresh(self):
         for url in self._urls:
-            self._store.load(url)
+            self._store.load(url=url)
 
     def get_descriptor(self, name:str) -> Message:
         return self._store.get(name)
