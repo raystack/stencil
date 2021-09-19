@@ -13,8 +13,9 @@ func ProtocCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "protoc",
-		Aliases: []string{"s"},
+		Aliases: []string{"p"},
 		Short:   "Execute a protoc command",
+		Example: "stencil protoc -- --descriptor_set_out \"<abs-path for op>\" --include_imports <abs-dir-path for import proto>/*.proto --proto_path \"<abs-path for ip>\"",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			app := "protoc"
 			command := exec.Command(app, args...)
@@ -33,6 +34,7 @@ func ProtocCmd() *cobra.Command {
 			}
 
 			fmt.Println(string(stdout))
+			fmt.Println("Successfully executed Protoc operation.")
 			return nil
 		},
 	}
