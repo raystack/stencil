@@ -17,8 +17,7 @@ func New() *cobra.Command {
 			Stencil is a schema registry that provides schema mangement and validation to ensure data
 			compatibility across applications. It enables developers to create, manage and consume 
 			schemas dynamically, efficiently, and reliably, and provides a simple way to validate data 
-			against those schemas. Stencil support protobuf and support for other formats coming soon.
-		`),
+			against those schemas. Stencil support protobuf and support for other formats coming soon.`),
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Example: heredoc.Doc(`
@@ -29,6 +28,10 @@ func New() *cobra.Command {
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
+			"help:learn": heredoc.Doc(`
+				Use 'stencil <command> <subcommand> --help' for more information about a command.
+				Read the manual at https://odpf.gitbook.io/stencil/
+			`),
 			"help:feedback": heredoc.Doc(`
 				Open an issue here https://github.com/odpf/stencil/issues
 			`),

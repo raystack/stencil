@@ -14,6 +14,9 @@ func ServeCmd() *cobra.Command {
 		Use:     "serve",
 		Aliases: []string{"s"},
 		Short:   "Run stencil server",
+		Annotations: map[string]string{
+			"group:other": "dev",
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(configFile)
 			if err != nil {

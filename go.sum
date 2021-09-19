@@ -468,8 +468,10 @@ github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1 h1:/ar1Omo9luapTJYWXt
 github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1/go.mod h1:2q0u6qkNJ4ClDt920A4r+NpcO370lFze1NF4OPJjAks=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
-github.com/odpf/salt v0.0.0-20210910080317-2357c9c5287c h1:jaekBiaCyiRd1qhq7a3zOsifM5uOtQeUlQOt7QAnPHY=
-github.com/odpf/salt v0.0.0-20210910080317-2357c9c5287c/go.mod h1:/KxVYLrR36QFVSlaS3IL1b/hZHmLdXuZu+cukpyvxok=
+github.com/odpf/salt v0.0.0-20210918154710-622c87379828 h1:kOc83MSNjt1btInZzr0bOF4IMcZWYCq7q+uNL3EGav4=
+github.com/odpf/salt v0.0.0-20210918154710-622c87379828/go.mod h1:a0e+Px6w5350jq9THbrOFuRf7ooL9BHXF3r3tBBq1co=
+github.com/odpf/salt v0.0.0-20210919001227-5e300ea77aea h1:6+eJn/KpecACT39vMKDeLcg2oHjfh1e2tfClKEXA2Z8=
+github.com/odpf/salt v0.0.0-20210919001227-5e300ea77aea/go.mod h1:a0e+Px6w5350jq9THbrOFuRf7ooL9BHXF3r3tBBq1co=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.12.0/go.mod h1:oUhWkIvk5aDxtKvDDuw8gItl8pKl42LzjC9KZE0HfGg=

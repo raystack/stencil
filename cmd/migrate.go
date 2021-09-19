@@ -17,6 +17,9 @@ func MigrateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "migrate",
 		Short: "Run database migrations",
+		Annotations: map[string]string{
+			"group:other": "dev",
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(configFile)
 			if err != nil {
