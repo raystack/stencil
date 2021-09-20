@@ -21,7 +21,7 @@ class MultiUrlClient:
     def get_descriptor(self, name:str) -> Message:
         return self._store.get(name)
     
-    def parse(self, name:str, data:str):
+    def parse(self, name:str, data:bytes):
         msg = self.get_descriptor(name)
         return msg.ParseFromString(data)
     
