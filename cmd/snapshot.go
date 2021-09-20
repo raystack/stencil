@@ -104,7 +104,6 @@ func promoteCmd() *cobra.Command {
 // printCmd creates a new cobra command for print
 func printCmd() *cobra.Command {
 	var (
-		host             string
 		req              stencilv1.DownloadDescriptorRequest
 		pathDir          string
 		filterPathPrefix string
@@ -117,6 +116,7 @@ func printCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			host, _ := cmd.Flags().GetString("host")
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
 				return err
@@ -162,9 +162,6 @@ func printCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 	cmd.Flags().StringVar(&req.Namespace, "namespace", "", "provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")
 	cmd.Flags().StringVar(&req.Name, "name", "", "provide proto repo name")
