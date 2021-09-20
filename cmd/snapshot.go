@@ -168,6 +168,7 @@ func printCmd() *cobra.Command {
 	cmd.MarkFlagRequired("name")
 	cmd.Flags().StringVar(&req.Version, "version", "", "provide semantic version compatible value")
 	cmd.MarkFlagRequired("version")
+	cmd.Flags().StringSliceVar(&req.Fullnames, "filter-fullnames", []string{}, "provide fully qualified proto full names. You can provide multiple names separated by \",\" Eg: google.protobuf.FileDescriptorProto,google.protobuf.FileDescriptorSet")
 	cmd.Flags().StringVar(&pathDir, "output", "", "the directory path to write the descriptor files, default is to print on stdout")
 	cmd.Flags().StringVar(&filterPathPrefix, "filter-path", "", "filter protocol buffer files by path prefix, e.g., --filter-path=google/protobuf")
 	return cmd
