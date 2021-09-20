@@ -101,7 +101,7 @@ func promoteCmd() *cobra.Command {
 	return cmd
 }
 
-// printCmd creates a new cobra command for upload
+// printCmd creates a new cobra command for print
 func printCmd() *cobra.Command {
 	var (
 		host             string
@@ -110,8 +110,9 @@ func printCmd() *cobra.Command {
 		filterPathPrefix string
 	)
 	cmd := &cobra.Command{
-		Use:  "print",
-		Args: cobra.NoArgs,
+		Use:   "print",
+		Short: "prints snapshot details into .proto files",
+		Args:  cobra.NoArgs,
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
