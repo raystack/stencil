@@ -14,17 +14,17 @@ func (api *API) Search(c *gin.Context) {
 
 	field := params.Get("field")
 	namespace := params.Get("namespace")
-	if field == ""{
+	if field == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "failure", "error": "field is required for search"})
 	}
-	
+
 	results, err := api.SearchService.Search(ctx, &search.SearchRequest{
 		Namespace: namespace,
-		Field: field,
+		Field:     field,
 	})
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "failure", "error": fmt.Sprintf("unable to search:%q", err)})
 	}
-	c.JSON(http.StatusOK, gin.H{"message":"success", "data": results})
-}	
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": results})
+}

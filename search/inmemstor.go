@@ -18,6 +18,7 @@ type InMemoryStore struct {
 func NewInMemoryStore() *InMemoryStore {
 	return &InMemoryStore{
 		indexMap: make(map[string]map[string]map[Schema]struct{}),
+		RWMutex:  &sync.RWMutex{},
 	}
 }
 

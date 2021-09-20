@@ -50,9 +50,11 @@ func Start(cfg config.Config) {
 	store := postgres.NewStore(cfg.DB.ConnectionString)
 	protoService := proto.NewService(store)
 	metaService := snapshot.NewService(store)
+	cache := search.NewInMemoryStore()
 	api := &api.API{
-		Store:    protoService,
-		Metadata: metaService,
+		Store:         protoService,
+		Metadata:      metaService,
+		SearchService: cache,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
@@ -83,16 +85,16 @@ func Start(cfg config.Config) {
 
 	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
 
+	err = buildSchemaIndex(ctx, cache, api)
+	if err != nil {
+		panic(err)
+	}
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
 		store.Close()
 	})
-	cache := search.NewInMemoryStore()
-	err = buildSchemaIndex(ctx, cache, api)
-	if err != nil {
-		panic(nil)
-	}
+
 }
 
 // grpcHandlerFunc returns an http.Handler that delegates to grpcServer on incoming gRPC
@@ -111,13 +113,13 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 func buildSchemaIndex(ctx context.Context, cache *search.InMemoryStore, api *api.API) error {
 
 	snapshots, err := api.Metadata.List(ctx, &models.Snapshot{})
-	if err == nil {
+
+	if err != nil {
 		return errors.Wrap(err, "error getting snapshots")
 	}
 	for _, ss := range snapshots {
 
 		descriptorSetBytes, err := api.Store.Get(ctx, ss, []string{})
-
 		if err != nil {
 			return errors.Wrap(err, "error getting descriptor set from store")
 		}
@@ -129,7 +131,6 @@ func buildSchemaIndex(ctx context.Context, cache *search.InMemoryStore, api *api
 		}
 
 		for _, proto := range fds.File {
-
 			for _, m := range proto.GetMessageType() {
 				fields := make([]string, 0)
 
@@ -143,6 +144,7 @@ func buildSchemaIndex(ctx context.Context, cache *search.InMemoryStore, api *api
 					Name:      ss.Name,
 					Latest:    ss.Latest,
 					Message:   m.GetName(),
+					Package:   proto.GetPackage(),
 				}); err != nil {
 					return errors.Wrap(err, "error indexing fields for search")
 				}
