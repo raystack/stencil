@@ -12,10 +12,11 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/jackc/pgx/v4 v4.13.0
+	github.com/jhump/protoreflect v1.9.0
 	github.com/newrelic/go-agent/v3 v3.12.0
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.0
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
-	github.com/odpf/salt v0.0.0-20210910080317-2357c9c5287c
+	github.com/odpf/salt v0.0.0-20210919001227-5e300ea77aea
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0

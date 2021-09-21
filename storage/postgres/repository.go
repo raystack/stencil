@@ -76,18 +76,22 @@ func (r *Store) UpdateSnapshotLatestVersion(ctx context.Context, snapshot *model
 }
 
 // GetSnapshotByFields returns full snapshot data
-func (r *Store) GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest bool) (*models.Snapshot, error) {
+func (r *Store) GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest *bool) (*models.Snapshot, error) {
 	sh := &models.Snapshot{
 		Namespace: namespace,
 		Name:      name,
 	}
 	var query strings.Builder
 	var args []interface{}
-	query.WriteString(`SELECT id, version, latest from snapshots where namespace=$1 and name=$2 and latest=$3`)
-	args = append(args, namespace, name, latest)
+	query.WriteString(`SELECT id, version, latest from snapshots where namespace=$1 and name=$2`)
+	args = append(args, namespace, name)
+	if latest != nil {
+		args = append(args, *latest)
+		query.WriteString(fmt.Sprintf(` and latest=$%d`, len(args)))
+	}
 	if version != "" {
-		query.WriteString(` and version=$4`)
 		args = append(args, version)
+		query.WriteString(fmt.Sprintf(` and version=$%d`, len(args)))
 	}
 	err := r.db.QueryRow(ctx, query.String(), args...).Scan(&sh.ID, &sh.Version, &sh.Latest)
 	if err == pgx.ErrNoRows {

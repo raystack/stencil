@@ -20,7 +20,7 @@ type StoreService interface {
 type MetadataService interface {
 	Exists(context.Context, *models.Snapshot) bool
 	List(context.Context, *models.Snapshot) ([]*models.Snapshot, error)
-	GetSnapshotByFields(context.Context, string, string, string, bool) (*models.Snapshot, error)
+	GetSnapshotByFields(context.Context, string, string, string, *bool) (*models.Snapshot, error)
 	GetSnapshotByID(context.Context, int64) (*models.Snapshot, error)
 	UpdateLatestVersion(context.Context, *models.Snapshot) error
 }

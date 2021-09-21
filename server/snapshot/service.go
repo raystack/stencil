@@ -20,7 +20,7 @@ func (s *Service) List(ctx context.Context, snapshot *models.Snapshot) ([]*model
 	return s.store.ListSnapshots(ctx, snapshot)
 }
 
-func (s *Service) GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest bool) (*models.Snapshot, error) {
+func (s *Service) GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest *bool) (*models.Snapshot, error) {
 	return s.store.GetSnapshotByFields(ctx, namespace, name, version, latest)
 }
 
