@@ -29,7 +29,7 @@ func (a *API) HTTPMerge(c *gin.Context) {
         return
     }
     prevSnapshot := params.ToSnapshot()
-    data, err = a.merge(ctx, prevSnapshot, data)
+    data, err = a.merge(ctx, prevSnapshot, data, params.IsLatest())
     if err != nil {
         c.Error(err)
         return
@@ -39,10 +39,10 @@ func (a *API) HTTPMerge(c *gin.Context) {
     c.Data(http.StatusOK, "application/octet-stream", data)
 }
 
-func (a *API) merge(ctx context.Context, s *models.Snapshot, data []byte) ([]byte, error) {
+func (a *API) merge(ctx context.Context, s *models.Snapshot, data []byte, isLatest *bool) ([]byte, error) {
     notfoundErr := status.Error(codes.NotFound, "not found")
     var prevData []byte
-    st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, s.Latest)
+    st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, isLatest)
     if err != nil {
         if err == models.ErrSnapshotNotFound {
             return data, notfoundErr
