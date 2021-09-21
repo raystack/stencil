@@ -24,7 +24,7 @@ func (a *API) HTTPDownload(c *gin.Context) {
 		return
 	}
 	s := payload.ToSnapshot()
-	data, err := a.download(ctx, s, payload.FullNames)
+	data, err := a.download(ctx, s, payload.FullNames, payload.IsLatest())
 	if err != nil {
 		c.Error(err)
 		return
@@ -42,14 +42,14 @@ func (a *API) DownloadDescriptor(ctx context.Context, req *stencilv1.DownloadDes
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	s := payload.ToSnapshot()
-	data, err := a.download(ctx, s, req.Fullnames)
+	data, err := a.download(ctx, s, req.Fullnames, payload.IsLatest())
 	return &stencilv1.DownloadDescriptorResponse{Data: data}, err
 }
 
-func (a *API) download(ctx context.Context, s *models.Snapshot, fullNames []string) ([]byte, error) {
+func (a *API) download(ctx context.Context, s *models.Snapshot, fullNames []string, isLatest *bool) ([]byte, error) {
 	notfoundErr := status.Error(codes.NotFound, "not found")
 	var data []byte
-	st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, s.Latest)
+	st, err := a.Metadata.GetSnapshotByFields(ctx, s.Namespace, s.Name, s.Version, isLatest)
 	if err != nil {
 		if err == models.ErrSnapshotNotFound {
 			return data, notfoundErr

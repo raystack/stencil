@@ -15,7 +15,7 @@ type Store interface {
 	UpdateSnapshotLatestVersion(ctx context.Context, snapshot *models.Snapshot) error
 
 	// GetSnapshotByFields returns the snapshot with the given fields.
-	GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest bool) (*models.Snapshot, error)
+	GetSnapshotByFields(ctx context.Context, namespace, name, version string, latest *bool) (*models.Snapshot, error)
 
 	// GetSnapshotByID returns the snapshot with the given id.
 	GetSnapshotByID(ctx context.Context, id int64) (*models.Snapshot, error)

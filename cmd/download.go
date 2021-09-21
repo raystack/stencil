@@ -11,7 +11,6 @@ import (
 
 // DownloadCmd creates a new cobra command for download descriptor
 func DownloadCmd() *cobra.Command {
-
 	var host, filePath string
 	var req stencilv1.DownloadDescriptorRequest
 
