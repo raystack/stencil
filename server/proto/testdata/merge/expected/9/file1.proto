@@ -1,0 +1,10 @@
+syntax="proto3";
+
+message One {
+  int64 id = 1;
+}
+
+message Two {
+  option deprecated = true;
+  string name = 1;
+}

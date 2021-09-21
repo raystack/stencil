@@ -8,21 +8,12 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-var (
-	defaultSkippedRules = []string{
-		"FIELD_NO_BREAKING_CHANGE",
-	}
-)
-
 func getFileDescriptorProto(fds *protoregistry.Files, path string) *descriptorpb.FileDescriptorProto {
-	var fdp *descriptorpb.FileDescriptorProto
-	fds.RangeFiles(func(fileDescriptor protoreflect.FileDescriptor) bool {
-		if fileDescriptor.Path() == path {
-			fdp = protodesc.ToFileDescriptorProto(fileDescriptor)
-		}
-		return true
-	})
-	return fdp
+	fileDescriptor, err := fds.FindFileByPath(path)
+	if err != nil {
+		return nil
+	}
+	return protodesc.ToFileDescriptorProto(fileDescriptor)
 }
 
 func getDescriptorProto(fdp *descriptorpb.FileDescriptorProto, name *string) *descriptorpb.DescriptorProto {
@@ -34,21 +25,7 @@ func getDescriptorProto(fdp *descriptorpb.FileDescriptorProto, name *string) *de
 	return nil
 }
 
-func validate(current []byte, prev []byte, rulesToSkip []string) error {
-	for _, rule := range defaultSkippedRules {
-		rulesToSkip = append(rulesToSkip, rule)
-	}
-	if err := Compare(current, prev, rulesToSkip); err != nil {
-		return err
-	}
-	return nil
-}
-
-func Merge(current, prev []byte, rulesToSkip []string) ([]byte, error) {
-	if err := validate(current, prev, rulesToSkip); err != nil {
-		return nil, err
-	}
-
+func Merge(current, prev []byte) ([]byte, error) {
 	var err error
 	var currentRegistry, previousRegistry *protoregistry.Files
 	if currentRegistry, err = getRegistry(current); err != nil {
@@ -59,7 +36,6 @@ func Merge(current, prev []byte, rulesToSkip []string) ([]byte, error) {
 	}
 
 	var fileDescriptorProtos []*descriptorpb.FileDescriptorProto
-
 	previousRegistry.RangeFiles(func(previousFD protoreflect.FileDescriptor) bool {
 		previousFileDP := protodesc.ToFileDescriptorProto(previousFD)
 		currentFileDP := getFileDescriptorProto(currentRegistry, previousFD.Path())
@@ -67,7 +43,12 @@ func Merge(current, prev []byte, rulesToSkip []string) ([]byte, error) {
 		// merge existing descriptor
 		for _, previousDP := range previousFileDP.GetMessageType() {
 			currentDP := getDescriptorProto(currentFileDP, previousDP.Name)
-			mergeDescriptorProto(previousDP, currentDP)
+			if currentDP != nil {
+				mergeDescriptorProto(previousDP, currentDP)
+			} else {
+				deprecated := true
+				previousDP.Options = &descriptorpb.MessageOptions{Deprecated: &deprecated}
+			}
 		}
 
 		addNewDependencies(currentFileDP, previousFileDP)
@@ -84,7 +65,6 @@ func Merge(current, prev []byte, rulesToSkip []string) ([]byte, error) {
 	fileDescriptorProtos = addNewFiles(currentRegistry, previousRegistry, fileDescriptorProtos)
 
 	return proto.
-		MarshalOptions{Deterministic: true}.
 		Marshal(&descriptorpb.FileDescriptorSet{
 			File: fileDescriptorProtos,
 		})

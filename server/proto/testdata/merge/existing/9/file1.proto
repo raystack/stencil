@@ -1,0 +1,9 @@
+syntax="proto3";
+
+message One {
+  int64 id = 1;
+}
+
+message Two {
+  string name = 1;
+}

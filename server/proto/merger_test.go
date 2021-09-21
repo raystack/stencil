@@ -30,6 +30,7 @@ func TestMerge(t *testing.T) {
 			{6, "should able to merge on new field with dependency on well known types"},
 			{7, "should able to merge on new field with dependency on other file"},
 			{8, "should able to merge on addition of package name, options, imports"},
+			{9, "should able to merge on deletion of message"},
 		} {
 			t.Run(test.description, func(t *testing.T) {
 				runTest(t, test.number)
@@ -45,7 +46,7 @@ func runTest(t *testing.T, testNumber int) {
 	assert.Nil(t, err)
 	expectedFiles, err := protodesc.NewFiles(expectedFDS)
 	assert.Nil(t, err)
-	actual, err := stencilProto.Merge(current, previous, []string{})
+	actual, err := stencilProto.Merge(current, previous)
 	assert.Nil(t, err)
 	actualFDS := &descriptorpb.FileDescriptorSet{}
 	err = proto.Unmarshal(actual, actualFDS)
