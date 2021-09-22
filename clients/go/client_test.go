@@ -372,4 +372,144 @@ func TestClient(t *testing.T) {
 			})
 		})
 	})
+	t.Run("Serialize", func(t *testing.T) {
+		desc, err := getDescriptorData(t, true)
+		assert.NoError(t, err)
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write(desc)
+		}))
+		defer ts.Close()
+		url := ts.URL
+		client, err := stencil.NewClient(url, stencil.Options{})
+		assert.Nil(t, err)
+		assert.NotNil(t, client)
+
+		validData := map[string]interface{}{
+			"field_one": 23,
+		}
+
+		t.Run("should return error when unable to get descriptor", func(t *testing.T) {
+			result, err := client.Serialize("invalidClass", validData)
+			assert.Nil(t, result)
+			assert.Equal(t, stencil.ErrNotFound, err)
+		})
+		t.Run("should return error when unable to serialize to bytes", func(t *testing.T) {
+			mapData := make(map[string]interface{})
+			mapData["key1"] = "value1"
+
+			result, err := client.Serialize("test.stencil.One", mapData)
+			assert.Nil(t, result)
+			assert.Error(t, err)
+			assert.Equal(t, stencil.ErrInvalidDescriptor, err)
+		})
+		t.Run("should return bytes", func(t *testing.T) {
+			className := "test.stencil.One"
+			bytes, err := client.Serialize(className, validData)
+			assert.NoError(t, err)
+
+			parsed, err := client.Parse(className, bytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			descriptor, err := client.GetDescriptor(className)
+			if err != nil {
+				t.Fatal(err)
+			}
+			fieldOneValue := validData["field_one"].(int)
+			fieldOne := descriptor.Fields().ByName("field_one")
+			val := parsed.ProtoReflect().Get(fieldOne)
+
+			assert.Equal(t, int64(fieldOneValue), val.Int())
+		})
+	})
+	t.Run("SerializeWithRefresh", func(t *testing.T) {
+		descriptor, err := getDescriptorData(t, true)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		validData := map[string]interface{}{
+			"field_one": 23,
+		}
+
+		t.Run("should return error when unable to get descriptor", func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write(descriptor)
+			}))
+			defer ts.Close()
+			url := ts.URL
+			client, err := stencil.NewClient(url, stencil.Options{})
+
+			result, err := client.SerializeWithRefresh("invalidClass", validData)
+			assert.Nil(t, result)
+			assert.Equal(t, stencil.ErrNotFound, err)
+		})
+		t.Run("should return error if refresh fails", func(t *testing.T) {
+			count := 0
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if count == 1 {
+					http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+					count++
+					return
+				}
+				count++
+				w.Write(descriptor)
+			}))
+			defer ts.Close()
+			url := ts.URL
+			client, err := stencil.NewClient(url, stencil.Options{})
+			assert.Nil(t, err)
+			assert.NotNil(t, client)
+
+			invalidData := make(map[string]interface{})
+			invalidData["key1"] = "value1"
+
+			result, err := client.SerializeWithRefresh("test.stencil.One", invalidData)
+			assert.Nil(t, result)
+			assert.Error(t, err)
+			assert.Contains(t, err.Error(), "error refreshing descriptor")
+		})
+		t.Run("should return error when unable to serialize to bytes", func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write(descriptor)
+			}))
+			defer ts.Close()
+			url := ts.URL
+			client, err := stencil.NewClient(url, stencil.Options{})
+
+			invalidData := make(map[string]interface{})
+			invalidData["key1"] = "value1"
+
+			result, err := client.SerializeWithRefresh("test.stencil.One", invalidData)
+			assert.Nil(t, result)
+			assert.Error(t, err)
+			assert.Equal(t, stencil.ErrInvalidDescriptor, err)
+		})
+		t.Run("should return bytes", func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write(descriptor)
+			}))
+			defer ts.Close()
+			url := ts.URL
+			client, err := stencil.NewClient(url, stencil.Options{})
+
+			className := "test.stencil.One"
+			bytes, err := client.SerializeWithRefresh(className, validData)
+			assert.NoError(t, err)
+
+			parsed, err := client.Parse(className, bytes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			descriptor, err := client.GetDescriptor(className)
+			if err != nil {
+				t.Fatal(err)
+			}
+			fieldOneValue := validData["field_one"].(int)
+			fieldOne := descriptor.Fields().ByName("field_one")
+			val := parsed.ProtoReflect().Get(fieldOne)
+
+			assert.Equal(t, int64(fieldOneValue), val.Int())
+		})
+	})
 }
