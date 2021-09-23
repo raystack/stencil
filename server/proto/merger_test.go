@@ -2,7 +2,6 @@ package proto_test
 
 import (
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
@@ -10,6 +9,7 @@ import (
 	stencilProto "github.com/odpf/stencil/server/proto"
 
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -31,6 +31,7 @@ func TestMerge(t *testing.T) {
 			{7, "should able to merge on new field with dependency on other file"},
 			{8, "should able to merge on addition of package name, options, imports"},
 			{9, "should able to merge on deletion of message"},
+			{10, "should able to merge on deep nested message"},
 		} {
 			t.Run(test.description, func(t *testing.T) {
 				runTest(t, test.number)

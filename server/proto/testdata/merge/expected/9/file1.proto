@@ -1,6 +1,10 @@
 syntax="proto3";
 
 message One {
+  message Inside {
+    option deprecated = true;
+    string field = 1;
+  }
   int64 id = 1;
 }
 
