@@ -5,24 +5,25 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/odpf/stencil/graph"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/visualize"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-// Visualize creates a new cobra command for visualize descriptor
-func Visualize() *cobra.Command {
+// Graph creates a new cobra command for descriptor set dependencies graph
+func GraphCmd() *cobra.Command {
 
 	var host, filePath string
 	var req stencilv1.DownloadDescriptorRequest
 
 	cmd := &cobra.Command{
-		Use:   "visualize",
-		Short: "Visualize filedescriptorset file",
-		Args:  cobra.NoArgs,
+		Use:     "graph",
+		Aliases: []string{"g"},
+		Short:   "Generate file descriptorset dependencies graph",
+		Args:    cobra.NoArgs,
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -44,7 +45,7 @@ func Visualize() *cobra.Command {
 				return fmt.Errorf("invalid file descriptorset file. %w", err)
 			}
 
-			graph, err := visualize.GetProtoFileDependencyGraph(msg)
+			graph, err := graph.GetProtoFileDependencyGraph(msg)
 			if err != nil {
 				return err
 			}

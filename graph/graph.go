@@ -1,4 +1,4 @@
-package visualize
+package graph
 
 import (
 	"fmt"
