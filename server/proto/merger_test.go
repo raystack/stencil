@@ -30,8 +30,10 @@ func TestMerge(t *testing.T) {
 			{6, "should able to merge on new field with dependency on well known types"},
 			{7, "should able to merge on new field with dependency on other file"},
 			{8, "should able to merge on addition of package name, options, imports"},
-			{9, "should able to merge on deletion of message"},
+			{9, "should able to merge on deletion of message without options specified"},
 			{10, "should able to merge on deep nested message"},
+			{11, "should be able to merge on message with options in field"},
+			{12, "should able to merge on deletion of message with options specified"},
 		} {
 			t.Run(test.description, func(t *testing.T) {
 				runTest(t, test.number)
@@ -122,9 +124,9 @@ func assertDescriptors(t *testing.T, expected, actual protoreflect.MessageDescri
 }
 
 func getTestData(t *testing.T, testNumber int) ([]byte, []byte, []byte) {
-	existingRoot, _ := filepath.Abs(fmt.Sprintf("./testdata/merge/existing/%d", testNumber))
-	newRoot, _ := filepath.Abs(fmt.Sprintf("./testdata/merge/new/%d", testNumber))
-	expectedRoot, _ := filepath.Abs(fmt.Sprintf("./testdata/merge/expected/%d", testNumber))
+	existingRoot, _ := filepath.Abs(fmt.Sprintf("./testdata/merge/%d/existing", testNumber))
+	newRoot, _ := filepath.Abs(fmt.Sprintf("./testdata/merge/%d/new", testNumber))
+	expectedRoot, _ := filepath.Abs(fmt.Sprintf("./testdata/merge/%d/expected", testNumber))
 	currentFileName := filepath.Join(t.TempDir(), "existing.desc")
 	prevFileName := filepath.Join(t.TempDir(), "new.desc")
 	expectedFileName := filepath.Join(t.TempDir(), "expected.desc")

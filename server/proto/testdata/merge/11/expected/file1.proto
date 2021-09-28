@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message Person {
+  message SocialMedia {
+    int64 friendster = 1 [jstype=JS_STRING, deprecated=true];
+    int64 facebook = 2 [jstype=JS_STRING];
+    string instagram = 3;
+  }
+  int64 id = 1;
+  string name = 2;
+  string phone = 3 [ctype=STRING_PIECE, deprecated=true];
+}

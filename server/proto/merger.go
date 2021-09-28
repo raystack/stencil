@@ -170,7 +170,13 @@ func deprecateRemovedFields(prev *descriptorpb.DescriptorProto, curr *descriptor
 		}
 		if removed {
 			deprecated := true
-			prevField.Options = &descriptorpb.FieldOptions{Deprecated: &deprecated}
+			if prevField.GetOptions() == nil {
+				prevField.Options = &descriptorpb.FieldOptions{
+					Deprecated: &deprecated,
+				}
+			} else {
+				prevField.Options.Deprecated = &deprecated
+			}
 		}
 	}
 }
@@ -205,7 +211,13 @@ func addNewFields(prev *descriptorpb.DescriptorProto, curr *descriptorpb.Descrip
 // Set deprecated options of message to true.
 func deprecateMessage(msg *descriptorpb.DescriptorProto) {
 	deprecated := true
-	msg.Options = &descriptorpb.MessageOptions{Deprecated: &deprecated}
+	if msg.GetOptions() == nil {
+		msg.Options = &descriptorpb.MessageOptions{
+			Deprecated: &deprecated,
+		}
+	} else {
+		msg.Options.Deprecated = &deprecated
+	}
 }
 
 // Replace a message in list of message with a new message with same name.

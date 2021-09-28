@@ -1,0 +1,14 @@
+syntax="proto3";
+
+message One {
+  message Inside {
+    option no_standard_descriptor_accessor = true;
+    string field = 1;
+  }
+  int64 id = 1;
+}
+
+message Two {
+  option no_standard_descriptor_accessor = true;
+  string name = 1;
+}
