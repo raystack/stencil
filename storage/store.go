@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/odpf/stencil/models"
+	"github.com/odpf/stencil/search"
 )
 
 // Store is the interface that all database objects must implement.
@@ -34,4 +35,6 @@ type Store interface {
 
 	// PutSchema puts the protobuf file with the given name.
 	PutSchema(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error
+
+	search.Store
 }

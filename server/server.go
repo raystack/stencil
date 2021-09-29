@@ -11,10 +11,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
-	"github.com/odpf/stencil/models"
 	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/storage/postgres"
-	"github.com/pkg/errors"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -29,8 +27,6 @@ import (
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
-	gproto "google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // Router returns server router
@@ -50,11 +46,13 @@ func Start(cfg config.Config) {
 	store := postgres.NewStore(cfg.DB.ConnectionString)
 	protoService := proto.NewService(store)
 	metaService := snapshot.NewService(store)
-	cache := search.NewInMemoryStore()
+	searchService := &search.StoreSearch{
+		Store: store,
+	}
 	api := &api.API{
 		Store:         protoService,
 		Metadata:      metaService,
-		SearchService: cache,
+		SearchService: searchService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
@@ -85,7 +83,6 @@ func Start(cfg config.Config) {
 
 	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
 
-	err = buildSchemaIndex(ctx, cache, api)
 	if err != nil {
 		panic(err)
 	}
@@ -108,52 +105,4 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 			otherHandler.ServeHTTP(w, r)
 		}
 	}), &http2.Server{})
-}
-
-func buildSchemaIndex(ctx context.Context, cache *search.InMemoryStore, api *api.API) error {
-
-	snapshots, err := api.Metadata.List(ctx, &models.Snapshot{})
-
-	if err != nil {
-		return errors.Wrap(err, "error getting snapshots")
-	}
-	for _, ss := range snapshots {
-
-		descriptorSetBytes, err := api.Store.Get(ctx, ss, []string{})
-		if err != nil {
-			return errors.Wrap(err, "error getting descriptor set from store")
-		}
-
-		fds := &descriptorpb.FileDescriptorSet{}
-		err = gproto.Unmarshal(descriptorSetBytes, fds)
-		if err != nil {
-			return errors.Wrap(err, "error unmarshalling descriptor set proto")
-		}
-
-		for _, proto := range fds.File {
-			for _, m := range proto.GetMessageType() {
-				fields := make([]string, 0)
-
-				for _, f := range m.Field {
-					fields = append(fields, f.GetName())
-				}
-				if err := cache.Index(ctx, &search.IndexRequest{
-					Namespace: ss.Namespace,
-					Version:   ss.Version,
-					Fields:    fields,
-					Name:      ss.Name,
-					Latest:    ss.Latest,
-					Message:   m.GetName(),
-					Package:   proto.GetPackage(),
-				}); err != nil {
-					return errors.Wrap(err, "error indexing fields for search")
-				}
-			}
-
-		}
-
-	}
-
-	return nil
-
 }

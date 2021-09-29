@@ -9,12 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/odpf/stencil/models"
-	"github.com/odpf/stencil/search"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // HTTPUpload http handler to schema data with metadata information
@@ -40,31 +37,7 @@ func (a *API) HTTPUpload(c *gin.Context) {
 		return
 	}
 
-	go a.index(ctx, currentSnapshot, data)
 	c.JSON(http.StatusOK, gin.H{"message": "success", "dryrun": payload.DryRun})
-}
-
-func (a *API) index(ctx context.Context, snapshot *models.Snapshot, data []byte) {
-	fileDs := &descriptorpb.FileDescriptorProto{}
-	proto.Unmarshal(data, fileDs)
-
-	for _, m := range fileDs.GetMessageType() {
-		fields := make([]string, 0)
-		for _, f := range m.GetField() {
-			fields = append(fields, f.GetName())
-		}
-
-		a.SearchService.Index(ctx, &search.IndexRequest{
-			Namespace: snapshot.Namespace,
-			Version:   snapshot.Version,
-			Name:      snapshot.Name,
-			Latest:    snapshot.Latest,
-			Fields:    fields,
-			Message:   m.GetName(),
-			Package:   fileDs.GetPackage(),
-		})
-	}
-
 }
 
 // UploadDescriptor grpc handler to upload schema data with metadata information

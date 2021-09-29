@@ -39,6 +39,8 @@ func ToProtobufDBFile(file protoreflect.FileDescriptor) *models.ProtobufDBFile {
 			Path:         file.Path(),
 			Dependencies: getAllDependencies(file),
 			Messages:     getMessageList(file),
+			Package:      string(file.Package()),
+			Fields:       getFieldList(file),
 		},
 	}
 }

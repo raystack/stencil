@@ -1,30 +1,48 @@
 package api
 
 import (
-	"fmt"
-	"net/http"
+	"context"
+	"log"
 
-	"github.com/gin-gonic/gin"
 	"github.com/odpf/stencil/search"
+	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 )
 
-func (api *API) Search(c *gin.Context) {
-	ctx := c.Request.Context()
-	params := c.Request.URL.Query()
+func (a *API) Search(ctx context.Context, in *stencilv1.SearchRequest) (*stencilv1.SearchResponse, error) {
 
-	field := params.Get("field")
-	namespace := params.Get("namespace")
-	if field == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "failure", "error": "field is required for search"})
-	}
-
-	results, err := api.SearchService.Search(ctx, &search.SearchRequest{
-		Namespace: namespace,
-		Field:     field,
-	})
+	res, err := a.SearchService.SearchShema(ctx,
+		&search.SearchRequest{
+			Namespace: in.GetNamespace(),
+			Name:      in.GetName(),
+			Version:   in.GetVersion(),
+			Latest:    in.GetLatest(),
+			Query:     in.GetQuery(),
+			Type:      in.GetType(),
+		},
+	)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "failure", "error": fmt.Sprintf("unable to search:%q", err)})
+		return nil, err
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": results})
+
+	results := make([]*stencilv1.SearchResult, len(res.Results))
+	log.Println(res.Results)
+	for i, result := range res.Results {
+		results[i] = &stencilv1.SearchResult{
+			Snapshot: &stencilv1.Snapshot{
+				Id:        result.ID,
+				Namespace: result.Namespace,
+				Name:      result.Name,
+				Version:   result.Version,
+				Latest:    result.Latest,
+			},
+			Filepath:    result.Filepath,
+			Package:     result.Package,
+			MessageName: result.MessageName,
+		}
+	}
+
+	return &stencilv1.SearchResponse{
+		Results: results,
+	}, nil
 }

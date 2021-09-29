@@ -8,6 +8,7 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4"
 	"github.com/odpf/stencil/models"
+	"github.com/odpf/stencil/search"
 )
 
 // Repository DB access layer
@@ -164,6 +165,12 @@ func (r *Store) GetSchema(ctx context.Context, snapshot *models.Snapshot, names 
 	return totalData, err
 }
 
+func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*search.Result, error) {
+	var searchResults []*search.Result
+	err := pgxscan.Select(ctx, r.db, &searchResults, searchMessageLevel, req.Namespace, req.Name, req.Version, req.Latest, req.Query)
+	return searchResults, err
+}
+
 const fileInsertQuery = `
 WITH file_insert(id) as (
 	INSERT INTO protobuf_files (search_data, data)
@@ -229,3 +236,23 @@ SELECT COALESCE(
 				and version = $3
 		)
 	)`
+
+const searchMessageLevel = `
+SELECT
+	s.id as "snapshot.id",
+	s.namespace as "snapshot.namespace",
+	s.name as "snapshot.name",
+	s.version as "snapshot.version",
+	s.latest as "snapshot.latest",
+	pf.search_data ->> 'path' as "filepath"
+from
+	protobuf_files as pf
+	join snapshots_protobuf_files as spf on pf.id = spf.file_id
+	join snapshots s on s.id = spf.snapshot_id
+WHERE
+	s.namespace = COALESCE(NULLIF($1, ''), s.namespace)
+	AND s.name = COALESCE(NULLIF($2, ''), s.name)
+	AND s.version = COALESCE(NULLIF($3, ''), s.version)
+	AND s.latest = $4
+	AND pf.search_data -> 'messages' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath
+	`

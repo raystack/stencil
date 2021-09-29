@@ -30,7 +30,7 @@ type MetadataService interface {
 type API struct {
 	stencilv1.UnimplementedStencilServiceServer
 	grpc_health_v1.UnimplementedHealthServer
-	Store    StoreService
-	Metadata MetadataService
+	Store         StoreService
+	Metadata      MetadataService
 	SearchService search.SearchStore
 }
