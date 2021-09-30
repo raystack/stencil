@@ -1,3 +1,6 @@
+// what has been changed:
+// - delete nested message: Inside
+// - delete message: Two
 syntax="proto3";
 
 message One {

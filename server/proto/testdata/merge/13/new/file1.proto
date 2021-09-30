@@ -1,9 +1,8 @@
 // changes:
-// - new field: phone
+// - delete timestamp field
 syntax = "proto3";
 
 message Person {
   int64 id = 1;
   string name = 2;
-  string phone = 3;
 }

@@ -1,3 +1,6 @@
+// changes:
+// - new timestamp field: timestamp
+// - new import statement: google/protobuf/timestamp.proto
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";

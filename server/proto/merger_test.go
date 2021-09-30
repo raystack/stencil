@@ -32,8 +32,9 @@ func TestMerge(t *testing.T) {
 			{8, "should able to merge on addition of package name, options, imports"},
 			{9, "should able to merge on deletion of message without options specified"},
 			{10, "should able to merge on deep nested message"},
-			{11, "should be able to merge on message with options in field"},
+			{11, "should able to merge on message with options in field"},
 			{12, "should able to merge on deletion of message with options specified"},
+			{13, "should able to merge on deletion of field with imported message type"},
 		} {
 			t.Run(test.description, func(t *testing.T) {
 				runTest(t, test.number)

@@ -1,3 +1,5 @@
+// what has been changed:
+// - new option statements
 syntax = "proto3";
 
 package odpf.stencil.test;

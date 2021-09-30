@@ -1,3 +1,6 @@
+// changes:
+// - rename field with multiple options
+// - delete field with multiple options
 syntax = "proto3";
 
 message Person {

@@ -1,3 +1,6 @@
+// changes:
+// - new nested message: SocialMedia
+// - new message field: social_media
 syntax = "proto3";
 
 message SocialMedia {

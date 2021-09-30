@@ -1,3 +1,6 @@
+// what has been changed:
+// - rename nested field: friendster to facebook
+// - new nested field: instagram
 syntax = "proto3";
 
 message Person {

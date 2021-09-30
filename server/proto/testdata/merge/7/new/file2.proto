@@ -1,3 +1,6 @@
+// changes:
+// - new message in other file: SocialMedia
+// - new import statement referring to other file in same directory
 syntax = "proto3";
 
 message SocialMedia {

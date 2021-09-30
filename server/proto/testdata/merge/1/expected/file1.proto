@@ -1,3 +1,5 @@
+// what has been changed:
+// - new field: phone
 syntax = "proto3";
 
 message Person {

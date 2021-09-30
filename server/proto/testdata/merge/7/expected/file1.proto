@@ -1,3 +1,6 @@
+// what has been changed:
+// - new message in other file: SocialMedia
+// - new import statement referring to other file in same directory
 syntax = "proto3";
 
 import "file2.proto";

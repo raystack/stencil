@@ -1,3 +1,6 @@
+// what has been changed:
+// - rename field: name to first_name
+// - new field: last_name
 syntax = "proto3";
 
 message Person {
