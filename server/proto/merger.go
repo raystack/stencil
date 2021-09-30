@@ -1,7 +1,6 @@
 package proto
 
 import (
-	"fmt"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -35,7 +34,6 @@ func Merge(current, prev []byte) ([]byte, error) {
 		return true
 	})
 	mergedFiles = addNewFiles(currentRegistry, previousRegistry, mergedFiles)
-	fmt.Println(mergedFiles)
 	return proto.Marshal(&descriptorpb.FileDescriptorSet{File: mergedFiles})
 }
 
