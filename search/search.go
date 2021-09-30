@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/odpf/stencil/models"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 )
 
 type SearchStore interface {
@@ -12,8 +11,7 @@ type SearchStore interface {
 }
 
 type SearchRequest struct {
-	Query     string
-	Type      stencilv1.Search_Type
+	Query     string `binding:"required"`
 	Namespace string
 	Version   string
 	Latest    bool
@@ -24,9 +22,14 @@ type SearchResponse struct {
 	Results []*Result
 }
 
+type File struct {
+	Path     string
+	Package  string
+	Messages []string
+	Fields   []string
+}
+
 type Result struct {
 	models.Snapshot `db:"snapshot"`
-	Filepath        string
-	Package         string
-	MessageName     string
+	Files           []File `db:"files"`
 }

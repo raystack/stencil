@@ -11,7 +11,7 @@ import (
 	"github.com/odpf/stencil/search"
 )
 
-// Repository DB access layer
+// Store DB access layer
 type Store struct {
 	db *DB
 }
@@ -167,7 +167,8 @@ func (r *Store) GetSchema(ctx context.Context, snapshot *models.Snapshot, names 
 
 func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*search.Result, error) {
 	var searchResults []*search.Result
-	err := pgxscan.Select(ctx, r.db, &searchResults, searchMessageLevel, req.Namespace, req.Name, req.Version, req.Latest, req.Query)
+	var err error
+	err = pgxscan.Select(ctx, r.db, &searchResults, searchQuery, req.Namespace, req.Name, req.Version, req.Latest, req.Query)
 	return searchResults, err
 }
 
@@ -186,8 +187,7 @@ file(id) as (
 			(
 				select id
 				from protobuf_files
-				where search_data = $2
-					and data = $3
+				where data = $3
 			)
 		)
 )
@@ -237,22 +237,48 @@ SELECT COALESCE(
 		)
 	)`
 
-const searchMessageLevel = `
+const searchQuery = `
 SELECT
-	s.id as "snapshot.id",
-	s.namespace as "snapshot.namespace",
-	s.name as "snapshot.name",
-	s.version as "snapshot.version",
-	s.latest as "snapshot.latest",
-	pf.search_data ->> 'path' as "filepath"
+  s.id as "snapshot.id",
+  s.namespace as "snapshot.namespace",
+  s.name as "snapshot.name",
+  s.version as "snapshot.version",
+  s.latest as "snapshot.latest",
+  jsonb_agg(
+    jsonb_build_object(
+      'path',
+      pf.search_data -> 'path',
+      'package',
+      pf.search_data -> 'package',
+      'messages',
+      jsonb_path_query_array(
+        pf.search_data -> 'messages',
+        ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
+      ),
+      'fields',
+      jsonb_path_query_array(
+        pf.search_data -> 'fields',
+        ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
+      )
+    )
+  ) as files
 from
-	protobuf_files as pf
-	join snapshots_protobuf_files as spf on pf.id = spf.file_id
-	join snapshots s on s.id = spf.snapshot_id
+  protobuf_files as pf
+  join snapshots_protobuf_files as spf on pf.id = spf.file_id
+  join snapshots s on s.id = spf.snapshot_id
 WHERE
-	s.namespace = COALESCE(NULLIF($1, ''), s.namespace)
-	AND s.name = COALESCE(NULLIF($2, ''), s.name)
-	AND s.version = COALESCE(NULLIF($3, ''), s.version)
-	AND s.latest = $4
-	AND pf.search_data -> 'messages' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath
+  s.namespace = COALESCE(NULLIF($1, ''), s.namespace)
+  AND s.name = COALESCE(NULLIF($2, ''), s.name)
+  AND s.version = COALESCE(NULLIF($3, ''), s.version)
+  AND s.latest = $4
+  AND (
+    pf.search_data -> 'messages' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
+    OR pf.search_data -> 'fields' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
+  )
+GROUP BY
+  s.id,
+  s.namespace,
+  s.name,
+  s.version,
+  s.latest
 	`
