@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/blang/semver/v4 v4.0.0
+	github.com/emicklei/dot v0.16.0
 	github.com/georgysavva/scany v0.2.9
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/validator/v10 v10.4.1
