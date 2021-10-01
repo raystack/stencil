@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "file2.proto";
+
+message Person {
+  int64 id = 1;
+  string name = 2;
+  SocialMedia social_media = 3;
+}

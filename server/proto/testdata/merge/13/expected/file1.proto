@@ -1,0 +1,11 @@
+// what has been changed:
+// - delete timestamp field
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+message Person {
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.Timestamp timestamp = 3 [deprecated=true];
+}

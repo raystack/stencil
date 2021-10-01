@@ -1,0 +1,8 @@
+// changes:
+// - delete nested message: Inside
+// - delete message: Two
+syntax="proto3";
+
+message One {
+  int64 id = 1;
+}

@@ -1,0 +1,12 @@
+syntax="proto3";
+
+message One {
+  message Inside {
+    string field = 1;
+  }
+  int64 id = 1;
+}
+
+message Two {
+  string name = 1;
+}

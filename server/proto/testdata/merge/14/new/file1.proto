@@ -1,0 +1,14 @@
+// changes:
+// - Type of name field from string to int64
+// - Type of timestamp field from gooogle.protobuf.Timestamp to int64
+// Expect validation error
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+
+message Person {
+  int64 id = 1;
+  int64 name = 2;
+  int64 created_timestamp = 3;
+  google.protobuf.Duration updated_timestamp = 4;
+}

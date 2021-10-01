@@ -1,0 +1,13 @@
+// changes:
+// - rename nested field: friendster to facebook
+// - new nested field: instagram
+syntax = "proto3";
+
+message Person {
+  message SocialMedia {
+    string facebook = 1;
+    string instagram = 2;
+  }
+  int64 id = 1;
+  string name = 2;
+}

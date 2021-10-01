@@ -1,0 +1,13 @@
+// changes:
+// - rename field with multiple options
+// - delete field with multiple options
+syntax = "proto3";
+
+message Person {
+  message SocialMedia {
+    int64 facebook = 1 [jstype=JS_STRING];
+    string instagram = 2;
+  }
+  int64 id = 1;
+  string name = 2 [ctype=STRING_PIECE];
+}

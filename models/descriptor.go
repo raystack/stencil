@@ -56,3 +56,7 @@ func (d *DescriptorUploadRequest) ToSnapshot() *Snapshot {
 		Latest:    d.Latest,
 	}
 }
+
+type DescriptorMergeRequest struct {
+	File      *multipart.FileHeader `form:"file" binding:"required"`
+}

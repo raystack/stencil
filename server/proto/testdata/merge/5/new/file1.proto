@@ -1,0 +1,15 @@
+// changes:
+// - new nested message: SocialMedia
+// - new message field: social_media
+syntax = "proto3";
+
+message SocialMedia {
+  string facebook = 1;
+  string instagram = 2;
+}
+
+message Person {
+  int64 id = 1;
+  string name = 2;
+  SocialMedia social_media = 3;
+}

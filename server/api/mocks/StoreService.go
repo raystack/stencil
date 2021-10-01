@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	"github.com/odpf/stencil/models"
+	models "github.com/odpf/stencil/models"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -49,6 +49,29 @@ func (_m *StoreService) Insert(_a0 context.Context, _a1 *models.Snapshot, _a2 []
 	}
 
 	return r0
+}
+
+// Merge provides a mock function with given fields: _a0, _a1, _a2
+func (_m *StoreService) Merge(_a0 context.Context, _a1 []byte, _a2 []byte) ([]byte, error) {
+	ret := _m.Called(_a0, _a1, _a2)
+
+	var r0 []byte
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []byte) []byte); ok {
+		r0 = rf(_a0, _a1, _a2)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, []byte, []byte) error); ok {
+		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // Validate provides a mock function with given fields: _a0, _a1, _a2, _a3
