@@ -31,9 +31,12 @@ func (s *Service) Merge(ctx context.Context, prevData, data []byte) ([]byte, err
 
 // Insert stores proto schema details in DB after backward compatible check succeeds
 func (s *Service) Insert(ctx context.Context, snapshot *models.Snapshot, data []byte) error {
-	files, _ := getRegistry(data)
+	files, err := getRegistry(data)
+	if err != nil {
+		return err
+	}
 	dbFiles := toProtobufDBFiles(files)
-	err := s.store.PutSchema(ctx, snapshot, dbFiles)
+	err = s.store.PutSchema(ctx, snapshot, dbFiles)
 	if err != nil {
 		return err
 	}

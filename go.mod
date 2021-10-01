@@ -14,6 +14,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/jhump/protoreflect v1.9.0
+	github.com/mattn/go-sqlite3 v2.0.1+incompatible
 	github.com/newrelic/go-agent/v3 v3.12.0
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.0
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1

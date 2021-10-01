@@ -11,7 +11,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
-	"github.com/odpf/stencil/storage/postgres"
+	"github.com/odpf/stencil/storage"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -42,7 +42,7 @@ func Router(api *api.API, config *config.Config) *runtime.ServeMux {
 func Start(cfg config.Config) {
 	ctx := context.Background()
 
-	store := postgres.NewStore(cfg.DB.ConnectionString)
+	store := storage.FactoryStore(cfg.DB)
 	protoService := proto.NewService(store)
 	metaService := snapshot.NewService(store)
 	api := &api.API{

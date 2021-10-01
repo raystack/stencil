@@ -11,6 +11,7 @@ type NewRelicConfig struct {
 
 // DBConfig contains DB connection details
 type DBConfig struct {
+	Type             string
 	ConnectionString string
 }
 
@@ -26,6 +27,6 @@ type Config struct {
 	// Timeout represents graceful shutdown period. Defaults to 60 seconds.
 	Timeout  time.Duration `default:"60s"`
 	GRPC     GRPCConfig
-	NewRelic NewRelicConfig
+	NewRelic NewRelicConfig 
 	DB       DBConfig
 }

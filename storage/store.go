@@ -34,4 +34,7 @@ type Store interface {
 
 	// PutSchema puts the protobuf file with the given name.
 	PutSchema(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error
+
+	// Close closes all connections
+	Close()
 }
