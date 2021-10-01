@@ -55,7 +55,7 @@ func (a *API) merge(ctx context.Context, s *models.Snapshot, data []byte, isLate
     }
     data, err = a.Store.Merge(ctx, prevData, data)
     if err != nil {
-        return nil, status.Convert(err).Err()
+        return nil, status.Error(codes.InvalidArgument, err.Error())
     }
 
     return data, nil

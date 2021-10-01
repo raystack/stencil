@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	stencilProto "github.com/odpf/stencil/server/proto"
@@ -17,7 +18,7 @@ import (
 
 func TestMerge(t *testing.T) {
 
-	t.Run("Run all cases", func(t *testing.T) {
+	t.Run("Run all valid cases", func(t *testing.T) {
 		for _, test := range []struct {
 			number      int
 			description string
@@ -40,6 +41,22 @@ func TestMerge(t *testing.T) {
 				runTest(t, test.number)
 			})
 		}
+	})
+	
+	t.Run("check backward incompatible case", func(t *testing.T) {
+		previous, current, expected := getTestData(t, 14)
+		expectedFDS := &descriptorpb.FileDescriptorSet{}
+		err := proto.Unmarshal(expected, expectedFDS)
+		assert.Nil(t, err)
+		_, err = stencilProto.Merge(current, previous)
+		assert.NotNil(t, err)
+		actualErrMsgs := strings.Split(err.Error(), "; ")
+		expectedErrMsgs := []string{
+			`file1.proto: type has changed for "Person.name" from "string" to "int64"`,
+			`file1.proto: type has changed for "Person.created_timestamp" from "message" to "int64"`,
+			`file1.proto: type has changed for "Person.updated_timestamp" from "google.protobuf.Timestamp" to "google.protobuf.Duration"`,
+		}
+		assert.ElementsMatch(t, expectedErrMsgs, actualErrMsgs)
 	})
 }
 

@@ -43,7 +43,7 @@ func TestMerge(t *testing.T) {
         {"should return 404 if version is not found", "name1", "3.3.1", models.ErrSnapshotNotFound, nil, nil, 404},
         {"should return 500 if finding snapshot fails", "name1", "3.3.1", errors.New("get snapshot fail"), nil, nil, 500},
         {"should return 500 if getting previous data fails", "name1", "1.0.1", nil, errors.New("get prev data failed"), nil, 500},
-        {"should return 500 if merge fails", "name1", "1.0.1", nil, nil, errors.New("merge failed"), 500},
+        {"should return 400 if merge fails", "name1", "1.0.1", nil, nil, errors.New("merge failed"), 400},
         {"should return 200 if merge succeeded", "name1", "1.0.1", nil, nil, nil, 200},
         {"should be able to merge with latest version", "name1", "latest", nil, nil, nil, 200},
     } {

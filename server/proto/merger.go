@@ -18,6 +18,9 @@ func Merge(current, prev []byte) ([]byte, error) {
 	if previousRegistry, err = getRegistry(prev); err != nil {
 		return nil, err
 	}
+	if err = validateFieldTypeChanged(currentRegistry, previousRegistry); err != nil {
+		return nil, err
+	}
 	var mergedFiles []*descriptorpb.FileDescriptorProto
 	previousRegistry.RangeFiles(func(prevFileDesc protoreflect.FileDescriptor) bool {
 		prevFile := protodesc.ToFileDescriptorProto(prevFileDesc)
@@ -237,4 +240,45 @@ func updateOptions(prevFile, currFile *descriptorpb.FileDescriptorProto) {
 // update package name in existing file with package name in new file
 func updatePackage(prevFile, currFile *descriptorpb.FileDescriptorProto) {
 	prevFile.Package = currFile.Package
+}
+
+func validateFieldTypeChanged(current, prev *protoregistry.Files) error {
+	var err error
+	checkMessagePair(current, prev, func(currentMsg, prevMsg protoreflect.MessageDescriptor) bool {
+		validationErr := newValidationErr(prevMsg)
+		prevFields := prevMsg.Fields()
+		forEachField(prevFields, func(prevField protoreflect.FieldDescriptor) bool {
+			name := prevField.FullName()
+			currentField := currentMsg.Fields().ByName(prevField.Name())
+			if currentField == nil {
+				return true
+			}
+			if prevField == currentField {
+				return true
+			}
+			if prevField.Kind() != currentField.Kind() {
+				validationErr.add(`type has changed for "%s" from "%s" to "%s"`, name, prevField.Kind().String(), currentField.Kind().String())
+			}
+			if prevField.Kind() == currentField.Kind() {
+				if prevField.Message() != nil && currentField.Message() != nil {
+					prevMsgType := prevField.Message()
+					currentMsgType := currentField.Message()
+					if prevMsgType.FullName() != currentMsgType.FullName() {
+						validationErr.add(`type has changed for "%s" from "%s" to "%s"`, name, prevMsgType.FullName(), currentMsgType.FullName())
+					}
+				}
+				if prevField.Enum() != nil && currentField.Enum() != nil {
+					prevEnumType := prevField.Enum()
+					currentEnumType := currentField.Enum()
+					if prevEnumType.FullName() != currentEnumType.FullName() {
+						validationErr.add(`type has changed for "%s" from "%s" to "%s"`, name, prevEnumType.FullName(), currentEnumType.FullName())
+					}
+				}
+			}
+			return true
+		})
+		err = combineErr(err, validationErr)
+		return true
+	})
+	return err
 }
