@@ -165,6 +165,7 @@ func (r *Store) GetSchema(ctx context.Context, snapshot *models.Snapshot, names 
 	return totalData, err
 }
 
+// Search returns matching message and field names from query
 func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*search.Result, error) {
 	var searchResults []*search.Result
 	var err error
@@ -239,46 +240,22 @@ SELECT COALESCE(
 
 const searchQuery = `
 SELECT
-  s.id as "snapshot.id",
-  s.namespace as "snapshot.namespace",
-  s.name as "snapshot.name",
-  s.version as "snapshot.version",
-  s.latest as "snapshot.latest",
-  jsonb_agg(
-    jsonb_build_object(
-      'path',
-      pf.search_data -> 'path',
-      'package',
-      pf.search_data -> 'package',
-      'messages',
-      jsonb_path_query_array(
-        pf.search_data -> 'messages',
-        ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
-      ),
-      'fields',
-      jsonb_path_query_array(
-        pf.search_data -> 'fields',
-        ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
-      )
-    )
-  ) as files
-from
-  protobuf_files as pf
-  join snapshots_protobuf_files as spf on pf.id = spf.file_id
-  join snapshots s on s.id = spf.snapshot_id
+  pf.search_data ->> 'path' AS path,
+  pf.search_data ->> 'package' AS package,
+  jsonb_path_query_array(pf.search_data -> 'messages', ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath) AS "messages",
+  jsonb_path_query_array(pf.search_data -> 'fields', ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath) AS "fields",
+  jsonb_agg(jsonb_build_object('id', s.id, 'namespace', s.namespace, 'name', s.name, 'version', s.version, 'latest', s.latest)) AS "snapshots"
+FROM
+  protobuf_files AS pf
+  JOIN snapshots_protobuf_files AS spf ON pf.id = spf.file_id
+  JOIN snapshots s ON s.id = spf.snapshot_id
 WHERE
-  s.namespace = COALESCE(NULLIF($1, ''), s.namespace)
-  AND s.name = COALESCE(NULLIF($2, ''), s.name)
-  AND s.version = COALESCE(NULLIF($3, ''), s.version)
-  AND s.latest = $4
-  AND (
-    pf.search_data -> 'messages' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
-    OR pf.search_data -> 'fields' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")') ::jsonpath
-  )
+  s.namespace = COALESCE(NULLIF ($1, ''), s.namespace)
+  AND s.name = COALESCE(NULLIF ($2, ''), s.name)
+  AND s.version = COALESCE(NULLIF ($3, ''), s.version)
+  AND s.latest = COALESCE(NULLIF ($4, FALSE), s.latest)
+  AND (pf.search_data -> 'messages' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath
+    OR pf.search_data -> 'fields' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath)
 GROUP BY
-  s.id,
-  s.namespace,
-  s.name,
-  s.version,
-  s.latest
+  pf.id
 	`

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Search returns matched message/field names given a query. Filters can be applied on snapshot
 func (a *API) Search(ctx context.Context, in *stencilv1.SearchRequest) (*stencilv1.SearchResponse, error) {
 	searchReq := search.SearchRequest{
 		Namespace: in.GetNamespace(),
@@ -18,8 +19,7 @@ func (a *API) Search(ctx context.Context, in *stencilv1.SearchRequest) (*stencil
 		Query:     in.GetQuery(),
 	}
 
-	err := validate.Struct(searchReq)
-	if err != nil {
+	if err := validate.Struct(searchReq); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -33,26 +33,20 @@ func (a *API) Search(ctx context.Context, in *stencilv1.SearchRequest) (*stencil
 
 	results := make([]*stencilv1.SearchResult, len(res.Results))
 	for i, result := range res.Results {
+		var snapshots []*stencilv1.Snapshot
+		for _, sp := range result.Snapshots {
+			snapshots = append(snapshots, fromSnapshotToProto(&sp))
+		}
 		results[i] = &stencilv1.SearchResult{
-			Snapshot: fromSnapshotToProto(&result.Snapshot),
-			Files:    fromSearchFilesToProtoFiles(result.Files),
+			Path:      result.Path,
+			Package:   result.Package,
+			Messages:  result.Messages,
+			Fields:    result.Fields,
+			Snapshots: snapshots,
 		}
 	}
 
 	return &stencilv1.SearchResponse{
 		Results: results,
 	}, nil
-}
-
-func fromSearchFilesToProtoFiles(files []search.File) []*stencilv1.SearchResult_File {
-	var searchFiles []*stencilv1.SearchResult_File
-	for _, f := range files {
-		searchFiles = append(searchFiles, &stencilv1.SearchResult_File{
-			Path:     f.Path,
-			Package:  f.Package,
-			Messages: f.Messages,
-			Fields:   f.Fields,
-		})
-	}
-	return searchFiles
 }

@@ -23,6 +23,8 @@ type StencilServiceClient interface {
 	ListSnapshots(ctx context.Context, in *ListSnapshotsRequest, opts ...grpc.CallOption) (*ListSnapshotsResponse, error)
 	// PromoteSnapshot promotes particular snapshot version as latest
 	PromoteSnapshot(ctx context.Context, in *PromoteSnapshotRequest, opts ...grpc.CallOption) (*PromoteSnapshotResponse, error)
+	// Search matches given query with message names and field names
+	// returns filtered message/field names along with snapshot details
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
 
@@ -88,6 +90,8 @@ type StencilServiceServer interface {
 	ListSnapshots(context.Context, *ListSnapshotsRequest) (*ListSnapshotsResponse, error)
 	// PromoteSnapshot promotes particular snapshot version as latest
 	PromoteSnapshot(context.Context, *PromoteSnapshotRequest) (*PromoteSnapshotResponse, error)
+	// Search matches given query with message names and field names
+	// returns filtered message/field names along with snapshot details
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	mustEmbedUnimplementedStencilServiceServer()
 }

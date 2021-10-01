@@ -36,7 +36,6 @@ func (a *API) HTTPUpload(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "success", "dryrun": payload.DryRun})
 }
 

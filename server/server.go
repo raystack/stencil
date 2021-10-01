@@ -81,10 +81,8 @@ func Start(cfg config.Config) {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
-
-	if err != nil {
-		panic(err)
+	if err = stencilv1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
+		log.Fatalln("Failed to register stencil service handler:", err)
 	}
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()

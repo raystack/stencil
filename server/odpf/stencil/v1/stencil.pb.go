@@ -607,7 +607,7 @@ type SearchRequest struct {
 	Name      string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Version   string `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
 	Latest    bool   `protobuf:"varint,4,opt,name=latest,proto3" json:"latest,omitempty"`
-	Query     string `protobuf:"bytes,6,opt,name=query,proto3" json:"query,omitempty"`
+	Query     string `protobuf:"bytes,5,opt,name=query,proto3" json:"query,omitempty"`
 }
 
 func (x *SearchRequest) Reset() {
@@ -682,8 +682,11 @@ type SearchResult struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Snapshot *Snapshot            `protobuf:"bytes,1,opt,name=snapshot,proto3" json:"snapshot,omitempty"`
-	Files    []*SearchResult_File `protobuf:"bytes,5,rep,name=files,proto3" json:"files,omitempty"`
+	Path      string      `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	Package   string      `protobuf:"bytes,2,opt,name=package,proto3" json:"package,omitempty"`
+	Messages  []string    `protobuf:"bytes,3,rep,name=messages,proto3" json:"messages,omitempty"`
+	Fields    []string    `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
+	Snapshots []*Snapshot `protobuf:"bytes,5,rep,name=snapshots,proto3" json:"snapshots,omitempty"`
 }
 
 func (x *SearchResult) Reset() {
@@ -718,16 +721,37 @@ func (*SearchResult) Descriptor() ([]byte, []int) {
 	return file_odpf_stencil_v1_stencil_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *SearchResult) GetSnapshot() *Snapshot {
+func (x *SearchResult) GetPath() string {
 	if x != nil {
-		return x.Snapshot
+		return x.Path
+	}
+	return ""
+}
+
+func (x *SearchResult) GetPackage() string {
+	if x != nil {
+		return x.Package
+	}
+	return ""
+}
+
+func (x *SearchResult) GetMessages() []string {
+	if x != nil {
+		return x.Messages
 	}
 	return nil
 }
 
-func (x *SearchResult) GetFiles() []*SearchResult_File {
+func (x *SearchResult) GetFields() []string {
 	if x != nil {
-		return x.Files
+		return x.Fields
+	}
+	return nil
+}
+
+func (x *SearchResult) GetSnapshots() []*Snapshot {
+	if x != nil {
+		return x.Snapshots
 	}
 	return nil
 }
@@ -873,77 +897,6 @@ func (x *PromoteSnapshotResponse) GetSnapshot() *Snapshot {
 	return nil
 }
 
-type SearchResult_File struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Path     string   `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
-	Package  string   `protobuf:"bytes,2,opt,name=package,proto3" json:"package,omitempty"`
-	Messages []string `protobuf:"bytes,3,rep,name=messages,proto3" json:"messages,omitempty"`
-	Fields   []string `protobuf:"bytes,4,rep,name=fields,proto3" json:"fields,omitempty"`
-}
-
-func (x *SearchResult_File) Reset() {
-	*x = SearchResult_File{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1_stencil_proto_msgTypes[13]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SearchResult_File) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SearchResult_File) ProtoMessage() {}
-
-func (x *SearchResult_File) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1_stencil_proto_msgTypes[13]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SearchResult_File.ProtoReflect.Descriptor instead.
-func (*SearchResult_File) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1_stencil_proto_rawDescGZIP(), []int{9, 0}
-}
-
-func (x *SearchResult_File) GetPath() string {
-	if x != nil {
-		return x.Path
-	}
-	return ""
-}
-
-func (x *SearchResult_File) GetPackage() string {
-	if x != nil {
-		return x.Package
-	}
-	return ""
-}
-
-func (x *SearchResult_File) GetMessages() []string {
-	if x != nil {
-		return x.Messages
-	}
-	return nil
-}
-
-func (x *SearchResult_File) GetFields() []string {
-	if x != nil {
-		return x.Fields
-	}
-	return nil
-}
-
 var File_odpf_stencil_v1_stencil_proto protoreflect.FileDescriptor
 
 var file_odpf_stencil_v1_stencil_proto_rawDesc = []byte{
@@ -1026,22 +979,18 @@ var file_odpf_stencil_v1_stencil_proto_rawDesc = []byte{
 	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x76, 0x65, 0x72,
 	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x18, 0x04,
 	0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05,
-	0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x71, 0x75, 0x65,
-	0x72, 0x79, 0x22, 0xe9, 0x01, 0x0a, 0x0c, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x73,
-	0x75, 0x6c, 0x74, 0x12, 0x35, 0x0a, 0x08, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6f, 0x64, 0x70, 0x66, 0x2e, 0x73, 0x74, 0x65,
-	0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74,
-	0x52, 0x08, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x12, 0x38, 0x0a, 0x05, 0x66, 0x69,
-	0x6c, 0x65, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x6f, 0x64, 0x70, 0x66,
-	0x2e, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x65, 0x61, 0x72,
-	0x63, 0x68, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x05, 0x66,
-	0x69, 0x6c, 0x65, 0x73, 0x1a, 0x68, 0x0a, 0x04, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x12, 0x0a, 0x04,
-	0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68,
-	0x12, 0x18, 0x0a, 0x07, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73,
-	0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x22, 0x49,
+	0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x71, 0x75, 0x65,
+	0x72, 0x79, 0x22, 0xa9, 0x01, 0x0a, 0x0c, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x73,
+	0x75, 0x6c, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x61, 0x63, 0x6b, 0x61,
+	0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67,
+	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x03, 0x20,
+	0x03, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x12, 0x16, 0x0a,
+	0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x66,
+	0x69, 0x65, 0x6c, 0x64, 0x73, 0x12, 0x37, 0x0a, 0x09, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f,
+	0x74, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6f, 0x64, 0x70, 0x66, 0x2e,
+	0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x6e, 0x61, 0x70, 0x73,
+	0x68, 0x6f, 0x74, 0x52, 0x09, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x73, 0x22, 0x49,
 	0x0a, 0x0e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x12, 0x37, 0x0a, 0x07, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
 	0x0b, 0x32, 0x1d, 0x2e, 0x6f, 0x64, 0x70, 0x66, 0x2e, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c,
@@ -1124,7 +1073,7 @@ func file_odpf_stencil_v1_stencil_proto_rawDescGZIP() []byte {
 }
 
 var file_odpf_stencil_v1_stencil_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_odpf_stencil_v1_stencil_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_odpf_stencil_v1_stencil_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_odpf_stencil_v1_stencil_proto_goTypes = []interface{}{
 	(Rule)(0),                          // 0: odpf.stencil.v1.Rule
 	(*Snapshot)(nil),                   // 1: odpf.stencil.v1.Snapshot
@@ -1140,31 +1089,29 @@ var file_odpf_stencil_v1_stencil_proto_goTypes = []interface{}{
 	(*SearchResponse)(nil),             // 11: odpf.stencil.v1.SearchResponse
 	(*PromoteSnapshotRequest)(nil),     // 12: odpf.stencil.v1.PromoteSnapshotRequest
 	(*PromoteSnapshotResponse)(nil),    // 13: odpf.stencil.v1.PromoteSnapshotResponse
-	(*SearchResult_File)(nil),          // 14: odpf.stencil.v1.SearchResult.File
 }
 var file_odpf_stencil_v1_stencil_proto_depIdxs = []int32{
 	5,  // 0: odpf.stencil.v1.UploadDescriptorRequest.checks:type_name -> odpf.stencil.v1.Checks
 	0,  // 1: odpf.stencil.v1.Checks.except:type_name -> odpf.stencil.v1.Rule
 	1,  // 2: odpf.stencil.v1.ListSnapshotsResponse.snapshots:type_name -> odpf.stencil.v1.Snapshot
-	1,  // 3: odpf.stencil.v1.SearchResult.snapshot:type_name -> odpf.stencil.v1.Snapshot
-	14, // 4: odpf.stencil.v1.SearchResult.files:type_name -> odpf.stencil.v1.SearchResult.File
-	10, // 5: odpf.stencil.v1.SearchResponse.results:type_name -> odpf.stencil.v1.SearchResult
-	1,  // 6: odpf.stencil.v1.PromoteSnapshotResponse.snapshot:type_name -> odpf.stencil.v1.Snapshot
-	4,  // 7: odpf.stencil.v1.StencilService.UploadDescriptor:input_type -> odpf.stencil.v1.UploadDescriptorRequest
-	2,  // 8: odpf.stencil.v1.StencilService.DownloadDescriptor:input_type -> odpf.stencil.v1.DownloadDescriptorRequest
-	7,  // 9: odpf.stencil.v1.StencilService.ListSnapshots:input_type -> odpf.stencil.v1.ListSnapshotsRequest
-	12, // 10: odpf.stencil.v1.StencilService.PromoteSnapshot:input_type -> odpf.stencil.v1.PromoteSnapshotRequest
-	9,  // 11: odpf.stencil.v1.StencilService.Search:input_type -> odpf.stencil.v1.SearchRequest
-	6,  // 12: odpf.stencil.v1.StencilService.UploadDescriptor:output_type -> odpf.stencil.v1.UploadDescriptorResponse
-	3,  // 13: odpf.stencil.v1.StencilService.DownloadDescriptor:output_type -> odpf.stencil.v1.DownloadDescriptorResponse
-	8,  // 14: odpf.stencil.v1.StencilService.ListSnapshots:output_type -> odpf.stencil.v1.ListSnapshotsResponse
-	13, // 15: odpf.stencil.v1.StencilService.PromoteSnapshot:output_type -> odpf.stencil.v1.PromoteSnapshotResponse
-	11, // 16: odpf.stencil.v1.StencilService.Search:output_type -> odpf.stencil.v1.SearchResponse
-	12, // [12:17] is the sub-list for method output_type
-	7,  // [7:12] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	1,  // 3: odpf.stencil.v1.SearchResult.snapshots:type_name -> odpf.stencil.v1.Snapshot
+	10, // 4: odpf.stencil.v1.SearchResponse.results:type_name -> odpf.stencil.v1.SearchResult
+	1,  // 5: odpf.stencil.v1.PromoteSnapshotResponse.snapshot:type_name -> odpf.stencil.v1.Snapshot
+	4,  // 6: odpf.stencil.v1.StencilService.UploadDescriptor:input_type -> odpf.stencil.v1.UploadDescriptorRequest
+	2,  // 7: odpf.stencil.v1.StencilService.DownloadDescriptor:input_type -> odpf.stencil.v1.DownloadDescriptorRequest
+	7,  // 8: odpf.stencil.v1.StencilService.ListSnapshots:input_type -> odpf.stencil.v1.ListSnapshotsRequest
+	12, // 9: odpf.stencil.v1.StencilService.PromoteSnapshot:input_type -> odpf.stencil.v1.PromoteSnapshotRequest
+	9,  // 10: odpf.stencil.v1.StencilService.Search:input_type -> odpf.stencil.v1.SearchRequest
+	6,  // 11: odpf.stencil.v1.StencilService.UploadDescriptor:output_type -> odpf.stencil.v1.UploadDescriptorResponse
+	3,  // 12: odpf.stencil.v1.StencilService.DownloadDescriptor:output_type -> odpf.stencil.v1.DownloadDescriptorResponse
+	8,  // 13: odpf.stencil.v1.StencilService.ListSnapshots:output_type -> odpf.stencil.v1.ListSnapshotsResponse
+	13, // 14: odpf.stencil.v1.StencilService.PromoteSnapshot:output_type -> odpf.stencil.v1.PromoteSnapshotResponse
+	11, // 15: odpf.stencil.v1.StencilService.Search:output_type -> odpf.stencil.v1.SearchResponse
+	11, // [11:16] is the sub-list for method output_type
+	6,  // [6:11] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_odpf_stencil_v1_stencil_proto_init() }
@@ -1329,18 +1276,6 @@ func file_odpf_stencil_v1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1_stencil_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchResult_File); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1348,7 +1283,7 @@ func file_odpf_stencil_v1_stencil_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_odpf_stencil_v1_stencil_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

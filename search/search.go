@@ -22,14 +22,10 @@ type SearchResponse struct {
 	Results []*Result
 }
 
-type File struct {
-	Path     string
-	Package  string
-	Messages []string
-	Fields   []string
-}
-
 type Result struct {
-	models.Snapshot `db:"snapshot"`
-	Files           []File `db:"files"`
+	Path      string
+	Package   string
+	Messages  []string
+	Fields    []string
+	Snapshots []models.Snapshot
 }
