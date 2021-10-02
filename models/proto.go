@@ -12,4 +12,6 @@ type SearchData struct {
 	Path         string   `json:"path"`
 	Messages     []string `json:"messages"`
 	Dependencies []string `json:"dependencies"`
+	Package      string   `json:"package"`
+	Fields       []string `json:"fields"`
 }

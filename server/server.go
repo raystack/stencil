@@ -11,6 +11,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
+	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/storage/postgres"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -45,9 +46,13 @@ func Start(cfg config.Config) {
 	store := postgres.NewStore(cfg.DB.ConnectionString)
 	protoService := proto.NewService(store)
 	metaService := snapshot.NewService(store)
+	searchService := &search.StoreSearch{
+		Store: store,
+	}
 	api := &api.API{
-		Store:    protoService,
-		Metadata: metaService,
+		Store:         protoService,
+		Metadata:      metaService,
+		SearchService: searchService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
@@ -76,13 +81,15 @@ func Start(cfg config.Config) {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	stencilv1.RegisterStencilServiceHandler(ctx, mux, conn)
-
+	if err = stencilv1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
+		log.Fatalln("Failed to register stencil service handler:", err)
+	}
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
 		store.Close()
 	})
+
 }
 
 // grpcHandlerFunc returns an http.Handler that delegates to grpcServer on incoming gRPC

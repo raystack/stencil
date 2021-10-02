@@ -147,6 +147,18 @@ func getMessageList(file protoreflect.FileDescriptor) []string {
 	return messages
 }
 
+func getFieldList(file protoreflect.FileDescriptor) []string {
+	var fields []string
+	forEachMessage(file.Messages(), func(msg protoreflect.MessageDescriptor) bool {
+		forEachField(msg.Fields(), func(fd protoreflect.FieldDescriptor) bool {
+			fields = append(fields, string(fd.FullName()))
+			return true
+		})
+		return true
+	})
+	return fields
+}
+
 func getAllDependencies(file protoreflect.FileDescriptor) []string {
 	var fileImports []string
 	fileImports = append(fileImports, file.Path())

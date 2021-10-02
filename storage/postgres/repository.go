@@ -8,9 +8,10 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4"
 	"github.com/odpf/stencil/models"
+	"github.com/odpf/stencil/search"
 )
 
-// Repository DB access layer
+// Store DB access layer
 type Store struct {
 	db *DB
 }
@@ -164,6 +165,14 @@ func (r *Store) GetSchema(ctx context.Context, snapshot *models.Snapshot, names 
 	return totalData, err
 }
 
+// Search returns matching message and field names from query
+func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*search.Result, error) {
+	var searchResults []*search.Result
+	var err error
+	err = pgxscan.Select(ctx, r.db, &searchResults, searchQuery, req.Namespace, req.Name, req.Version, req.Latest, req.Query)
+	return searchResults, err
+}
+
 const fileInsertQuery = `
 WITH file_insert(id) as (
 	INSERT INTO protobuf_files (search_data, data)
@@ -179,8 +188,7 @@ file(id) as (
 			(
 				select id
 				from protobuf_files
-				where search_data = $2
-					and data = $3
+				where data = $3
 			)
 		)
 )
@@ -229,3 +237,25 @@ SELECT COALESCE(
 				and version = $3
 		)
 	)`
+
+const searchQuery = `
+SELECT
+  pf.search_data ->> 'path' AS path,
+  pf.search_data ->> 'package' AS package,
+  jsonb_path_query_array(pf.search_data -> 'messages', ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath) AS "messages",
+  jsonb_path_query_array(pf.search_data -> 'fields', ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath) AS "fields",
+  jsonb_agg(jsonb_build_object('id', s.id, 'namespace', s.namespace, 'name', s.name, 'version', s.version, 'latest', s.latest)) AS "snapshots"
+FROM
+  protobuf_files AS pf
+  JOIN snapshots_protobuf_files AS spf ON pf.id = spf.file_id
+  JOIN snapshots s ON s.id = spf.snapshot_id
+WHERE
+  s.namespace = COALESCE(NULLIF ($1, ''), s.namespace)
+  AND s.name = COALESCE(NULLIF ($2, ''), s.name)
+  AND s.version = COALESCE(NULLIF ($3, ''), s.version)
+  AND s.latest = COALESCE(NULLIF ($4, FALSE), s.latest)
+  AND (pf.search_data -> 'messages' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath
+    OR pf.search_data -> 'fields' @? ('$[*] ? (@ like_regex "' || $5 || '" flag "i")')::jsonpath)
+GROUP BY
+  pf.id
+	`

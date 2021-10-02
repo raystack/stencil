@@ -23,6 +23,9 @@ type StencilServiceClient interface {
 	ListSnapshots(ctx context.Context, in *ListSnapshotsRequest, opts ...grpc.CallOption) (*ListSnapshotsResponse, error)
 	// PromoteSnapshot promotes particular snapshot version as latest
 	PromoteSnapshot(ctx context.Context, in *PromoteSnapshotRequest, opts ...grpc.CallOption) (*PromoteSnapshotResponse, error)
+	// Search matches given query with message names and field names
+	// returns filtered message/field names along with snapshot details
+	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
 
 type stencilServiceClient struct {
@@ -69,6 +72,15 @@ func (c *stencilServiceClient) PromoteSnapshot(ctx context.Context, in *PromoteS
 	return out, nil
 }
 
+func (c *stencilServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+	out := new(SearchResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilService/Search", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StencilServiceServer is the server API for StencilService service.
 // All implementations must embed UnimplementedStencilServiceServer
 // for forward compatibility
@@ -78,6 +90,9 @@ type StencilServiceServer interface {
 	ListSnapshots(context.Context, *ListSnapshotsRequest) (*ListSnapshotsResponse, error)
 	// PromoteSnapshot promotes particular snapshot version as latest
 	PromoteSnapshot(context.Context, *PromoteSnapshotRequest) (*PromoteSnapshotResponse, error)
+	// Search matches given query with message names and field names
+	// returns filtered message/field names along with snapshot details
+	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	mustEmbedUnimplementedStencilServiceServer()
 }
 
@@ -96,6 +111,9 @@ func (UnimplementedStencilServiceServer) ListSnapshots(context.Context, *ListSna
 }
 func (UnimplementedStencilServiceServer) PromoteSnapshot(context.Context, *PromoteSnapshotRequest) (*PromoteSnapshotResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PromoteSnapshot not implemented")
+}
+func (UnimplementedStencilServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
 func (UnimplementedStencilServiceServer) mustEmbedUnimplementedStencilServiceServer() {}
 
@@ -182,6 +200,24 @@ func _StencilService_PromoteSnapshot_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StencilService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceServer).Search(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilService/Search",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceServer).Search(ctx, req.(*SearchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StencilService_ServiceDesc is the grpc.ServiceDesc for StencilService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -204,6 +240,10 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PromoteSnapshot",
 			Handler:    _StencilService_PromoteSnapshot_Handler,
+		},
+		{
+			MethodName: "Search",
+			Handler:    _StencilService_Search_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
