@@ -19,9 +19,11 @@ func registerRoutes(router *gin.Engine, mux *runtime.ServeMux, handlers *api.API
 	router.GET("/ping", api.Ping)
 	apiV1.POST("/descriptors", handlers.HTTPUpload)
 	apiV1.GET("/descriptors/:name/versions/:version", handlers.HTTPDownload)
+	apiV1.GET("/descriptors/:name/versions/:version/types/:type", handlers.HTTPDownload)
 	apiV1.PATCH("/descriptors/:name/versions/:version", handlers.HTTPMerge)
 	mux.HandlePath("GET", "/ping", proxyToGin(router))
 	mux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
+	mux.HandlePath("GET", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}/types/{type}", proxyToGin(router))
 	mux.HandlePath("POST", "/v1/namespaces/{namespace}/descriptors", proxyToGin(router))
 	mux.HandlePath("PATCH", "/v1/namespaces/{namespace}/descriptors/{name}/versions/{version}", proxyToGin(router))
 }

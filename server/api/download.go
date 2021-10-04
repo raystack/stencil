@@ -15,9 +15,16 @@ import (
 
 //HTTPDownload http handler to download requested schema data
 func (a *API) HTTPDownload(c *gin.Context) {
+	var fullNames []string
 	ctx := c.Request.Context()
+	fullName := c.Param("type")
+	if fullName != "" {
+		fullNames = []string{fullName}
+	} else {
+		fullNames = c.QueryArray("fullnames")
+	}
 	payload := models.FileDownloadRequest{
-		FullNames: c.QueryArray("fullnames"),
+		FullNames: fullNames,
 	}
 	if err := c.ShouldBindUri(&payload); err != nil {
 		c.Error(err).SetMeta(models.ErrMissingFormData)

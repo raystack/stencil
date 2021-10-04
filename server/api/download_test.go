@@ -83,4 +83,38 @@ func TestDownload(t *testing.T) {
 		assert.Equal(t, 404, w.Code)
 		assert.Equal(t, []byte(`{"message":"not found"}`), w.Body.Bytes())
 	})
+	t.Run("should return schema for given type", func(t *testing.T) {
+
+		router, mockService, mockMetadata, _ := setup()
+
+		fileData := []byte("File contents")
+		typeArg := "odpf.stencil.v1.Snapshot"
+		mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&models.Snapshot{}, nil)
+		mockService.On("Get", mock.Anything, mock.Anything, []string{typeArg}).Return(fileData, nil)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/descriptors/name/versions/0.0.1/types/%s", typeArg), nil)
+
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, 200, w.Code)
+		assert.Equal(t, []byte("File contents"), w.Body.Bytes())
+		mockService.AssertExpectations(t)
+	})
+	t.Run("should return schema for given multiple types", func(t *testing.T) {
+
+		router, mockService, mockMetadata, _ := setup()
+
+		fileData := []byte("File contents")
+		typesArg := []string{"odpf.stencil.v1.Snapshot", "odpf.stencil.v1.Checks"}
+		mockMetadata.On("GetSnapshotByFields", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&models.Snapshot{}, nil)
+		mockService.On("Get", mock.Anything, mock.Anything, typesArg).Return(fileData, nil)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/namespaces/namespace/descriptors/name/versions/0.0.1?fullnames=%s&fullnames=%s", typesArg[0], typesArg[1]), nil)
+
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, 200, w.Code)
+		assert.Equal(t, []byte("File contents"), w.Body.Bytes())
+		mockService.AssertExpectations(t)
+	})
 }
