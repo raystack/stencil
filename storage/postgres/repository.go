@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/odpf/stencil/models"
 	"github.com/odpf/stencil/search"
+	"github.com/odpf/stencil/server/namespace"
 )
 
 // Store DB access layer
@@ -172,6 +173,59 @@ func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*searc
 	err = pgxscan.Select(ctx, r.db, &searchResults, searchQuery, req.Namespace, req.Name, req.Version, req.Latest, req.Query)
 	return searchResults, err
 }
+
+func (r *Store) CreateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
+	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceInsertQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
+	return newNamespace, err
+}
+
+func (r *Store) UpdateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
+	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceUpdateQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
+	return newNamespace, err
+}
+
+func (r *Store) GetNamespace(ctx context.Context, id string) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
+	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceGetQuery, id)
+	return newNamespace, err
+}
+
+func (r *Store) DeleteNamespace(ctx context.Context, id string) error {
+	_, err := r.db.Exec(ctx, namespaceDeleteQuery, id)
+	return err
+}
+
+func (r *Store) ListNamespaces(ctx context.Context) ([]string, error) {
+	var namespaces []string
+	err := pgxscan.Select(ctx, r.db, &namespaces, namespaceListQuery)
+	return namespaces, err
+}
+
+const namespaceListQuery = `
+SELECT id from namespaces
+`
+
+const namespaceGetQuery = `
+SELECT * from namespaces where id=$1
+`
+
+const namespaceDeleteQuery = `
+DELETE from namespaces where id=$1
+`
+
+const namespaceUpdateQuery = `
+UPDATE namespaces SET format=$2,compatibility=$3,description=$4,updated_at=now()
+WHERE id = $1
+RETURNING *
+`
+
+const namespaceInsertQuery = `
+INSERT INTO namespaces (id, format, compatibility, description, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, now(), now())
+RETURNING *
+`
 
 const fileInsertQuery = `
 WITH file_insert(id) as (

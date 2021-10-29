@@ -5,6 +5,7 @@ import (
 
 	"github.com/odpf/stencil/models"
 	"github.com/odpf/stencil/search"
+	"github.com/odpf/stencil/server/namespace"
 )
 
 // Store is the interface that all database objects must implement.
@@ -37,4 +38,5 @@ type Store interface {
 	PutSchema(ctx context.Context, snapshot *models.Snapshot, dbFiles []*models.ProtobufDBFile) error
 
 	search.Store
+	namespace.Repository
 }

@@ -249,3 +249,557 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "odpf/stencil/v1/stencil.proto",
 }
+
+// StencilServiceV1Client is the client API for StencilServiceV1 service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type StencilServiceV1Client interface {
+	ListNamespaces(ctx context.Context, in *ListNamespaceRequest, opts ...grpc.CallOption) (*ListNamespaceResponse, error)
+	GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*GetNamespaceResponse, error)
+	CreateNamespace(ctx context.Context, in *CreateNamespaceRequest, opts ...grpc.CallOption) (*CreateNamespaceResponse, error)
+	UpdateNamespace(ctx context.Context, in *UpdateNamespaceRequest, opts ...grpc.CallOption) (*UpdateNamespaceResponse, error)
+	DeleteNamespace(ctx context.Context, in *DeleteNamespaceRequest, opts ...grpc.CallOption) (*DeleteNamespaceResponse, error)
+	ListSchemas(ctx context.Context, in *ListSchemasRequest, opts ...grpc.CallOption) (*ListSchemasResponse, error)
+	CreateSchema(ctx context.Context, in *CreateSchemaRequest, opts ...grpc.CallOption) (*CreateSchemaResponse, error)
+	UpdateSchemaMetadata(ctx context.Context, in *UpdateSchemaMetadataRequest, opts ...grpc.CallOption) (*UpdateSchemaMetadataResponse, error)
+	DeleteSchemas(ctx context.Context, in *DeleteSchemasRequest, opts ...grpc.CallOption) (*DeleteSchemasResponse, error)
+	GetSchema(ctx context.Context, in *GetSchemaRequest, opts ...grpc.CallOption) (*GetSchemaResponse, error)
+	DeleteSchema(ctx context.Context, in *DeleteSchemaRequest, opts ...grpc.CallOption) (*DeleteSchemaResponse, error)
+	ListVersions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error)
+	GetVersionedSchema(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error)
+	DeleteVersion(ctx context.Context, in *DeleteVersionRequest, opts ...grpc.CallOption) (*DeleteVersionResponse, error)
+}
+
+type stencilServiceV1Client struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewStencilServiceV1Client(cc grpc.ClientConnInterface) StencilServiceV1Client {
+	return &stencilServiceV1Client{cc}
+}
+
+func (c *stencilServiceV1Client) ListNamespaces(ctx context.Context, in *ListNamespaceRequest, opts ...grpc.CallOption) (*ListNamespaceResponse, error) {
+	out := new(ListNamespaceResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/ListNamespaces", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*GetNamespaceResponse, error) {
+	out := new(GetNamespaceResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/GetNamespace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) CreateNamespace(ctx context.Context, in *CreateNamespaceRequest, opts ...grpc.CallOption) (*CreateNamespaceResponse, error) {
+	out := new(CreateNamespaceResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/CreateNamespace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) UpdateNamespace(ctx context.Context, in *UpdateNamespaceRequest, opts ...grpc.CallOption) (*UpdateNamespaceResponse, error) {
+	out := new(UpdateNamespaceResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/UpdateNamespace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) DeleteNamespace(ctx context.Context, in *DeleteNamespaceRequest, opts ...grpc.CallOption) (*DeleteNamespaceResponse, error) {
+	out := new(DeleteNamespaceResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/DeleteNamespace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) ListSchemas(ctx context.Context, in *ListSchemasRequest, opts ...grpc.CallOption) (*ListSchemasResponse, error) {
+	out := new(ListSchemasResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/ListSchemas", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) CreateSchema(ctx context.Context, in *CreateSchemaRequest, opts ...grpc.CallOption) (*CreateSchemaResponse, error) {
+	out := new(CreateSchemaResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/CreateSchema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) UpdateSchemaMetadata(ctx context.Context, in *UpdateSchemaMetadataRequest, opts ...grpc.CallOption) (*UpdateSchemaMetadataResponse, error) {
+	out := new(UpdateSchemaMetadataResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/UpdateSchemaMetadata", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) DeleteSchemas(ctx context.Context, in *DeleteSchemasRequest, opts ...grpc.CallOption) (*DeleteSchemasResponse, error) {
+	out := new(DeleteSchemasResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/DeleteSchemas", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) GetSchema(ctx context.Context, in *GetSchemaRequest, opts ...grpc.CallOption) (*GetSchemaResponse, error) {
+	out := new(GetSchemaResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/GetSchema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) DeleteSchema(ctx context.Context, in *DeleteSchemaRequest, opts ...grpc.CallOption) (*DeleteSchemaResponse, error) {
+	out := new(DeleteSchemaResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/DeleteSchema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) ListVersions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error) {
+	out := new(ListVersionsResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/ListVersions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) GetVersionedSchema(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error) {
+	out := new(GetVersionResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/GetVersionedSchema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceV1Client) DeleteVersion(ctx context.Context, in *DeleteVersionRequest, opts ...grpc.CallOption) (*DeleteVersionResponse, error) {
+	out := new(DeleteVersionResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1.StencilServiceV1/DeleteVersion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StencilServiceV1Server is the server API for StencilServiceV1 service.
+// All implementations must embed UnimplementedStencilServiceV1Server
+// for forward compatibility
+type StencilServiceV1Server interface {
+	ListNamespaces(context.Context, *ListNamespaceRequest) (*ListNamespaceResponse, error)
+	GetNamespace(context.Context, *GetNamespaceRequest) (*GetNamespaceResponse, error)
+	CreateNamespace(context.Context, *CreateNamespaceRequest) (*CreateNamespaceResponse, error)
+	UpdateNamespace(context.Context, *UpdateNamespaceRequest) (*UpdateNamespaceResponse, error)
+	DeleteNamespace(context.Context, *DeleteNamespaceRequest) (*DeleteNamespaceResponse, error)
+	ListSchemas(context.Context, *ListSchemasRequest) (*ListSchemasResponse, error)
+	CreateSchema(context.Context, *CreateSchemaRequest) (*CreateSchemaResponse, error)
+	UpdateSchemaMetadata(context.Context, *UpdateSchemaMetadataRequest) (*UpdateSchemaMetadataResponse, error)
+	DeleteSchemas(context.Context, *DeleteSchemasRequest) (*DeleteSchemasResponse, error)
+	GetSchema(context.Context, *GetSchemaRequest) (*GetSchemaResponse, error)
+	DeleteSchema(context.Context, *DeleteSchemaRequest) (*DeleteSchemaResponse, error)
+	ListVersions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error)
+	GetVersionedSchema(context.Context, *GetVersionRequest) (*GetVersionResponse, error)
+	DeleteVersion(context.Context, *DeleteVersionRequest) (*DeleteVersionResponse, error)
+	mustEmbedUnimplementedStencilServiceV1Server()
+}
+
+// UnimplementedStencilServiceV1Server must be embedded to have forward compatible implementations.
+type UnimplementedStencilServiceV1Server struct {
+}
+
+func (UnimplementedStencilServiceV1Server) ListNamespaces(context.Context, *ListNamespaceRequest) (*ListNamespaceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListNamespaces not implemented")
+}
+func (UnimplementedStencilServiceV1Server) GetNamespace(context.Context, *GetNamespaceRequest) (*GetNamespaceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNamespace not implemented")
+}
+func (UnimplementedStencilServiceV1Server) CreateNamespace(context.Context, *CreateNamespaceRequest) (*CreateNamespaceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNamespace not implemented")
+}
+func (UnimplementedStencilServiceV1Server) UpdateNamespace(context.Context, *UpdateNamespaceRequest) (*UpdateNamespaceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNamespace not implemented")
+}
+func (UnimplementedStencilServiceV1Server) DeleteNamespace(context.Context, *DeleteNamespaceRequest) (*DeleteNamespaceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteNamespace not implemented")
+}
+func (UnimplementedStencilServiceV1Server) ListSchemas(context.Context, *ListSchemasRequest) (*ListSchemasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSchemas not implemented")
+}
+func (UnimplementedStencilServiceV1Server) CreateSchema(context.Context, *CreateSchemaRequest) (*CreateSchemaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSchema not implemented")
+}
+func (UnimplementedStencilServiceV1Server) UpdateSchemaMetadata(context.Context, *UpdateSchemaMetadataRequest) (*UpdateSchemaMetadataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSchemaMetadata not implemented")
+}
+func (UnimplementedStencilServiceV1Server) DeleteSchemas(context.Context, *DeleteSchemasRequest) (*DeleteSchemasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSchemas not implemented")
+}
+func (UnimplementedStencilServiceV1Server) GetSchema(context.Context, *GetSchemaRequest) (*GetSchemaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSchema not implemented")
+}
+func (UnimplementedStencilServiceV1Server) DeleteSchema(context.Context, *DeleteSchemaRequest) (*DeleteSchemaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSchema not implemented")
+}
+func (UnimplementedStencilServiceV1Server) ListVersions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListVersions not implemented")
+}
+func (UnimplementedStencilServiceV1Server) GetVersionedSchema(context.Context, *GetVersionRequest) (*GetVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVersionedSchema not implemented")
+}
+func (UnimplementedStencilServiceV1Server) DeleteVersion(context.Context, *DeleteVersionRequest) (*DeleteVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteVersion not implemented")
+}
+func (UnimplementedStencilServiceV1Server) mustEmbedUnimplementedStencilServiceV1Server() {}
+
+// UnsafeStencilServiceV1Server may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StencilServiceV1Server will
+// result in compilation errors.
+type UnsafeStencilServiceV1Server interface {
+	mustEmbedUnimplementedStencilServiceV1Server()
+}
+
+func RegisterStencilServiceV1Server(s grpc.ServiceRegistrar, srv StencilServiceV1Server) {
+	s.RegisterService(&StencilServiceV1_ServiceDesc, srv)
+}
+
+func _StencilServiceV1_ListNamespaces_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).ListNamespaces(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/ListNamespaces",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).ListNamespaces(ctx, req.(*ListNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_GetNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).GetNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/GetNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).GetNamespace(ctx, req.(*GetNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_CreateNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).CreateNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/CreateNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).CreateNamespace(ctx, req.(*CreateNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_UpdateNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).UpdateNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/UpdateNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).UpdateNamespace(ctx, req.(*UpdateNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_DeleteNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).DeleteNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/DeleteNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).DeleteNamespace(ctx, req.(*DeleteNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_ListSchemas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSchemasRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).ListSchemas(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/ListSchemas",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).ListSchemas(ctx, req.(*ListSchemasRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_CreateSchema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSchemaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).CreateSchema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/CreateSchema",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).CreateSchema(ctx, req.(*CreateSchemaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_UpdateSchemaMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSchemaMetadataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).UpdateSchemaMetadata(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/UpdateSchemaMetadata",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).UpdateSchemaMetadata(ctx, req.(*UpdateSchemaMetadataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_DeleteSchemas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSchemasRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).DeleteSchemas(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/DeleteSchemas",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).DeleteSchemas(ctx, req.(*DeleteSchemasRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_GetSchema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSchemaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).GetSchema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/GetSchema",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).GetSchema(ctx, req.(*GetSchemaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_DeleteSchema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSchemaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).DeleteSchema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/DeleteSchema",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).DeleteSchema(ctx, req.(*DeleteSchemaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_ListVersions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListVersionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).ListVersions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/ListVersions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).ListVersions(ctx, req.(*ListVersionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_GetVersionedSchema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).GetVersionedSchema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/GetVersionedSchema",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).GetVersionedSchema(ctx, req.(*GetVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilServiceV1_DeleteVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceV1Server).DeleteVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1.StencilServiceV1/DeleteVersion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceV1Server).DeleteVersion(ctx, req.(*DeleteVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// StencilServiceV1_ServiceDesc is the grpc.ServiceDesc for StencilServiceV1 service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var StencilServiceV1_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "odpf.stencil.v1.StencilServiceV1",
+	HandlerType: (*StencilServiceV1Server)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListNamespaces",
+			Handler:    _StencilServiceV1_ListNamespaces_Handler,
+		},
+		{
+			MethodName: "GetNamespace",
+			Handler:    _StencilServiceV1_GetNamespace_Handler,
+		},
+		{
+			MethodName: "CreateNamespace",
+			Handler:    _StencilServiceV1_CreateNamespace_Handler,
+		},
+		{
+			MethodName: "UpdateNamespace",
+			Handler:    _StencilServiceV1_UpdateNamespace_Handler,
+		},
+		{
+			MethodName: "DeleteNamespace",
+			Handler:    _StencilServiceV1_DeleteNamespace_Handler,
+		},
+		{
+			MethodName: "ListSchemas",
+			Handler:    _StencilServiceV1_ListSchemas_Handler,
+		},
+		{
+			MethodName: "CreateSchema",
+			Handler:    _StencilServiceV1_CreateSchema_Handler,
+		},
+		{
+			MethodName: "UpdateSchemaMetadata",
+			Handler:    _StencilServiceV1_UpdateSchemaMetadata_Handler,
+		},
+		{
+			MethodName: "DeleteSchemas",
+			Handler:    _StencilServiceV1_DeleteSchemas_Handler,
+		},
+		{
+			MethodName: "GetSchema",
+			Handler:    _StencilServiceV1_GetSchema_Handler,
+		},
+		{
+			MethodName: "DeleteSchema",
+			Handler:    _StencilServiceV1_DeleteSchema_Handler,
+		},
+		{
+			MethodName: "ListVersions",
+			Handler:    _StencilServiceV1_ListVersions_Handler,
+		},
+		{
+			MethodName: "GetVersionedSchema",
+			Handler:    _StencilServiceV1_GetVersionedSchema_Handler,
+		},
+		{
+			MethodName: "DeleteVersion",
+			Handler:    _StencilServiceV1_DeleteVersion_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "odpf/stencil/v1/stencil.proto",
+}

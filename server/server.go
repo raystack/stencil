@@ -20,6 +20,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/logger"
+	"github.com/odpf/stencil/server/namespace"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/proto"
 	"github.com/odpf/stencil/server/snapshot"
@@ -49,10 +50,14 @@ func Start(cfg config.Config) {
 	searchService := &search.StoreSearch{
 		Store: store,
 	}
+	namespaceService := namespace.Service{
+		Repo: store,
+	}
 	api := &api.API{
-		Store:         protoService,
-		Metadata:      metaService,
-		SearchService: searchService,
+		Store:            protoService,
+		Metadata:         metaService,
+		SearchService:    searchService,
+		NamespaceService: namespaceService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
@@ -71,6 +76,7 @@ func Start(cfg config.Config) {
 	// Create a gRPC server object
 	s := grpc.NewServer(opts...)
 	stencilv1.RegisterStencilServiceServer(s, api)
+	stencilv1.RegisterStencilServiceV1Server(s, api)
 	grpc_health_v1.RegisterHealthServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -82,6 +88,9 @@ func Start(cfg config.Config) {
 	}
 
 	if err = stencilv1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
+		log.Fatalln("Failed to register stencil service handler:", err)
+	}
+	if err = stencilv1.RegisterStencilServiceV1Handler(ctx, mux, conn); err != nil {
 		log.Fatalln("Failed to register stencil service handler:", err)
 	}
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
