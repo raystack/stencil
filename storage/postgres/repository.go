@@ -2,15 +2,34 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/odpf/stencil/models"
 	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/server/namespace"
+	"github.com/odpf/stencil/storage"
 )
+
+func wrapError(err error, name string) error {
+	if err == nil {
+		return err
+	}
+	var pgErr *pgconn.PgError
+	if errors.Is(err, pgx.ErrNoRows) {
+		return storage.NoRowsErr.WithErr(err, name)
+	}
+	if errors.As(err, &pgErr) {
+		if strings.HasPrefix(pgErr.Code, "23") {
+			return storage.ConflictErr.WithErr(err, name)
+		}
+	}
+	return storage.UnknownErr.WithErr(err, name)
+}
 
 // Store DB access layer
 type Store struct {
@@ -177,30 +196,30 @@ func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*searc
 func (r *Store) CreateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
 	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceInsertQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
-	return newNamespace, err
+	return newNamespace, wrapError(err, ns.ID)
 }
 
 func (r *Store) UpdateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
 	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceUpdateQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
-	return newNamespace, err
+	return newNamespace, wrapError(err, ns.ID)
 }
 
 func (r *Store) GetNamespace(ctx context.Context, id string) (namespace.Namespace, error) {
 	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceGetQuery, id)
-	return newNamespace, err
+	return newNamespace, wrapError(err, id)
 }
 
 func (r *Store) DeleteNamespace(ctx context.Context, id string) error {
 	_, err := r.db.Exec(ctx, namespaceDeleteQuery, id)
-	return err
+	return wrapError(err, id)
 }
 
 func (r *Store) ListNamespaces(ctx context.Context) ([]string, error) {
 	var namespaces []string
 	err := pgxscan.Select(ctx, r.db, &namespaces, namespaceListQuery)
-	return namespaces, err
+	return namespaces, wrapError(err, "")
 }
 
 const namespaceListQuery = `
