@@ -7,6 +7,7 @@ import (
 	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/server/namespace"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	"github.com/odpf/stencil/server/schema"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -36,4 +37,5 @@ type API struct {
 	Metadata         MetadataService
 	SearchService    search.SearchStore
 	NamespaceService namespace.Service
+	SchemaService    schema.Service
 }

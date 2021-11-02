@@ -7,11 +7,13 @@ import (
 	"strings"
 
 	"github.com/georgysavva/scany/pgxscan"
+	"github.com/google/uuid"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/odpf/stencil/models"
 	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/server/namespace"
+	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/storage"
 )
 
@@ -24,7 +26,7 @@ func wrapError(err error, name string) error {
 		return storage.NoRowsErr.WithErr(err, name)
 	}
 	if errors.As(err, &pgErr) {
-		if strings.HasPrefix(pgErr.Code, "23") {
+		if pgErr.Code == "23505" {
 			return storage.ConflictErr.WithErr(err, name)
 		}
 	}
@@ -222,6 +224,24 @@ func (r *Store) ListNamespaces(ctx context.Context) ([]string, error) {
 	return namespaces, wrapError(err, "")
 }
 
+func (r *Store) CreateSchema(ctx context.Context, sc *schema.Schema) (*schema.Schema, error) {
+	newSchema := &schema.Schema{}
+	err := r.db.BeginFunc(ctx, func(t pgx.Tx) error {
+		if err := pgxscan.Get(ctx, t, newSchema, schemaInsertQuery, sc.ID, sc.Authority, sc.Format, sc.Description, sc.NamespaceID, sc.Compatibility); err != nil {
+			return err
+		}
+		_, err := t.Exec(ctx, versionInsertQuery, sc.ID, uuid.NewString(), sc.Data)
+		return err
+	})
+	return newSchema, wrapError(err, sc.ID)
+}
+
+func (r *Store) ListSchemas(ctx context.Context, namespaceID string) ([]string, error) {
+	var schemas []string
+	err := pgxscan.Select(ctx, r.db, &schemas, schemaListQuery, namespaceID)
+	return schemas, wrapError(err, "")
+}
+
 const namespaceListQuery = `
 SELECT id from namespaces
 `
@@ -244,6 +264,24 @@ const namespaceInsertQuery = `
 INSERT INTO namespaces (id, format, compatibility, description, created_at, updated_at)
     VALUES ($1, $2, $3, $4, now(), now())
 RETURNING *
+`
+
+const schemaInsertQuery = `
+INSERT INTO schemas (id, authority, format, description, namespace_id, compatibility, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, now(), now())
+ON CONFLICT ON CONSTRAINT schemas_pkey DO UPDATE SET updated_at=now() RETURNING *
+`
+
+const versionInsertQuery = `
+WITH max_version(value) as (
+	SELECT COALESCE((SELECT MAX(vs.version) from versions as vs WHERE vs.schema_id=$1), 0)
+)
+INSERT INTO versions (version, schema_id, id, data, created_at)
+		VALUES ((select max_version.value + 1 from max_version), $1, $2, $3, now())
+`
+
+const schemaListQuery = `
+SELECT id from schemas where namespace_id=$1
 `
 
 const fileInsertQuery = `

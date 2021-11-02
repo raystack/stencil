@@ -23,6 +23,7 @@ import (
 	"github.com/odpf/stencil/server/namespace"
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/proto"
+	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/server/snapshot"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -53,11 +54,16 @@ func Start(cfg config.Config) {
 	namespaceService := namespace.Service{
 		Repo: store,
 	}
+	schemaService := schema.Service{
+		Repo:         store,
+		NamespaceSvc: namespaceService,
+	}
 	api := &api.API{
 		Store:            protoService,
 		Metadata:         metaService,
 		SearchService:    searchService,
 		NamespaceService: namespaceService,
+		SchemaService:    schemaService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
