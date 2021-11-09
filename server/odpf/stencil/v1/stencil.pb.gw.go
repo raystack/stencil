@@ -31,132 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-var (
-	filter_StencilService_ListSnapshots_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
-func request_StencilService_ListSnapshots_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListSnapshotsRequest
-	var metadata runtime.ServerMetadata
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StencilService_ListSnapshots_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.ListSnapshots(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_StencilService_ListSnapshots_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListSnapshotsRequest
-	var metadata runtime.ServerMetadata
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StencilService_ListSnapshots_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := server.ListSnapshots(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_StencilService_PromoteSnapshot_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PromoteSnapshotRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
-	}
-
-	msg, err := client.PromoteSnapshot(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_StencilService_PromoteSnapshot_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PromoteSnapshotRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.Int64(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
-	}
-
-	msg, err := server.PromoteSnapshot(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-var (
-	filter_StencilService_Search_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
-func request_StencilService_Search_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SearchRequest
-	var metadata runtime.ServerMetadata
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StencilService_Search_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.Search(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_StencilService_Search_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SearchRequest
-	var metadata runtime.ServerMetadata
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StencilService_Search_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := server.Search(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_StencilServiceV1_ListNamespaces_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListNamespaceRequest
+func request_StencilService_ListNamespaces_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ListNamespacesRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.ListNamespaces(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -164,8 +40,8 @@ func request_StencilServiceV1_ListNamespaces_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_StencilServiceV1_ListNamespaces_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListNamespaceRequest
+func local_request_StencilService_ListNamespaces_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ListNamespacesRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.ListNamespaces(ctx, &protoReq)
@@ -173,7 +49,7 @@ func local_request_StencilServiceV1_ListNamespaces_0(ctx context.Context, marsha
 
 }
 
-func request_StencilServiceV1_GetNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_GetNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -199,7 +75,7 @@ func request_StencilServiceV1_GetNamespace_0(ctx context.Context, marshaler runt
 
 }
 
-func local_request_StencilServiceV1_GetNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_GetNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -225,7 +101,7 @@ func local_request_StencilServiceV1_GetNamespace_0(ctx context.Context, marshale
 
 }
 
-func request_StencilServiceV1_CreateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_CreateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -242,7 +118,7 @@ func request_StencilServiceV1_CreateNamespace_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_StencilServiceV1_CreateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_CreateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -259,7 +135,7 @@ func local_request_StencilServiceV1_CreateNamespace_0(ctx context.Context, marsh
 
 }
 
-func request_StencilServiceV1_UpdateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_UpdateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -293,7 +169,7 @@ func request_StencilServiceV1_UpdateNamespace_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_StencilServiceV1_UpdateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_UpdateNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -327,7 +203,7 @@ func local_request_StencilServiceV1_UpdateNamespace_0(ctx context.Context, marsh
 
 }
 
-func request_StencilServiceV1_DeleteNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_DeleteNamespace_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -353,7 +229,7 @@ func request_StencilServiceV1_DeleteNamespace_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_StencilServiceV1_DeleteNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_DeleteNamespace_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteNamespaceRequest
 	var metadata runtime.ServerMetadata
 
@@ -379,7 +255,7 @@ func local_request_StencilServiceV1_DeleteNamespace_0(ctx context.Context, marsh
 
 }
 
-func request_StencilServiceV1_ListSchemas_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_ListSchemas_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListSchemasRequest
 	var metadata runtime.ServerMetadata
 
@@ -405,7 +281,7 @@ func request_StencilServiceV1_ListSchemas_0(ctx context.Context, marshaler runti
 
 }
 
-func local_request_StencilServiceV1_ListSchemas_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_ListSchemas_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListSchemasRequest
 	var metadata runtime.ServerMetadata
 
@@ -431,7 +307,7 @@ func local_request_StencilServiceV1_ListSchemas_0(ctx context.Context, marshaler
 
 }
 
-func request_StencilServiceV1_CreateSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_CreateSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateSchemaRequest
 	var metadata runtime.ServerMetadata
 
@@ -475,7 +351,7 @@ func request_StencilServiceV1_CreateSchema_0(ctx context.Context, marshaler runt
 
 }
 
-func local_request_StencilServiceV1_CreateSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_CreateSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateSchemaRequest
 	var metadata runtime.ServerMetadata
 
@@ -519,7 +395,79 @@ func local_request_StencilServiceV1_CreateSchema_0(ctx context.Context, marshale
 
 }
 
-func request_StencilServiceV1_UpdateSchemaMetadata_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_GetSchemaMetadata_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetSchemaMetadataRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["namespace_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "namespace_id")
+	}
+
+	protoReq.NamespaceId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "namespace_id", err)
+	}
+
+	val, ok = pathParams["schema_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "schema_id")
+	}
+
+	protoReq.SchemaId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
+	}
+
+	msg, err := client.GetSchemaMetadata(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_StencilService_GetSchemaMetadata_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetSchemaMetadataRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["namespace_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "namespace_id")
+	}
+
+	protoReq.NamespaceId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "namespace_id", err)
+	}
+
+	val, ok = pathParams["schema_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "schema_id")
+	}
+
+	protoReq.SchemaId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
+	}
+
+	msg, err := server.GetSchemaMetadata(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_StencilService_UpdateSchemaMetadata_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateSchemaMetadataRequest
 	var metadata runtime.ServerMetadata
 
@@ -563,7 +511,7 @@ func request_StencilServiceV1_UpdateSchemaMetadata_0(ctx context.Context, marsha
 
 }
 
-func local_request_StencilServiceV1_UpdateSchemaMetadata_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_UpdateSchemaMetadata_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateSchemaMetadataRequest
 	var metadata runtime.ServerMetadata
 
@@ -607,60 +555,8 @@ func local_request_StencilServiceV1_UpdateSchemaMetadata_0(ctx context.Context, 
 
 }
 
-func request_StencilServiceV1_DeleteSchemas_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteSchemasRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
-	}
-
-	msg, err := client.DeleteSchemas(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_StencilServiceV1_DeleteSchemas_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteSchemasRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
-	}
-
-	msg, err := server.DeleteSchemas(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_StencilServiceV1_GetSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetSchemaRequest
+func request_StencilService_GetLatestSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetLatestSchemaRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -690,13 +586,13 @@ func request_StencilServiceV1_GetSchema_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
 	}
 
-	msg, err := client.GetSchema(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetLatestSchema(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_StencilServiceV1_GetSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetSchemaRequest
+func local_request_StencilService_GetLatestSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetLatestSchemaRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -726,12 +622,12 @@ func local_request_StencilServiceV1_GetSchema_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
 	}
 
-	msg, err := server.GetSchema(ctx, &protoReq)
+	msg, err := server.GetLatestSchema(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_StencilServiceV1_DeleteSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_DeleteSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteSchemaRequest
 	var metadata runtime.ServerMetadata
 
@@ -767,7 +663,7 @@ func request_StencilServiceV1_DeleteSchema_0(ctx context.Context, marshaler runt
 
 }
 
-func local_request_StencilServiceV1_DeleteSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_DeleteSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteSchemaRequest
 	var metadata runtime.ServerMetadata
 
@@ -803,7 +699,99 @@ func local_request_StencilServiceV1_DeleteSchema_0(ctx context.Context, marshale
 
 }
 
-func request_StencilServiceV1_ListVersions_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_GetSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetSchemaRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["namespace_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "namespace_id")
+	}
+
+	protoReq.NamespaceId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "namespace_id", err)
+	}
+
+	val, ok = pathParams["schema_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "schema_id")
+	}
+
+	protoReq.SchemaId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
+	}
+
+	val, ok = pathParams["version_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "version_id")
+	}
+
+	protoReq.VersionId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "version_id", err)
+	}
+
+	msg, err := client.GetSchema(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_StencilService_GetSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetSchemaRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["namespace_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "namespace_id")
+	}
+
+	protoReq.NamespaceId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "namespace_id", err)
+	}
+
+	val, ok = pathParams["schema_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "schema_id")
+	}
+
+	protoReq.SchemaId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
+	}
+
+	val, ok = pathParams["version_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "version_id")
+	}
+
+	protoReq.VersionId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "version_id", err)
+	}
+
+	msg, err := server.GetSchema(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_StencilService_ListVersions_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListVersionsRequest
 	var metadata runtime.ServerMetadata
 
@@ -839,7 +827,7 @@ func request_StencilServiceV1_ListVersions_0(ctx context.Context, marshaler runt
 
 }
 
-func local_request_StencilServiceV1_ListVersions_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_ListVersions_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListVersionsRequest
 	var metadata runtime.ServerMetadata
 
@@ -875,99 +863,7 @@ func local_request_StencilServiceV1_ListVersions_0(ctx context.Context, marshale
 
 }
 
-func request_StencilServiceV1_GetVersionedSchema_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetVersionRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["namespace_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "namespace_id")
-	}
-
-	protoReq.NamespaceId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "namespace_id", err)
-	}
-
-	val, ok = pathParams["schema_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "schema_id")
-	}
-
-	protoReq.SchemaId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
-	}
-
-	val, ok = pathParams["version_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "version_id")
-	}
-
-	protoReq.VersionId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "version_id", err)
-	}
-
-	msg, err := client.GetVersionedSchema(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_StencilServiceV1_GetVersionedSchema_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetVersionRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["namespace_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "namespace_id")
-	}
-
-	protoReq.NamespaceId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "namespace_id", err)
-	}
-
-	val, ok = pathParams["schema_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "schema_id")
-	}
-
-	protoReq.SchemaId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "schema_id", err)
-	}
-
-	val, ok = pathParams["version_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "version_id")
-	}
-
-	protoReq.VersionId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "version_id", err)
-	}
-
-	msg, err := server.GetVersionedSchema(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_StencilServiceV1_DeleteVersion_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StencilService_DeleteVersion_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteVersionRequest
 	var metadata runtime.ServerMetadata
 
@@ -1003,7 +899,7 @@ func request_StencilServiceV1_DeleteVersion_0(ctx context.Context, marshaler run
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "version_id")
 	}
 
-	protoReq.VersionId, err = runtime.String(val)
+	protoReq.VersionId, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "version_id", err)
 	}
@@ -1013,7 +909,7 @@ func request_StencilServiceV1_DeleteVersion_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_StencilServiceV1_DeleteVersion_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceV1Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StencilService_DeleteVersion_0(ctx context.Context, marshaler runtime.Marshaler, server StencilServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteVersionRequest
 	var metadata runtime.ServerMetadata
 
@@ -1049,7 +945,7 @@ func local_request_StencilServiceV1_DeleteVersion_0(ctx context.Context, marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "version_id")
 	}
 
-	protoReq.VersionId, err = runtime.String(val)
+	protoReq.VersionId, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "version_id", err)
 	}
@@ -1065,18 +961,18 @@ func local_request_StencilServiceV1_DeleteVersion_0(ctx context.Context, marshal
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterStencilServiceHandlerFromEndpoint instead.
 func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StencilServiceServer) error {
 
-	mux.Handle("GET", pattern_StencilService_ListSnapshots_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListSnapshots", runtime.WithHTTPPathPattern("/v1/snapshots"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListNamespaces", runtime.WithHTTPPathPattern("/v1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_ListSnapshots_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_ListNamespaces_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1084,22 +980,22 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_StencilService_ListSnapshots_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_ListNamespaces_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_StencilService_PromoteSnapshot_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/PromoteSnapshot", runtime.WithHTTPPathPattern("/v1/snapshots/{id}/promote"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_PromoteSnapshot_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_GetNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1107,22 +1003,22 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_StencilService_PromoteSnapshot_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilService_Search_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_StencilService_CreateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/Search", runtime.WithHTTPPathPattern("/v1/search"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/CreateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_Search_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_CreateNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1130,31 +1026,22 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_StencilService_Search_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_CreateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	return nil
-}
-
-// RegisterStencilServiceV1HandlerServer registers the http handlers for service StencilServiceV1 to "mux".
-// UnaryRPC     :call StencilServiceV1Server directly.
-// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterStencilServiceV1HandlerFromEndpoint instead.
-func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.ServeMux, server StencilServiceV1Server) error {
-
-	mux.Handle("GET", pattern_StencilServiceV1_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_StencilService_UpdateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/ListNamespaces", runtime.WithHTTPPathPattern("/v1/namespaces"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/UpdateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_ListNamespaces_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_UpdateNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1162,22 +1049,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_ListNamespaces_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_UpdateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilServiceV1_GetNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_StencilService_DeleteNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/GetNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/DeleteNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_GetNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_DeleteNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1185,22 +1072,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_GetNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_DeleteNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_StencilServiceV1_CreateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_ListSchemas_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/CreateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListSchemas", runtime.WithHTTPPathPattern("/v1/namespaces/{id}/schemas"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_CreateNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_ListSchemas_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1208,22 +1095,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_CreateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_ListSchemas_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_StencilServiceV1_UpdateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_StencilService_CreateSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/UpdateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/CreateSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_UpdateNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_CreateSchema_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1231,22 +1118,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_UpdateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_CreateSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetSchemaMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetSchemaMetadata", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/meta"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_DeleteNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_GetSchemaMetadata_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1254,22 +1141,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_DeleteNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetSchemaMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilServiceV1_ListSchemas_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_StencilService_UpdateSchemaMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/ListSchemas", runtime.WithHTTPPathPattern("/v1/namespaces/{id}/schemas"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_ListSchemas_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_UpdateSchemaMetadata_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1277,22 +1164,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_ListSchemas_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_UpdateSchemaMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_StencilServiceV1_CreateSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetLatestSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/CreateSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetLatestSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_CreateSchema_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_GetLatestSchema_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1300,22 +1187,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_CreateSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetLatestSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_StencilServiceV1_UpdateSchemaMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_StencilService_DeleteSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/DeleteSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_UpdateSchemaMetadata_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_DeleteSchema_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1323,22 +1210,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_UpdateSchemaMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_DeleteSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteSchemas_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteSchemas", runtime.WithHTTPPathPattern("/v1/namespaces/{id}/schemas"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_DeleteSchemas_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_GetSchema_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1346,22 +1233,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_DeleteSchemas_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilServiceV1_GetSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_ListVersions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/GetSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListVersions", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_GetSchema_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_ListVersions_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1369,22 +1256,22 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_GetSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_ListVersions_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_StencilService_DeleteVersion_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/DeleteVersion", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilServiceV1_DeleteSchema_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_DeleteVersion_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1392,76 +1279,7 @@ func RegisterStencilServiceV1HandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_StencilServiceV1_DeleteSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("GET", pattern_StencilServiceV1_ListVersions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/ListVersions", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_StencilServiceV1_ListVersions_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_StencilServiceV1_ListVersions_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("GET", pattern_StencilServiceV1_GetVersionedSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/GetVersionedSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_StencilServiceV1_GetVersionedSchema_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_StencilServiceV1_GetVersionedSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteVersion_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteVersion", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_StencilServiceV1_DeleteVersion_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_StencilServiceV1_DeleteVersion_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_DeleteVersion_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1506,400 +1324,283 @@ func RegisterStencilServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // "StencilServiceClient" to call the correct interceptors.
 func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client StencilServiceClient) error {
 
-	mux.Handle("GET", pattern_StencilService_ListSnapshots_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListSnapshots", runtime.WithHTTPPathPattern("/v1/snapshots"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListNamespaces", runtime.WithHTTPPathPattern("/v1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_ListSnapshots_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_ListNamespaces_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilService_ListSnapshots_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_ListNamespaces_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_StencilService_PromoteSnapshot_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/PromoteSnapshot", runtime.WithHTTPPathPattern("/v1/snapshots/{id}/promote"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_PromoteSnapshot_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_GetNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilService_PromoteSnapshot_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilService_Search_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_StencilService_CreateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/Search", runtime.WithHTTPPathPattern("/v1/search"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/CreateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_Search_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_CreateNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilService_Search_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_CreateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	return nil
-}
-
-var (
-	pattern_StencilService_ListSnapshots_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "snapshots"}, ""))
-
-	pattern_StencilService_PromoteSnapshot_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "snapshots", "id", "promote"}, ""))
-
-	pattern_StencilService_Search_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "search"}, ""))
-)
-
-var (
-	forward_StencilService_ListSnapshots_0 = runtime.ForwardResponseMessage
-
-	forward_StencilService_PromoteSnapshot_0 = runtime.ForwardResponseMessage
-
-	forward_StencilService_Search_0 = runtime.ForwardResponseMessage
-)
-
-// RegisterStencilServiceV1HandlerFromEndpoint is same as RegisterStencilServiceV1Handler but
-// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterStencilServiceV1HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err != nil {
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
-			}
-			return
-		}
-		go func() {
-			<-ctx.Done()
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
-			}
-		}()
-	}()
-
-	return RegisterStencilServiceV1Handler(ctx, mux, conn)
-}
-
-// RegisterStencilServiceV1Handler registers the http handlers for service StencilServiceV1 to "mux".
-// The handlers forward requests to the grpc endpoint over "conn".
-func RegisterStencilServiceV1Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterStencilServiceV1HandlerClient(ctx, mux, NewStencilServiceV1Client(conn))
-}
-
-// RegisterStencilServiceV1HandlerClient registers the http handlers for service StencilServiceV1
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "StencilServiceV1Client".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "StencilServiceV1Client"
-// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "StencilServiceV1Client" to call the correct interceptors.
-func RegisterStencilServiceV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, client StencilServiceV1Client) error {
-
-	mux.Handle("GET", pattern_StencilServiceV1_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_StencilService_UpdateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/ListNamespaces", runtime.WithHTTPPathPattern("/v1/namespaces"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/UpdateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_ListNamespaces_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_UpdateNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_ListNamespaces_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_UpdateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilServiceV1_GetNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_StencilService_DeleteNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/GetNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/DeleteNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_GetNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_DeleteNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_GetNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_DeleteNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_StencilServiceV1_CreateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_ListSchemas_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/CreateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListSchemas", runtime.WithHTTPPathPattern("/v1/namespaces/{id}/schemas"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_CreateNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_ListSchemas_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_CreateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_ListSchemas_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_StencilServiceV1_UpdateNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_StencilService_CreateSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/UpdateNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/CreateSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_UpdateNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_CreateSchema_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_UpdateNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_CreateSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteNamespace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetSchemaMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteNamespace", runtime.WithHTTPPathPattern("/v1/namespaces/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetSchemaMetadata", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/meta"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_DeleteNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_GetSchemaMetadata_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_DeleteNamespace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetSchemaMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilServiceV1_ListSchemas_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_StencilService_UpdateSchemaMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/ListSchemas", runtime.WithHTTPPathPattern("/v1/namespaces/{id}/schemas"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_ListSchemas_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_UpdateSchemaMetadata_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_ListSchemas_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_UpdateSchemaMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_StencilServiceV1_CreateSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetLatestSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/CreateSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetLatestSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_CreateSchema_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_GetLatestSchema_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_CreateSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetLatestSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_StencilServiceV1_UpdateSchemaMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_StencilService_DeleteSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/DeleteSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_UpdateSchemaMetadata_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_DeleteSchema_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_UpdateSchemaMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_DeleteSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteSchemas_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_GetSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteSchemas", runtime.WithHTTPPathPattern("/v1/namespaces/{id}/schemas"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/GetSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_DeleteSchemas_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_GetSchema_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_DeleteSchemas_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_GetSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_StencilServiceV1_GetSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StencilService_ListVersions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/GetSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/ListVersions", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_GetSchema_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_ListVersions_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_GetSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_ListVersions_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_StencilService_DeleteVersion_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilService/DeleteVersion", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilServiceV1_DeleteSchema_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_DeleteVersion_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StencilServiceV1_DeleteSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("GET", pattern_StencilServiceV1_ListVersions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/ListVersions", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_StencilServiceV1_ListVersions_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_StencilServiceV1_ListVersions_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("GET", pattern_StencilServiceV1_GetVersionedSchema_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/GetVersionedSchema", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_StencilServiceV1_GetVersionedSchema_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_StencilServiceV1_GetVersionedSchema_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("DELETE", pattern_StencilServiceV1_DeleteVersion_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1.StencilServiceV1/DeleteVersion", runtime.WithHTTPPathPattern("/v1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_StencilServiceV1_DeleteVersion_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_StencilServiceV1_DeleteVersion_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StencilService_DeleteVersion_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1907,61 +1608,61 @@ func RegisterStencilServiceV1HandlerClient(ctx context.Context, mux *runtime.Ser
 }
 
 var (
-	pattern_StencilServiceV1_ListNamespaces_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "namespaces"}, ""))
+	pattern_StencilService_ListNamespaces_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "namespaces"}, ""))
 
-	pattern_StencilServiceV1_GetNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "namespaces", "id"}, ""))
+	pattern_StencilService_GetNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "namespaces", "id"}, ""))
 
-	pattern_StencilServiceV1_CreateNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "namespaces"}, ""))
+	pattern_StencilService_CreateNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "namespaces"}, ""))
 
-	pattern_StencilServiceV1_UpdateNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "namespaces", "id"}, ""))
+	pattern_StencilService_UpdateNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "namespaces", "id"}, ""))
 
-	pattern_StencilServiceV1_DeleteNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "namespaces", "id"}, ""))
+	pattern_StencilService_DeleteNamespace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "namespaces", "id"}, ""))
 
-	pattern_StencilServiceV1_ListSchemas_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "namespaces", "id", "schemas"}, ""))
+	pattern_StencilService_ListSchemas_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "namespaces", "id", "schemas"}, ""))
 
-	pattern_StencilServiceV1_CreateSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
+	pattern_StencilService_CreateSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
 
-	pattern_StencilServiceV1_UpdateSchemaMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
+	pattern_StencilService_GetSchemaMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "meta"}, ""))
 
-	pattern_StencilServiceV1_DeleteSchemas_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "namespaces", "id", "schemas"}, ""))
+	pattern_StencilService_UpdateSchemaMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
 
-	pattern_StencilServiceV1_GetSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
+	pattern_StencilService_GetLatestSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
 
-	pattern_StencilServiceV1_DeleteSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
+	pattern_StencilService_DeleteSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id"}, ""))
 
-	pattern_StencilServiceV1_ListVersions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "versions"}, ""))
+	pattern_StencilService_GetSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "versions", "version_id"}, ""))
 
-	pattern_StencilServiceV1_GetVersionedSchema_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "versions", "version_id"}, ""))
+	pattern_StencilService_ListVersions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "versions"}, ""))
 
-	pattern_StencilServiceV1_DeleteVersion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "versions", "version_id"}, ""))
+	pattern_StencilService_DeleteVersion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"v1", "namespaces", "namespace_id", "schemas", "schema_id", "versions", "version_id"}, ""))
 )
 
 var (
-	forward_StencilServiceV1_ListNamespaces_0 = runtime.ForwardResponseMessage
+	forward_StencilService_ListNamespaces_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_GetNamespace_0 = runtime.ForwardResponseMessage
+	forward_StencilService_GetNamespace_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_CreateNamespace_0 = runtime.ForwardResponseMessage
+	forward_StencilService_CreateNamespace_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_UpdateNamespace_0 = runtime.ForwardResponseMessage
+	forward_StencilService_UpdateNamespace_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_DeleteNamespace_0 = runtime.ForwardResponseMessage
+	forward_StencilService_DeleteNamespace_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_ListSchemas_0 = runtime.ForwardResponseMessage
+	forward_StencilService_ListSchemas_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_CreateSchema_0 = runtime.ForwardResponseMessage
+	forward_StencilService_CreateSchema_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_UpdateSchemaMetadata_0 = runtime.ForwardResponseMessage
+	forward_StencilService_GetSchemaMetadata_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_DeleteSchemas_0 = runtime.ForwardResponseMessage
+	forward_StencilService_UpdateSchemaMetadata_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_GetSchema_0 = runtime.ForwardResponseMessage
+	forward_StencilService_GetLatestSchema_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_DeleteSchema_0 = runtime.ForwardResponseMessage
+	forward_StencilService_DeleteSchema_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_ListVersions_0 = runtime.ForwardResponseMessage
+	forward_StencilService_GetSchema_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_GetVersionedSchema_0 = runtime.ForwardResponseMessage
+	forward_StencilService_ListVersions_0 = runtime.ForwardResponseMessage
 
-	forward_StencilServiceV1_DeleteVersion_0 = runtime.ForwardResponseMessage
+	forward_StencilService_DeleteVersion_0 = runtime.ForwardResponseMessage
 )

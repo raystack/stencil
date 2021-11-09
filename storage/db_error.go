@@ -1,9 +1,7 @@
 package storage
 
 import (
-	"errors"
 	"fmt"
-	"log"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -44,11 +42,9 @@ func (e StorageErr) Error() string {
 // GRPCStatus this is used by gateway interceptor to return appropriate http status code and message
 func (e StorageErr) GRPCStatus() *status.Status {
 	if e.kind == noRows {
-		log.Println(errors.Is(e, NoRowsErr))
 		return status.New(codes.NotFound, fmt.Sprintf("%s %s", e.name, "not found"))
 	}
 	if e.kind == conflict {
-		log.Println(errors.Is(e, ConflictErr))
 		return status.New(codes.AlreadyExists, fmt.Sprintf("%s %s", e.name, "resource already exists"))
 	}
 	return status.New(codes.Unknown, e.Error())

@@ -28,22 +28,22 @@ type Service struct {
 	Repo Repository
 }
 
-func (s Service) CreateNamespace(ctx context.Context, ns Namespace) (Namespace, error) {
+func (s Service) Create(ctx context.Context, ns Namespace) (Namespace, error) {
 	return s.Repo.CreateNamespace(ctx, ns)
 }
 
-func (s Service) UpdateNamespace(ctx context.Context, ns Namespace) (Namespace, error) {
+func (s Service) Update(ctx context.Context, ns Namespace) (Namespace, error) {
 	return s.Repo.UpdateNamespace(ctx, ns)
 }
 
-func (s Service) ListNamespaces(ctx context.Context) ([]string, error) {
+func (s Service) List(ctx context.Context) ([]string, error) {
 	return s.Repo.ListNamespaces(ctx)
 }
 
-func (s Service) GetNamespace(ctx context.Context, name string) (Namespace, error) {
+func (s Service) Get(ctx context.Context, name string) (Namespace, error) {
 	return s.Repo.GetNamespace(ctx, name)
 }
 
-func (s Service) DeleteNamespace(ctx context.Context, name string) error {
+func (s Service) Delete(ctx context.Context, name string) error {
 	return s.Repo.DeleteNamespace(ctx, name)
 }

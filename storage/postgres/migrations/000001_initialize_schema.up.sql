@@ -8,22 +8,23 @@ CREATE TABLE IF NOT EXISTS namespaces(
 );
 
 CREATE TABLE IF NOT EXISTS schemas(
-	id VARCHAR PRIMARY KEY,
+	id BIGSERIAL PRIMARY KEY,
+	name VARCHAR NOT NULL,
 	authority VARCHAR,
 	format VARCHAR,
 	compatibility VARCHAR,
 	description VARCHAR,
-	namespace_id VARCHAR,
+	namespace_id VARCHAR NOT NULL,
 	created_at TIMESTAMP,
 	updated_at TIMESTAMP,
-	CONSTRAINT fk_schemas_namespace_id FOREIGN KEY(namespace_id) REFERENCES namespaces(id)
+	CONSTRAINT fk_schemas_namespace_id FOREIGN KEY(namespace_id) REFERENCES namespaces(id),
+	CONSTRAINT schema_name_namespace_unique_idx UNIQUE (name, namespace_id)
 );
 
 CREATE TABLE IF NOT EXISTS versions(
-	version BIGINT,
-	schema_id VARCHAR,
 	id VARCHAR,
-	data bytea,
+	version BIGINT,
+	schema_id BIGINT,
 	created_at TIMESTAMP,
 	CONSTRAINT fk_versions_schema_id FOREIGN KEY(schema_id) REFERENCES schemas(id),
 	CONSTRAINT schema_version_unique_idx UNIQUE (version, schema_id),

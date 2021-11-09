@@ -1,7 +1,6 @@
 package proto
 
 import (
-	"github.com/odpf/stencil/models"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -18,9 +17,25 @@ type Snapshot struct {
 	Latest    bool
 }
 
+// ProtobufDBFile structure to store for each file info in DB
+type ProtobufDBFile struct {
+	ID         int64
+	SearchData *SearchData
+	Data       []byte
+}
+
+// SearchData contains searchable field information
+type SearchData struct {
+	Path         string   `json:"path"`
+	Messages     []string `json:"messages"`
+	Dependencies []string `json:"dependencies"`
+	Package      string   `json:"package"`
+	Fields       []string `json:"fields"`
+}
+
 // toProtobufDBFiles creates DB compatible types
-func toProtobufDBFiles(files *protoregistry.Files) []*models.ProtobufDBFile {
-	var dbFiles []*models.ProtobufDBFile
+func toProtobufDBFiles(files *protoregistry.Files) []*ProtobufDBFile {
+	var dbFiles []*ProtobufDBFile
 	files.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		f := ToProtobufDBFile(fd)
 		dbFiles = append(dbFiles, f)
@@ -30,12 +45,12 @@ func toProtobufDBFiles(files *protoregistry.Files) []*models.ProtobufDBFile {
 }
 
 // ToProtobufDBFile converts protoreflect.FileDescriptor type ProtobufDBFile
-func ToProtobufDBFile(file protoreflect.FileDescriptor) *models.ProtobufDBFile {
+func ToProtobufDBFile(file protoreflect.FileDescriptor) *ProtobufDBFile {
 	filefd := protodesc.ToFileDescriptorProto(file)
 	data, _ := proto.MarshalOptions{Deterministic: true}.Marshal(filefd)
-	return &models.ProtobufDBFile{
+	return &ProtobufDBFile{
 		Data: data,
-		SearchData: &models.SearchData{
+		SearchData: &SearchData{
 			Path:         file.Path(),
 			Dependencies: getAllDependencies(file),
 			Messages:     getMessageList(file),
