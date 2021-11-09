@@ -22,6 +22,7 @@ import (
 	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
 	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/server/schema/provider"
+	"github.com/odpf/stencil/server/validator"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
@@ -55,7 +56,8 @@ func Start(cfg config.Config) {
 			grpc_recovery.UnaryServerInterceptor(),
 			grpc_ctxtags.UnaryServerInterceptor(),
 			nrgrpc.UnaryServerInterceptor(nr),
-			grpc_zap.UnaryServerInterceptor(logger.Logger))),
+			grpc_zap.UnaryServerInterceptor(logger.Logger),
+			validator.UnaryServerInterceptor())),
 		grpc.MaxRecvMsgSize(cfg.GRPC.MaxRecvMsgSizeInMB << 20),
 		grpc.MaxSendMsgSize(cfg.GRPC.MaxSendMsgSizeInMB << 20),
 	}
