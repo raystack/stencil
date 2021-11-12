@@ -38,6 +38,7 @@ type Repository interface {
 	GetLatestSchema(context.Context, string, string) ([]byte, error)
 	GetSchemaMetadata(context.Context, string, string) (*Metadata, error)
 	UpdateSchemaMetadata(context.Context, string, string, *Metadata) (*Metadata, error)
+	DeleteSchema(context.Context, string, string) error
 	DeleteVersion(context.Context, string, string, int32) error
 }
 
@@ -85,6 +86,10 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 
 func (s *Service) Get(ctx context.Context, namespace string, schemaName string, version int32) ([]byte, error) {
 	return s.Repo.GetSchema(ctx, namespace, schemaName, version)
+}
+
+func (s *Service) Delete(ctx context.Context, namespace string, schemaName string) error {
+	return s.Repo.DeleteSchema(ctx, namespace, schemaName)
 }
 
 func (s *Service) DeleteVersion(ctx context.Context, namespace string, schemaName string, version int32) error {

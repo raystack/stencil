@@ -50,6 +50,17 @@ func (a *API) GetSchemaMetadata(ctx context.Context, in *stencilv1.GetSchemaMeta
 	}, err
 }
 
+func (a *API) DeleteSchema(ctx context.Context, in *stencilv1.DeleteSchemaRequest) (*stencilv1.DeleteSchemaResponse, error) {
+	err := a.Schema.Delete(ctx, in.NamespaceId, in.SchemaId)
+	message := "success"
+	if err != nil {
+		message = "failed"
+	}
+	return &stencilv1.DeleteSchemaResponse{
+		Message: message,
+	}, err
+}
+
 func (a *API) DeleteVersion(ctx context.Context, in *stencilv1.DeleteVersionRequest) (*stencilv1.DeleteVersionResponse, error) {
 	err := a.Schema.DeleteVersion(ctx, in.NamespaceId, in.SchemaId, in.GetVersionId())
 	message := "success"

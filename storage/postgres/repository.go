@@ -64,6 +64,7 @@ func (r *Store) GetNamespace(ctx context.Context, id string) (namespace.Namespac
 
 func (r *Store) DeleteNamespace(ctx context.Context, id string) error {
 	_, err := r.db.Exec(ctx, namespaceDeleteQuery, id)
+	r.db.Exec(ctx, deleteOrphanedData)
 	return wrapError(err, id)
 }
 
@@ -134,6 +135,13 @@ func (r *Store) ListSchemas(ctx context.Context, namespaceID string) ([]string, 
 	return schemas, wrapError(err, "List schemas")
 }
 
+func (r *Store) DeleteSchema(ctx context.Context, ns string, sc string) error {
+	_, err := r.db.Exec(ctx, deleteSchemaQuery, ns, sc)
+	// Idempotent operation to clean orphaned data.
+	r.db.Exec(ctx, deleteOrphanedData)
+	return wrapError(err, "delete schema")
+}
+
 func (r *Store) ListVersions(ctx context.Context, ns string, sc string) ([]int32, error) {
 	var versions []int32
 	err := pgxscan.Select(ctx, r.db, &versions, listVersionsQuery, ns, sc)
@@ -142,5 +150,7 @@ func (r *Store) ListVersions(ctx context.Context, ns string, sc string) ([]int32
 
 func (r *Store) DeleteVersion(ctx context.Context, ns string, sc string, version int32) error {
 	_, err := r.db.Exec(ctx, deleteVersionQuery, ns, sc, version)
+	// Idempotent operation to clean orphaned data.
+	r.db.Exec(ctx, deleteOrphanedData)
 	return wrapError(err, "delete version")
 }

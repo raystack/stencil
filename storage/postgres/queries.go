@@ -107,6 +107,10 @@ schemas as sc ON sc.id=vs.schema_id
 WHERE sc.namespace_id=$1 AND sc.name=$2
 `
 
+const deleteSchemaQuery = `
+DELETE from schemas where namespace_id=$1 AND name=$2
+`
+
 const deleteVersionQuery = `
 WITH version(id) as (
 	SELECT vs.id as id from versions as vs
@@ -115,4 +119,8 @@ WITH version(id) as (
 	WHERE sc.namespace_id=$1 AND sc.name=$2 AND vs.version=$3
 )
 DELETE from versions where id=(select id from version)
+`
+
+const deleteOrphanedData = `
+DELETE from schema_files WHERE id NOT IN (SELECT DISTINCT vsf.schema_file_id from versions_schema_files as vsf)
 `
