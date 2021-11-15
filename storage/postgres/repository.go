@@ -125,7 +125,7 @@ func (r *Store) GetSchemaMetadata(ctx context.Context, namespace, sc string) (*s
 
 func (r *Store) UpdateSchemaMetadata(ctx context.Context, namespace, sc string, in *schema.Metadata) (*schema.Metadata, error) {
 	var meta schema.Metadata
-	err := pgxscan.Get(ctx, r.db, &meta, getSchemaMetaQuery, namespace, sc, in.Format, in.Compatibility)
+	err := pgxscan.Get(ctx, r.db, &meta, updateSchemaMetaQuery, namespace, sc, in.Compatibility)
 	return &meta, wrapError(err, "meta")
 }
 

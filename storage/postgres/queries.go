@@ -96,6 +96,9 @@ v.id=$1
 const getSchemaMetaQuery = `
 SELECT sc.authority, sc.format, sc.compatibility from schemas as sc WHERE sc.namespace_id=$1 AND sc.name=$2
 `
+const updateSchemaMetaQuery = `
+UPDATE schemas SET compatibility=$3,updated_at=now() WHERE namespace_id=$1 AND name=$2
+`
 
 const schemaListQuery = `
 SELECT name from schemas where namespace_id=$1

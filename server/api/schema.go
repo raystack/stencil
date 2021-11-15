@@ -50,6 +50,17 @@ func (a *API) GetSchemaMetadata(ctx context.Context, in *stencilv1.GetSchemaMeta
 	}, err
 }
 
+func (a *API) UpdateSchemaMetadata(ctx context.Context, in *stencilv1.UpdateSchemaMetadataRequest) (*stencilv1.UpdateSchemaMetadataResponse, error) {
+	meta, err := a.Schema.UpdateMetadata(ctx, in.NamespaceId, in.SchemaId, &schema.Metadata{
+		Compatibility: in.Compatibility.String(),
+	})
+	return &stencilv1.UpdateSchemaMetadataResponse{
+		Format:        stencilv1.Schema_Format(stencilv1.Schema_Format_value[meta.Format]),
+		Compatibility: stencilv1.Schema_Compatibility(stencilv1.Schema_Compatibility_value[meta.Compatibility]),
+		Authority:     meta.Authority,
+	}, err
+}
+
 func (a *API) DeleteSchema(ctx context.Context, in *stencilv1.DeleteSchemaRequest) (*stencilv1.DeleteSchemaResponse, error) {
 	err := a.Schema.Delete(ctx, in.NamespaceId, in.SchemaId)
 	message := "success"
