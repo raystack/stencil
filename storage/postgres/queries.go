@@ -94,10 +94,10 @@ v.id=$1
 `
 
 const getSchemaMetaQuery = `
-SELECT sc.authority, sc.format, sc.compatibility from schemas as sc WHERE sc.namespace_id=$1 AND sc.name=$2
+SELECT COALESCE(sc.authority, '') as authority,  COALESCE(sc.format, '') as format, COALESCE(sc.compatibility, '') as compatibility from schemas as sc WHERE sc.namespace_id=$1 AND sc.name=$2
 `
 const updateSchemaMetaQuery = `
-UPDATE schemas SET compatibility=$3,updated_at=now() WHERE namespace_id=$1 AND name=$2
+UPDATE schemas SET compatibility=$3, updated_at=now() WHERE namespace_id=$1 AND name=$2 RETURNING COALESCE(authority, '') as authority,  COALESCE(format, '') as format, COALESCE(compatibility, '') as compatibility
 `
 
 const schemaListQuery = `
