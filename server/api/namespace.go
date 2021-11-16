@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/odpf/stencil/server/namespace"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func createNamespaceRequestToNamespace(r *stencilv1.CreateNamespaceRequest) namespace.Namespace {
+func createNamespaceRequestToNamespace(r *stencilv1beta1.CreateNamespaceRequest) namespace.Namespace {
 	return namespace.Namespace{
 		ID:          r.GetId(),
 		Format:      r.GetFormat().String(),
@@ -16,10 +16,10 @@ func createNamespaceRequestToNamespace(r *stencilv1.CreateNamespaceRequest) name
 	}
 }
 
-func namespaceToProto(ns namespace.Namespace) *stencilv1.Namespace {
-	return &stencilv1.Namespace{
+func namespaceToProto(ns namespace.Namespace) *stencilv1beta1.Namespace {
+	return &stencilv1beta1.Namespace{
 		Id:          ns.ID,
-		Format:      stencilv1.Schema_Format(stencilv1.Schema_Format_value[ns.Format]),
+		Format:      stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[ns.Format]),
 		Description: ns.Description,
 		CreatedAt:   timestamppb.New(ns.CreatedAt),
 		UpdatedAt:   timestamppb.New(ns.UpdatedAt),
@@ -27,33 +27,33 @@ func namespaceToProto(ns namespace.Namespace) *stencilv1.Namespace {
 }
 
 // CreateNamespace handler for creating namespace
-func (a *API) CreateNamespace(ctx context.Context, in *stencilv1.CreateNamespaceRequest) (*stencilv1.CreateNamespaceResponse, error) {
+func (a *API) CreateNamespace(ctx context.Context, in *stencilv1beta1.CreateNamespaceRequest) (*stencilv1beta1.CreateNamespaceResponse, error) {
 	ns := createNamespaceRequestToNamespace(in)
 	newNamespace, err := a.Namespace.Create(ctx, ns)
-	return &stencilv1.CreateNamespaceResponse{Namespace: namespaceToProto(newNamespace)}, err
+	return &stencilv1beta1.CreateNamespaceResponse{Namespace: namespaceToProto(newNamespace)}, err
 }
 
-func (a *API) UpdateNamespace(ctx context.Context, in *stencilv1.UpdateNamespaceRequest) (*stencilv1.UpdateNamespaceResponse, error) {
+func (a *API) UpdateNamespace(ctx context.Context, in *stencilv1beta1.UpdateNamespaceRequest) (*stencilv1beta1.UpdateNamespaceResponse, error) {
 	ns, err := a.Namespace.Update(ctx, namespace.Namespace{ID: in.GetId(), Format: in.GetFormat().String(), Description: in.GetDescription()})
-	return &stencilv1.UpdateNamespaceResponse{Namespace: namespaceToProto(ns)}, err
+	return &stencilv1beta1.UpdateNamespaceResponse{Namespace: namespaceToProto(ns)}, err
 }
 
-func (a *API) GetNamespace(ctx context.Context, in *stencilv1.GetNamespaceRequest) (*stencilv1.GetNamespaceResponse, error) {
+func (a *API) GetNamespace(ctx context.Context, in *stencilv1beta1.GetNamespaceRequest) (*stencilv1beta1.GetNamespaceResponse, error) {
 	namespace, err := a.Namespace.Get(ctx, in.GetId())
-	return &stencilv1.GetNamespaceResponse{Namespace: namespaceToProto(namespace)}, err
+	return &stencilv1beta1.GetNamespaceResponse{Namespace: namespaceToProto(namespace)}, err
 }
 
 // ListNamespaces handler for returning list of available namespaces
-func (a *API) ListNamespaces(ctx context.Context, in *stencilv1.ListNamespacesRequest) (*stencilv1.ListNamespacesResponse, error) {
+func (a *API) ListNamespaces(ctx context.Context, in *stencilv1beta1.ListNamespacesRequest) (*stencilv1beta1.ListNamespacesResponse, error) {
 	namespaces, err := a.Namespace.List(ctx)
-	return &stencilv1.ListNamespacesResponse{Namespaces: namespaces}, err
+	return &stencilv1beta1.ListNamespacesResponse{Namespaces: namespaces}, err
 }
 
-func (a *API) DeleteNamespace(ctx context.Context, in *stencilv1.DeleteNamespaceRequest) (*stencilv1.DeleteNamespaceResponse, error) {
+func (a *API) DeleteNamespace(ctx context.Context, in *stencilv1beta1.DeleteNamespaceRequest) (*stencilv1beta1.DeleteNamespaceResponse, error) {
 	err := a.Namespace.Delete(ctx, in.GetId())
 	message := "success"
 	if err != nil {
 		message = "failed"
 	}
-	return &stencilv1.DeleteNamespaceResponse{Message: message}, err
+	return &stencilv1beta1.DeleteNamespaceResponse{Message: message}, err
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/odpf/stencil/server/namespace"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/odpf/stencil/server/schema"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -33,7 +33,7 @@ type SchemaService interface {
 
 //API holds all handlers
 type API struct {
-	stencilv1.UnimplementedStencilServiceServer
+	stencilv1beta1.UnimplementedStencilServiceServer
 	grpc_health_v1.UnimplementedHealthServer
 	Namespace NamespaceService
 	Schema    SchemaService

@@ -19,7 +19,7 @@ import (
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/logger"
 	"github.com/odpf/stencil/server/namespace"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/server/schema/provider"
 	"github.com/odpf/stencil/server/validator"
@@ -63,7 +63,7 @@ func Start(cfg config.Config) {
 	}
 	// Create a gRPC server object
 	s := grpc.NewServer(opts...)
-	stencilv1.RegisterStencilServiceServer(s, api)
+	stencilv1beta1.RegisterStencilServiceServer(s, api)
 	grpc_health_v1.RegisterHealthServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -74,7 +74,7 @@ func Start(cfg config.Config) {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	if err = stencilv1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
+	if err = stencilv1beta1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
 		log.Fatalln("Failed to register stencil service handler:", err)
 	}
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {

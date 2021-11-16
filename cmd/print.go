@@ -7,7 +7,7 @@ import (
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoprint"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
@@ -17,7 +17,7 @@ import (
 // PrintCmd creates a new cobra command for getting .proto files
 func PrintCmd() *cobra.Command {
 	var (
-		req              stencilv1.GetSchemaRequest
+		req              stencilv1beta1.GetSchemaRequest
 		pathDir          string
 		filterPathPrefix string
 		host             string
@@ -35,7 +35,7 @@ func PrintCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-			client := stencilv1.NewStencilServiceClient(conn)
+			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.GetSchema(context.Background(), &req)
 			if err != nil {
 				return err

@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
@@ -12,7 +12,7 @@ import (
 // DownloadCmd creates a new cobra command for download descriptor
 func DownloadCmd() *cobra.Command {
 	var host, filePath string
-	var req stencilv1.GetSchemaRequest
+	var req stencilv1beta1.GetSchemaRequest
 
 	cmd := &cobra.Command{
 		Use:   "download",
@@ -27,7 +27,7 @@ func DownloadCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-			client := stencilv1.NewStencilServiceClient(conn)
+			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.GetSchema(context.Background(), &req)
 			if err != nil {
 				return err

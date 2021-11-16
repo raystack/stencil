@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/odpf/stencil/graph"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
@@ -17,7 +17,7 @@ import (
 func GraphCmd() *cobra.Command {
 
 	var host, filePath string
-	var req stencilv1.GetSchemaRequest
+	var req stencilv1beta1.GetSchemaRequest
 
 	cmd := &cobra.Command{
 		Use:     "graph",
@@ -33,7 +33,7 @@ func GraphCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-			client := stencilv1.NewStencilServiceClient(conn)
+			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.GetSchema(context.Background(), &req)
 			if err != nil {
 				return err

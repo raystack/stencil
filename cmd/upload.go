@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
@@ -16,7 +16,7 @@ import (
 func UploadCmd() *cobra.Command {
 
 	var host, filePath string
-	var req stencilv1.CreateSchemaRequest
+	var req stencilv1beta1.CreateSchemaRequest
 	var format, compatibility string
 
 	cmd := &cobra.Command{
@@ -37,9 +37,9 @@ func UploadCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-			client := stencilv1.NewStencilServiceClient(conn)
-			req.Compatibility = stencilv1.Schema_Compatibility(stencilv1.Schema_Compatibility_value[compatibility])
-			req.Format = stencilv1.Schema_Format(stencilv1.Schema_Format_value[format])
+			client := stencilv1beta1.NewStencilServiceClient(conn)
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[compatibility])
+			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
 			_, err = client.CreateSchema(context.Background(), &req)
 			if err != nil {
 				errStatus := status.Convert(err)
