@@ -59,8 +59,6 @@ func UploadCmd() *cobra.Command {
 	cmd.Flags().StringVar(&filePath, "file", "", "provide path to fully contained file descriptor set file")
 	cmd.MarkFlagRequired("file")
 	cmd.Flags().StringVar(&format, "format", "", "schema format. Valid values are FORMAT_PROTOBUF,FORMAT_AVRO,FORMAT_JSON")
-	cmd.MarkFlagRequired("format")
 	cmd.Flags().StringVar(&compatibility, "compatibility", "COMPATIBILITY_FULL", "schema compatibility. Valid values are COMPATIBILITY_FULL")
-	cmd.MarkFlagRequired("format")
 	return cmd
 }
