@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 )
@@ -12,7 +12,7 @@ import (
 // DownloadCmd creates a new cobra command for download descriptor
 func DownloadCmd() *cobra.Command {
 	var host, filePath string
-	var req stencilv1.DownloadDescriptorRequest
+	var req stencilv1beta1.GetSchemaRequest
 
 	cmd := &cobra.Command{
 		Use:   "download",
@@ -27,8 +27,8 @@ func DownloadCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-			client := stencilv1.NewStencilServiceClient(conn)
-			res, err := client.DownloadDescriptor(context.Background(), &req)
+			client := stencilv1beta1.NewStencilServiceClient(conn)
+			res, err := client.GetSchema(context.Background(), &req)
 			if err != nil {
 				return err
 			}
@@ -39,13 +39,12 @@ func DownloadCmd() *cobra.Command {
 
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
-	cmd.Flags().StringVar(&req.Namespace, "namespace", "", "provide namespace/group or entity name")
+	cmd.Flags().StringVar(&req.NamespaceId, "namespace", "", "provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")
-	cmd.Flags().StringVar(&req.Name, "name", "", "provide proto repo name")
+	cmd.Flags().StringVar(&req.SchemaId, "name", "", "provide proto repo name")
 	cmd.MarkFlagRequired("name")
-	cmd.Flags().StringVar(&req.Version, "version", "", "provide semantic version compatible value")
+	cmd.Flags().Int32Var(&req.VersionId, "version", 0, "provide version number")
 	cmd.MarkFlagRequired("version")
 	cmd.Flags().StringVar(&filePath, "output", "", "write to file")
-	cmd.Flags().StringSliceVar(&req.Fullnames, "fullnames", []string{}, "provide fully qualified proto full names. You can provide multiple names separated by \",\" Eg: google.protobuf.FileDescriptorProto,google.protobuf.FileDescriptorSet")
 	return cmd
 }

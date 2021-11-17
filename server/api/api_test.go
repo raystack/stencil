@@ -1,22 +1,16 @@
 package api_test
 
 import (
-	"net/http"
-
-	"github.com/odpf/stencil/config"
-	"github.com/odpf/stencil/server"
-
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/api/mocks"
 )
 
-func setup() (http.Handler, *mocks.StoreService, *mocks.MetadataService, *api.API) {
-	mockService := &mocks.StoreService{}
-	mockMetadataService := &mocks.MetadataService{}
+func setup() (*mocks.NamespaceService, *mocks.SchemaService, *api.API) {
+	nsService := &mocks.NamespaceService{}
+	schemaService := &mocks.SchemaService{}
 	v1 := &api.API{
-		Store:    mockService,
-		Metadata: mockMetadataService,
+		Namespace: nsService,
+		Schema:    schemaService,
 	}
-	router := server.Router(v1, &config.Config{})
-	return router, mockService, mockMetadataService, v1
+	return nsService, schemaService, v1
 }

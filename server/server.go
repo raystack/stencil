@@ -7,11 +7,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
-	"github.com/odpf/stencil/search"
 	"github.com/odpf/stencil/storage/postgres"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -20,43 +18,37 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/odpf/stencil/server/api"
 	"github.com/odpf/stencil/server/logger"
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
-	"github.com/odpf/stencil/server/proto"
-	"github.com/odpf/stencil/server/snapshot"
+	"github.com/odpf/stencil/server/namespace"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	"github.com/odpf/stencil/server/schema"
+	"github.com/odpf/stencil/server/schema/provider"
+	"github.com/odpf/stencil/server/validator"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
-// Router returns server router
-func Router(api *api.API, config *config.Config) *runtime.ServeMux {
-	gwmux := runtime.NewServeMux()
-	router := gin.New()
-	addMiddleware(router, config)
-	registerCustomValidations(router)
-	registerRoutes(router, gwmux, api)
-	return gwmux
-}
-
 // Start Entry point to start the server
 func Start(cfg config.Config) {
 	ctx := context.Background()
 
 	store := postgres.NewStore(cfg.DB.ConnectionString)
-	protoService := proto.NewService(store)
-	metaService := snapshot.NewService(store)
-	searchService := &search.StoreSearch{
-		Store: store,
+	namespaceService := namespace.Service{
+		Repo: store,
+	}
+	schemaService := &schema.Service{
+		Repo:           store,
+		NamespaceSvc:   namespaceService,
+		SchemaProvider: provider.NewSchemaProvider(),
 	}
 	api := &api.API{
-		Store:         protoService,
-		Metadata:      metaService,
-		SearchService: searchService,
+		Namespace: namespaceService,
+		Schema:    schemaService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
-	mux := Router(api, &cfg)
+	mux := runtime.NewServeMux()
 
 	// init grpc server
 	opts := []grpc.ServerOption{
@@ -64,13 +56,14 @@ func Start(cfg config.Config) {
 			grpc_recovery.UnaryServerInterceptor(),
 			grpc_ctxtags.UnaryServerInterceptor(),
 			nrgrpc.UnaryServerInterceptor(nr),
-			grpc_zap.UnaryServerInterceptor(logger.Logger))),
+			grpc_zap.UnaryServerInterceptor(logger.Logger),
+			validator.UnaryServerInterceptor())),
 		grpc.MaxRecvMsgSize(cfg.GRPC.MaxRecvMsgSizeInMB << 20),
 		grpc.MaxSendMsgSize(cfg.GRPC.MaxSendMsgSizeInMB << 20),
 	}
 	// Create a gRPC server object
 	s := grpc.NewServer(opts...)
-	stencilv1.RegisterStencilServiceServer(s, api)
+	stencilv1beta1.RegisterStencilServiceServer(s, api)
 	grpc_health_v1.RegisterHealthServer(s, api)
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -81,7 +74,7 @@ func Start(cfg config.Config) {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	if err = stencilv1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
+	if err = stencilv1beta1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
 		log.Fatalln("Failed to register stencil service handler:", err)
 	}
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	stencilv1 "github.com/odpf/stencil/server/odpf/stencil/v1"
+	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
@@ -16,8 +16,8 @@ import (
 func UploadCmd() *cobra.Command {
 
 	var host, filePath string
-	var req stencilv1.UploadDescriptorRequest
-	var skipRules []string
+	var req stencilv1beta1.CreateSchemaRequest
+	var format, compatibility string
 
 	cmd := &cobra.Command{
 		Use:   "upload",
@@ -32,16 +32,15 @@ func UploadCmd() *cobra.Command {
 				return err
 			}
 			req.Data = fileData
-			req.Checks = &stencilv1.Checks{
-				Except: toRules(skipRules),
-			}
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
 				return err
 			}
 			defer conn.Close()
-			client := stencilv1.NewStencilServiceClient(conn)
-			_, err = client.UploadDescriptor(context.Background(), &req)
+			client := stencilv1beta1.NewStencilServiceClient(conn)
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[compatibility])
+			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
+			_, err = client.CreateSchema(context.Background(), &req)
 			if err != nil {
 				errStatus := status.Convert(err)
 				return errors.New(errStatus.Message())
@@ -53,26 +52,13 @@ func UploadCmd() *cobra.Command {
 
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
-	cmd.Flags().StringVar(&req.Namespace, "namespace", "", "provide namespace/group or entity name")
+	cmd.Flags().StringVar(&req.NamespaceId, "namespace", "", "provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")
-	cmd.Flags().StringVar(&req.Name, "name", "", "provide proto repo name")
+	cmd.Flags().StringVar(&req.SchemaId, "name", "", "provide proto repo name")
 	cmd.MarkFlagRequired("name")
-	cmd.Flags().StringVar(&req.Version, "version", "", "provide semantic version compatible value")
-	cmd.MarkFlagRequired("version")
-	cmd.Flags().BoolVar(&req.Latest, "latest", false, "mark as latest version")
 	cmd.Flags().StringVar(&filePath, "file", "", "provide path to fully contained file descriptor set file")
 	cmd.MarkFlagRequired("file")
-	cmd.Flags().BoolVar(&req.Dryrun, "dryrun", false, "enable dryrun flag")
-	cmd.Flags().StringArrayVar(&skipRules, "skiprules", []string{}, "list of rules to skip. Invalid rules ignored Eg: FILE_NO_BREAKING_CHANGE")
+	cmd.Flags().StringVar(&format, "format", "", "schema format. Valid values are FORMAT_PROTOBUF,FORMAT_AVRO,FORMAT_JSON")
+	cmd.Flags().StringVar(&compatibility, "compatibility", "COMPATIBILITY_FULL", "schema compatibility. Valid values are COMPATIBILITY_FULL")
 	return cmd
-}
-
-func toRules(stringRules []string) []stencilv1.Rule {
-	var rules []stencilv1.Rule
-	for _, rule := range stringRules {
-		if val, ok := stencilv1.Rule_value[rule]; ok {
-			rules = append(rules, stencilv1.Rule(val))
-		}
-	}
-	return rules
 }

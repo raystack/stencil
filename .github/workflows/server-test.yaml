@@ -1,14 +1,28 @@
 on: 
   push:
-    paths:
-      - 'server/**'
+    branches:
+      - master
   pull_request:
-    paths:
-      - 'server/**'
+  workflow_dispatch:
 name: Test
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_stencil_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -23,3 +37,5 @@ jobs:
         uses: actions/checkout@v2
       - name: Test
         run: make test
+        env:
+          TEST_DB_CONNECTIONSTRING: "postgres://postgres:postgres@localhost:5432/test_stencil_db?sslmode=disable"

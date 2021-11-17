@@ -15,14 +15,14 @@ func New() *cobra.Command {
 			Schema registry to manage schemas efficiently.
 
 			Stencil is a schema registry that provides schema mangement and validation to ensure data
-			compatibility across applications. It enables developers to create, manage and consume 
-			schemas dynamically, efficiently, and reliably, and provides a simple way to validate data 
+			compatibility across applications. It enables developers to create, manage and consume
+			schemas dynamically, efficiently, and reliably, and provides a simple way to validate data
 			against those schemas. Stencil support protobuf and support for other formats coming soon.`),
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Example: heredoc.Doc(`
-			$ stencil upload 
-			$ stencil download 
+			$ stencil upload
+			$ stencil download
 			$ stencil snapshot list
 			$ stencil serve
 		`),
@@ -44,7 +44,7 @@ func New() *cobra.Command {
 	cmd.AddCommand(UploadCmd())
 	cmd.AddCommand(MigrateCmd())
 	cmd.AddCommand(DownloadCmd())
-	cmd.AddCommand(Snapshot())
 	cmd.AddCommand(GraphCmd())
+	cmd.AddCommand(PrintCmd())
 	return cmd
 }
