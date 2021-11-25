@@ -42,8 +42,17 @@ type Repository interface {
 	DeleteVersion(context.Context, string, string, int32) error
 }
 
+type ParsedSchema interface {
+	Validate() error
+	IsBackwardCompatible(ParsedSchema) error
+	IsForwardCompatible(ParsedSchema) error
+	IsFullCompatible(ParsedSchema) error
+	Format() string
+	GetCanonicalValue() *SchemaFile
+}
+
 type SchemaProvider interface {
-	GetSchemaFile(format string, data []byte) (*SchemaFile, error)
+	ParseSchema(format string, data []byte) (ParsedSchema, error)
 }
 
 type Service struct {
@@ -61,16 +70,35 @@ func getNonEmpty(args ...string) string {
 	return ""
 }
 
+func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
+	prevSchemaData, err := s.GetLatest(ctx, nsName, schemaName)
+	if err != nil {
+		return nil
+	}
+	prevSchema, err := s.SchemaProvider.ParseSchema(format, prevSchemaData)
+	if err != nil {
+		return err
+	}
+	checkerFn := getCompatibilityChecker(compatibility)
+	return checkerFn(current, []ParsedSchema{prevSchema})
+}
+
 func (s *Service) Create(ctx context.Context, nsName string, schemaName string, metadata *Metadata, data []byte) (SchemaInfo, error) {
 	var scInfo SchemaInfo
 	ns, err := s.NamespaceSvc.Get(ctx, nsName)
 	if err != nil {
 		return scInfo, err
 	}
-	sf, err := s.SchemaProvider.GetSchemaFile(ns.Format, data)
+	format := getNonEmpty(metadata.Format, ns.Format)
+	compatibility := getNonEmpty(metadata.Compatibility, ns.Compatibility)
+	parsedSchema, err := s.SchemaProvider.ParseSchema(format, data)
 	if err != nil {
 		return scInfo, err
 	}
+	if err := s.CheckCompatibility(ctx, nsName, schemaName, format, compatibility, parsedSchema); err != nil {
+		return scInfo, err
+	}
+	sf := parsedSchema.GetCanonicalValue()
 	mergedMetadata := &Metadata{
 		Format:        getNonEmpty(metadata.Format, ns.Format),
 		Compatibility: getNonEmpty(metadata.Compatibility, ns.Compatibility),
