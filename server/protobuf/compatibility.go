@@ -170,8 +170,12 @@ func compareEnums(current, prev protoreflect.EnumDescriptor, diffs *compatibilit
 	for i := 0; i < prevRanges.Len(); i++ {
 		prevRange := prevRanges.Get(i)
 		start, end := prevRange[0], prevRange[1]
-		if !(current.ReservedRanges().Has(start) && current.ReservedRanges().Has(end-1)) {
-			diffs.add(nonInclusivereservedRange, current, "previous reserved range (%d, %d) is not inclusive of current range", start, end)
+		if !(current.ReservedRanges().Has(start) && current.ReservedRanges().Has(end)) {
+			if start == end {
+				diffs.add(nonInclusivereservedRange, current, "previous reserved number (%d) is not inclusive of current range", start)
+			} else {
+				diffs.add(nonInclusivereservedRange, current, "previous reserved range (%d, %d) is not inclusive of current range", start, end)
+			}
 		}
 	}
 	// check reserved names

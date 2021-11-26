@@ -45,6 +45,7 @@ message BreakingMessage {
 	NewTestEnum type_name_change = 6;
 	NewMessage type_message_change = 7;
 	enum BreackingEnum {
+		reserved 4, 5, 11 to 14;
 		UNKNOWN = 0;
 		NUMBER_CHANGE = 2;
 		NAME_CHANGED = 3;

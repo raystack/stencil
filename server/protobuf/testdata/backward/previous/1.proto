@@ -44,6 +44,8 @@ message BreakingMessage {
 	TestEnum type_name_change = 6;
 	One type_message_change = 7;
 	enum BreackingEnum {
+		reserved 4, 5, 8, 11 to 15;
+		reserved "never_existed";
 		UNKNOWN = 0;
 		NUMBER_CHANGE = 1;
 		NAME_CHANGE = 3;

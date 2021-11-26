@@ -105,10 +105,3 @@ func getEnum(files *protoregistry.Files, fullName protoreflect.FullName) protore
 	}
 	return nil
 }
-
-func forEachMessageInFiles(files *protoregistry.Files, f func(protoreflect.MessageDescriptor) bool) {
-	files.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		forEachMessage(fd.Messages(), f)
-		return true
-	})
-}

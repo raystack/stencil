@@ -48,6 +48,9 @@ func TestCompatibility(t *testing.T) {
 			`1.proto: enum "a.EnumWillBeDeleted" deleted`,
 			`1.proto: enum value "NUMBER_CHANGE" with number "1" is deleted from "a.BreakingMessage.BreackingEnum"`,
 			`1.proto: enum value name for "a.BreakingMessage.BreackingEnum" changed from "NAME_CHANGE" to "NAME_CHANGED"`,
+			`1.proto: previous reserved number (8) is not inclusive of current range`,
+			`1.proto: previous reserved range (11, 15) is not inclusive of current range`,
+			`1.proto: previous reserved name "never_existed" is removed`,
 		}, errMsgs)
 	})
 	t.Run("backwardCompatibility return error if format does not match", func(t *testing.T) {
@@ -115,6 +118,9 @@ func TestCompatibility(t *testing.T) {
 			`1.proto: enum "a.EnumWillBeDeleted" deleted`,
 			`1.proto: enum value "NUMBER_CHANGE" with number "1" is deleted from "a.BreakingMessage.BreackingEnum"`,
 			`1.proto: enum value name for "a.BreakingMessage.BreackingEnum" changed from "NAME_CHANGE" to "NAME_CHANGED"`,
+			`1.proto: previous reserved number (8) is not inclusive of current range`,
+			`1.proto: previous reserved range (11, 15) is not inclusive of current range`,
+			`1.proto: previous reserved name "never_existed" is removed`,
 		}, errMsgs)
 	})
 	t.Run("fullCompatibility return error if format does not match", func(t *testing.T) {
