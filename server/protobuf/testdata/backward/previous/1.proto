@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package a;
+
+enum TestEnum {
+	UNSPECIFIED = 0;
+	ONE = 1;
+}
+// Unchange message
+message One {
+	string field_one = 1;
+}
+// This message will be deleted
+message WillBeDeleted {
+	string one = 1;
+	int64 two = 2;
+}
+// This enum will be deleted
+enum EnumWillBeDeleted {
+	UNKNOWN = 0;
+	TWO = 2;
+}
+// Backward compatible message
+// field addition, enum addition, message addition
+message Two {
+	reserved 4,5;
+	reserved "deleted_field";
+	string string_field = 1;
+	int64 int_field = 2;
+	TestEnum enum_field = 3;
+	enum CompatibleEnum {
+		UNKNOWN = 0;
+		ONE = 1;
+		TWO = 2;
+	}
+}
+
+message BreakingMessage {
+	string name_change = 1;
+	string number_change = 2;
+	int64 num_exchange_a = 3;
+	string num_exchange_b = 4;
+	string kind_change = 5;
+	TestEnum type_name_change = 6;
+	One type_message_change = 7;
+	enum BreackingEnum {
+		UNKNOWN = 0;
+		NUMBER_CHANGE = 1;
+		NAME_CHANGE = 3;
+	}
+}
+
+

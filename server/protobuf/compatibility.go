@@ -45,14 +45,16 @@ var (
 		messageDelete,
 		nonInclusivereservedRange,
 		nonInclusiceReservedNames,
-		fieldDelete,
 		fieldNameChange,
 		fieldLabelchange,
 		fieldKindChange,
 		fieldTypeChange,
+		fieldDeleteWithoutReservedNumber,
+		fieldDeleteWithoutReservedName,
 		enumDelete,
-		enumValueDelete,
 		enumValueNameChange,
+		enumValueDeleteWithoutReservedNumber,
+		enumValueDeleteWithoutReservedName,
 		enumValueNumberChange}
 	fullCompatibility = []diffKind{
 		messageDelete,
@@ -83,7 +85,7 @@ func compareSchemas(current, prev *protoregistry.Files, notAllowedChanges []diff
 		forEachMessage(fd.Messages(), func(prevMsg protoreflect.MessageDescriptor) bool {
 			currentMsg := getMessage(current, prevMsg.FullName())
 			if currentMsg == nil {
-				diffs.add(messageDelete, prevMsg, `"%s" is removed`, currentMsg.FullName())
+				diffs.add(messageDelete, prevMsg, `"%s" is removed`, prevMsg.FullName())
 				return true
 			}
 			compareMessages(currentMsg, prevMsg, diffs)
@@ -130,6 +132,12 @@ func compareMessages(current, prev protoreflect.MessageDescriptor, diffs *compat
 		currentField := current.Fields().ByNumber(prevField.Number())
 		if currentField == nil {
 			diffs.add(fieldDelete, prev, `field "%s" is deleted`, prevField.Name())
+			if !current.ReservedRanges().Has(prevField.Number()) {
+				diffs.add(fieldDeleteWithoutReservedNumber, prev, `field "%s" with number "%d" is not marked as reserved after the delete`, prevField.Name(), prevField.Number())
+			}
+			if !current.ReservedNames().Has(prevField.Name()) {
+				diffs.add(fieldDeleteWithoutReservedName, prev, `field "%s" not marked as reserved after the delete`, prevField.Name())
+			}
 			continue
 		}
 		compareFields(currentField, prevField, diffs)
@@ -140,17 +148,18 @@ func compareFields(currentField, prevField protoreflect.FieldDescriptor, diffs *
 	if prevField.JSONName() != currentField.JSONName() {
 		diffs.add(fieldNameChange, prevField, `JSON field name changed from "%s" to "%s"`, prevField.JSONName(), currentField.JSONName())
 	}
+	name := prevField.Name()
 	if prevField.Cardinality().IsValid() && prevField.Cardinality().String() != currentField.Cardinality().String() {
-		diffs.add(fieldLabelchange, prevField, `field label changed from "%s" to "%s"`, prevField.Cardinality().String(), currentField.Cardinality().String())
+		diffs.add(fieldLabelchange, prevField, `field "%s" label changed from "%s" to "%s"`, name, prevField.Cardinality().String(), currentField.Cardinality().String())
 	}
 	if prevField.Kind() != currentField.Kind() {
-		diffs.add(fieldKindChange, prevField, `field kind changed from "%s" to "%s"`, prevField.Kind().String(), currentField.Kind().String())
+		diffs.add(fieldKindChange, prevField, `field "%s" kind changed from "%s" to "%s"`, name, prevField.Kind().String(), currentField.Kind().String())
 	} else {
 		if prevField.Kind() == protoreflect.MessageKind && prevField.Message().FullName() != currentField.Message().FullName() {
-			diffs.add(fieldTypeChange, prevField, `field type changed from "%s" to "%s"`, prevField.Message().FullName(), currentField.Message().FullName())
+			diffs.add(fieldTypeChange, prevField, `field "%s" type changed from "%s" to "%s"`, name, prevField.Message().FullName(), currentField.Message().FullName())
 		}
 		if prevField.Kind() == protoreflect.EnumKind && prevField.Enum().FullName() != currentField.Enum().FullName() {
-			diffs.add(fieldTypeChange, prevField, `field type changed from "%s" to "%s"`, prevField.Enum().FullName(), currentField.Enum().FullName())
+			diffs.add(fieldTypeChange, prevField, `field "%s" type changed from "%s" to "%s"`, name, prevField.Enum().FullName(), currentField.Enum().FullName())
 		}
 	}
 }
@@ -184,7 +193,7 @@ func compareEnums(current, prev protoreflect.EnumDescriptor, diffs *compatibilit
 				diffs.add(enumValueDeleteWithoutReservedNumber, prev, `enum value "%s" with number "%d" is not marked as reserved after the delete`, prevValue.Name(), prevValue.Number())
 			}
 			if !current.ReservedNames().Has(prevValue.Name()) {
-				diffs.add(enumValueDeleteWithoutReservedName, prev, `enum value "%s" not marked as reserved after the delete`, prevValue.Name())
+				diffs.add(enumValueDeleteWithoutReservedName, prev, `enum value "%s" name not marked as reserved after the delete`, prevValue.Name())
 			}
 			continue
 		}

@@ -22,11 +22,10 @@ type SchemaInfo struct {
 }
 
 type SchemaFile struct {
-	ID           string
-	Dependencies []string
-	Types        []string
-	Fields       []string
-	Data         []byte
+	ID     string
+	Types  []string
+	Fields []string
+	Data   []byte
 }
 
 // Repository for Schema
@@ -43,7 +42,6 @@ type Repository interface {
 }
 
 type ParsedSchema interface {
-	Validate() error
 	IsBackwardCompatible(ParsedSchema) error
 	IsForwardCompatible(ParsedSchema) error
 	IsFullCompatible(ParsedSchema) error

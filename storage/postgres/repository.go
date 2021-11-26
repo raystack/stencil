@@ -30,9 +30,8 @@ func wrapError(err error, format string, args ...interface{}) error {
 }
 
 type searchData struct {
-	Dependencies []string
-	Types        []string
-	Fields       []string
+	Types  []string
+	Fields []string
 }
 
 // Store DB access layer
@@ -89,7 +88,7 @@ func (r *Store) CreateSchema(ctx context.Context, namespace string, schemaName s
 			return err
 		}
 		if err := t.QueryRow(ctx, versionInsertQuery, schemaID, versionID, file.ID,
-			&searchData{Dependencies: file.Dependencies, Types: file.Types, Fields: file.Fields}, file.Data).Scan(&version); err != nil {
+			&searchData{Types: file.Types, Fields: file.Fields}, file.Data).Scan(&version); err != nil {
 			return err
 		}
 		return nil

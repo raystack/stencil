@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package a;
+
+enum TestEnum {
+	UNSPECIFIED = 0;
+	ONE = 1;
+}
+
+enum NewTestEnum {
+	NEW_UNSPECIFIED = 0;
+	NEW_ONE = 1;
+}
+// Unchange message
+message One {
+	string field_one = 1;
+}
+
+// Backward compatible message
+message Two {
+	reserved 4,5;
+	reserved "deleted_field";
+	string string_field = 1;
+	int64 int_field = 2;
+	TestEnum enum_field = 3;
+	string new_field = 6;
+	enum CompatibleEnum {
+		UNKNOWN = 0;
+		ONE = 1;
+		TWO = 2;
+		THREE = 3;
+	}
+}
+
+message NewMessage {
+	string one = 1;
+}
+
+message BreakingMessage {
+	string name_changed = 1;
+	string number_change = 11;
+	int64 num_exchange_a = 4;
+	string num_exchange_b = 3;
+	int64 kind_change = 5;
+	NewTestEnum type_name_change = 6;
+	NewMessage type_message_change = 7;
+	enum BreackingEnum {
+		UNKNOWN = 0;
+		NUMBER_CHANGE = 2;
+		NAME_CHANGED = 3;
+	}
+}
+
+

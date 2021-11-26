@@ -32,7 +32,7 @@ func (c *compatibilityErr) addDiffs(diffs []diff) {
 }
 
 func (c *compatibilityErr) isEmpty() bool {
-	return len(c.diffs) > 0
+	return len(c.diffs) == 0
 }
 
 func (c *compatibilityErr) Error() string {
