@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package a;
-
-message Test {
-  int32 field1 = 1;
-}
