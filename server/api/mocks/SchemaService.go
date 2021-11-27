@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	schema "github.com/odpf/stencil/server/schema"
+	domain "github.com/odpf/stencil/domain"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -15,18 +15,18 @@ type SchemaService struct {
 }
 
 // Create provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4
-func (_m *SchemaService) Create(_a0 context.Context, _a1 string, _a2 string, _a3 *schema.Metadata, _a4 []byte) (schema.SchemaInfo, error) {
+func (_m *SchemaService) Create(_a0 context.Context, _a1 string, _a2 string, _a3 *domain.Metadata, _a4 []byte) (domain.SchemaInfo, error) {
 	ret := _m.Called(_a0, _a1, _a2, _a3, _a4)
 
-	var r0 schema.SchemaInfo
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, *schema.Metadata, []byte) schema.SchemaInfo); ok {
+	var r0 domain.SchemaInfo
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, *domain.Metadata, []byte) domain.SchemaInfo); ok {
 		r0 = rf(_a0, _a1, _a2, _a3, _a4)
 	} else {
-		r0 = ret.Get(0).(schema.SchemaInfo)
+		r0 = ret.Get(0).(domain.SchemaInfo)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, *schema.Metadata, []byte) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, *domain.Metadata, []byte) error); ok {
 		r1 = rf(_a0, _a1, _a2, _a3, _a4)
 	} else {
 		r1 = ret.Error(1)
@@ -110,15 +110,15 @@ func (_m *SchemaService) GetLatest(_a0 context.Context, _a1 string, _a2 string) 
 }
 
 // GetMetadata provides a mock function with given fields: _a0, _a1, _a2
-func (_m *SchemaService) GetMetadata(_a0 context.Context, _a1 string, _a2 string) (*schema.Metadata, error) {
+func (_m *SchemaService) GetMetadata(_a0 context.Context, _a1 string, _a2 string) (*domain.Metadata, error) {
 	ret := _m.Called(_a0, _a1, _a2)
 
-	var r0 *schema.Metadata
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *schema.Metadata); ok {
+	var r0 *domain.Metadata
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *domain.Metadata); ok {
 		r0 = rf(_a0, _a1, _a2)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*schema.Metadata)
+			r0 = ret.Get(0).(*domain.Metadata)
 		}
 	}
 
@@ -179,20 +179,20 @@ func (_m *SchemaService) ListVersions(_a0 context.Context, _a1 string, _a2 strin
 }
 
 // UpdateMetadata provides a mock function with given fields: _a0, _a1, _a2, _a3
-func (_m *SchemaService) UpdateMetadata(_a0 context.Context, _a1 string, _a2 string, _a3 *schema.Metadata) (*schema.Metadata, error) {
+func (_m *SchemaService) UpdateMetadata(_a0 context.Context, _a1 string, _a2 string, _a3 *domain.Metadata) (*domain.Metadata, error) {
 	ret := _m.Called(_a0, _a1, _a2, _a3)
 
-	var r0 *schema.Metadata
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, *schema.Metadata) *schema.Metadata); ok {
+	var r0 *domain.Metadata
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, *domain.Metadata) *domain.Metadata); ok {
 		r0 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*schema.Metadata)
+			r0 = ret.Get(0).(*domain.Metadata)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, *schema.Metadata) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, *domain.Metadata) error); ok {
 		r1 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		r1 = ret.Error(1)

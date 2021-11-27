@@ -3,9 +3,9 @@ package api
 import (
 	"context"
 
+	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/server/namespace"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
-	"github.com/odpf/stencil/server/schema"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -20,14 +20,14 @@ type NamespaceService interface {
 
 //SchemaService Service interface for schema management
 type SchemaService interface {
-	Create(context.Context, string, string, *schema.Metadata, []byte) (schema.SchemaInfo, error)
+	Create(context.Context, string, string, *domain.Metadata, []byte) (domain.SchemaInfo, error)
 	List(context.Context, string) ([]string, error)
 	Get(context.Context, string, string, int32) ([]byte, error)
 	Delete(context.Context, string, string) error
 	GetLatest(context.Context, string, string) ([]byte, error)
 	ListVersions(context.Context, string, string) ([]int32, error)
-	GetMetadata(context.Context, string, string) (*schema.Metadata, error)
-	UpdateMetadata(context.Context, string, string, *schema.Metadata) (*schema.Metadata, error)
+	GetMetadata(context.Context, string, string) (*domain.Metadata, error)
+	UpdateMetadata(context.Context, string, string, *domain.Metadata) (*domain.Metadata, error)
 	DeleteVersion(context.Context, string, string, int32) error
 }
 

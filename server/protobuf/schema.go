@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
+	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/server/schema"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
@@ -20,9 +21,9 @@ func (s *Schema) Format() string {
 	return protobufFormat
 }
 
-func (s *Schema) GetCanonicalValue() *schema.SchemaFile {
+func (s *Schema) GetCanonicalValue() *domain.SchemaFile {
 	id := uuid.NewSHA1(uuid.NameSpaceOID, s.data)
-	return &schema.SchemaFile{
+	return &domain.SchemaFile{
 		ID:     id.String(),
 		Types:  getAllMessages(s.Files),
 		Data:   s.data,

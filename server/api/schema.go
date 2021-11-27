@@ -3,12 +3,12 @@ package api
 import (
 	"context"
 
+	"github.com/odpf/stencil/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
-	"github.com/odpf/stencil/server/schema"
 )
 
 func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaRequest) (*stencilv1beta1.CreateSchemaResponse, error) {
-	metadata := &schema.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
+	metadata := &domain.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
 	sc, err := a.Schema.Create(ctx, in.NamespaceId, in.SchemaId, metadata, in.GetData())
 	return &stencilv1beta1.CreateSchemaResponse{
 		Version:  sc.Version,
@@ -51,7 +51,7 @@ func (a *API) GetSchemaMetadata(ctx context.Context, in *stencilv1beta1.GetSchem
 }
 
 func (a *API) UpdateSchemaMetadata(ctx context.Context, in *stencilv1beta1.UpdateSchemaMetadataRequest) (*stencilv1beta1.UpdateSchemaMetadataResponse, error) {
-	meta, err := a.Schema.UpdateMetadata(ctx, in.NamespaceId, in.SchemaId, &schema.Metadata{
+	meta, err := a.Schema.UpdateMetadata(ctx, in.NamespaceId, in.SchemaId, &domain.Metadata{
 		Compatibility: in.Compatibility.String(),
 	})
 	return &stencilv1beta1.UpdateSchemaMetadataResponse{

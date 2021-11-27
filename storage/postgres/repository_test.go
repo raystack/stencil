@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/server/namespace"
-	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/storage"
 	"github.com/odpf/stencil/storage/postgres"
 	"github.com/stretchr/testify/assert"
@@ -96,21 +96,21 @@ func TestStorage(t *testing.T) {
 		n := &namespace.Namespace{ID: "testschema", Format: "protobuf", Compatibility: "FULL", Description: "testDesc"}
 		_, err := store.CreateNamespace(ctx, *n)
 		assert.Nil(t, err)
-		meta := &schema.Metadata{
+		meta := &domain.Metadata{
 			Format: "avro",
 		}
 		t.Run("create: should create schema", func(t *testing.T) {
-			versionNumber, err := store.CreateSchema(ctx, n.ID, "sName", meta, "uuid-1", &schema.SchemaFile{ID: "t1", Data: []byte("testdata")})
+			versionNumber, err := store.CreateSchema(ctx, n.ID, "sName", meta, "uuid-1", &domain.SchemaFile{ID: "t1", Data: []byte("testdata")})
 			assert.Nil(t, err)
 			assert.Equal(t, int32(1), versionNumber)
 		})
 		t.Run("create: should increment version number on new schema", func(t *testing.T) {
-			versionNumber, err := store.CreateSchema(ctx, n.ID, "sName", meta, "uuid-2", &schema.SchemaFile{ID: "t2", Data: []byte("testdata-2")})
+			versionNumber, err := store.CreateSchema(ctx, n.ID, "sName", meta, "uuid-2", &domain.SchemaFile{ID: "t2", Data: []byte("testdata-2")})
 			assert.Nil(t, err)
 			assert.Equal(t, int32(2), versionNumber)
 		})
 		t.Run("create: should return same version number if schema is same", func(t *testing.T) {
-			versionNumber, err := store.CreateSchema(ctx, n.ID, "sName", meta, "uuid-1", &schema.SchemaFile{ID: "t1", Data: []byte("testdata")})
+			versionNumber, err := store.CreateSchema(ctx, n.ID, "sName", meta, "uuid-1", &domain.SchemaFile{ID: "t1", Data: []byte("testdata")})
 			assert.Nil(t, err)
 			assert.Equal(t, int32(1), versionNumber)
 		})
@@ -135,7 +135,7 @@ func TestStorage(t *testing.T) {
 			assert.Equal(t, meta.Format, actual.Format)
 		})
 		t.Run("updateMetadata: should update metadata", func(t *testing.T) {
-			actual, err := store.UpdateSchemaMetadata(ctx, n.ID, "sName", &schema.Metadata{Compatibility: "FULL"})
+			actual, err := store.UpdateSchemaMetadata(ctx, n.ID, "sName", &domain.Metadata{Compatibility: "FULL"})
 			assert.Nil(t, err)
 			assert.Equal(t, "FULL", actual.Compatibility)
 		})
