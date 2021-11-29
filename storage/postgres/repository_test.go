@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/server/domain"
 	"github.com/odpf/stencil/storage"
 	"github.com/odpf/stencil/storage/postgres"
 	"github.com/stretchr/testify/assert"

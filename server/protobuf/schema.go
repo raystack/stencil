@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/server/domain"
 	"github.com/odpf/stencil/server/schema"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )

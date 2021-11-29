@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/server/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )

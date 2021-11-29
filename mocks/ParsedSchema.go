@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	domain "github.com/odpf/stencil/domain"
+	domain "github.com/odpf/stencil/server/domain"
 	mock "github.com/stretchr/testify/mock"
 
 	schema "github.com/odpf/stencil/server/schema"

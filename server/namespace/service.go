@@ -3,7 +3,7 @@ package namespace
 import (
 	"context"
 
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/server/domain"
 )
 
 type Service struct {

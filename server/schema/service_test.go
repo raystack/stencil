@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/mocks"
+	"github.com/odpf/stencil/server/domain"
 	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/storage"
 	"github.com/stretchr/testify/assert"
