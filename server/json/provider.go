@@ -14,7 +14,7 @@ func GetParsedSchema(data []byte) (schema.ParsedSchema, error) {
 	compiler.Draft = jsonschema.Draft2020
 	sc, _ := compiler.Compile("https://json-schema.org/draft/2020-12/schema")
 	var val interface{}
-	if err := js.Unmarshal(data, val); err != nil {
+	if err := js.Unmarshal(data, &val); err != nil {
 		return nil, &runtime.HTTPStatusError{HTTPStatus: http.StatusBadRequest, Err: err}
 	}
 	if err := sc.Validate(val); err != nil {
