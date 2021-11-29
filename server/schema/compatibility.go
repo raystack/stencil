@@ -34,9 +34,7 @@ func forwardStrategy(current, prev ParsedSchema) error {
 }
 
 func fullStrategy(current, prev ParsedSchema) error {
-	forwardErr := prev.IsBackwardCompatible(current)
-	backwardErr := current.IsBackwardCompatible(prev)
-	return multierr.Combine(forwardErr, backwardErr)
+	return current.IsFullCompatible(prev)
 }
 
 func defaultCompatibilityFn(current ParsedSchema, prevs []ParsedSchema) error {

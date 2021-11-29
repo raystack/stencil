@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/odpf/stencil/domain"
-	"github.com/odpf/stencil/server/namespace"
 	"github.com/odpf/stencil/storage"
 )
 

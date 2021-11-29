@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/odpf/stencil/mocks"
 	"github.com/odpf/stencil/server/protobuf"
 	"github.com/odpf/stencil/server/schema"
-	"github.com/odpf/stencil/server/schema/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
