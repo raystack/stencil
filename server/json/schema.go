@@ -1,30 +1,30 @@
-package avro
+package json
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	av "github.com/hamba/avro"
 	"github.com/odpf/stencil/server/domain"
 	"github.com/odpf/stencil/server/schema"
 	"go.uber.org/multierr"
 )
 
-const avroFormat = "FORMAT_AVRO"
+const jsonFormat = "FORMAT_JSON"
 
 type Schema struct {
 	data []byte
-	sc   av.Schema
 }
 
 func (s *Schema) Format() string {
-	return avroFormat
+	return jsonFormat
 }
 
 func (s *Schema) GetCanonicalValue() *domain.SchemaFile {
-	id := s.sc.Fingerprint()
+	id := uuid.NewSHA1(uuid.NameSpaceOID, s.data)
 	return &domain.SchemaFile{
-		ID:   string(id[:]),
+		ID:   id.String(),
 		Data: s.data,
 	}
 }
@@ -39,12 +39,7 @@ func (s *Schema) verify(against schema.ParsedSchema) (*Schema, error) {
 
 // IsBackwardCompatible checks backward compatibility against given schema
 func (s *Schema) IsBackwardCompatible(against schema.ParsedSchema) error {
-	prev, err := s.verify(against)
-	if err != nil {
-		return err
-	}
-	c := av.NewSchemaCompatibility()
-	return c.Compatible(s.sc, prev.sc)
+	return errors.New("Not implemented")
 }
 
 // IsForwardCompatible checks backward compatibility against given schema

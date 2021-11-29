@@ -3,6 +3,8 @@ package provider
 import (
 	"errors"
 
+	"github.com/odpf/stencil/server/avro"
+	"github.com/odpf/stencil/server/json"
 	"github.com/odpf/stencil/server/protobuf"
 	"github.com/odpf/stencil/server/schema"
 )
@@ -23,7 +25,9 @@ func (s *SchemaProvider) ParseSchema(format string, data []byte) (schema.ParsedS
 
 func NewSchemaProvider() *SchemaProvider {
 	mp := make(map[string]parseFn)
-	mp["PROTOBUF"] = protobuf.GetParsedSchema
+	mp["FORMAT_PROTOBUF"] = protobuf.GetParsedSchema
+	mp["FORMAT_AVRO"] = avro.GetParsedSchema
+	mp["FORMAT_JSON"] = json.GetParsedSchema
 	return &SchemaProvider{
 		mapper: mp,
 	}

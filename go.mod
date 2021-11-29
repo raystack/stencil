@@ -18,6 +18,7 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
 	github.com/odpf/salt v0.0.0-20210919001227-5e300ea77aea
 	github.com/pkg/errors v0.9.1
+	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.6.0
