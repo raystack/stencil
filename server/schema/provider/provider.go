@@ -26,7 +26,7 @@ func (s *SchemaProvider) ParseSchema(format string, data []byte) (schema.ParsedS
 func NewSchemaProvider() *SchemaProvider {
 	mp := make(map[string]parseFn)
 	mp["FORMAT_PROTOBUF"] = protobuf.GetParsedSchema
-	mp["FORMAT_AVRO"] = avro.GetParsedSchema
+	mp["FORMAT_AVRO"] = avro.ParseSchema
 	mp["FORMAT_JSON"] = json.GetParsedSchema
 	return &SchemaProvider{
 		mapper: mp,

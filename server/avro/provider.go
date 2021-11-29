@@ -8,7 +8,8 @@ import (
 	"github.com/odpf/stencil/server/schema"
 )
 
-func GetParsedSchema(data []byte) (schema.ParsedSchema, error) {
+//ParseSchema parses avro schema bytes into ParsedSchema
+func ParseSchema(data []byte) (schema.ParsedSchema, error) {
 	sc, err := av.Parse(string(data))
 	if err != nil {
 		return nil, &runtime.HTTPStatusError{HTTPStatus: http.StatusBadRequest, Err: err}
