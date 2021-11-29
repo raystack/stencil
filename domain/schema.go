@@ -34,3 +34,16 @@ type SchemaRepository interface {
 	DeleteSchema(context.Context, string, string) error
 	DeleteVersion(context.Context, string, string, int32) error
 }
+
+//SchemaService Service interface for schema management
+type SchemaService interface {
+	Create(context.Context, string, string, *Metadata, []byte) (SchemaInfo, error)
+	List(context.Context, string) ([]string, error)
+	Get(context.Context, string, string, int32) ([]byte, error)
+	Delete(context.Context, string, string) error
+	GetLatest(context.Context, string, string) ([]byte, error)
+	ListVersions(context.Context, string, string) ([]int32, error)
+	GetMetadata(context.Context, string, string) (*Metadata, error)
+	UpdateMetadata(context.Context, string, string, *Metadata) (*Metadata, error)
+	DeleteVersion(context.Context, string, string, int32) error
+}

@@ -23,7 +23,7 @@ func getNonEmpty(args ...string) string {
 type Service struct {
 	SchemaProvider SchemaProvider
 	Repo           domain.SchemaRepository
-	NamespaceSvc   namespace.Service
+	NamespaceSvc   domain.NamespaceService
 }
 
 func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
@@ -59,8 +59,8 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	}
 	sf := parsedSchema.GetCanonicalValue()
 	mergedMetadata := &domain.Metadata{
-		Format:        getNonEmpty(metadata.Format, ns.Format),
-		Compatibility: getNonEmpty(metadata.Compatibility, ns.Compatibility),
+		Format:        format,
+		Compatibility: compatibility,
 	}
 	versionID := getIDforSchema(nsName, schemaName, sf.ID)
 	version, err := s.Repo.CreateSchema(ctx, nsName, schemaName, mergedMetadata, versionID, sf)
