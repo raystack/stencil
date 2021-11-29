@@ -90,57 +90,56 @@ func TestSchemaCreate(t *testing.T) {
 		schemaRepo.AssertExpectations(t)
 		nsService.AssertExpectations(t)
 	})
-	t.Run("should return error if previous latest schema is valid", func(t *testing.T) {
+	t.Run("should return error if previous latest schema is not valid", func(t *testing.T) {
 		svc, nsService, schemaProvider, schemaRepo := getSvc()
 		parsedSchema := &mocks.ParsedSchema{}
 		prevParsedSchema := &mocks.ParsedSchema{}
 		nsName := "testNamespace"
 		data := []byte("data")
 		prevData := []byte("some prev data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "BACKWARD"}, nil)
+		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
 		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
 		schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, errors.New("parse error")).Once()
-		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: "FORWARD"}, data)
+		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: "COMPATIBILITY_FORWARD"}, data)
 		assert.Error(t, err)
 		schemaRepo.AssertExpectations(t)
 		nsService.AssertExpectations(t)
 		parsedSchema.AssertExpectations(t)
 	})
+
 	t.Run("should return error if compatibility check fails", func(t *testing.T) {
-		svc, nsService, schemaProvider, schemaRepo := getSvc()
-		parsedSchema := &mocks.ParsedSchema{}
-		prevParsedSchema := &mocks.ParsedSchema{}
-		nsName := "testNamespace"
-		data := []byte("data")
-		prevData := []byte("some prev data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "BACKWARD"}, nil)
-		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
-		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
-		schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, nil).Once()
-		parsedSchema.On("IsBackwardCompatible", prevParsedSchema).Return(errors.New("compatibility error"))
-		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
-		assert.Error(t, err)
-		schemaRepo.AssertExpectations(t)
-		nsService.AssertExpectations(t)
-		parsedSchema.AssertExpectations(t)
-	})
-	t.Run("should return error if specified forward compatibility check fails", func(t *testing.T) {
-		svc, nsService, schemaProvider, schemaRepo := getSvc()
-		parsedSchema := &mocks.ParsedSchema{}
-		prevParsedSchema := &mocks.ParsedSchema{}
-		nsName := "testNamespace"
-		data := []byte("data")
-		prevData := []byte("some prev data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "BACKWARD"}, nil)
-		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
-		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
-		schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, nil).Once()
-		parsedSchema.On("IsForwardCompatible", prevParsedSchema).Return(errors.New("compatibility error"))
-		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: "FORWARD"}, data)
-		assert.Error(t, err)
-		schemaRepo.AssertExpectations(t)
-		nsService.AssertExpectations(t)
-		parsedSchema.AssertExpectations(t)
+		for _, test := range []struct {
+			compatibility string
+			compFn        string
+			isError       bool
+		}{
+			{"COMPATIBILITY_BACKWARD", "IsBackwardCompatible", true},
+			{"COMPATIBILITY_FORWARD", "IsForwardCompatible", true},
+			{"COMPATIBILITY_FULL", "IsFullCompatible", true},
+		} {
+			t.Run(test.compatibility, func(t *testing.T) {
+				svc, nsService, schemaProvider, schemaRepo := getSvc()
+				parsedSchema := &mocks.ParsedSchema{}
+				prevParsedSchema := &mocks.ParsedSchema{}
+				nsName := "testNamespace"
+				data := []byte("data")
+				prevData := []byte("some prev data")
+				var compErr error
+				if test.isError {
+					compErr = errors.New("compatibilit error")
+				}
+				nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
+				schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
+				schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
+				schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, nil).Once()
+				parsedSchema.On(test.compFn, prevParsedSchema).Return(compErr)
+				_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: test.compatibility}, data)
+				assert.Error(t, err)
+				schemaRepo.AssertExpectations(t)
+				nsService.AssertExpectations(t)
+				parsedSchema.AssertExpectations(t)
+			})
+		}
 	})
 }

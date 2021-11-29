@@ -43,10 +43,18 @@ func defaultCompatibilityFn(current ParsedSchema, prevs []ParsedSchema) error {
 
 func getCompatibilityChecker(compatibility string) CompatibilityFn {
 	switch compatibility {
-	case "BACKWARD":
+	case "COMPATIBILITY_BACKWARD":
 		return validateLatest(backwardStrategy)
-	case "FORWARD":
+	case "COMPATIBILITY_BACKWARD_TRANSITIVE":
+		return validateAll(backwardStrategy)
+	case "COMPATIBILITY_FORWARD":
 		return validateLatest(forwardStrategy)
+	case "COMPATIBILITY_FORWARD_TRANSITIVE":
+		return validateAll(forwardStrategy)
+	case "COMPATIBILITY_FULL":
+		return validateLatest(fullStrategy)
+	case "COMPATIBILITY_FULL_TRANSITIVE":
+		return validateAll(fullStrategy)
 	default:
 		return defaultCompatibilityFn
 	}
