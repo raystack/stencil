@@ -8,8 +8,7 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
-	"github.com/odpf/stencil/server/namespace"
-	"github.com/odpf/stencil/server/schema"
+	"github.com/odpf/stencil/server/domain"
 	"github.com/odpf/stencil/storage"
 )
 
@@ -30,9 +29,8 @@ func wrapError(err error, format string, args ...interface{}) error {
 }
 
 type searchData struct {
-	Dependencies []string
-	Types        []string
-	Fields       []string
+	Types  []string
+	Fields []string
 }
 
 // Store DB access layer
@@ -44,20 +42,20 @@ func (r *Store) Close() {
 	r.db.Close()
 }
 
-func (r *Store) CreateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
-	newNamespace := namespace.Namespace{}
+func (r *Store) CreateNamespace(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
+	newNamespace := domain.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceInsertQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
 	return newNamespace, wrapError(err, ns.ID)
 }
 
-func (r *Store) UpdateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
-	newNamespace := namespace.Namespace{}
+func (r *Store) UpdateNamespace(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
+	newNamespace := domain.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceUpdateQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
 	return newNamespace, wrapError(err, ns.ID)
 }
 
-func (r *Store) GetNamespace(ctx context.Context, id string) (namespace.Namespace, error) {
-	newNamespace := namespace.Namespace{}
+func (r *Store) GetNamespace(ctx context.Context, id string) (domain.Namespace, error) {
+	newNamespace := domain.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceGetQuery, id)
 	return newNamespace, wrapError(err, id)
 }
@@ -74,7 +72,7 @@ func (r *Store) ListNamespaces(ctx context.Context) ([]string, error) {
 	return namespaces, wrapError(err, "")
 }
 
-func (r *Store) CreateSchema(ctx context.Context, namespace string, schemaName string, metadata *schema.Metadata, versionID string, file *schema.SchemaFile) (int32, error) {
+func (r *Store) CreateSchema(ctx context.Context, namespace string, schemaName string, metadata *domain.Metadata, versionID string, file *domain.SchemaFile) (int32, error) {
 	var version int32
 	err := r.db.BeginFunc(ctx, func(t pgx.Tx) error {
 		vErr := t.QueryRow(ctx, getSchemaVersionByID, versionID).Scan(&version)
@@ -89,7 +87,7 @@ func (r *Store) CreateSchema(ctx context.Context, namespace string, schemaName s
 			return err
 		}
 		if err := t.QueryRow(ctx, versionInsertQuery, schemaID, versionID, file.ID,
-			&searchData{Dependencies: file.Dependencies, Types: file.Types, Fields: file.Fields}, file.Data).Scan(&version); err != nil {
+			&searchData{Types: file.Types, Fields: file.Fields}, file.Data).Scan(&version); err != nil {
 			return err
 		}
 		return nil
@@ -117,14 +115,14 @@ func (r *Store) GetLatestSchema(ctx context.Context, namespaceId, schemaName str
 	return data, wrapError(err, "Latest schema for %s - %s", namespaceId, schemaName)
 }
 
-func (r *Store) GetSchemaMetadata(ctx context.Context, namespace, sc string) (*schema.Metadata, error) {
-	var meta schema.Metadata
+func (r *Store) GetSchemaMetadata(ctx context.Context, namespace, sc string) (*domain.Metadata, error) {
+	var meta domain.Metadata
 	err := pgxscan.Get(ctx, r.db, &meta, getSchemaMetaQuery, namespace, sc)
 	return &meta, wrapError(err, "meta")
 }
 
-func (r *Store) UpdateSchemaMetadata(ctx context.Context, namespace, sc string, in *schema.Metadata) (*schema.Metadata, error) {
-	var meta schema.Metadata
+func (r *Store) UpdateSchemaMetadata(ctx context.Context, namespace, sc string, in *domain.Metadata) (*domain.Metadata, error) {
+	var meta domain.Metadata
 	err := pgxscan.Get(ctx, r.db, &meta, updateSchemaMetaQuery, namespace, sc, in.Compatibility)
 	return &meta, wrapError(err, "meta")
 }

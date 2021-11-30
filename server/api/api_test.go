@@ -1,8 +1,8 @@
 package api_test
 
 import (
+	"github.com/odpf/stencil/mocks"
 	"github.com/odpf/stencil/server/api"
-	"github.com/odpf/stencil/server/api/mocks"
 )
 
 func setup() (*mocks.NamespaceService, *mocks.SchemaService, *api.API) {

@@ -1,6 +1,0 @@
-syntax = "proto3";
-
-message SocialMedia {
-  string facebook = 1;
-  string instagram = 2;
-}

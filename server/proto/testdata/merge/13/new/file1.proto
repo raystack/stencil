@@ -1,8 +1,0 @@
-// changes:
-// - delete timestamp field
-syntax = "proto3";
-
-message Person {
-  int64 id = 1;
-  string name = 2;
-}

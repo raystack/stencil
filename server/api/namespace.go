@@ -3,20 +3,20 @@ package api
 import (
 	"context"
 
-	"github.com/odpf/stencil/server/namespace"
+	"github.com/odpf/stencil/server/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func createNamespaceRequestToNamespace(r *stencilv1beta1.CreateNamespaceRequest) namespace.Namespace {
-	return namespace.Namespace{
+func createNamespaceRequestToNamespace(r *stencilv1beta1.CreateNamespaceRequest) domain.Namespace {
+	return domain.Namespace{
 		ID:          r.GetId(),
 		Format:      r.GetFormat().String(),
 		Description: r.GetDescription(),
 	}
 }
 
-func namespaceToProto(ns namespace.Namespace) *stencilv1beta1.Namespace {
+func namespaceToProto(ns domain.Namespace) *stencilv1beta1.Namespace {
 	return &stencilv1beta1.Namespace{
 		Id:          ns.ID,
 		Format:      stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[ns.Format]),
@@ -34,7 +34,7 @@ func (a *API) CreateNamespace(ctx context.Context, in *stencilv1beta1.CreateName
 }
 
 func (a *API) UpdateNamespace(ctx context.Context, in *stencilv1beta1.UpdateNamespaceRequest) (*stencilv1beta1.UpdateNamespaceResponse, error) {
-	ns, err := a.Namespace.Update(ctx, namespace.Namespace{ID: in.GetId(), Format: in.GetFormat().String(), Description: in.GetDescription()})
+	ns, err := a.Namespace.Update(ctx, domain.Namespace{ID: in.GetId(), Format: in.GetFormat().String(), Description: in.GetDescription()})
 	return &stencilv1beta1.UpdateNamespaceResponse{Namespace: namespaceToProto(ns)}, err
 }
 

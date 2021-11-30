@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package a;
+
+enum TestEnum {
+	UNSPECIFIED = 0;
+	ONE = 1;
+}
+// Unchange message
+message One {
+	string field_one = 1;
+}
+
+// Backward compatible message
+message Two {
+	reserved 4,5;
+	reserved "deleted_field";
+	string string_field = 1;
+	int64 int_field = 2;
+	TestEnum enum_field = 3;
+	enum CompatibleEnum {
+		UNKNOWN = 0;
+		ONE = 1;
+	}
+}
+
+

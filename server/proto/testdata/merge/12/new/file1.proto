@@ -1,8 +1,0 @@
-// changes:
-// - delete nested message with multiple options
-// - delete message with multiple options
-syntax="proto3";
-
-message One {
-  int64 id = 1;
-}

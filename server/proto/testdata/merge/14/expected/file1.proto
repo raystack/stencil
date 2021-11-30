@@ -1,2 +1,0 @@
-// should return error, so this file is empty
-syntax = "proto3";
