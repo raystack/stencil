@@ -43,6 +43,7 @@ message BreakingMessage {
 	string kind_change = 5;
 	TestEnum type_name_change = 6;
 	One type_message_change = 7;
+	repeated string cardinality_field = 8;
 	enum BreackingEnum {
 		reserved 4, 5, 8, 11 to 15;
 		reserved "never_existed";

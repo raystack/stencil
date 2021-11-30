@@ -51,6 +51,7 @@ func TestCompatibility(t *testing.T) {
 			`1.proto: previous reserved number (8) is not inclusive of current range`,
 			`1.proto: previous reserved range (11, 15) is not inclusive of current range`,
 			`1.proto: previous reserved name "never_existed" is removed`,
+			`1.proto: field "cardinality_field" label changed from "repeated" to "optional"`,
 		}, errMsgs)
 	})
 	t.Run("backwardCompatibility return error if format does not match", func(t *testing.T) {
@@ -121,6 +122,7 @@ func TestCompatibility(t *testing.T) {
 			`1.proto: previous reserved number (8) is not inclusive of current range`,
 			`1.proto: previous reserved range (11, 15) is not inclusive of current range`,
 			`1.proto: previous reserved name "never_existed" is removed`,
+			`1.proto: field "cardinality_field" label changed from "repeated" to "optional"`,
 		}, errMsgs)
 	})
 	t.Run("fullCompatibility return error if format does not match", func(t *testing.T) {

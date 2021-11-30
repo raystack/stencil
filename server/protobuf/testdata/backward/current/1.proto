@@ -44,6 +44,7 @@ message BreakingMessage {
 	int64 kind_change = 5;
 	NewTestEnum type_name_change = 6;
 	NewMessage type_message_change = 7;
+	string cardinality_field = 8;
 	enum BreackingEnum {
 		reserved 4, 5, 11 to 14;
 		UNKNOWN = 0;
