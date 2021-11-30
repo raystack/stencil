@@ -25,6 +25,7 @@ const (
 	enumValueDeleteWithoutReservedName
 	enumValueNameChange
 	enumValueNumberChange
+	syntaxChange
 )
 
 var (
@@ -40,7 +41,8 @@ var (
 		enumDelete,
 		enumValueDelete,
 		enumValueNameChange,
-		enumValueNumberChange}
+		enumValueNumberChange,
+		syntaxChange}
 	forwardCompatibility = []diffKind{
 		messageDelete,
 		nonInclusivereservedRange,
@@ -55,7 +57,8 @@ var (
 		enumValueNameChange,
 		enumValueDeleteWithoutReservedNumber,
 		enumValueDeleteWithoutReservedName,
-		enumValueNumberChange}
+		enumValueNumberChange,
+		syntaxChange}
 	fullCompatibility = []diffKind{
 		messageDelete,
 		nonInclusivereservedRange,
@@ -67,7 +70,8 @@ var (
 		enumDelete,
 		enumValueDelete,
 		enumValueNameChange,
-		enumValueNumberChange}
+		enumValueNumberChange,
+		syntaxChange}
 )
 
 func (d diffKind) contains(others []diffKind) bool {
@@ -88,6 +92,7 @@ func compareSchemas(current, prev *protoregistry.Files, notAllowedChanges []diff
 				diffs.add(messageDelete, prevMsg, `"%s" is removed`, prevMsg.FullName())
 				return true
 			}
+			compareSyntax(currentMsg, prevMsg, diffs)
 			compareMessages(currentMsg, prevMsg, diffs)
 			return true
 		})
@@ -204,5 +209,11 @@ func compareEnums(current, prev protoreflect.EnumDescriptor, diffs *compatibilit
 		if prevValue.Name() != currentValue.Name() {
 			diffs.add(enumValueNameChange, prev, `enum value name for "%s" changed from "%s" to "%s"`, prev.FullName(), prevValue.Name(), currentValue.Name())
 		}
+	}
+}
+
+func compareSyntax(current, prev protoreflect.Descriptor, diffs *compatibilityErr) {
+	if current.ParentFile().Syntax() != prev.Parent().Syntax() {
+		diffs.add(syntaxChange, current, `syntax changed from "%s" to "%s"`, prev.ParentFile().Syntax(), current.ParentFile().Syntax())
 	}
 }
