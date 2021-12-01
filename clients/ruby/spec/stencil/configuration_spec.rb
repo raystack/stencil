@@ -3,11 +3,11 @@ module Stencil
     let(:configuration) { Stencil.configuration }
 
     it 'should set registry urls correctly' do
-      expect(configuration.registry_urls).to eq([])
+      expect(configuration.registry_url).to eq(nil)
 
-      expected_value = ['http://localhost:3000']
-      configuration.registry_urls = expected_value
-      expect(configuration.registry_urls).to eq(expected_value)
+      expected_value = 'http://localhost:3000'
+      configuration.registry_url = expected_value
+      expect(configuration.registry_url).to eq(expected_value)
     end
 
 
@@ -42,19 +42,17 @@ module Stencil
       expect(configuration.bearer_token).to eq(expected_bearer_token)
     end
 
-
-
     describe '#configure' do
       let(:refresh_enabled) {true}
       let(:refresh_ttl_in_secs) {60000}
-      let(:registry_urls) {["abc.com/latest"]}
+      let(:registry_url) {"abc.com/latest"}
       let(:token) {"ABCD1234"}
       let(:bearer_token) {"Bearer " + token}
       let(:http_timeout) {6000}
 
       before(:each) do
         Stencil.configure do |config|
-          config.registry_urls = registry_urls
+          config.registry_url = registry_url
           config.bearer_token = token
           config.refresh_enabled = refresh_enabled
           config.refresh_ttl_in_secs = refresh_ttl_in_secs
@@ -65,7 +63,7 @@ module Stencil
       subject { Stencil.configuration }
 
       it 'should set configuration correctly' do
-        expect(subject.registry_urls).to eq(registry_urls)
+        expect(subject.registry_url).to eq(registry_url)
         expect(subject.bearer_token).to eq(bearer_token)
         expect(subject.refresh_enabled).to eq(refresh_enabled)
         expect(subject.refresh_ttl_in_secs).to eq(refresh_ttl_in_secs)

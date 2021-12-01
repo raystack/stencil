@@ -16,6 +16,7 @@ Bundler.setup
 
 require 'pry'
 require 'stencil'
+require 'webmock/rspec'
 
 RSpec.configure do |config|
   config.filter_run_when_matching focus: true
@@ -24,11 +25,4 @@ RSpec.configure do |config|
   config.order = :random
 end
 
-module JSON
-  module_function
-
-  def reader(file_name)
-    path = File.join(File.dirname(__FILE__), "test_data/#{file_name}")
-    File.read(path)
-  end
-end
+WebMock.disable_net_connect!(allow_localhost: true)

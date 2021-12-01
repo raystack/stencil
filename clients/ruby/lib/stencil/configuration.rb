@@ -4,12 +4,12 @@ module Stencil
       @config = ::OpenStruct.new
     end
 
-    def registry_urls
-      @config.registry_urls || []
+    def registry_url
+      @config.registry_url
     end
 
-    def registry_urls=(registry_urls)
-      @config.registry_urls = registry_urls
+    def registry_url=(registry_url)
+      @config.registry_url = registry_url
     end
 
     def http_timeout
