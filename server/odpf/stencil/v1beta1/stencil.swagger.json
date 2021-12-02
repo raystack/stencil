@@ -211,42 +211,6 @@
       }
     },
     "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}": {
-      "get": {
-        "summary": "Get latest schema for specified schema id and namespace id",
-        "description": "Returns schema data in byte64 format. Clients can decode 'data' field to expected data format",
-        "operationId": "StencilService_GetLatestSchema",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1beta1GetLatestSchemaResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "namespaceId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "schemaId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "schema"
-        ]
-      },
       "delete": {
         "summary": "Delete specified schema",
         "operationId": "StencilService_DeleteSchema",
@@ -276,67 +240,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          }
-        ],
-        "tags": [
-          "schema"
-        ]
-      },
-      "post": {
-        "summary": "Create schema under the namespace. Returns version number, unique ID and location",
-        "operationId": "StencilService_CreateSchema",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1beta1CreateSchemaResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "namespaceId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "schemaId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "type": "string",
-                  "format": "byte",
-                  "required": [
-                    "data"
-                  ]
-                },
-                "format": {
-                  "$ref": "#/definitions/SchemaFormat"
-                },
-                "compatibility": {
-                  "$ref": "#/definitions/SchemaCompatibility"
-                }
-              },
-              "required": [
-                "data"
-              ]
-            }
           }
         ],
         "tags": [
@@ -468,49 +371,6 @@
       }
     },
     "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions/{versionId}": {
-      "get": {
-        "summary": "Get schema for specified version",
-        "operationId": "StencilService_GetSchema",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1beta1GetSchemaResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "namespaceId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "schemaId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "versionId",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          }
-        ],
-        "tags": [
-          "schema",
-          "version"
-        ]
-      },
       "delete": {
         "summary": "Delete specified version of the schema",
         "operationId": "StencilService_DeleteVersion",

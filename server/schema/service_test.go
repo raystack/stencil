@@ -69,6 +69,7 @@ func TestSchemaCreate(t *testing.T) {
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
 		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return([]byte(""), storage.NoRowsErr)
+		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{}, nil)
 		parsedSchema.On("GetCanonicalValue").Return(scFile)
 		schemaRepo.On("CreateSchema", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(int32(1), nil)
 		scInfo, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
@@ -84,6 +85,7 @@ func TestSchemaCreate(t *testing.T) {
 		data := []byte("data")
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
+		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{}, nil)
 		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return([]byte(""), errors.New("some other error apart from noRowsError"))
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
 		assert.Error(t, err)
@@ -99,6 +101,7 @@ func TestSchemaCreate(t *testing.T) {
 		prevData := []byte("some prev data")
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
+		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{Format: "protobuf"}, nil)
 		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
 		schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, errors.New("parse error")).Once()
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: "COMPATIBILITY_FORWARD"}, data)
@@ -131,6 +134,7 @@ func TestSchemaCreate(t *testing.T) {
 				}
 				nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 				schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
+				schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{Format: "protobuf"}, nil)
 				schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
 				schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, nil).Once()
 				parsedSchema.On(test.compFn, prevParsedSchema).Return(compErr)
@@ -141,5 +145,41 @@ func TestSchemaCreate(t *testing.T) {
 				parsedSchema.AssertExpectations(t)
 			})
 		}
+	})
+}
+
+func TestGetSchema(t *testing.T) {
+	ctx := context.Background()
+	nsName := "testNamespace"
+	schemaName := "testSchema"
+	t.Run("should return error if get metadata fails", func(t *testing.T) {
+		svc, _, _, repo := getSvc()
+		repo.On("GetSchemaMetadata", mock.Anything, nsName, schemaName).Return(&domain.Metadata{}, errors.New("get metadata error"))
+		_, _, err := svc.Get(ctx, nsName, schemaName, int32(1))
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+	t.Run("should return error if getting data fails", func(t *testing.T) {
+		svc, _, _, repo := getSvc()
+		version := int32(1)
+		repo.On("GetSchemaMetadata", mock.Anything, nsName, schemaName).Return(&domain.Metadata{}, nil)
+		repo.On("GetSchema", mock.Anything, nsName, schemaName, version).Return(nil, errors.New("get data error"))
+		_, _, err := svc.Get(ctx, nsName, schemaName, version)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("should return metadata along with schema data", func(t *testing.T) {
+		svc, _, _, repo := getSvc()
+		version := int32(1)
+		data := []byte("data")
+		meta := &domain.Metadata{Format: "protobuf"}
+		repo.On("GetSchemaMetadata", mock.Anything, nsName, schemaName).Return(meta, nil)
+		repo.On("GetSchema", mock.Anything, nsName, schemaName, version).Return(data, nil)
+		actualMeta, actualData, err := svc.Get(ctx, nsName, schemaName, version)
+		assert.Nil(t, err)
+		assert.Equal(t, data, actualData)
+		assert.Equal(t, meta, actualMeta)
+		repo.AssertExpectations(t)
 	})
 }
