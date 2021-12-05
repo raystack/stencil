@@ -2,9 +2,11 @@ require_relative "stencil/version"
 require_relative "stencil/configuration"
 require_relative "stencil/constants"
 require_relative "stencil/client"
+require_relative "stencil/store"
 
 require "http"
-require "concurrent"
+require "concurrent/timer_task"
+require "concurrent/mutable_struct"
 require "protobuf"
 
 module Stencil

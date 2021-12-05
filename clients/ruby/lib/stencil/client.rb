@@ -5,14 +5,18 @@ module Stencil
       begin
         @config = Stencil.configuration
         validate_configuration(@config)
-        @root = nil
+
         setup_http_client
+
+        @store = Store.new
         load_descriptors
+        setup_store_update_job
       end
     end
 
     def get_type(proto_name)
-      @root.file.each do |file_desc|
+      file_descriptor_set = @store.read(@config.registry_url)
+      file_descriptor_set.file.each do |file_desc|
         file_desc.message_type.each do |message|
           if proto_name == "#{file_desc.options.java_package}.#{message.name}"
             return message
@@ -20,6 +24,10 @@ module Stencil
         end
       end
       raise InvalidProtoClass.new
+    end
+
+    def close
+      @task.shutdown
     end
 
     private
@@ -42,7 +50,16 @@ module Stencil
         raise HTTPClientError.new(e.message)
       end
 
-      @root = Google::Protobuf::FileDescriptorSet.decode(response.body)
+      file_descriptor_set = Google::Protobuf::FileDescriptorSet.decode(response.body)
+      @store.write(@config.registry_url, file_descriptor_set)
+    end
+
+    def setup_store_update_job
+      begin
+        @task = Concurrent::TimerTask.new(execution_interval: @config.refresh_ttl_in_secs) do
+          load_descriptors
+        end
+      end
     end
   end
 end
