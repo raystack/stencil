@@ -17,11 +17,10 @@ func getSvc() (*schema.Service, *mocks.NamespaceService, *mocks.SchemaProvider, 
 	nsService := &mocks.NamespaceService{}
 	schemaProvider := &mocks.SchemaProvider{}
 	schemaRepo := &mocks.SchemaRepository{}
-	svc := &schema.Service{
-		SchemaProvider: schemaProvider,
-		Repo:           schemaRepo,
-		NamespaceSvc:   nsService,
-	}
+	cache := &mocks.SchemaCache{}
+	cache.On("Get", mock.Anything).Return("", false)
+	cache.On("Set", mock.Anything, mock.Anything, mock.Anything).Return(false)
+	svc := schema.NewService(schemaRepo, schemaProvider, nsService, cache)
 	return svc, nsService, schemaProvider, schemaRepo
 }
 
@@ -68,8 +67,7 @@ func TestSchemaCreate(t *testing.T) {
 		data := []byte("data")
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
-		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return([]byte(""), storage.NoRowsErr)
-		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{}, nil)
+		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(2), storage.NoRowsErr)
 		parsedSchema.On("GetCanonicalValue").Return(scFile)
 		schemaRepo.On("CreateSchema", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(int32(1), nil)
 		scInfo, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
@@ -85,8 +83,7 @@ func TestSchemaCreate(t *testing.T) {
 		data := []byte("data")
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
-		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{}, nil)
-		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return([]byte(""), errors.New("some other error apart from noRowsError"))
+		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(2), errors.New("some other error apart from noRowsError"))
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
 		assert.Error(t, err)
 		schemaRepo.AssertExpectations(t)
@@ -97,12 +94,13 @@ func TestSchemaCreate(t *testing.T) {
 		parsedSchema := &mocks.ParsedSchema{}
 		prevParsedSchema := &mocks.ParsedSchema{}
 		nsName := "testNamespace"
-		data := []byte("data")
+		data := []byte("data aa")
 		prevData := []byte("some prev data")
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
 		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{Format: "protobuf"}, nil)
-		schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
+		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(3), nil)
+		schemaRepo.On("GetSchema", mock.Anything, nsName, "a", int32(3)).Return(prevData, nil)
 		schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, errors.New("parse error")).Once()
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: "COMPATIBILITY_FORWARD"}, data)
 		assert.Error(t, err)
@@ -135,7 +133,8 @@ func TestSchemaCreate(t *testing.T) {
 				nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 				schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
 				schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{Format: "protobuf"}, nil)
-				schemaRepo.On("GetLatestSchema", mock.Anything, nsName, "a").Return(prevData, nil)
+				schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(3), nil)
+				schemaRepo.On("GetSchema", mock.Anything, nsName, "a", int32(3)).Return(prevData, nil)
 				schemaProvider.On("ParseSchema", "protobuf", prevData).Return(prevParsedSchema, nil).Once()
 				parsedSchema.On(test.compFn, prevParsedSchema).Return(compErr)
 				_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Compatibility: test.compatibility}, data)
@@ -181,5 +180,45 @@ func TestGetSchema(t *testing.T) {
 		assert.Equal(t, data, actualData)
 		assert.Equal(t, meta, actualMeta)
 		repo.AssertExpectations(t)
+	})
+	t.Run("should cache schema data", func(t *testing.T) {
+		nsService := &mocks.NamespaceService{}
+		schemaProvider := &mocks.SchemaProvider{}
+		repo := &mocks.SchemaRepository{}
+		cache := &mocks.SchemaCache{}
+		svc := schema.NewService(repo, schemaProvider, nsService, cache)
+		version := int32(1)
+		data := []byte("data")
+		meta := &domain.Metadata{Format: "protobuf"}
+		key := "testNamespace-testSchema-1"
+		cache.On("Get", key).Return("", false)
+		cache.On("Set", key, data, int64(len(data))).Return(true)
+		repo.On("GetSchemaMetadata", mock.Anything, nsName, schemaName).Return(meta, nil)
+		repo.On("GetSchema", mock.Anything, nsName, schemaName, version).Return(data, nil)
+		actualMeta, actualData, err := svc.Get(ctx, nsName, schemaName, version)
+		assert.Nil(t, err)
+		assert.Equal(t, data, actualData)
+		assert.Equal(t, meta, actualMeta)
+		repo.AssertExpectations(t)
+		cache.AssertExpectations(t)
+	})
+	t.Run("should get data from cache if key exists", func(t *testing.T) {
+		nsService := &mocks.NamespaceService{}
+		schemaProvider := &mocks.SchemaProvider{}
+		repo := &mocks.SchemaRepository{}
+		cache := &mocks.SchemaCache{}
+		svc := schema.NewService(repo, schemaProvider, nsService, cache)
+		version := int32(1)
+		data := []byte("data")
+		meta := &domain.Metadata{Format: "protobuf"}
+		key := "testNamespace-testSchema-1"
+		cache.On("Get", key).Return(data, true)
+		repo.On("GetSchemaMetadata", mock.Anything, nsName, schemaName).Return(meta, nil)
+		actualMeta, actualData, err := svc.Get(ctx, nsName, schemaName, version)
+		assert.Nil(t, err)
+		assert.Equal(t, data, actualData)
+		assert.Equal(t, meta, actualMeta)
+		repo.AssertExpectations(t)
+		cache.AssertExpectations(t)
 	})
 }
