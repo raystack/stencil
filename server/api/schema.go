@@ -13,10 +13,6 @@ import (
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 )
 
-var (
-	contentTypeHeader string = http.CanonicalHeaderKey("Content-Type")
-)
-
 func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaRequest) (*stencilv1beta1.CreateSchemaResponse, error) {
 	metadata := &domain.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
 	sc, err := a.Schema.Create(ctx, in.NamespaceId, in.SchemaId, metadata, in.GetData())
