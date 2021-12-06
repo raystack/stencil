@@ -10,9 +10,9 @@ type Metadata struct {
 }
 
 type SchemaInfo struct {
-	ID       string
-	Version  int32
-	Location string
+	ID       string `json:"id"`
+	Version  int32  `json:"version"`
+	Location string `json:"location"`
 }
 
 type SchemaFile struct {
@@ -39,9 +39,9 @@ type SchemaRepository interface {
 type SchemaService interface {
 	Create(context.Context, string, string, *Metadata, []byte) (SchemaInfo, error)
 	List(context.Context, string) ([]string, error)
-	Get(context.Context, string, string, int32) ([]byte, error)
+	Get(context.Context, string, string, int32) (*Metadata, []byte, error)
 	Delete(context.Context, string, string) error
-	GetLatest(context.Context, string, string) ([]byte, error)
+	GetLatest(context.Context, string, string) (*Metadata, []byte, error)
 	ListVersions(context.Context, string, string) ([]int32, error)
 	GetMetadata(context.Context, string, string) (*Metadata, error)
 	UpdateMetadata(context.Context, string, string, *Metadata) (*Metadata, error)

@@ -77,6 +77,7 @@ func Start(cfg config.Config) {
 	if err = stencilv1beta1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
 		log.Fatalln("Failed to register stencil service handler:", err)
 	}
+	api.RegisterSchemaHandlers(mux)
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()

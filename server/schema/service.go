@@ -26,14 +26,14 @@ type Service struct {
 }
 
 func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
-	prevSchemaData, err := s.GetLatest(ctx, nsName, schemaName)
+	prevMeta, prevSchemaData, err := s.GetLatest(ctx, nsName, schemaName)
 	if err != nil {
 		if errors.Is(err, storage.NoRowsErr) {
 			return nil
 		}
 		return err
 	}
-	prevSchema, err := s.SchemaProvider.ParseSchema(format, prevSchemaData)
+	prevSchema, err := s.SchemaProvider.ParseSchema(prevMeta.Format, prevSchemaData)
 	if err != nil {
 		return err
 	}
@@ -70,8 +70,18 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	}, err
 }
 
-func (s *Service) Get(ctx context.Context, namespace string, schemaName string, version int32) ([]byte, error) {
-	return s.Repo.GetSchema(ctx, namespace, schemaName, version)
+func (s *Service) withMetadata(ctx context.Context, namespace, schemaName string, getData func() ([]byte, error)) (*domain.Metadata, []byte, error) {
+	var data []byte
+	meta, err := s.Repo.GetSchemaMetadata(ctx, namespace, schemaName)
+	if err != nil {
+		return meta, data, err
+	}
+	data, err = getData()
+	return meta, data, err
+}
+
+func (s *Service) Get(ctx context.Context, namespace string, schemaName string, version int32) (*domain.Metadata, []byte, error) {
+	return s.withMetadata(ctx, namespace, schemaName, func() ([]byte, error) { return s.Repo.GetSchema(ctx, namespace, schemaName, version) })
 }
 
 func (s *Service) Delete(ctx context.Context, namespace string, schemaName string) error {
@@ -82,8 +92,8 @@ func (s *Service) DeleteVersion(ctx context.Context, namespace string, schemaNam
 	return s.Repo.DeleteVersion(ctx, namespace, schemaName, version)
 }
 
-func (s *Service) GetLatest(ctx context.Context, namespace string, schemaName string) ([]byte, error) {
-	return s.Repo.GetLatestSchema(ctx, namespace, schemaName)
+func (s *Service) GetLatest(ctx context.Context, namespace string, schemaName string) (*domain.Metadata, []byte, error) {
+	return s.withMetadata(ctx, namespace, schemaName, func() ([]byte, error) { return s.Repo.GetLatestSchema(ctx, namespace, schemaName) })
 }
 
 func (s *Service) GetMetadata(ctx context.Context, namespace, schemaName string) (*domain.Metadata, error) {

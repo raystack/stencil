@@ -2,7 +2,13 @@ package api
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"io"
+	"net/http"
+	"strconv"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/odpf/stencil/server/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 )
@@ -16,6 +22,26 @@ func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaR
 		Location: sc.Location,
 	}, err
 }
+func (a *API) HTTPUpload(w http.ResponseWriter, req *http.Request, pathParams map[string]string) error {
+	data, err := io.ReadAll(req.Body)
+	if err != nil {
+		return err
+	}
+	format := req.Header.Get("X-Format")
+	compatibility := req.Header.Get("X-Compatibility")
+	metadata := &domain.Metadata{Format: format, Compatibility: compatibility}
+	namespaceID := pathParams["namespace"]
+	schemaName := pathParams["name"]
+	sc, err := a.Schema.Create(req.Context(), namespaceID, schemaName, metadata, data)
+	if err != nil {
+		return err
+	}
+	respData, _ := json.Marshal(sc)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write(respData)
+	return nil
+}
 
 func (a *API) ListSchemas(ctx context.Context, in *stencilv1beta1.ListSchemasRequest) (*stencilv1beta1.ListSchemasResponse, error) {
 	schemas, err := a.Schema.List(ctx, in.Id)
@@ -23,17 +49,34 @@ func (a *API) ListSchemas(ctx context.Context, in *stencilv1beta1.ListSchemasReq
 }
 
 func (a *API) GetLatestSchema(ctx context.Context, in *stencilv1beta1.GetLatestSchemaRequest) (*stencilv1beta1.GetLatestSchemaResponse, error) {
-	data, err := a.Schema.GetLatest(ctx, in.NamespaceId, in.SchemaId)
+	_, data, err := a.Schema.GetLatest(ctx, in.NamespaceId, in.SchemaId)
 	return &stencilv1beta1.GetLatestSchemaResponse{
 		Data: data,
 	}, err
 }
 
+func (a *API) HTTPLatestSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*domain.Metadata, []byte, error) {
+	namespaceID := pathParams["namespace"]
+	schemaName := pathParams["name"]
+	return a.Schema.GetLatest(req.Context(), namespaceID, schemaName)
+}
+
 func (a *API) GetSchema(ctx context.Context, in *stencilv1beta1.GetSchemaRequest) (*stencilv1beta1.GetSchemaResponse, error) {
-	data, err := a.Schema.Get(ctx, in.NamespaceId, in.SchemaId, in.GetVersionId())
+	_, data, err := a.Schema.Get(ctx, in.NamespaceId, in.SchemaId, in.GetVersionId())
 	return &stencilv1beta1.GetSchemaResponse{
 		Data: data,
 	}, err
+}
+
+func (a *API) HTTPGetSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*domain.Metadata, []byte, error) {
+	namespaceID := pathParams["namespace"]
+	schemaName := pathParams["name"]
+	versionString := pathParams["version"]
+	v, err := strconv.ParseInt(versionString, 10, 32)
+	if err != nil {
+		return nil, nil, &runtime.HTTPStatusError{HTTPStatus: http.StatusBadRequest, Err: errors.New("invalid version number")}
+	}
+	return a.Schema.Get(req.Context(), namespaceID, schemaName, int32(v))
 }
 
 func (a *API) ListVersions(ctx context.Context, in *stencilv1beta1.ListVersionsRequest) (*stencilv1beta1.ListVersionsResponse, error) {

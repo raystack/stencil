@@ -64,49 +64,67 @@ func (_m *SchemaService) DeleteVersion(_a0 context.Context, _a1 string, _a2 stri
 }
 
 // Get provides a mock function with given fields: _a0, _a1, _a2, _a3
-func (_m *SchemaService) Get(_a0 context.Context, _a1 string, _a2 string, _a3 int32) ([]byte, error) {
+func (_m *SchemaService) Get(_a0 context.Context, _a1 string, _a2 string, _a3 int32) (*domain.Metadata, []byte, error) {
 	ret := _m.Called(_a0, _a1, _a2, _a3)
 
-	var r0 []byte
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, int32) []byte); ok {
+	var r0 *domain.Metadata
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, int32) *domain.Metadata); ok {
 		r0 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]byte)
+			r0 = ret.Get(0).(*domain.Metadata)
 		}
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, int32) error); ok {
+	var r1 []byte
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, int32) []byte); ok {
 		r1 = rf(_a0, _a1, _a2, _a3)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]byte)
+		}
 	}
 
-	return r0, r1
+	var r2 error
+	if rf, ok := ret.Get(2).(func(context.Context, string, string, int32) error); ok {
+		r2 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // GetLatest provides a mock function with given fields: _a0, _a1, _a2
-func (_m *SchemaService) GetLatest(_a0 context.Context, _a1 string, _a2 string) ([]byte, error) {
+func (_m *SchemaService) GetLatest(_a0 context.Context, _a1 string, _a2 string) (*domain.Metadata, []byte, error) {
 	ret := _m.Called(_a0, _a1, _a2)
 
-	var r0 []byte
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) []byte); ok {
+	var r0 *domain.Metadata
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *domain.Metadata); ok {
 		r0 = rf(_a0, _a1, _a2)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]byte)
+			r0 = ret.Get(0).(*domain.Metadata)
 		}
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+	var r1 []byte
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) []byte); ok {
 		r1 = rf(_a0, _a1, _a2)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]byte)
+		}
 	}
 
-	return r0, r1
+	var r2 error
+	if rf, ok := ret.Get(2).(func(context.Context, string, string) error); ok {
+		r2 = rf(_a0, _a1, _a2)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // GetMetadata provides a mock function with given fields: _a0, _a1, _a2
