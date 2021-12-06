@@ -40,7 +40,7 @@ func Start(cfg config.Config) {
 	}
 	cache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1000,
-		MaxCost:     200 << 20,
+		MaxCost:     cfg.CacheSizeInMB << 20,
 		BufferItems: 64,
 	})
 	if err != nil {

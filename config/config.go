@@ -24,8 +24,9 @@ type GRPCConfig struct {
 type Config struct {
 	Port string `default:"8080"`
 	// Timeout represents graceful shutdown period. Defaults to 60 seconds.
-	Timeout  time.Duration `default:"60s"`
-	GRPC     GRPCConfig
-	NewRelic NewRelicConfig
-	DB       DBConfig
+	Timeout       time.Duration `default:"60s"`
+	CacheSizeInMB int64         `default:"100"`
+	GRPC          GRPCConfig
+	NewRelic      NewRelicConfig
+	DB            DBConfig
 }
