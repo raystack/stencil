@@ -3,6 +3,7 @@ package avro
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
 	"github.com/odpf/stencil/server/domain"
@@ -22,9 +23,10 @@ func (s *Schema) Format() string {
 }
 
 func (s *Schema) GetCanonicalValue() *domain.SchemaFile {
-	id := s.sc.Fingerprint()
+	fingerprint := s.sc.Fingerprint()
+	id := uuid.NewSHA1(uuid.NameSpaceOID, fingerprint[:])
 	return &domain.SchemaFile{
-		ID:   string(id[:]),
+		ID:   id.String(),
 		Data: s.data,
 	}
 }
