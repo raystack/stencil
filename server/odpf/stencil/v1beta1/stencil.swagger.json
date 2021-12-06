@@ -167,6 +167,9 @@
                 "format": {
                   "$ref": "#/definitions/SchemaFormat"
                 },
+                "compatibility": {
+                  "$ref": "#/definitions/SchemaCompatibility"
+                },
                 "description": {
                   "type": "string"
                 }
@@ -482,6 +485,9 @@
         "format": {
           "$ref": "#/definitions/SchemaFormat"
         },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
         "description": {
           "type": "string"
         }
@@ -619,6 +625,9 @@
         },
         "format": {
           "$ref": "#/definitions/SchemaFormat"
+        },
+        "Compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
         },
         "description": {
           "type": "string"
