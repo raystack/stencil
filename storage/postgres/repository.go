@@ -105,14 +105,12 @@ func (r *Store) GetSchema(ctx context.Context, namespaceId, schemaName string, v
 	return data, wrapError(err, "Get schema for %s - %s", namespaceId, schemaName)
 }
 
-func (r *Store) GetLatestSchema(ctx context.Context, namespaceId, schemaName string) ([]byte, error) {
-	var versionID string
-	var data []byte
-	if err := r.db.QueryRow(ctx, getLatestVersionIDFromSchemaNameQuery, namespaceId, schemaName).Scan(&versionID); err != nil {
-		return nil, wrapError(err, "Latest schema for %s - %s", namespaceId, schemaName)
+func (r *Store) GetLatestVersion(ctx context.Context, namespaceId, schemaName string) (int32, error) {
+	var version int32
+	if err := r.db.QueryRow(ctx, getLatestVersionIDFromSchemaNameQuery, namespaceId, schemaName).Scan(&version); err != nil {
+		return version, wrapError(err, "Latest version for %s - %s", namespaceId, schemaName)
 	}
-	err := r.db.QueryRow(ctx, getSchemaDataByVersionID, versionID).Scan(&data)
-	return data, wrapError(err, "Latest schema for %s - %s", namespaceId, schemaName)
+	return version, nil
 }
 
 func (r *Store) GetSchemaMetadata(ctx context.Context, namespace, sc string) (*domain.Metadata, error) {

@@ -28,7 +28,7 @@ type SchemaRepository interface {
 	ListSchemas(context.Context, string) ([]string, error)
 	ListVersions(context.Context, string, string) ([]int32, error)
 	GetSchema(context.Context, string, string, int32) ([]byte, error)
-	GetLatestSchema(context.Context, string, string) ([]byte, error)
+	GetLatestVersion(context.Context, string, string) (int32, error)
 	GetSchemaMetadata(context.Context, string, string) (*Metadata, error)
 	UpdateSchemaMetadata(context.Context, string, string, *Metadata) (*Metadata, error)
 	DeleteSchema(context.Context, string, string) error

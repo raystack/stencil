@@ -69,7 +69,7 @@ WITH schema_id(id) as (
 max_version(value) as (
 	SELECT COALESCE((SELECT MAX(vs.version) from versions as vs WHERE vs.schema_id=(select id from schema_id)), 0)
 )
-SELECT id from versions WHERE version=(select value from max_version) AND schema_id=(select id from schema_id)
+select value from max_version
 `
 
 const getVersionIDFromSchemaNameQuery = `

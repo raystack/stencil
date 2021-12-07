@@ -23,7 +23,6 @@ const (
 	enumValueDelete
 	enumValueDeleteWithoutReservedNumber
 	enumValueDeleteWithoutReservedName
-	enumValueNameChange
 	enumValueNumberChange
 	syntaxChange
 )
@@ -40,7 +39,6 @@ var (
 		fieldTypeChange,
 		enumDelete,
 		enumValueDelete,
-		enumValueNameChange,
 		enumValueNumberChange,
 		syntaxChange}
 	forwardCompatibility = []diffKind{
@@ -54,7 +52,6 @@ var (
 		fieldDeleteWithoutReservedNumber,
 		fieldDeleteWithoutReservedName,
 		enumDelete,
-		enumValueNameChange,
 		enumValueDeleteWithoutReservedNumber,
 		enumValueDeleteWithoutReservedName,
 		enumValueNumberChange,
@@ -69,7 +66,6 @@ var (
 		fieldTypeChange,
 		enumDelete,
 		enumValueDelete,
-		enumValueNameChange,
 		enumValueNumberChange,
 		syntaxChange}
 )
@@ -195,7 +191,7 @@ func compareEnums(current, prev protoreflect.EnumDescriptor, diffs *compatibilit
 	prevValues := prev.Values()
 	for i := 0; i < prevValues.Len(); i++ {
 		prevValue := prevValues.Get(i)
-		currentValue := current.Values().ByNumber(prevValue.Number())
+		currentValue := current.Values().ByName(prevValue.Name())
 		if currentValue == nil {
 			diffs.add(enumValueDelete, prev, `enum value "%s" with number "%d" is deleted from "%s"`, prevValue.Name(), prevValue.Number(), prev.FullName())
 			if !current.ReservedRanges().Has(prevValue.Number()) {
@@ -206,8 +202,8 @@ func compareEnums(current, prev protoreflect.EnumDescriptor, diffs *compatibilit
 			}
 			continue
 		}
-		if prevValue.Name() != currentValue.Name() {
-			diffs.add(enumValueNameChange, prev, `enum value name for "%s" changed from "%s" to "%s"`, prev.FullName(), prevValue.Name(), currentValue.Name())
+		if prevValue.Number() != currentValue.Number() {
+			diffs.add(enumValueNumberChange, prev, `enum value number for "%s" changed from "%d" to "%d"`, prevValue.FullName(), prevValue.Number(), currentValue.Number())
 		}
 	}
 }

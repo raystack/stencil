@@ -10,19 +10,21 @@ import (
 
 func createNamespaceRequestToNamespace(r *stencilv1beta1.CreateNamespaceRequest) domain.Namespace {
 	return domain.Namespace{
-		ID:          r.GetId(),
-		Format:      r.GetFormat().String(),
-		Description: r.GetDescription(),
+		ID:            r.GetId(),
+		Format:        r.GetFormat().String(),
+		Compatibility: r.GetCompatibility().String(),
+		Description:   r.GetDescription(),
 	}
 }
 
 func namespaceToProto(ns domain.Namespace) *stencilv1beta1.Namespace {
 	return &stencilv1beta1.Namespace{
-		Id:          ns.ID,
-		Format:      stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[ns.Format]),
-		Description: ns.Description,
-		CreatedAt:   timestamppb.New(ns.CreatedAt),
-		UpdatedAt:   timestamppb.New(ns.UpdatedAt),
+		Id:            ns.ID,
+		Format:        stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[ns.Format]),
+		Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[ns.Compatibility]),
+		Description:   ns.Description,
+		CreatedAt:     timestamppb.New(ns.CreatedAt),
+		UpdatedAt:     timestamppb.New(ns.UpdatedAt),
 	}
 }
 

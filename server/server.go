@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
 	"github.com/odpf/stencil/config"
@@ -37,11 +38,15 @@ func Start(cfg config.Config) {
 	namespaceService := namespace.Service{
 		Repo: store,
 	}
-	schemaService := &schema.Service{
-		Repo:           store,
-		NamespaceSvc:   namespaceService,
-		SchemaProvider: provider.NewSchemaProvider(),
+	cache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1000,
+		MaxCost:     cfg.CacheSizeInMB << 20,
+		BufferItems: 64,
+	})
+	if err != nil {
+		panic(err)
 	}
+	schemaService := schema.NewService(store, provider.NewSchemaProvider(), namespaceService, cache)
 	api := &api.API{
 		Namespace: namespaceService,
 		Schema:    schemaService,

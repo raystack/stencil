@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -22,6 +23,9 @@ type API struct {
 
 // RegisterSchemaHandlers registers HTTP handlers for schema download
 func (a *API) RegisterSchemaHandlers(mux *runtime.ServeMux) {
+	mux.HandlePath("GET", "/ping", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		fmt.Fprint(w, "pong")
+	})
 	mux.HandlePath("GET", "/v1beta1/namespaces/{namespace}/schemas/{name}/versions/{version}", handleSchemaResponse(mux, a.HTTPGetSchema))
 	mux.HandlePath("GET", "/v1beta1/namespaces/{namespace}/schemas/{name}", handleSchemaResponse(mux, a.HTTPLatestSchema))
 	mux.HandlePath("POST", "/v1beta1/namespaces/{namespace}/schemas/{name}", wrapHandler(mux, a.HTTPUpload))

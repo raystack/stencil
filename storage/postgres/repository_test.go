@@ -138,10 +138,10 @@ func TestStorage(t *testing.T) {
 			assert.Nil(t, err)
 			assert.Equal(t, "FULL", actual.Compatibility)
 		})
-		t.Run("getLatest: should return latest schema", func(t *testing.T) {
-			s, err := store.GetLatestSchema(ctx, n.ID, "sName")
+		t.Run("getLatestVersion: should return latest schema version", func(t *testing.T) {
+			s, err := store.GetLatestVersion(ctx, n.ID, "sName")
 			assert.Nil(t, err)
-			assert.Equal(t, []byte("testdata-2"), s)
+			assert.Equal(t, int32(2), s)
 		})
 		t.Run("deleteVersion: should delete specified version schema", func(t *testing.T) {
 			err := store.DeleteVersion(ctx, n.ID, "sName", int32(2))

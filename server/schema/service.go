@@ -19,10 +19,50 @@ func getNonEmpty(args ...string) string {
 	return ""
 }
 
+func schemaKeyFunc(nsName, schema string, version int32) string {
+	return fmt.Sprintf("%s-%s-%d", nsName, schema, version)
+}
+
+func getBytes(key interface{}) []byte {
+	buf, _ := key.([]byte)
+	return buf
+}
+
+func NewService(repo domain.SchemaRepository, provider SchemaProvider, nsSvc domain.NamespaceService, cache schemaCache) *Service {
+	return &Service{
+		Repo:           repo,
+		SchemaProvider: provider,
+		NamespaceSvc:   nsSvc,
+		cache:          cache,
+	}
+}
+
+type schemaCache interface {
+	Get(interface{}) (interface{}, bool)
+	Set(interface{}, interface{}, int64) bool
+}
+
 type Service struct {
 	SchemaProvider SchemaProvider
 	Repo           domain.SchemaRepository
 	NamespaceSvc   domain.NamespaceService
+	cache          schemaCache
+}
+
+func (s *Service) cachedGetSchema(ctx context.Context, nsName, schemaName string, version int32) ([]byte, error) {
+	key := schemaKeyFunc(nsName, schemaName, version)
+	val, found := s.cache.Get(key)
+	if !found {
+		var data []byte
+		var err error
+		data, err = s.Repo.GetSchema(ctx, nsName, schemaName, version)
+		if err != nil {
+			return data, err
+		}
+		s.cache.Set(key, data, int64(len(data)))
+		return data, err
+	}
+	return getBytes(val), nil
 }
 
 func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
@@ -66,7 +106,7 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	return domain.SchemaInfo{
 		Version:  version,
 		ID:       versionID,
-		Location: fmt.Sprintf("/v1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version),
+		Location: fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version),
 	}, err
 }
 
@@ -81,7 +121,7 @@ func (s *Service) withMetadata(ctx context.Context, namespace, schemaName string
 }
 
 func (s *Service) Get(ctx context.Context, namespace string, schemaName string, version int32) (*domain.Metadata, []byte, error) {
-	return s.withMetadata(ctx, namespace, schemaName, func() ([]byte, error) { return s.Repo.GetSchema(ctx, namespace, schemaName, version) })
+	return s.withMetadata(ctx, namespace, schemaName, func() ([]byte, error) { return s.cachedGetSchema(ctx, namespace, schemaName, version) })
 }
 
 func (s *Service) Delete(ctx context.Context, namespace string, schemaName string) error {
@@ -93,7 +133,11 @@ func (s *Service) DeleteVersion(ctx context.Context, namespace string, schemaNam
 }
 
 func (s *Service) GetLatest(ctx context.Context, namespace string, schemaName string) (*domain.Metadata, []byte, error) {
-	return s.withMetadata(ctx, namespace, schemaName, func() ([]byte, error) { return s.Repo.GetLatestSchema(ctx, namespace, schemaName) })
+	version, err := s.Repo.GetLatestVersion(ctx, namespace, schemaName)
+	if err != nil {
+		return nil, nil, err
+	}
+	return s.Get(ctx, namespace, schemaName, version)
 }
 
 func (s *Service) GetMetadata(ctx context.Context, namespace, schemaName string) (*domain.Metadata, error) {
