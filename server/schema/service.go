@@ -106,7 +106,7 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	return domain.SchemaInfo{
 		Version:  version,
 		ID:       versionID,
-		Location: fmt.Sprintf("/v1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version),
+		Location: fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version),
 	}, err
 }
 
