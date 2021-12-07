@@ -1,3 +1,44 @@
+## [v0.1.4](https://github.com/odpf/stencil/compare/v0.1.3...v0.1.4) (2021-12-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **server:** remove cloud storage support as backend store
+
+### Features
+
+* add caching ([#92](https://github.com/odpf/stencil/issues/92)) ([c6f4f34](https://github.com/odpf/stencil/commit/c6f4f34b9db3ee689f49b6717da9ffc7b0d8310c))
+* add cli commands ([#53](https://github.com/odpf/stencil/issues/53)) ([78502c1](https://github.com/odpf/stencil/commit/78502c1936b0295e5b7aee408dc09c438120dd73))
+* add CNCF spec compatible apis ([#87](https://github.com/odpf/stencil/issues/87)) ([958d3b9](https://github.com/odpf/stencil/commit/958d3b911b6b6b6e6e6cf74a9ff69ba81f25f8db))
+* add db abstraction to support multiple dbs ([#59](https://github.com/odpf/stencil/issues/59)) ([03104ce](https://github.com/odpf/stencil/commit/03104ce8e4c25cd251054784331fcd90e1ebdebe))
+* add dev command grouping ([ad2189f](https://github.com/odpf/stencil/commit/ad2189fb1862d11d2c7f2d9a4d8bde81bf44ad05))
+* add merge descriptor feature providing backward compatibility ([#58](https://github.com/odpf/stencil/issues/58)) ([90a8931](https://github.com/odpf/stencil/commit/90a8931a46adff3091ad92897b7d781f4dd3ae18))
+* add protobuf compatibility checks ([#88](https://github.com/odpf/stencil/issues/88)) ([62a5555](https://github.com/odpf/stencil/commit/62a55556843f3780451ee6a0cc2c94fcc93af88f))
+* add search API ([#72](https://github.com/odpf/stencil/issues/72)) ([1cf4b58](https://github.com/odpf/stencil/commit/1cf4b5891bcdca0e936eca988df948a58f436a2c))
+* add support for visualisation of proto descriptor file dependencies ([#71](https://github.com/odpf/stencil/issues/71)) ([fe5bbf0](https://github.com/odpf/stencil/commit/fe5bbf0e365a33d4539de28316f90a9d9d09a528))
+* add type API ([#82](https://github.com/odpf/stencil/issues/82)) ([b68d488](https://github.com/odpf/stencil/commit/b68d4886ecd86c7e7011eff53717ca6b8b88becf))
+* embed database migrations ([#55](https://github.com/odpf/stencil/issues/55)) ([dd5e8c4](https://github.com/odpf/stencil/commit/dd5e8c409068d5d67fb060973d8ad5bac8c150f8))
+* print cmd for uploaded snapshots ([#60](https://github.com/odpf/stencil/issues/60)) ([5aca993](https://github.com/odpf/stencil/commit/5aca99346d486ad4126a2c671060881227c69123))
+* support different content types based on schema type ([#91](https://github.com/odpf/stencil/issues/91)) ([1fc405e](https://github.com/odpf/stencil/commit/1fc405e4edcdf61c7a03b4920fff3da4bcfd4cbb))
+* **cmd:** add custom help and grouping for commands ([#57](https://github.com/odpf/stencil/issues/57)) ([837b40f](https://github.com/odpf/stencil/commit/837b40f7c75054b17ffc773a1b243ce0fde8aa37))
+* **go-client:** add Serialize() method to serialize data to protobuf ([#62](https://github.com/odpf/stencil/issues/62)) ([f81115d](https://github.com/odpf/stencil/commit/f81115d4561a52c3e2a0a9db8206b1864be953f3))
+* provide flag to load server config ([#54](https://github.com/odpf/stencil/issues/54)) ([d2342aa](https://github.com/odpf/stencil/commit/d2342aa5d5ce5a359daa380f3b6da49dabdd916a))
+* support gRPC and http apis ([#41](https://github.com/odpf/stencil/issues/41)) ([90a5f25](https://github.com/odpf/stencil/commit/90a5f25d0ec01705f9725db2ff6226d598d3c71d))
+* **server:** add docker-compose for dev setup ([a8ab18c](https://github.com/odpf/stencil/commit/a8ab18ccaf6112a43ea69c6ddb6e28cbd97edd3f))
+* **server:** add migrate command ([d986f36](https://github.com/odpf/stencil/commit/d986f36858eed2f8de7282e0b85552a5f74da8b8))
+* **server:** add postgres data store ([1cda77d](https://github.com/odpf/stencil/commit/1cda77da30cbd7c949d4728ff809aa5865f22b0c))
+
+
+### Bug Fixes
+
+* **server:** handle no data on download api ([079cc82](https://github.com/odpf/stencil/commit/079cc825444be95e21531f6c68ef3d362f308984))
+* **server:** upgrade gin version ([fc5a2fa](https://github.com/odpf/stencil/commit/fc5a2fa795e2c07fdecf17597dc7c0f83114726a))
+
+
+### Code Refactoring
+
+* **server:** remove cloud storage support as backend store ([d19aad8](https://github.com/odpf/stencil/commit/d19aad884ce02a2b7cc1ea914d88b88e0144708c))
+
 ## [v0.1.3](https://github.com/odpf/stencil/compare/v0.1.2...v0.1.3) (2021-06-29)
 
 
