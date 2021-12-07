@@ -1,3 +1,10 @@
+## [v0.1.5](https://github.com/odpf/stencil/compare/v0.1.4...v0.1.5) (2021-12-07)
+
+
+### Bug Fixes
+
+* make config.yaml file optional ([b3c57ae](https://github.com/odpf/stencil/commit/b3c57ae4227bee763a6a07dca545b94dbf31becc))
+
 ## [v0.1.4](https://github.com/odpf/stencil/compare/v0.1.3...v0.1.4) (2021-12-07)
 
 
