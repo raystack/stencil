@@ -8,6 +8,5 @@ FROM alpine:3.13
 RUN apk --no-cache add ca-certificates bash
 WORKDIR /root/
 EXPOSE 8080
-COPY ./server/migrations /root/migrations
 COPY --from=builder /go/src/github.com/odpf/stencil/dist/linux-amd64/stencil .
 ENTRYPOINT ["./stencil"]
