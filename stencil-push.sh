@@ -68,4 +68,20 @@ elif [[ $http_response =~ ^[4-5][0-9][0-9]$ ]]; then
     rm $response_filename
     exit 1
 fi
+
+ACTION="Upload proto descriptor to v1beta1 stencil service with version number: $project_version"
+log_info $ACTION
+response_filename="/tmp/stencil_out_$( cat /dev/urandom | base64 | tr -cd 'a-f0-9' | head -c 16 ).txt"
+http_response=$(curl -s -o $response_filename -w "%{http_code}" -u $STENCIL_USERNAME:$STENCIL_PASSWORD -X POST "https://$STENCIL_HOSTNAME/v1beta1/schemas" --data-binary "@$file_path")
+if [ $? != 0 ]; then
+    log_error "curl request failed"
+    exit 1
+elif [[ $http_response =~ ^[4-5][0-9][0-9]$ ]]; then
+    log_error "status_code:" $http_response
+    log_error $(cat $response_filename)
+    rm $response_filename
+    exit 1
+else
+    log_info $(cat $response_filename)
+fi
 trap - EXIT
