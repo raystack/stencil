@@ -3,6 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
+gem install bundler:1.17.3
 bundle install
 
 # Do any other automated setup that you need to do here
