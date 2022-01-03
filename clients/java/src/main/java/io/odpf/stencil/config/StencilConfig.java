@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class StencilConfig {
 
     /**
-     * HTTP timeout while fetching a protobuf descriptor set file from remote URL
+     * HTTP timeout while fetching a protobuf descriptor set file from remote URL. Default 10000 ms
      * @param fetchTimeoutMs HTTP timeout while fetching a protobuf descriptor set file from remote URL
      * @return HTTP timeout while fetching a protobuf descriptor set file from remote URL
      */
@@ -23,12 +23,12 @@ public class StencilConfig {
     @Builder.Default
     Integer fetchRetries = 4;
     /**
-     * Min starting Backoff when retrying, backoff gets doubled every retry till {@link #fetchRetries} are reached
+     * Min starting Backoff when retrying, backoff gets doubled every retry till {@link #fetchRetries} are reached. Default value set to 5000
      * @param fetchBackoffMinMs Min starting Backoff when retrying, backoff gets doubled every retry till {@link #fetchRetries} are reached
      * @return Min starting Backoff when retrying, backoff gets doubled every retry till {@link #fetchRetries} are reached
      */
     @Builder.Default
-    Long fetchBackoffMinMs = 0L;
+    Long fetchBackoffMinMs = 5000L;
     /**
      * Bearer token to be used in HTTP Authorization header while fetching protobuf descriptor set files
      * @param fetchAuthBearerToken Bearer token to be used in HTTP Authorization header while fetching protobuf descriptor set files

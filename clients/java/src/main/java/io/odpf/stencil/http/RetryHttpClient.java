@@ -1,7 +1,6 @@
 package io.odpf.stencil.http;
 
 import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.utils.RandomUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -20,14 +19,11 @@ import java.util.List;
 public class RetryHttpClient {
     private final Logger logger = LoggerFactory.getLogger(RemoteFileImpl.class);
 
-    private static final int DEFAULT_STENCIL_BACKOFF_MS_MIN = 2000;
-    private static final int DEFAULT_STENCIL_BACKOFF_MS_MAX = 5000;
 
     public CloseableHttpClient create(StencilConfig stencilConfig) {
 
         int timeout = stencilConfig.getFetchTimeoutMs();
-        long backoffMs = stencilConfig.getFetchBackoffMinMs() != 0 ? stencilConfig.getFetchBackoffMinMs() :
-                new RandomUtils().getRandomNumberInRange(DEFAULT_STENCIL_BACKOFF_MS_MIN, DEFAULT_STENCIL_BACKOFF_MS_MAX);
+        long backoffMs = stencilConfig.getFetchBackoffMinMs();
         int retries = stencilConfig.getFetchRetries();
         List<Header> defaultHeaders = new ArrayList<>();
 
