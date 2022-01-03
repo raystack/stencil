@@ -6,7 +6,6 @@ import io.odpf.stencil.DescriptorMapBuilder;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 public class URLStencilClientWithCacheTest {
 
-    private Map<String, DescriptorAndTypeName> descriptorMap;
+    private Map<String, Descriptors.Descriptor> descriptorMap;
     private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
     private static final String LOOKUP_KEY = "io.odpf.stencil.TestMessage";
 

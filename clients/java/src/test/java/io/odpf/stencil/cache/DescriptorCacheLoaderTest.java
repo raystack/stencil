@@ -1,11 +1,11 @@
 package io.odpf.stencil.cache;
 
 import com.google.common.io.ByteStreams;
+import com.google.protobuf.Descriptors;
 import com.timgroup.statsd.NoOpStatsDClient;
 import io.odpf.stencil.TestKey;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import io.odpf.stencil.http.RemoteFile;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.apache.http.client.ClientProtocolException;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class DescriptorCacheLoaderTest {
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
         DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null, true);
-        Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
+        Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
     }
 
@@ -66,8 +66,8 @@ public class DescriptorCacheLoaderTest {
 
         DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), null, true);
 
-        Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
-        Map<String, DescriptorAndTypeName> result = cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get();
+        Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
+        Map<String, Descriptors.Descriptor> result = cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get();
         assertEquals(result.size(), 0);
     }
 
@@ -81,8 +81,8 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(LOOKUP_KEY)).thenReturn(bytes);
         DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(remoteFile, new NoOpStatsDClient(), protoUpdateListener, true);
-        Map<String, DescriptorAndTypeName> prevDescriptor = new HashMap<>();
-        prevDescriptor.put(LOOKUP_KEY, new DescriptorAndTypeName(TestKey.getDescriptor(), TYPENAME_KEY));
+        Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
+        prevDescriptor.put(LOOKUP_KEY, TestKey.getDescriptor());
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
         verify(protoUpdateListener, times(1)).onProtoUpdate(any(String.class), any(Map.class));
     }

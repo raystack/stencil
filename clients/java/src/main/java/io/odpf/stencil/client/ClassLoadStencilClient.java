@@ -1,7 +1,6 @@
 package io.odpf.stencil.client;
 
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -35,16 +34,6 @@ public class ClassLoadStencilClient implements Serializable, StencilClient {
 
     @Override
     public Map<String, Descriptors.Descriptor> getAll() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Map<String, String> getTypeNameToPackageNameMap() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Map<String, DescriptorAndTypeName> getAllDescriptorAndTypeName() {
         throw new UnsupportedOperationException();
     }
 

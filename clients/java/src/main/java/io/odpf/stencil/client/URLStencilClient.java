@@ -8,7 +8,6 @@ import com.google.protobuf.Descriptors;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,7 @@ import static com.google.common.base.Ticker.systemTicker;
 public class URLStencilClient implements Serializable, StencilClient {
     private String url;
     private DescriptorCacheLoader cacheLoader;
-    private LoadingCache<String, Map<String, DescriptorAndTypeName>> descriptorCache;
+    private LoadingCache<String, Map<String, Descriptors.Descriptor>> descriptorCache;
     private long ttlMs;
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
     private boolean shouldAutoRefreshCache;
@@ -67,8 +66,7 @@ public class URLStencilClient implements Serializable, StencilClient {
     @Override
     public Descriptors.Descriptor get(String className) {
         try {
-            DescriptorAndTypeName descriptorAndTypeName = descriptorCache.get(url).get(className);
-            return descriptorAndTypeName != null ? descriptorAndTypeName.getDescriptor() : null;
+            return descriptorCache.get(url).get(className);
         } catch (UncheckedExecutionException | ExecutionException e) {
             throw new StencilRuntimeException(e);
         }
@@ -82,38 +80,13 @@ public class URLStencilClient implements Serializable, StencilClient {
         try {
             Map<String, Descriptors.Descriptor> descriptorMap = new HashMap<>();
             descriptorCache.get(url).entrySet().stream().forEach(mapEntry -> {
-                DescriptorAndTypeName descriptorAndTypeName = mapEntry.getValue();
-                if (descriptorAndTypeName != null) {
-                    descriptorMap.put(mapEntry.getKey(), descriptorAndTypeName.getDescriptor());
+                Descriptors.Descriptor desc = mapEntry.getValue();
+                if (desc != null) {
+                    descriptorMap.put(mapEntry.getKey(), desc);
                 }
             });
             return descriptorMap;
         } catch (UncheckedExecutionException | ExecutionException e) {
-            throw new StencilRuntimeException(e);
-        }
-    }
-
-    @Override
-    public Map<String, String> getTypeNameToPackageNameMap() {
-        try {
-            Map<String, String> typeNameMap = new HashMap<>();
-            descriptorCache.get(url).entrySet().stream().forEach(mapEntry -> {
-                DescriptorAndTypeName descriptorAndTypeName = mapEntry.getValue();
-                if (descriptorAndTypeName != null) {
-                    typeNameMap.put(descriptorAndTypeName.getTypeName(), mapEntry.getKey());
-                }
-            });
-            return typeNameMap;
-        } catch (UncheckedExecutionException | ExecutionException e) {
-            throw new StencilRuntimeException(e);
-        }
-    }
-
-    @Override
-    public Map<String, DescriptorAndTypeName> getAllDescriptorAndTypeName() {
-        try {
-            return descriptorCache.get(url);
-        } catch (ExecutionException e) {
             throw new StencilRuntimeException(e);
         }
     }
