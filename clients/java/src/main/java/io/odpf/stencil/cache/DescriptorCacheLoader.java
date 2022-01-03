@@ -29,13 +29,13 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
     private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL);
     private RemoteFile remoteFile;
     private ProtoUpdateListener protoUpdateListener;
-    private boolean asyncRefresh;
+    private boolean shouldRefresh;
 
-    public DescriptorCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener, boolean asyncRefresh) {
+    public DescriptorCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener, boolean shouldRefresh) {
         this.remoteFile = remoteFile;
         this.statsDClient = statsDClient;
         this.protoUpdateListener = protoUpdateListener;
-        this.asyncRefresh = asyncRefresh;
+        this.shouldRefresh = shouldRefresh;
     }
 
     @Override
@@ -46,10 +46,10 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
 
     @Override
     public ListenableFuture<Map<String, DescriptorAndTypeName>> reload(final String key, final Map<String, DescriptorAndTypeName> prevDescriptor) {
-        logger.info("reloading the cache to get the new descriptors");
-        if(!asyncRefresh) {
-            return Futures.immediateFuture(refreshMap(key, prevDescriptor));
+        if(!shouldRefresh) {
+            return Futures.immediateFuture(prevDescriptor);
         }
+        logger.info("reloading the cache to get the new descriptors");
         ListenableFutureTask<Map<String, DescriptorAndTypeName>> task = ListenableFutureTask.create(
                 () -> {
                     try {

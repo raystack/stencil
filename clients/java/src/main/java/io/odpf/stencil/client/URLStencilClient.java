@@ -53,17 +53,11 @@ public class URLStencilClient implements Serializable, StencilClient {
         this.url = url;
         this.cacheLoader = cacheLoader;
 
-        if (stencilConfig.getCacheAutoRefresh()) {
-            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                    .refreshAfterWrite(ttlMs, TimeUnit.MILLISECONDS)
-                    .build(cacheLoader);
-            logger.info("configuring URL Stencil client with TTL: {} milliseconds", ttlMs);
-        } else {
-            descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                    .build(cacheLoader);
-        }
-
-        logger.info("initialising URL Stencil client with auto refresh: {}", shouldAutoRefreshCache);
+        descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
+                .refreshAfterWrite(ttlMs, TimeUnit.MILLISECONDS)
+                .build(cacheLoader);
+        logger.info("configuring URL Stencil client with TTL: {} milliseconds, auto refresh: {}", ttlMs,
+                shouldAutoRefreshCache);
     }
 
     /**
