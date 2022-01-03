@@ -9,7 +9,6 @@ import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import io.odpf.stencil.models.DescriptorAndTypeName;
-import io.odpf.stencil.utils.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +29,6 @@ public class URLStencilClient implements Serializable, StencilClient {
     private DescriptorCacheLoader cacheLoader;
     private LoadingCache<String, Map<String, DescriptorAndTypeName>> descriptorCache;
     private long ttlMs;
-    private static final long DEFAULT_TTL_MIN = TimeUnit.MINUTES.toMillis(30);
-    private static final long DEFAULT_TTL_MAX = TimeUnit.MINUTES.toMillis(60);
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
     private boolean shouldAutoRefreshCache;
 
@@ -52,8 +49,7 @@ public class URLStencilClient implements Serializable, StencilClient {
      */
     public URLStencilClient(String url, StencilConfig stencilConfig, DescriptorCacheLoader cacheLoader, Ticker ticker) {
         this.shouldAutoRefreshCache = stencilConfig.getCacheAutoRefresh();
-        this.ttlMs = stencilConfig.getCacheTtlMs() != 0 ? stencilConfig.getCacheTtlMs() :
-                getDefaultTTLMs();
+        this.ttlMs = stencilConfig.getCacheTtlMs();
         this.url = url;
         this.cacheLoader = cacheLoader;
 
@@ -134,10 +130,6 @@ public class URLStencilClient implements Serializable, StencilClient {
 
     public long getTTLMs() {
         return ttlMs;
-    }
-
-    private long getDefaultTTLMs() {
-        return new RandomUtils().getRandomNumberInRange(DEFAULT_TTL_MIN, DEFAULT_TTL_MAX);
     }
 
     @Override
