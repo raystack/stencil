@@ -2,6 +2,7 @@ package io.odpf.stencil.config;
 
 import lombok.Builder;
 import lombok.Getter;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Builder
@@ -42,10 +43,10 @@ public class StencilConfig {
     @Builder.Default
     Boolean cacheAutoRefresh = false;
     /**
-     * Time to Live for cache storing protobuf descriptors in milliseconds
+     * Time to Live for cache storing protobuf descriptors in milliseconds. Default duration is 24 hours
      * @param cacheTtlMs Time to Live for cache storing protobuf descriptors in milliseconds
      * @return Time to Live for cache storing protobuf descriptors in milliseconds
      */
     @Builder.Default
-    Long cacheTtlMs = 0L;
+    Long cacheTtlMs = TimeUnit.HOURS.toMillis(24);
 }
