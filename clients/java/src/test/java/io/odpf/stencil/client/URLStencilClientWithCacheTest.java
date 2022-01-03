@@ -2,7 +2,12 @@ package io.odpf.stencil.client;
 
 import com.google.common.testing.FakeTicker;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.DynamicMessage;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Struct;
 import io.odpf.stencil.DescriptorMapBuilder;
+import io.odpf.stencil.NestedField;
+import io.odpf.stencil.account_db_accounts.FULLDOCUMENT;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
@@ -90,6 +95,50 @@ public class URLStencilClientWithCacheTest {
         verify(cacheLoader, times(1)).load(LOOKUP_KEY);
         verify(cacheLoader, times(1)).reload(LOOKUP_KEY, descriptorMap);
         assertNotNull(reloadedResult);
+    }
+
+    @Test(expected = StencilRuntimeException.class)
+    public void shouldThrowExceptionOnDescriptorNotFound() throws InvalidProtocolBufferException {
+        DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
+        when(cacheLoader.load(LOOKUP_KEY)).thenReturn(descriptorMap);
+
+        FakeTicker fakeTicker = new FakeTicker();
+        StencilConfig stencilConfig = StencilConfig.builder().cacheAutoRefresh(true).build();
+
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, stencilConfig, cacheLoader, fakeTicker);
+        NestedField msg = NestedField.newBuilder().setStringField("stencil").setIntField(10).build();
+        stencilClient.parse("io.odpf.stencil.invalid", msg.toByteArray());
+    }
+
+    @Test(expected = InvalidProtocolBufferException.class)
+    public void shouldThrowExceptionOnParsingInvalidData() throws InvalidProtocolBufferException {
+        DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
+        descriptorMap.put("com.google.protobuf.Struct", Struct.getDescriptor());
+        when(cacheLoader.load(LOOKUP_KEY)).thenReturn(descriptorMap);
+
+        FakeTicker fakeTicker = new FakeTicker();
+        StencilConfig stencilConfig = StencilConfig.builder().cacheAutoRefresh(true).build();
+
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, stencilConfig, cacheLoader, fakeTicker);
+        FULLDOCUMENT msg = FULLDOCUMENT.newBuilder().setCif("cifvalue").setId("idvalue").build();
+        stencilClient.parse("com.google.protobuf.Struct", msg.toByteArray());
+    }
+
+    @Test
+    public void parseShouldCreateDynamicMessageOnValidData() throws InvalidProtocolBufferException {
+        DescriptorCacheLoader cacheLoader = mock(DescriptorCacheLoader.class);
+        when(cacheLoader.load(LOOKUP_KEY)).thenReturn(descriptorMap);
+
+        FakeTicker fakeTicker = new FakeTicker();
+        StencilConfig stencilConfig = StencilConfig.builder().cacheAutoRefresh(true).build();
+
+        URLStencilClient stencilClient = new URLStencilClient(LOOKUP_KEY, stencilConfig, cacheLoader, fakeTicker);
+        FULLDOCUMENT msg = FULLDOCUMENT.newBuilder().setCif("cifvalue").setId("idvalue").build();
+        DynamicMessage newMsg = stencilClient.parse("io.odpf.stencil.account_db_accounts.FULLDOCUMENT", msg.toByteArray());
+        Descriptors.Descriptor desc = stencilClient.get("io.odpf.stencil.account_db_accounts.FULLDOCUMENT");
+        assertNotNull(newMsg);
+        Object value = newMsg.getField(desc.findFieldByNumber(1));
+        assertEquals("idvalue", value);
     }
 
 }
