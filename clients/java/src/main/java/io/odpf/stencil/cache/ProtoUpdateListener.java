@@ -1,8 +1,8 @@
 package io.odpf.stencil.cache;
 
-import io.odpf.stencil.models.DescriptorAndTypeName;
-
 import java.util.Map;
+
+import com.google.protobuf.Descriptors;
 
 public abstract class ProtoUpdateListener {
     private String proto;
@@ -15,5 +15,5 @@ public abstract class ProtoUpdateListener {
         return proto;
     }
 
-    public abstract void onProtoUpdate(String url, final Map<String, DescriptorAndTypeName> newDescriptor);
+    public abstract void onProtoUpdate(String url, final Map<String, Descriptors.Descriptor> newDescriptor);
 }

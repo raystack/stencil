@@ -3,7 +3,6 @@ package io.odpf.stencil.client;
 import com.google.protobuf.Descriptors;
 import io.odpf.stencil.cache.DescriptorCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,22 +40,6 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
     public Map<String, Descriptors.Descriptor> getAll() {
         Map<String, Descriptors.Descriptor> requiredStencil = new HashMap<>();
         stencilClients.stream().map(StencilClient::getAll)
-                .forEach(requiredStencil::putAll);
-        return requiredStencil;
-    }
-
-    @Override
-    public Map<String, String> getTypeNameToPackageNameMap() {
-        Map<String, String> requiredStencil = new HashMap<>();
-        stencilClients.stream().map(StencilClient::getTypeNameToPackageNameMap)
-                .forEach(requiredStencil::putAll);
-        return requiredStencil;
-    }
-
-    @Override
-    public Map<String, DescriptorAndTypeName> getAllDescriptorAndTypeName() {
-        Map<String, DescriptorAndTypeName> requiredStencil = new HashMap<>();
-        stencilClients.stream().map(StencilClient::getAllDescriptorAndTypeName)
                 .forEach(requiredStencil::putAll);
         return requiredStencil;
     }

@@ -2,7 +2,6 @@ package io.odpf.stencil;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +15,8 @@ import java.util.Map;
  */
 public class DescriptorMapBuilder {
 
-    public Map<String, DescriptorAndTypeName> buildFrom(InputStream stream) throws IOException, Descriptors.DescriptorValidationException {
-        Map<String, DescriptorAndTypeName> descriptorMap = new HashMap<>();
+    public Map<String, Descriptors.Descriptor> buildFrom(InputStream stream) throws IOException, Descriptors.DescriptorValidationException {
+        Map<String, Descriptors.Descriptor> descriptorMap = new HashMap<>();
         ArrayList<Descriptors.FileDescriptor> fileDescriptors = new ArrayList<>();
 
         DescriptorProtos.FileDescriptorSet descriptorSet = DescriptorProtos.FileDescriptorSet.parseFrom(stream);
@@ -37,16 +36,10 @@ public class DescriptorMapBuilder {
         return descriptorMap;
     }
 
-    private Map<String, DescriptorAndTypeName> getFlattenedDescriptors(Descriptors.Descriptor descriptor, String javaPackage, String protoPackage, String parentClassName, Map<String, DescriptorAndTypeName> initialDescriptorMap) {
+    private Map<String, Descriptors.Descriptor> getFlattenedDescriptors(Descriptors.Descriptor descriptor, String javaPackage, String protoPackage, String parentClassName, Map<String, Descriptors.Descriptor> initialDescriptorMap) {
         String className = getClassName(descriptor, parentClassName);
         String javaClassName = javaPackage.isEmpty() ? className : String.format("%s.%s", javaPackage, className);
-        String typeName = protoPackage.isEmpty() ? String.format(".%s", className) : String.format(".%s.%s", protoPackage, className);
-        initialDescriptorMap.put(
-                javaClassName,
-                new DescriptorAndTypeName(
-                        descriptor,
-                        typeName
-                ));
+        initialDescriptorMap.put(javaClassName, descriptor);
         descriptor.getNestedTypes()
                 .forEach(desc -> getFlattenedDescriptors(desc, javaPackage, protoPackage, className, initialDescriptorMap));
         return initialDescriptorMap;

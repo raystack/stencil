@@ -9,7 +9,6 @@ import com.timgroup.statsd.StatsDClient;
 import io.odpf.stencil.DescriptorMapBuilder;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import io.odpf.stencil.http.RemoteFile;
-import io.odpf.stencil.models.DescriptorAndTypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DescriptorCacheLoader extends CacheLoader<String, Map<String, DescriptorAndTypeName>> implements Closeable {
+public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descriptors.Descriptor>> implements Closeable {
     private static final Integer DEFAULT_THREAD_POOL = 2;
     private final Logger logger = LoggerFactory.getLogger(DescriptorCacheLoader.class);
     private StatsDClient statsDClient;
@@ -39,18 +38,18 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
     }
 
     @Override
-    public Map<String, DescriptorAndTypeName> load(String key) {
+    public Map<String, Descriptors.Descriptor> load(String key) {
         logger.info("loading stencil cache");
         return refreshMap(key, new HashMap<>());
     }
 
     @Override
-    public ListenableFuture<Map<String, DescriptorAndTypeName>> reload(final String key, final Map<String, DescriptorAndTypeName> prevDescriptor) {
+    public ListenableFuture<Map<String, Descriptors.Descriptor>> reload(final String key, final Map<String, Descriptors.Descriptor> prevDescriptor) {
         if(!shouldRefresh) {
             return Futures.immediateFuture(prevDescriptor);
         }
         logger.info("reloading the cache to get the new descriptors");
-        ListenableFutureTask<Map<String, DescriptorAndTypeName>> task = ListenableFutureTask.create(
+        ListenableFutureTask<Map<String, Descriptors.Descriptor>> task = ListenableFutureTask.create(
                 () -> {
                     try {
                         return refreshMap(key, prevDescriptor);
@@ -64,14 +63,14 @@ public class DescriptorCacheLoader extends CacheLoader<String, Map<String, Descr
         return task;
     }
 
-    private Map<String, DescriptorAndTypeName> refreshMap(String url, final Map<String, DescriptorAndTypeName> prevDescriptor) {
+    private Map<String, Descriptors.Descriptor> refreshMap(String url, final Map<String, Descriptors.Descriptor> prevDescriptor) {
         try {
             logger.info("fetching descriptors from {}", url);
             byte[] descriptorBin = remoteFile.fetch(url);
             logger.info("successfully fetched {}", url);
             InputStream inputStream = new ByteArrayInputStream(descriptorBin);
             statsDClient.count("stencil.client.refresh,status=success", 1);
-            Map<String, DescriptorAndTypeName> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
+            Map<String, Descriptors.Descriptor> newDescriptorsMap = new DescriptorMapBuilder().buildFrom(inputStream);
 
             if (protoUpdateListener != null && !prevDescriptor.isEmpty()) {
                 protoUpdateListener.onProtoUpdate(url, newDescriptorsMap);
