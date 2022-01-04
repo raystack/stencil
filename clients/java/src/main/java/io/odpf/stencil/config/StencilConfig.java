@@ -2,7 +2,12 @@ package io.odpf.stencil.config;
 
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.http.Header;
 
 @Getter
 @Builder
@@ -29,12 +34,15 @@ public class StencilConfig {
      */
     @Builder.Default
     Long fetchBackoffMinMs = 5000L;
+
     /**
-     * Bearer token to be used in HTTP Authorization header while fetching protobuf descriptor set files
-     * @param fetchAuthBearerToken Bearer token to be used in HTTP Authorization header while fetching protobuf descriptor set files
-     * @return Bearer token to be used in HTTP Authorization header while fetching protobuf descriptor set files
+     * These headers will be added to fetch request. Default empty list
+     * @param fetchHeaders list of headers passed to fetch request
+     * @return List of headers
      */
-    String fetchAuthBearerToken;
+    @Builder.Default
+    List<Header> fetchHeaders = new ArrayList<Header>();
+
     /**
      * enable or disable cache auto refresh, enabling would refresh the cache after {@link #cacheTtlMs} is reached
      * @param cacheAutoRefresh enable or disable cache auto refresh, enabling would refresh the cache after {@link #cacheTtlMs} is reached
