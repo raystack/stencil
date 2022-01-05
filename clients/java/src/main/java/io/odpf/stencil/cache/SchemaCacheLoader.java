@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.protobuf.Descriptors;
 import com.timgroup.statsd.StatsDClient;
 import io.odpf.stencil.DescriptorMapBuilder;
+import io.odpf.stencil.SchemaUpdateListener;
 import io.odpf.stencil.http.RemoteFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +24,11 @@ public class SchemaCacheLoader extends CacheLoader<String, Map<String, Descripto
     private StatsDClient statsDClient;
     private ExecutorService executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL);
     private RemoteFile remoteFile;
-    private ProtoUpdateListener protoUpdateListener;
+    private SchemaUpdateListener protoUpdateListener;
     private boolean shouldRefresh;
     private SchemaRefreshStrategy refreshStrategy;
 
-    public SchemaCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener, SchemaRefreshStrategy refreshStrategy, boolean shouldRefresh) {
+    public SchemaCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient, SchemaUpdateListener protoUpdateListener, SchemaRefreshStrategy refreshStrategy, boolean shouldRefresh) {
         this.remoteFile = remoteFile;
         this.statsDClient = statsDClient;
         this.protoUpdateListener = protoUpdateListener;
@@ -52,7 +53,7 @@ public class SchemaCacheLoader extends CacheLoader<String, Map<String, Descripto
                 Map<String, Descriptors.Descriptor> newDescriptor = refreshStrategy.refresh(key, remoteFile, prevDescriptor);
                 statsDClient.count("stencil.client.refresh,status=success", 1);
                 if (prevDescriptor != newDescriptor && protoUpdateListener != null) {
-                    protoUpdateListener.onProtoUpdate(key, newDescriptor);
+                    protoUpdateListener.onSchemaUpdate(newDescriptor);
                 }
                 return newDescriptor;
             } catch (Throwable e) {

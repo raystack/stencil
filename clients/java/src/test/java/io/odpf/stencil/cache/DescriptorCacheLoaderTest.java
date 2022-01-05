@@ -3,13 +3,14 @@ package io.odpf.stencil.cache;
 import com.google.common.io.ByteStreams;
 import com.google.protobuf.Descriptors;
 import com.timgroup.statsd.NoOpStatsDClient;
+import io.odpf.stencil.SchemaUpdateListener;
 import io.odpf.stencil.TestKey;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import io.odpf.stencil.http.RemoteFile;
 import org.apache.http.client.ClientProtocolException;
 import org.junit.After;
 import org.junit.Test;
-
+import org.mockito.Mock;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -79,16 +80,15 @@ public class DescriptorCacheLoaderTest {
     @Test
     public void testStencilCacheReloadShouldCallOnProtoUpdateIfProtoChanges() throws Exception {
         RemoteFile remoteFile = mock(RemoteFile.class);
-        ProtoUpdateListener protoUpdateListener = mock(ProtoUpdateListener.class);
-        when(protoUpdateListener.getProto()).thenReturn(LOOKUP_KEY);
+        SchemaUpdateListener mockedListener = mock(SchemaUpdateListener.class);
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream fileInputStream = new FileInputStream(classLoader.getResource(DESCRIPTOR_FILE_PATH).getFile());
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(LOOKUP_KEY)).thenReturn(bytes);
-        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), protoUpdateListener, SchemaRefreshStrategy.longPollingStrategy(), true);
+        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), mockedListener, SchemaRefreshStrategy.longPollingStrategy(), true);
         Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
         prevDescriptor.put(LOOKUP_KEY, TestKey.getDescriptor());
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
-        verify(protoUpdateListener, times(1)).onProtoUpdate(any(String.class), any(Map.class));
+        verify(mockedListener).onSchemaUpdate(any(Map.class));
     }
 }
