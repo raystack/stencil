@@ -25,8 +25,7 @@ public class StencilClientFactory {
      * @return Stencil client for single URL
      */
     public static StencilClient getClient(String url, StencilConfig config) {
-        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), config.getStatsDClient(),
-                config.getUpdateListener(), config.getRefreshStrategy(), config.getCacheAutoRefresh());
+        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), config);
         return new URLStencilClient(url, config, cacheLoader);
     }
 
@@ -36,8 +35,7 @@ public class StencilClientFactory {
      * @return Stencil client for multiple URLs
      */
     public static StencilClient getClient(List<String> urls, StencilConfig config) {
-        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), config.getStatsDClient(),
-                config.getUpdateListener(), config.getRefreshStrategy(), config.getCacheAutoRefresh());
+        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), config);
         return new MultiURLStencilClient(urls, config, cacheLoader);
     }
 

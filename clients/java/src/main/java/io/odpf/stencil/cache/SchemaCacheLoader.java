@@ -8,6 +8,7 @@ import com.google.protobuf.Descriptors;
 import com.timgroup.statsd.StatsDClient;
 import io.odpf.stencil.DescriptorMapBuilder;
 import io.odpf.stencil.SchemaUpdateListener;
+import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.http.RemoteFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,12 @@ public class SchemaCacheLoader extends CacheLoader<String, Map<String, Descripto
     private boolean shouldRefresh;
     private SchemaRefreshStrategy refreshStrategy;
 
-    public SchemaCacheLoader(RemoteFile remoteFile, StatsDClient statsDClient, SchemaUpdateListener protoUpdateListener, SchemaRefreshStrategy refreshStrategy, boolean shouldRefresh) {
+    public SchemaCacheLoader(RemoteFile remoteFile, StencilConfig config) {
         this.remoteFile = remoteFile;
-        this.statsDClient = statsDClient;
-        this.protoUpdateListener = protoUpdateListener;
-        this.shouldRefresh = shouldRefresh;
-        this.refreshStrategy = refreshStrategy;
+        this.statsDClient = config.getStatsDClient();
+        this.protoUpdateListener = config.getUpdateListener();
+        this.shouldRefresh = config.getCacheAutoRefresh();
+        this.refreshStrategy = config.getRefreshStrategy();
     }
 
     @Override

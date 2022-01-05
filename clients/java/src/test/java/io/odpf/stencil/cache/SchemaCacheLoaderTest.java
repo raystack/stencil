@@ -3,14 +3,15 @@ package io.odpf.stencil.cache;
 import com.google.common.io.ByteStreams;
 import com.google.protobuf.Descriptors;
 import com.timgroup.statsd.NoOpStatsDClient;
+import com.timgroup.statsd.StatsDClient;
 import io.odpf.stencil.SchemaUpdateListener;
 import io.odpf.stencil.TestKey;
+import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import io.odpf.stencil.http.RemoteFile;
 import org.apache.http.client.ClientProtocolException;
 import org.junit.After;
 import org.junit.Test;
-import org.mockito.Mock;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -21,10 +22,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class DescriptorCacheLoaderTest {
+public class SchemaCacheLoaderTest {
     private SchemaCacheLoader cacheLoader;
     private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
     private static final String LOOKUP_KEY = "io.odpf.stencil.TestMessage";
+    private StencilConfig config = StencilConfig.builder().build();
+    private final StatsDClient statsDClient = new NoOpStatsDClient();
 
     @After
     public void teatDown() throws Exception {
@@ -36,7 +39,8 @@ public class DescriptorCacheLoaderTest {
     public void testStencilCacheLoadOnException() throws Exception {
         RemoteFile remoteFile = mock(RemoteFile.class);
         when(remoteFile.fetch(anyString())).thenThrow(new ClientProtocolException(""));
-        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), null, SchemaRefreshStrategy.longPollingStrategy(), true);
+        config = StencilConfig.builder().statsDClient(statsDClient).cacheAutoRefresh(true).build();
+        cacheLoader = new SchemaCacheLoader(remoteFile, config);
         cacheLoader.load(LOOKUP_KEY);
     }
 
@@ -48,7 +52,8 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
-        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), null, SchemaRefreshStrategy.longPollingStrategy(), true);
+        config = StencilConfig.builder().statsDClient(statsDClient).cacheAutoRefresh(true).build();
+        cacheLoader = new SchemaCacheLoader(remoteFile, config);
         assertTrue(cacheLoader.load(LOOKUP_KEY).containsKey(LOOKUP_KEY));
     }
 
@@ -60,7 +65,8 @@ public class DescriptorCacheLoaderTest {
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(anyString())).thenReturn(bytes);
 
-        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), null, SchemaRefreshStrategy.longPollingStrategy(), true);
+        config = StencilConfig.builder().statsDClient(statsDClient).cacheAutoRefresh(true).build();
+        cacheLoader = new SchemaCacheLoader(remoteFile, config);
         Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
     }
@@ -70,7 +76,8 @@ public class DescriptorCacheLoaderTest {
         RemoteFile remoteFile = mock(RemoteFile.class);
         when(remoteFile.fetch(anyString())).thenThrow(new ClientProtocolException(""));
 
-        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), null, SchemaRefreshStrategy.longPollingStrategy(), true);
+        config = StencilConfig.builder().statsDClient(statsDClient).cacheAutoRefresh(true).build();
+        cacheLoader = new SchemaCacheLoader(remoteFile, config);
 
         Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
         Map<String, Descriptors.Descriptor> result = cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get();
@@ -85,7 +92,8 @@ public class DescriptorCacheLoaderTest {
         InputStream fileInputStream = new FileInputStream(classLoader.getResource(DESCRIPTOR_FILE_PATH).getFile());
         byte[] bytes = ByteStreams.toByteArray(fileInputStream);
         when(remoteFile.fetch(LOOKUP_KEY)).thenReturn(bytes);
-        cacheLoader = new SchemaCacheLoader(remoteFile, new NoOpStatsDClient(), mockedListener, SchemaRefreshStrategy.longPollingStrategy(), true);
+        config = StencilConfig.builder().statsDClient(statsDClient).cacheAutoRefresh(true).updateListener(mockedListener).build();
+        cacheLoader = new SchemaCacheLoader(remoteFile, config);
         Map<String, Descriptors.Descriptor> prevDescriptor = new HashMap<>();
         prevDescriptor.put(LOOKUP_KEY, TestKey.getDescriptor());
         assertTrue(cacheLoader.reload(LOOKUP_KEY, prevDescriptor).get().containsKey(LOOKUP_KEY));
