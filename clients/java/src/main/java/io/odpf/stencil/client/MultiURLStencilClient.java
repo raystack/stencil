@@ -1,7 +1,7 @@
 package io.odpf.stencil.client;
 
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.cache.DescriptorCacheLoader;
+import io.odpf.stencil.cache.SchemaCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
      * @param config Stencil configs
      * @param cacheLoader Extension of Guava {@link com.google.common.cache.CacheLoader} for Proto Descriptor sets
      */
-    public MultiURLStencilClient(List<String> urls, StencilConfig config, DescriptorCacheLoader cacheLoader) {
+    public MultiURLStencilClient(List<String> urls, StencilConfig config, SchemaCacheLoader cacheLoader) {
         shouldAutoRefreshCache = config.getCacheAutoRefresh();
         stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());
     }

@@ -2,7 +2,7 @@ package io.odpf.stencil;
 
 import com.timgroup.statsd.NoOpStatsDClient;
 import com.timgroup.statsd.StatsDClient;
-import io.odpf.stencil.cache.DescriptorCacheLoader;
+import io.odpf.stencil.cache.SchemaCacheLoader;
 import io.odpf.stencil.cache.ProtoUpdateListener;
 import io.odpf.stencil.client.ClassLoadStencilClient;
 import io.odpf.stencil.client.MultiURLStencilClient;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class StencilClientFactory {
     public static StencilClient getClient(String url, StencilConfig config, StatsDClient statsDClient) {
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, config.getCacheAutoRefresh());
+        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, config.getRefreshStrategy(), config.getCacheAutoRefresh());
         return new URLStencilClient(url, config, cacheLoader);
     }
 
@@ -37,7 +37,7 @@ public class StencilClientFactory {
      * for monitoring and ProtoUpdateListener for callback
      */
     public static StencilClient getClient(String url, StencilConfig config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, config.getCacheAutoRefresh());
+        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, config.getRefreshStrategy(), config.getCacheAutoRefresh());
         return new URLStencilClient(url, config, cacheLoader);
     }
 
@@ -48,7 +48,7 @@ public class StencilClientFactory {
      * @return Stencil client for multiple URLs and statsd client for monitoring
      */
     public static StencilClient getClient(List<String> urls, StencilConfig config, StatsDClient statsDClient) {
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, config.getCacheAutoRefresh());
+        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, null, config.getRefreshStrategy(), config.getCacheAutoRefresh());
         return new MultiURLStencilClient(urls, config, cacheLoader);
     }
 
@@ -62,7 +62,7 @@ public class StencilClientFactory {
      * for monitoring and ProtoUpdateListener for callback
      */
     public static StencilClient getClient(List<String> urls, StencilConfig config, StatsDClient statsDClient, ProtoUpdateListener protoUpdateListener) {
-        DescriptorCacheLoader cacheLoader = new DescriptorCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, config.getCacheAutoRefresh());
+        SchemaCacheLoader cacheLoader = new SchemaCacheLoader(new RemoteFileImpl(new RetryHttpClient().create(config)), statsDClient, protoUpdateListener, config.getRefreshStrategy(), config.getCacheAutoRefresh());
         return new MultiURLStencilClient(urls, config, cacheLoader);
     }
 

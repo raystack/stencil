@@ -18,7 +18,7 @@ public class DescriptorMapBuilderTest {
         ClassLoader classLoader = getClass().getClassLoader();
         String descriptorFilePath = "__files/descriptors.bin";
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
-        Map<String, Descriptors.Descriptor> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
+        Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
         assertNotNull(descriptorMap);
         assertNotNull(descriptorMap.get("io.odpf.stencil.TestMessage"));
     }
@@ -28,7 +28,7 @@ public class DescriptorMapBuilderTest {
         ClassLoader classLoader = getClass().getClassLoader();
         String descriptorFilePath = "__files/descriptors.bin";
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
-        Map<String, Descriptors.Descriptor> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
+        Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
         final Descriptors.Descriptor account_db_accounts = descriptorMap.get("io.odpf.stencil.account_db_accounts");
         assertNotNull(account_db_accounts.findFieldByName("id"));
@@ -45,7 +45,7 @@ public class DescriptorMapBuilderTest {
         ClassLoader classLoader = getClass().getClassLoader();
         String descriptorFilePath = "__files/descriptors.bin";
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
-        Map<String, Descriptors.Descriptor> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
+        Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
         final Descriptors.Descriptor RecursiveLogMessage = descriptorMap.get("io.odpf.stencil.RecursiveLogMessage");
         assertNotNull(RecursiveLogMessage.findFieldByName("id"));
@@ -59,7 +59,7 @@ public class DescriptorMapBuilderTest {
         ClassLoader classLoader = getClass().getClassLoader();
         String descriptorFilePath = "__files/descriptors.bin";
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
-        Map<String, Descriptors.Descriptor> descriptorMap = new DescriptorMapBuilder().buildFrom(fileInputStream);
+        Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
         final Descriptors.Descriptor protoWithoutPackage = descriptorMap.get("io.odpf.stencil.RootField");
         assertEquals(".RootField", String.format(".%s", protoWithoutPackage.getFullName()));

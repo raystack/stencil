@@ -5,7 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.cache.DescriptorCacheLoader;
+import io.odpf.stencil.cache.SchemaCacheLoader;
 import io.odpf.stencil.config.StencilConfig;
 import io.odpf.stencil.exception.StencilRuntimeException;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import static com.google.common.base.Ticker.systemTicker;
  */
 public class URLStencilClient implements Serializable, StencilClient {
     private String url;
-    private DescriptorCacheLoader cacheLoader;
+    private SchemaCacheLoader cacheLoader;
     private LoadingCache<String, Map<String, Descriptors.Descriptor>> descriptorCache;
     private long ttlMs;
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
@@ -36,7 +36,7 @@ public class URLStencilClient implements Serializable, StencilClient {
      * @param config Stencil configs
      * @param cacheLoader Extension of Guava {@link com.google.common.cache.CacheLoader} for Proto Descriptor sets
      */
-    public URLStencilClient(String url, StencilConfig config, DescriptorCacheLoader cacheLoader) {
+    public URLStencilClient(String url, StencilConfig config, SchemaCacheLoader cacheLoader) {
         this(url, config, cacheLoader, systemTicker());
     }
 
@@ -46,7 +46,7 @@ public class URLStencilClient implements Serializable, StencilClient {
      * @param cacheLoader Extension of Guava {@link com.google.common.cache.CacheLoader} for Proto Descriptor sets
      * @param ticker Ticker to be used as time source in Guava cache
      */
-    public URLStencilClient(String url, StencilConfig stencilConfig, DescriptorCacheLoader cacheLoader, Ticker ticker) {
+    public URLStencilClient(String url, StencilConfig stencilConfig, SchemaCacheLoader cacheLoader, Ticker ticker) {
         this.shouldAutoRefreshCache = stencilConfig.getCacheAutoRefresh();
         this.ttlMs = stencilConfig.getCacheTtlMs();
         this.url = url;
