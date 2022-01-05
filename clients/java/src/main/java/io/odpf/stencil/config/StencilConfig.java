@@ -6,8 +6,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.http.Header;
+import io.odpf.stencil.cache.SchemaRefreshStrategy;
 
 @Getter
 @Builder
@@ -57,4 +57,12 @@ public class StencilConfig {
      */
     @Builder.Default
     Long cacheTtlMs = TimeUnit.HOURS.toMillis(24);
+
+    /**
+     * Strategy implementation of when schema needs to be refreshed. Default {@link io.odpf.stencil.cache.SchemaRefreshStrategy#longPollingStrategy}
+     * @param refreshStrategy schema refresh strategy implementation
+     * @return schema refresh strategy
+     */
+    @Builder.Default
+    SchemaRefreshStrategy refreshStrategy = SchemaRefreshStrategy.longPollingStrategy();
 }
