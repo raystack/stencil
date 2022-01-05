@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RetryHttpClient {
-    private final Logger logger = LoggerFactory.getLogger(RemoteFileImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(RemoteFileImpl.class);
 
 
-    public CloseableHttpClient create(StencilConfig stencilConfig) {
+    public static CloseableHttpClient create(StencilConfig stencilConfig) {
 
         int timeout = stencilConfig.getFetchTimeoutMs();
         long backoffMs = stencilConfig.getFetchBackoffMinMs();
