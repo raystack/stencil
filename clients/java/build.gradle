@@ -24,6 +24,7 @@ dependencies {
     api group: 'com.google.protobuf', name: 'protobuf-java', version: '3.5.1'
     implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
     api group: 'com.datadoghq', name: 'java-dogstatsd-client', version: '2.13.0'
+    implementation group: 'org.json', name: 'json', version:'20211205'
 
     testImplementation group: 'junit', name: 'junit' , version: '4.12'
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.18.0'
