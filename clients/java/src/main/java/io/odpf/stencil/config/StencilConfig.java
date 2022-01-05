@@ -6,7 +6,10 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import com.timgroup.statsd.StatsDClient;
+import com.timgroup.statsd.NoOpStatsDClient;
 import org.apache.http.Header;
+import io.odpf.stencil.SchemaUpdateListener;
 import io.odpf.stencil.cache.SchemaRefreshStrategy;
 
 @Getter
@@ -65,4 +68,20 @@ public class StencilConfig {
      */
     @Builder.Default
     SchemaRefreshStrategy refreshStrategy = SchemaRefreshStrategy.longPollingStrategy();
+
+    /**
+     * updateListener will be called on new schema load. Default null
+     * @param updateListener This is callback method on new schema load
+     * @return schema update listener
+     */
+    @Builder.Default
+    SchemaUpdateListener updateListener = null;
+
+    /**
+     * statsD client to capture metrics provided by stencil. Default {@link com.timgroup.statsd.NoOpStatsDClient}
+     * @param statsDClient statsDClient
+     * @return instance of statsDClient
+     */
+    @Builder.Default
+    StatsDClient statsDClient = new NoOpStatsDClient();
 }
