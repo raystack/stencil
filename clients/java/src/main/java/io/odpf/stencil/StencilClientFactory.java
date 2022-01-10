@@ -16,7 +16,7 @@ import java.util.List;
  * Provides static methods for the creation of {@link io.odpf.stencil.client.StencilClient}
  * object with configurations and various options like
  * single URLs, multiple URLs, statsd client for monitoring
- * and {@link io.odpf.stencil.cache.ProtoUpdateListener} for callback on proto schema update.
+ * and {@link io.odpf.stencil.SchemaUpdateListener} for callback on schema change.
  */
 public class StencilClientFactory {
     /**
