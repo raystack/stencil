@@ -3,6 +3,7 @@ package io.odpf.stencil.client;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.odpf.stencil.Parser;
 import io.odpf.stencil.exception.StencilRuntimeException;
 
 import java.io.Closeable;
@@ -20,6 +21,10 @@ public interface StencilClient extends Closeable {
             throw new StencilRuntimeException(new Throwable(String.format("No Descriptors found for %s", className)));
         }
         return DynamicMessage.parseFrom(descriptor, data);
+    }
+
+    default Parser getParser(String className) {
+        return (data) -> parse(className, data);
     }
 
     Map<String, Descriptors.Descriptor> getAll();
