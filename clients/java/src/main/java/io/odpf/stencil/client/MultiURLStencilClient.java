@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class MultiURLStencilClient implements Serializable, StencilClient {
 
     private List<StencilClient> stencilClients;
-    private boolean shouldAutoRefreshCache;
 
     /**
      * @param urls List of URLs to fetch protobuf descriptor sets from
@@ -26,7 +25,6 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
      * @param cacheLoader Extension of Guava {@link com.google.common.cache.CacheLoader} for Proto Descriptor sets
      */
     public MultiURLStencilClient(List<String> urls, StencilConfig config, SchemaCacheLoader cacheLoader) {
-        shouldAutoRefreshCache = config.getCacheAutoRefresh();
         stencilClients = urls.stream().map(url -> new URLStencilClient(url, config, cacheLoader)).collect(Collectors.toList());
     }
 
@@ -60,10 +58,5 @@ public class MultiURLStencilClient implements Serializable, StencilClient {
         stencilClients.forEach(c -> {
             c.refresh();
         });
-    }
-
-    @Override
-    public boolean shouldAutoRefreshCache() {
-        return shouldAutoRefreshCache;
     }
 }
