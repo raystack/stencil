@@ -29,7 +29,6 @@ public class URLStencilClient implements Serializable, StencilClient {
     private LoadingCache<String, Map<String, Descriptors.Descriptor>> descriptorCache;
     private long ttlMs;
     private final Logger logger = LoggerFactory.getLogger(URLStencilClient.class);
-    private boolean shouldAutoRefreshCache;
 
     /**
      * @param url List of URLs to fetch protobuf descriptor sets from
@@ -47,16 +46,12 @@ public class URLStencilClient implements Serializable, StencilClient {
      * @param ticker Ticker to be used as time source in Guava cache
      */
     public URLStencilClient(String url, StencilConfig stencilConfig, SchemaCacheLoader cacheLoader, Ticker ticker) {
-        this.shouldAutoRefreshCache = stencilConfig.getCacheAutoRefresh();
         this.ttlMs = stencilConfig.getCacheTtlMs();
         this.url = url;
         this.cacheLoader = cacheLoader;
 
-        descriptorCache = CacheBuilder.newBuilder().ticker(ticker)
-                .refreshAfterWrite(ttlMs, TimeUnit.MILLISECONDS)
-                .build(cacheLoader);
-        logger.info("configuring URL Stencil client with TTL: {} milliseconds, auto refresh: {}", ttlMs,
-                shouldAutoRefreshCache);
+        descriptorCache = CacheBuilder.newBuilder().ticker(ticker).refreshAfterWrite(ttlMs, TimeUnit.MILLISECONDS).build(cacheLoader);
+        logger.info("configuring URL Stencil client with TTL: {} milliseconds, auto refresh: {}", ttlMs, stencilConfig.getCacheAutoRefresh());
     }
 
     /**
@@ -102,10 +97,5 @@ public class URLStencilClient implements Serializable, StencilClient {
     @Override
     public void close() throws IOException {
         cacheLoader.close();
-    }
-
-    @Override
-    public boolean shouldAutoRefreshCache() {
-        return shouldAutoRefreshCache;
     }
 }
