@@ -13,7 +13,7 @@ import io.odpf.stencil.SchemaUpdateListener;
 import io.odpf.stencil.cache.SchemaRefreshStrategy;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class StencilConfig {
 
     /**
