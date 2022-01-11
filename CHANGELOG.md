@@ -1,3 +1,57 @@
+## [v0.1.6](https://github.com/odpf/stencil/compare/v0.1.5...v0.1.6) (2022-01-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **java-client:** removed `String getAppName()` and `boolean shouldAutoRefreshCache()`
+methods from StencilClient interface
+* **java-client:** changed protoUpdateListener to schemaUpdateListener interface.
+Moved statsDClient and schemaUpdateListener to Stencil Config. Removed redundant stencilClientFactory methods.
+* **java-client:** Cache is updated on every refresh Regardless of the change in schema.
+Introduced version based schema refresh, it utilizes versions API that returns list of available versions provided by stencil server, uses versioned URL to download descriptor.
+This versioned URL returns immutable schema.
+By default previous long polling refresh strategy will be used.
+* **java-client:** Clients need to construct `org.apache.http.Header` object, then add it to the list.
+This way clients can have full control over what headers being sent to stencil server.
+For example setting bearer token in previous version would be
+```java
+StencilConfig config = StencilConfig.builder().fetchAuthBearerToken(token).build();
+```
+Above snippet will be changed to
+```java
+Header authHeader = new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+List<Header> headers = new ArrayList<Header>();
+headers.add(authHeader);
+StencilConfig config = StencilConfig.builder().fetchHeaders(headers).build();
+```
+* **java-client:** removed parser package
+* **java-client:** DescriptorAndTypeName model was used to keep type name and descriptor together.
+However one can easily generate type name from descriptor by prefixing "." infront of it's fullname
+
+### Features
+
+* **java-client:** add parse method to StencilClient ([38a88c4](https://github.com/odpf/stencil/commit/38a88c46979ba7f810afaceaada918e75d7130d7))
+* **java-client:** add Parser interface ([acd3cda](https://github.com/odpf/stencil/commit/acd3cda172bd8c53421422a4141806193c73771f))
+* **java-client:** add version based schema refresh ([8573f0c](https://github.com/odpf/stencil/commit/8573f0cf7fc12ed37cbb5de1dac2155039ddec9c))
+* **java-client:** enable toBuilder for StencilConfig ([7caae92](https://github.com/odpf/stencil/commit/7caae92be29a436ec747db962732ee31cfd0c7c7))
+* **java-client:** modify apache http library as API ([e24c2ae](https://github.com/odpf/stencil/commit/e24c2ae485497c4a0f3fadfbebdcccf92a78b23c))
+* **java-client:** move statsDClient, schemaUpdateListener to stencil config ([06b24fa](https://github.com/odpf/stencil/commit/06b24fa378f90e9c8c120322a5e5fe59ae443c17))
+* **java-client:** remove DescriptorAndTypeName model ([7800ecf](https://github.com/odpf/stencil/commit/7800ecf5364fb26e43dff562f8720a35ef8bcc05))
+* **java-client:** remove fetchAuthHeader config and add generic fetchHeaders config. ([6c2823c](https://github.com/odpf/stencil/commit/6c2823c9968f4aae48bc0c60d7e560db39f026da))
+* **java-client:** set cache TTL default value to 24hrs ([a8c69d9](https://github.com/odpf/stencil/commit/a8c69d91dad6373fc1df56b7971f3d0fa96a399f))
+* **java-client:** set default value for fetchbackoffms config ([bef158e](https://github.com/odpf/stencil/commit/bef158ecc8ad3df0e83b76c614fac71835743942))
+* **java-client:** tidy up schemaCacheLoader contructor ([ce26370](https://github.com/odpf/stencil/commit/ce26370caf0d66b9c705539d3a1c2d6827957c37))
+
+
+### Bug Fixes
+
+* **java-client:** add json dependency ([1b76768](https://github.com/odpf/stencil/commit/1b767682f4a4c573f0ff78f536fdd2d43537b277))
+
+
+### Code Refactoring
+
+* **java-client:** clean up stencil client interface ([085f51e](https://github.com/odpf/stencil/commit/085f51ecc9fd08806a881434365148657d6d9e35))
+
 ## [v0.1.5](https://github.com/odpf/stencil/compare/v0.1.4...v0.1.5) (2021-12-07)
 
 
