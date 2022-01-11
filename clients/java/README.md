@@ -16,7 +16,7 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 #### Gradle
 
 ```groovy
-  implementation group: 'io.odpf', name: 'stencil', version: '0.1.0'
+  implementation group: 'io.odpf', name: 'stencil', version: '0.1.6'
 ```
 
 #### Maven
@@ -25,13 +25,13 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 <dependency>
   <groupId>io.odpf</groupId>
   <artifactId>stencil</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.6</version>
 </dependency>
 ```
 
 ### Creating a stencil Client instance
 
-Stencil client scan be created in different modes.
+Stencil client can be created in different modes.
 
 #### Loading Descriptor from Protobuf Class available in the classpath
 
@@ -43,13 +43,22 @@ StencilClient stencilClient = StencilClientFactory.getClient();
 ```
 
 
-#### Fetching DescriptorSet file from remote URL
+#### Create client with remote URL
 
 ```java
 import io.odpf.stencil.config.StencilConfig;
 
 String url = "http://url/to/proto/descriptor-set/file";
 StencilClient stencilClient = StencilClientFacorty.getClient(url, StencilConfig.builder().build());
+```
+
+#### Creating MultiURL client
+```java
+import io.odpf.stencil.config.StencilConfig;
+
+ArrayList<String> urls = new ArrayList<String>();
+urls.add("http://localhost:8082/v1beta1/...");
+StencilClient stencilClient = StencilClientFacorty.getClient(urls, StencilConfig.builder().build());
 ```
 
 
@@ -61,7 +70,39 @@ import com.timgroup.statsd.StatsDClient;
 import com.timgroup.statsd.NonBlockingStatsDClient;
 
 StatsDClient statDClient = new NonBlockingStatsDClient("my.prefix", "statsd-host", 8125);
-StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.builder().build(), statDClient)
+StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.builder().statsDClient(statsDClient).build());
+```
+
+#### With Schema Update Listener
+Whenever schema has changed this listener will be called.
+```java
+import io.odpf.stencil.SchemaUpdateListener;
+
+SchemaUpdateListener updateListener = new SchemaUpdateListenerImpl();
+StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.builder().updateListener(updateListener).build());
+```
+
+#### With version based refresh strategy
+If url belongs to stencil server, client can choose to refresh schema data only if there is a new version available.
+```java
+import io.odpf.stencil.cache.SchemaRefreshStrategy;
+
+StencilConfig config = StencilConfig.builder().refreshStrategy(SchemaRefreshStrategy.versionBasedRefresh()).build();
+StencilClient stencilClient = StencilClientFactory.getClient(url, config);
+```
+
+#### Passing custom headers
+While sending request to specified URL, client can be configured to pass headers as well.
+```java
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
+import org.apache.http.message.BasicHeader;
+
+Header authHeader = new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+List<Header> headers = new ArrayList<Header>();
+headers.add(authHeader);
+StencilConfig config = StencilConfig.builder().fetchHeaders(headers).build();
+StencilClient stencilClient = StencilClientFactory.getClient(url, config);
 ```
 
 ### Getting descriptor
@@ -73,34 +114,25 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 
 Descriptors.Descriptor descriptor = stencilClient.get(protoClassName);
-
-DynamicMessage message = DynamicMessage.parseFrom(descriptor, bytes);
 ```
 
 ### Parsing message
 
-The descriptor obtained above can be used for parsing serialized protobuf message bytes as shown above or bytes can be directly parsed using the `ProtoParser` class, which provides auto update of descriptors in case stencil cache gets updated, as shown below -
-
 ```java
-import io.odpf.stencil.parser.ProtoParser;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 
-ProtoParser protoParser = new ProtoParser(stencilClient, "com.example.proto.schema");
-DynamicMessage message = protoParser.parse(bytes)
+Descriptors.Descriptor descriptor = stencilClient.get(protoClassName);
+DynamicMessage message = DynamicMessage.parseFrom(descriptor, bytes);
 ```
 
-### Configurations
-
+#### Using Parser interface
 ```java
-// stencil default configs
-StencilConfig config = StencilConfig.builder()
-        .fetchTimeoutMs(10000)
-        .fetchRetries(4)
-        .fetchBackoffMinMs(0L)
-        // .fetchAuthBearerToken("TOKEN")
-        .cacheAutoRefresh(false)
-        .cacheTtlMs(0L)
-        .build();
+import io.odpf.stencil.Parser;
+import com.google.protobuf.DynamicMessage;
+
+Parser protoParser = stencilClient.getParser("com.example.proto.schema");
+DynamicMessage message = protoParser.parse(bytes)
 ```
 
 ### Publishing
