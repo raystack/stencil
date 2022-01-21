@@ -19,6 +19,7 @@ type API struct {
 	grpc_health_v1.UnimplementedHealthServer
 	Namespace domain.NamespaceService
 	Schema    domain.SchemaService
+	Search    domain.SearchService
 }
 
 // RegisterSchemaHandlers registers HTTP handlers for schema download

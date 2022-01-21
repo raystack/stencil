@@ -32,6 +32,7 @@ type StencilServiceClient interface {
 	GetSchema(ctx context.Context, in *GetSchemaRequest, opts ...grpc.CallOption) (*GetSchemaResponse, error)
 	ListVersions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error)
 	DeleteVersion(ctx context.Context, in *DeleteVersionRequest, opts ...grpc.CallOption) (*DeleteVersionResponse, error)
+	SearchSchemas(ctx context.Context, in *SearchSchemasRequest, opts ...grpc.CallOption) (*SearchSchemasResponse, error)
 }
 
 type stencilServiceClient struct {
@@ -168,6 +169,15 @@ func (c *stencilServiceClient) DeleteVersion(ctx context.Context, in *DeleteVers
 	return out, nil
 }
 
+func (c *stencilServiceClient) SearchSchemas(ctx context.Context, in *SearchSchemasRequest, opts ...grpc.CallOption) (*SearchSchemasResponse, error) {
+	out := new(SearchSchemasResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/SearchSchemas", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StencilServiceServer is the server API for StencilService service.
 // All implementations must embed UnimplementedStencilServiceServer
 // for forward compatibility
@@ -186,6 +196,7 @@ type StencilServiceServer interface {
 	GetSchema(context.Context, *GetSchemaRequest) (*GetSchemaResponse, error)
 	ListVersions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error)
 	DeleteVersion(context.Context, *DeleteVersionRequest) (*DeleteVersionResponse, error)
+	SearchSchemas(context.Context, *SearchSchemasRequest) (*SearchSchemasResponse, error)
 	mustEmbedUnimplementedStencilServiceServer()
 }
 
@@ -234,6 +245,9 @@ func (UnimplementedStencilServiceServer) ListVersions(context.Context, *ListVers
 }
 func (UnimplementedStencilServiceServer) DeleteVersion(context.Context, *DeleteVersionRequest) (*DeleteVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteVersion not implemented")
+}
+func (UnimplementedStencilServiceServer) SearchSchemas(context.Context, *SearchSchemasRequest) (*SearchSchemasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchSchemas not implemented")
 }
 func (UnimplementedStencilServiceServer) mustEmbedUnimplementedStencilServiceServer() {}
 
@@ -500,6 +514,24 @@ func _StencilService_DeleteVersion_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StencilService_SearchSchemas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchSchemasRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceServer).SearchSchemas(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1beta1.StencilService/SearchSchemas",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceServer).SearchSchemas(ctx, req.(*SearchSchemasRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StencilService_ServiceDesc is the grpc.ServiceDesc for StencilService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -562,6 +594,10 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteVersion",
 			Handler:    _StencilService_DeleteVersion_Handler,
+		},
+		{
+			MethodName: "SearchSchemas",
+			Handler:    _StencilService_SearchSchemas_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

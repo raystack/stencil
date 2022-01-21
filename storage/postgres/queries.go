@@ -127,3 +127,23 @@ DELETE from versions where id=(select id from version)
 const deleteOrphanedData = `
 DELETE from schema_files WHERE id NOT IN (SELECT DISTINCT vsf.schema_file_id from versions_schema_files as vsf)
 `
+
+const searchQuery = `
+SELECT 
+	jsonb_path_query_array(sf.search_data -> 'Fields', ('$[*] ? (@ like_regex "\\w+\\.\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath) AS "fields",
+	jsonb_path_query_array(sf.search_data -> 'Types', ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath) AS "types",
+	ns.id as "namespace_id",
+	s.name as "schema",
+	v.version as "version_id"
+FROM 
+	schema_files as sf
+	JOIN versions_schema_files as vsf ON sf.id = vsf.schema_file_id
+	JOIN versions as v ON vsf.version_id = v.id
+	JOIN schemas as s ON s.id = v.schema_id
+	JOIN namespaces as ns ON s.namespace_id = ns.id
+WHERE 
+	ns.id = $1
+	AND v.version=COALESCE(NULLIF ($2, 0), v.version)
+	AND (sf.search_data -> 'Fields' @? ('$[*] ? (@ like_regex "\\w+\\.\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath
+	OR sf.search_data -> 'Types' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath);
+`

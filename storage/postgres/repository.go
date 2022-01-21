@@ -150,3 +150,9 @@ func (r *Store) DeleteVersion(ctx context.Context, ns string, sc string, version
 	r.db.Exec(ctx, deleteOrphanedData)
 	return wrapError(err, "delete version")
 }
+
+func (r *Store) Search(ctx context.Context, req *domain.SearchSchemasRequest) ([]*domain.SearchHits, error) {
+	var searchHits []*domain.SearchHits
+	err := pgxscan.Select(ctx, r.db, &searchHits, searchQuery, req.NamespaceID, req.VersionID, req.Query)
+	return searchHits, err
+}

@@ -23,6 +23,7 @@ import (
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/odpf/stencil/server/schema"
 	"github.com/odpf/stencil/server/schema/provider"
+	"github.com/odpf/stencil/server/search"
 	"github.com/odpf/stencil/server/validator"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -47,9 +48,13 @@ func Start(cfg config.Config) {
 		panic(err)
 	}
 	schemaService := schema.NewService(store, provider.NewSchemaProvider(), namespaceService, cache)
+	searchService := search.Service{
+		Repo: store,
+	}
 	api := &api.API{
 		Namespace: namespaceService,
 		Schema:    schemaService,
+		Search:    &searchService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
@@ -78,11 +83,12 @@ func Start(cfg config.Config) {
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
 	}
+	api.RegisterSchemaHandlers(mux)
 
 	if err = stencilv1beta1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
 		log.Fatalln("Failed to register stencil service handler:", err)
 	}
-	api.RegisterSchemaHandlers(mux)
+
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()

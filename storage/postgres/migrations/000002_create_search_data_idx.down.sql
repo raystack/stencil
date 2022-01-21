@@ -1,0 +1,2 @@
+DROP INDEX CONCURRENTLY IF EXISTS search_data_idx;
+DROP INDEX CONCURRENTLY IF EXISTS search_data_fields_idx;
