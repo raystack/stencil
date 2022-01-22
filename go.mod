@@ -17,7 +17,7 @@ require (
 	github.com/jhump/protoreflect v1.9.0
 	github.com/newrelic/go-agent/v3 v3.12.0
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
-	github.com/odpf/salt v0.0.0-20211028100023-de463ef825e1
+	github.com/odpf/salt v0.0.0-20220119024410-9aa38ffc5626
 	github.com/pkg/errors v0.9.1
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.2.1
