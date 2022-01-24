@@ -98,8 +98,7 @@ func listNamespaceCmd() *cobra.Command {
 }
 
 func createNamespaceCmd() *cobra.Command {
-	var host string
-	var format, comp int32
+	var host, format, comp string
 	var desc string
 	var req stencilv1beta1.CreateNamespaceRequest
 
@@ -127,8 +126,8 @@ func createNamespaceCmd() *cobra.Command {
 			id := args[0]
 
 			req.Id = id
-			req.Format = stencilv1beta1.Schema_Format(format)
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(comp)
+			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
 			req.Description = desc
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
@@ -149,10 +148,10 @@ func createNamespaceCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
-	cmd.Flags().Int32VarP(&format, "format", "f", 0, "schema format")
+	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
 	cmd.MarkFlagRequired("format")
 
-	cmd.Flags().Int32VarP(&comp, "comp", "c", 0, "schema compatibility")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
 	cmd.MarkFlagRequired("comp")
 
 	cmd.Flags().StringVarP(&desc, "desc", "d", "", "description")
@@ -161,8 +160,7 @@ func createNamespaceCmd() *cobra.Command {
 }
 
 func updateNamespaceCmd() *cobra.Command {
-	var host string
-	var format, comp int32
+	var host, format, comp string
 	var desc string
 	var req stencilv1beta1.UpdateNamespaceRequest
 
@@ -190,8 +188,8 @@ func updateNamespaceCmd() *cobra.Command {
 			id := args[0]
 
 			req.Id = id
-			req.Format = stencilv1beta1.Schema_Format(format)
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(comp)
+			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
 			req.Description = desc
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
@@ -210,10 +208,10 @@ func updateNamespaceCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
-	cmd.Flags().Int32VarP(&format, "format", "f", 0, "schema format")
+	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
 	cmd.MarkFlagRequired("format")
 
-	cmd.Flags().Int32VarP(&comp, "comp", "c", 0, "schema compatibility")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
 	cmd.MarkFlagRequired("comp")
 
 	cmd.Flags().StringVarP(&desc, "desc", "d", "", "description")
