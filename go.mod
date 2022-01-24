@@ -17,15 +17,14 @@ require (
 	github.com/jhump/protoreflect v1.9.0
 	github.com/newrelic/go-agent/v3 v3.12.0
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
-	github.com/odpf/salt v0.0.0-20220119024410-9aa38ffc5626
+	github.com/odpf/salt v0.0.0-20220123093403-faac19525416
 	github.com/pkg/errors v0.9.1
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.19.0
-	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
-	golang.org/x/sys v0.0.0-20210819072135-bce67f096156 // indirect
+	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210903162649-d08c68adba83
 	google.golang.org/grpc v1.40.0

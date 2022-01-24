@@ -9,7 +9,6 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -62,8 +61,8 @@ func listSchemaCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := term.Spin("Fetching schema list")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -84,7 +83,7 @@ func listSchemaCmd() *cobra.Command {
 
 			schemas := res.GetSchemas()
 
-			s.Stop()
+			spinner.Stop()
 
 			fmt.Printf(" \nShowing %d schemas \n", len(schemas))
 
@@ -115,15 +114,14 @@ func createSchemaCmd() *cobra.Command {
 		Short: "create all Schemas",
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
-		$ stencil schema create <namespace-id> <schema-id> --format=<schema-format> 
-		–-comp=<schema-compatibility> –-filePath=<schema-filePath> 
+		$ stencil schema create <namespace-id> <schema-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
 	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := term.Spin("Creating schema")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			fileData, err := ioutil.ReadFile(filePath)
 			if err != nil {
@@ -154,7 +152,7 @@ func createSchemaCmd() *cobra.Command {
 
 			id := res.GetId()
 
-			s.Stop()
+			spinner.Stop()
 			fmt.Printf("schema successfully created with id: %s", id)
 			return nil
 		},
@@ -191,8 +189,8 @@ func updateSchemaCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := term.Spin("Updating schema")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -213,7 +211,7 @@ func updateSchemaCmd() *cobra.Command {
 				return err
 			}
 
-			s.Stop()
+			spinner.Stop()
 
 			fmt.Printf("Schema successfully updated")
 			return nil
@@ -250,8 +248,8 @@ func getSchemaCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := term.Spin("Fetching schema")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -292,7 +290,7 @@ func getSchemaCmd() *cobra.Command {
 				}
 			}
 
-			s.Stop()
+			spinner.Stop()
 
 			if output != "" {
 				err = os.WriteFile(output, data, 0666)
@@ -350,8 +348,8 @@ func deleteSchemaCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := term.Spin("Deleting schema")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -384,7 +382,7 @@ func deleteSchemaCmd() *cobra.Command {
 
 			}
 
-			s.Stop()
+			spinner.Stop()
 
 			fmt.Printf("schema successfully deleted")
 
@@ -415,8 +413,8 @@ func versionSchemaCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := term.Spin("Fetching schema version(s)")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -439,7 +437,7 @@ func versionSchemaCmd() *cobra.Command {
 			report := [][]string{}
 			versions := res.GetVersions()
 
-			s.Stop()
+			spinner.Stop()
 
 			report = append(report, []string{"VERSIONS(s)"})
 
