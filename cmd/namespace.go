@@ -50,8 +50,8 @@ func listNamespaceCmd() *cobra.Command {
 		Short: "list all namespaces",
 		Args:  cobra.NoArgs,
 		Example: heredoc.Doc(`
-		$ stencil namespace list
-	`),
+			$ stencil namespace list
+		`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -106,8 +106,8 @@ func createNamespaceCmd() *cobra.Command {
 		Short: "create all namespaces",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-		$ stencil namespace create <namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-desc=<description> 
-	`),
+			$ stencil namespace create <namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-desc=<description> 
+		`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -167,8 +167,8 @@ func updateNamespaceCmd() *cobra.Command {
 		Short: "update all namespaces",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-		$ stencil namespace update <namespace-id> –-format=<schema-format> –-comp=<schema-compatibility> –-desc=<description>
-	`),
+			$ stencil namespace update <namespace-id> –-format=<schema-format> –-comp=<schema-compatibility> –-desc=<description>
+		`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -225,8 +225,8 @@ func getNamespaceCmd() *cobra.Command {
 		Short: "get all namespaces",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-		$ stencil namespace get <namespace-id>
-	`),
+			$ stencil namespace get <namespace-id>
+		`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -283,8 +283,8 @@ func deleteNamespaceCmd() *cobra.Command {
 		Short: "delete all namespaces",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-		$ stencil namespace delete <namespace-id>
-	`),
+			$ stencil namespace delete <namespace-id>
+		`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
