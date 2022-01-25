@@ -327,10 +327,10 @@ func getSchemaCmd() *cobra.Command {
 	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "version of the schema")
-	cmd.MarkFlagRequired("host")
+	cmd.MarkFlagRequired("version")
 
 	cmd.Flags().BoolVarP(&metadata, "metadata", "m", false, "set this flag to get metadata")
-	cmd.MarkFlagRequired("host")
+	cmd.MarkFlagRequired("metadata")
 
 	cmd.Flags().StringVarP(&output, "output", "o", "", "path to the output file")
 	cmd.MarkFlagRequired("output")
