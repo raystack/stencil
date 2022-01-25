@@ -57,7 +57,7 @@ func listSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema list <namespace-id>
-	    `),
+	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -121,7 +121,7 @@ func createSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
 			$ stencil schema create <namespace-id> <schema-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
-	    `),
+	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -190,7 +190,7 @@ func updateSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
 			$ stencil schema update <namespace-id> <schema-id> –-comp=<schema-compatibility>
-	    `),
+	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -249,7 +249,7 @@ func getSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
 			$ stencil schema get <namespace-id> <schema-id> --version <version> --metadata <metadata>
-	    `),
+	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -350,7 +350,7 @@ func deleteSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
 			$ stencil schema delete <namespace-id> <schema-id>
-	    `),
+	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -415,7 +415,7 @@ func versionSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
 			$ stencil schema version <namespace-id> <schema-id>
-	    `),
+	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
