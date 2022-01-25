@@ -212,6 +212,7 @@ func updateNamespaceCmd() *cobra.Command {
 	cmd.MarkFlagRequired("comp")
 
 	cmd.Flags().StringVarP(&desc, "desc", "d", "", "description")
+	cmd.MarkFlagRequired("desc")
 
 	return cmd
 }

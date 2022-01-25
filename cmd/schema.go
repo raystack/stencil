@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
@@ -55,7 +56,7 @@ func listSchemaCmd() *cobra.Command {
 		Short: "list all schemas",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema list <schema-id>
+			$ stencil schema list <namespace-id>
 	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -70,8 +71,8 @@ func listSchemaCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			id := args[0]
-			req.Id = id
+			namespaceID := args[0]
+			req.Id = namespaceID
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.ListSchemas(context.Background(), &req)
@@ -84,6 +85,11 @@ func listSchemaCmd() *cobra.Command {
 			schemas := res.GetSchemas()
 
 			spinner.Stop()
+
+			if len(schemas) == 0 {
+				fmt.Printf("%s has no schemas", namespaceID)
+				return nil
+			}
 
 			fmt.Printf(" \nShowing %d schemas \n", len(schemas))
 
@@ -292,12 +298,12 @@ func getSchemaCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			if output != "" {
-				err = os.WriteFile(output, data, 0666)
+			err = os.WriteFile(output, data, 0666)
+			if err != nil {
 				return err
-			} else {
-				fmt.Println(data)
 			}
+
+			fmt.Printf("Schema successfully written to %s\n", output)
 
 			if resMetadata != nil {
 				report := [][]string{}
@@ -327,6 +333,7 @@ func getSchemaCmd() *cobra.Command {
 	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&output, "output", "o", "", "path to the output file")
+	cmd.MarkFlagRequired("output")
 
 	return cmd
 }
@@ -407,7 +414,7 @@ func versionSchemaCmd() *cobra.Command {
 		Short: "version(s) of all schemas",
 		Args:  cobra.ExactArgs(2),
 		Example: heredoc.Doc(`
-			$ stencil schema list <namespace-id> <schema-id>
+			$ stencil schema version <namespace-id> <schema-id>
 	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -439,11 +446,16 @@ func versionSchemaCmd() *cobra.Command {
 
 			spinner.Stop()
 
+			if len(versions) == 0 {
+				fmt.Printf("%s has no versions in %s", schemaID, namespaceID)
+				return nil
+			}
+
 			report = append(report, []string{"VERSIONS(s)"})
 
 			for _, v := range versions {
 				report = append(report, []string{
-					string(v),
+					strconv.FormatInt(int64(v), 10),
 				})
 			}
 			printer.Table(os.Stdout, report)
