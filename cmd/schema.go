@@ -112,15 +112,15 @@ func listSchemaCmd() *cobra.Command {
 }
 
 func createSchemaCmd() *cobra.Command {
-	var host, format, comp, filePath string
+	var host, format, comp, filePath, namespaceID string
 	var req stencilv1beta1.CreateSchemaRequest
 
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "create all Schemas",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema create <namespace-id> <schema-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
+			$ stencil schema create <schema-id> --namespace=<namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -140,9 +140,7 @@ func createSchemaCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-
-			namespaceID := args[0]
-			schemaID := args[1]
+			schemaID := args[0]
 
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
@@ -167,6 +165,9 @@ func createSchemaCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
+
 	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
 	cmd.MarkFlagRequired("format")
 
@@ -180,16 +181,15 @@ func createSchemaCmd() *cobra.Command {
 }
 
 func updateSchemaCmd() *cobra.Command {
-	var host string
-	var comp string
+	var host, comp, namespaceID string
 	var req stencilv1beta1.UpdateSchemaMetadataRequest
 
 	cmd := &cobra.Command{
 		Use:   "update",
 		Short: "update all Schemas",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema update <namespace-id> <schema-id> –-comp=<schema-compatibility>
+			$ stencil schema update <schema-id> --namespace=<namespace-id> –-comp=<schema-compatibility>
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -204,8 +204,7 @@ func updateSchemaCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			namespaceID := args[0]
-			schemaID := args[1]
+			schemaID := args[0]
 
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
@@ -227,6 +226,9 @@ func updateSchemaCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
+
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
 	cmd.MarkFlagRequired("comp")
 
@@ -234,7 +236,7 @@ func updateSchemaCmd() *cobra.Command {
 }
 
 func getSchemaCmd() *cobra.Command {
-	var host, output string
+	var host, output, namespaceID string
 	var version int32
 	var metadata bool
 	var data []byte
@@ -246,9 +248,9 @@ func getSchemaCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "get all schemas",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema get <namespace-id> <schema-id> --version <version> --metadata <metadata>
+			$ stencil schema get <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -263,8 +265,7 @@ func getSchemaCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			namespaceID := args[0]
-			schemaID := args[1]
+			schemaID := args[0]
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 
@@ -326,6 +327,9 @@ func getSchemaCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
+
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "version of the schema")
 	cmd.MarkFlagRequired("version")
 
@@ -339,7 +343,7 @@ func getSchemaCmd() *cobra.Command {
 }
 
 func deleteSchemaCmd() *cobra.Command {
-	var host string
+	var host, namespaceID string
 	var req stencilv1beta1.DeleteSchemaRequest
 	var reqVer stencilv1beta1.DeleteVersionRequest
 	var version int32
@@ -347,9 +351,9 @@ func deleteSchemaCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete",
 		Short: "delete all schemas",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema delete <namespace-id> <schema-id>
+			$ stencil schema delete <schema-id> --namespace=<namespace-id>
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -364,8 +368,7 @@ func deleteSchemaCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			namespaceID := args[0]
-			schemaID := args[1]
+			schemaID := args[0]
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 
@@ -400,21 +403,24 @@ func deleteSchemaCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
+
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "particular version to be deleted")
 
 	return cmd
 }
 
 func versionSchemaCmd() *cobra.Command {
-	var host string
+	var host, namespaceID string
 	var req stencilv1beta1.ListVersionsRequest
 
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "version(s) of all schemas",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema version <namespace-id> <schema-id>
+			$ stencil schema version <schema-id> --namespace=<namespace-id>
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -429,8 +435,7 @@ func versionSchemaCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			namespaceID := args[0]
-			schemaID := args[1]
+			schemaID := args[0]
 
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
@@ -465,6 +470,9 @@ func versionSchemaCmd() *cobra.Command {
 
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
+
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
 
 	return cmd
 }
