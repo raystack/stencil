@@ -1,0 +1,212 @@
+info:
+  title: Stencil server
+  version: 0.1.4
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /ping:
+    get:
+      summary: service health check
+      tags:
+        - health
+      operationId: ping
+      responses:
+        "200":
+          description: "returns pong message"
+  /v1/namespaces/{namespace}/descriptors:
+    post:
+      summary: upload descriptors
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      tags:
+        - StencilService
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "formData"
+          required: true
+          type: "string"
+        - name: "version"
+          in: "formData"
+          description: "version number for descriptor file. This should follow semantic version compatability"
+          required: true
+          type: "string"
+        - name: "latest"
+          in: "formData"
+          description: "mark this descriptor file as latest"
+          required: false
+          type: "boolean"
+        - name: "dryrun"
+          in: "formData"
+          description: "flag for dryRun"
+          required: false
+          type: "boolean"
+        - name: "skiprules"
+          in: "formData"
+          description: "list of rules to skip"
+          required: false
+          type: "array"
+          items:
+            type: string
+            enum:
+              - FILE_NO_BREAKING_CHANGE
+              - MESSAGE_NO_DELETE
+              - FIELD_NO_BREAKING_CHANGE
+              - ENUM_NO_BREAKING_CHANGE
+        - name: "file"
+          in: "formData"
+          description: "descriptorset file to upload"
+          required: true
+          type: "file"
+      responses:
+        "200":
+          description: "Success response if operation succeded"
+        "400":
+          description: "Validation error response when user payload has missing required fields or currently being uploaded file is not backward compatible with previously uploaded file"
+        "409":
+          description: "conflict error reponse if namespace, name and version combination already present"
+        "500":
+          description: "Unexpected internal error reponse"
+  /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}:
+    get:
+      summary: download specified descriptor file
+      tags:
+        - StencilService
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: "namespace"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "version"
+          in: "path"
+          required: true
+          type: "string"
+        - name: "fullnames"
+          in: "query"
+          type: "array"
+          description: "Proto fullnames"
+          items:
+            type: string
+          collectionFormat: "multi"
+      responses:
+        "200":
+          description: "download response"
+  /v1/snapshots:
+    get:
+      operationId: StencilService_ListSnapshots
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1ListSnapshotsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: namespace
+          in: query
+          required: false
+          type: string
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: version
+          in: query
+          required: false
+          type: string
+        - name: latest
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - StencilService
+  /v1/snapshots/{id}/promote:
+    patch:
+      summary: PromoteSnapshot promotes particular snapshot version as latest
+      operationId: StencilService_PromoteSnapshot
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1PromoteSnapshotResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: int64
+      tags:
+        - StencilService
+definitions:
+  protobufAny:
+    type: object
+    properties:
+      typeUrl:
+        type: string
+      value:
+        type: string
+        format: byte
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/protobufAny'
+  v1ListSnapshotsResponse:
+    type: object
+    properties:
+      snapshots:
+        type: array
+        items:
+          $ref: '#/definitions/v1Snapshot'
+  v1PromoteSnapshotResponse:
+    type: object
+    properties:
+      snapshot:
+        $ref: '#/definitions/v1Snapshot'
+  v1Snapshot:
+    type: object
+    properties:
+      id:
+        type: string
+        format: int64
+      namespace:
+        type: string
+        required:
+          - namespace
+      name:
+        type: string
+      version:
+        type: string
+      latest:
+        type: boolean
+    required:
+      - namespace
+schemes:
+  - http
+swagger: "2.0"

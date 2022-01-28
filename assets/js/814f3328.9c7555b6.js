@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkstencil=self.webpackChunkstencil||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Introducing Stencil","permalink":"/stencil/blog/introducing-stencil"}]}')}}]);
