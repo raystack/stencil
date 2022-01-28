@@ -16,10 +16,11 @@ type SchemaInfo struct {
 }
 
 type SchemaFile struct {
-	ID     string
-	Types  []string
-	Fields []string
-	Data   []byte
+	ID         string
+	Types      []string
+	Fields     []string
+	Data       []byte
+	SearchKeys []string
 }
 
 // SchemaRepository for Schema

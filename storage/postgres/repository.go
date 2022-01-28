@@ -31,6 +31,7 @@ func wrapError(err error, format string, args ...interface{}) error {
 type searchData struct {
 	Types  []string
 	Fields []string
+	Keys   []string
 }
 
 // Store DB access layer
@@ -87,7 +88,7 @@ func (r *Store) CreateSchema(ctx context.Context, namespace string, schemaName s
 			return err
 		}
 		if err := t.QueryRow(ctx, versionInsertQuery, schemaID, versionID, file.ID,
-			&searchData{Types: file.Types, Fields: file.Fields}, file.Data).Scan(&version); err != nil {
+			&searchData{Types: file.Types, Fields: file.Fields, Keys: file.SearchKeys}, file.Data).Scan(&version); err != nil {
 			return err
 		}
 		return nil
@@ -151,8 +152,14 @@ func (r *Store) DeleteVersion(ctx context.Context, ns string, sc string, version
 	return wrapError(err, "delete version")
 }
 
-func (r *Store) Search(ctx context.Context, req *domain.SearchSchemasRequest) ([]*domain.SearchHits, error) {
+func (r *Store) Search(ctx context.Context, req *domain.SearchRequest) ([]*domain.SearchHits, error) {
 	var searchHits []*domain.SearchHits
-	err := pgxscan.Select(ctx, r.db, &searchHits, searchQuery, req.NamespaceID, req.VersionID, req.Query)
+	err := pgxscan.Select(ctx, r.db, &searchHits, searchAllQuery, req.NamespaceID, req.SchemaID, req.VersionID, req.Query)
+	return searchHits, err
+}
+
+func (r *Store) SearchLatest(ctx context.Context, req *domain.SearchRequest) ([]*domain.SearchHits, error) {
+	var searchHits []*domain.SearchHits
+	err := pgxscan.Select(ctx, r.db, &searchHits, searchLatestQuery, req.NamespaceID, req.SchemaID, req.Query)
 	return searchHits, err
 }

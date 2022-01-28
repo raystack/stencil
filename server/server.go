@@ -52,9 +52,9 @@ func Start(cfg config.Config) {
 		Repo: store,
 	}
 	api := &api.API{
-		Namespace: namespaceService,
-		Schema:    schemaService,
-		Search:    &searchService,
+		Namespace:     namespaceService,
+		Schema:        schemaService,
+		SearchService: &searchService,
 	}
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)

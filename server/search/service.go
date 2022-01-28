@@ -7,20 +7,39 @@ import (
 	"github.com/odpf/stencil/server/domain"
 )
 
+var (
+	ErrEmptyQueryString = errors.New("query string cannot be empty")
+	ErrEmptySchemaID    = errors.New("schema_id cannot be empty")
+	ErrEmptyNamespaceID = errors.New("namespace_id cannot be empty")
+)
+
 type Service struct {
 	Repo domain.SearchRepository
 }
 
-func (s *Service) SearchSchemas(ctx context.Context, req *domain.SearchSchemasRequest) (*domain.SearchSchemasResponse, error) {
+func (s *Service) Search(ctx context.Context, req *domain.SearchRequest) (*domain.SearchResponse, error) {
 	if req.Query == "" {
-		return nil, errors.New("query string cannot be empty")
+		return nil, ErrEmptyQueryString
 	}
-	res, err := s.Repo.Search(ctx, req)
+
+	if req.SchemaID != "" && req.NamespaceID == "" {
+		return nil, ErrEmptyNamespaceID
+	}
+
+	var res []*domain.SearchHits
+	var err error
+	if req.VersionID == 0 && !req.All {
+		res, err = s.Repo.SearchLatest(ctx, req)
+	} else if req.SchemaID == "" && req.VersionID > 0 {
+		return nil, ErrEmptySchemaID
+	} else {
+		res, err = s.Repo.Search(ctx, req)
+	}
+
 	if err != nil {
 		return nil, err
 	}
-	return &domain.SearchSchemasResponse{
-		NamespaceID: req.NamespaceID,
-		Hits:        res,
+	return &domain.SearchResponse{
+		Hits: res,
 	}, nil
 }

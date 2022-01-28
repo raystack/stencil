@@ -23,11 +23,14 @@ func (s *Schema) Format() string {
 
 func (s *Schema) GetCanonicalValue() *domain.SchemaFile {
 	id := uuid.NewSHA1(uuid.NameSpaceOID, s.data)
+	messages, messageSearchKeys := getAllMessages(s.Files)
+	fields, fieldSearchKeys := getAllFields(s.Files)
 	return &domain.SchemaFile{
-		ID:     id.String(),
-		Types:  getAllMessages(s.Files),
-		Data:   s.data,
-		Fields: getAllFields(s.Files),
+		ID:         id.String(),
+		Types:      messages,
+		Data:       s.data,
+		Fields:     fields,
+		SearchKeys: append(fieldSearchKeys, messageSearchKeys...),
 	}
 }
 

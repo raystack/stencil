@@ -14,21 +14,21 @@ type SearchService struct {
 	mock.Mock
 }
 
-// SearchSchemas provides a mock function with given fields: _a0, _a1
-func (_m *SearchService) SearchSchemas(_a0 context.Context, _a1 *domain.SearchSchemasRequest) (*domain.SearchSchemasResponse, error) {
+// Search provides a mock function with given fields: _a0, _a1
+func (_m *SearchService) Search(_a0 context.Context, _a1 *domain.SearchRequest) (*domain.SearchResponse, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *domain.SearchSchemasResponse
-	if rf, ok := ret.Get(0).(func(context.Context, *domain.SearchSchemasRequest) *domain.SearchSchemasResponse); ok {
+	var r0 *domain.SearchResponse
+	if rf, ok := ret.Get(0).(func(context.Context, *domain.SearchRequest) *domain.SearchResponse); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.SearchSchemasResponse)
+			r0 = ret.Get(0).(*domain.SearchResponse)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *domain.SearchSchemasRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *domain.SearchRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

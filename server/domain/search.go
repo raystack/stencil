@@ -3,30 +3,31 @@ package domain
 import "context"
 
 type SearchRepository interface {
-	Search(context.Context, *SearchSchemasRequest) ([]*SearchHits, error)
-	GetLatestVersion(ctx context.Context, namespaceId, schemaName string) (int32, error)
+	Search(context.Context, *SearchRequest) ([]*SearchHits, error)
+	SearchLatest(context.Context, *SearchRequest) ([]*SearchHits, error)
 }
 
 type SearchService interface {
-	SearchSchemas(context.Context, *SearchSchemasRequest) (*SearchSchemasResponse, error)
+	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
 
-type SearchSchemasRequest struct {
+type SearchRequest struct {
 	NamespaceID string
+	SchemaID    string
 	VersionID   int32
 	Query       string
-	Latest      bool
+	All         bool
 }
 
-type SearchSchemasResponse struct {
-	NamespaceID string
-	Hits        []*SearchHits
+type SearchResponse struct {
+	Hits []*SearchHits
 }
 
 type SearchHits struct {
 	Fields      []string
 	Types       []string
+	Keys        []string
 	NamespaceID string
-	Schema      string
+	SchemaID    string
 	VersionID   int32
 }

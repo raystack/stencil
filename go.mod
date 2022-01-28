@@ -14,6 +14,7 @@ require (
 	github.com/hamba/avro v1.6.2
 	github.com/jackc/pgconn v1.10.0
 	github.com/jackc/pgx/v4 v4.13.0
+	github.com/jdkato/prose/v2 v2.0.0
 	github.com/jhump/protoreflect v1.9.0
 	github.com/newrelic/go-agent/v3 v3.12.0
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
@@ -22,9 +23,7 @@ require (
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
-	github.com/yudai/gojsondiff v1.0.0
-	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
-	github.com/yudai/pp v2.0.1+incompatible // indirect
+	github.com/thoas/go-funk v0.9.1
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2

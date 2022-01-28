@@ -12,9 +12,9 @@ func setup() (*mocks.NamespaceService, *mocks.SchemaService, *mocks.SearchServic
 	searchService := &mocks.SearchService{}
 	mux := runtime.NewServeMux()
 	v1beta1 := &api.API{
-		Namespace: nsService,
-		Schema:    schemaService,
-		Search:    searchService,
+		Namespace:     nsService,
+		Schema:        schemaService,
+		SearchService: searchService,
 	}
 	v1beta1.RegisterSchemaHandlers(mux)
 	return nsService, schemaService, searchService, mux, v1beta1
