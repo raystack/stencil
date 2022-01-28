@@ -30,7 +30,7 @@ func New() *cobra.Command {
 			"group:core": "true",
 			"help:learn": heredoc.Doc(`
 				Use 'stencil <command> <subcommand> --help' for more information about a command.
-				Read the manual at https://odpf.gitbook.io/stencil/
+				Read the manual at https://odpf.github.io/stencil/
 			`),
 			"help:feedback": heredoc.Doc(`
 				Open an issue here https://github.com/odpf/stencil/issues
