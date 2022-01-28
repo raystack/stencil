@@ -3,7 +3,7 @@ name: docs
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
           GIT_USER: ravisuhag
           GIT_PASS: ${{ secrets.DOCU_RS_TOKEN }}
           DEPLOYMENT_BRANCH: gh-pages
-          CURRENT_BRANCH: main
+          CURRENT_BRANCH: master
         working-directory: docs
         run: |
           git config --global user.email "suhag.ravi@gmail.com"
