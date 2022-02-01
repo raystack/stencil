@@ -14,9 +14,9 @@ type SearchService interface {
 type SearchRequest struct {
 	NamespaceID string
 	SchemaID    string
-	VersionID   int32
 	Query       string
-	All         bool
+	History     bool
+	VersionID   int32
 }
 
 type SearchResponse struct {

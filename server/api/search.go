@@ -12,10 +12,16 @@ func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*st
 	searchReq := &domain.SearchRequest{
 		NamespaceID: in.GetNamespaceId(),
 		Query:       in.GetQuery(),
-		VersionID:   in.GetVersionId(),
-		All:         in.GetAll(),
 		SchemaID:    in.GetSchemaId(),
 	}
+
+	switch v := in.GetVersion().(type) {
+	case *stencilv1beta1.SearchRequest_VersionId:
+		searchReq.VersionID = v.VersionId
+	case *stencilv1beta1.SearchRequest_History:
+		searchReq.History = v.History
+	}
+
 	res, err := a.SearchService.Search(ctx, searchReq)
 	if err != nil {
 		return nil, err

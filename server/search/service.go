@@ -28,11 +28,12 @@ func (s *Service) Search(ctx context.Context, req *domain.SearchRequest) (*domai
 
 	var res []*domain.SearchHits
 	var err error
-	if req.VersionID == 0 && !req.All {
+	if req.VersionID == 0 && !req.History {
 		res, err = s.Repo.SearchLatest(ctx, req)
-	} else if req.SchemaID == "" && req.VersionID > 0 {
-		return nil, ErrEmptySchemaID
 	} else {
+		if req.VersionID > 0 && req.SchemaID == "" {
+			return nil, ErrEmptySchemaID
+		}
 		res, err = s.Repo.Search(ctx, req)
 	}
 
