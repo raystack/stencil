@@ -5,21 +5,19 @@ package stencil
 
 import (
 	"encoding/json"
-	"io"
 	"time"
 
+	"github.com/goburrow/cache"
 	"github.com/pkg/errors"
-	"go.uber.org/multierr"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 var (
 	//ErrNotFound default sentinel error if proto not found
 	ErrNotFound = errors.New("not found")
-	//ErrNotFound is for when descriptor does not match the message
+	//ErrInvalidDescriptor is for when descriptor does not match the message
 	ErrInvalidDescriptor = errors.New("invalid descriptor")
 )
 
@@ -29,23 +27,17 @@ type Client interface {
 	// Parse parses protobuf message from wire format to protoreflect.ProtoMessage given fully qualified name of proto message.
 	// Returns ErrNotFound error if given class name is not found
 	Parse(string, []byte) (protoreflect.ProtoMessage, error)
-	// ParseWithRefresh parses protobuf message from wire format to `protoreflect.ProtoMessage` given fully qualified name of proto message.
-	// Refreshes proto definitions if parsed message has unknown fields and parses the message again.
-	// Returns ErrNotFound error if given class name is not found.
-	ParseWithRefresh(string, []byte) (protoreflect.ProtoMessage, error)
 	// Serialize serializes data to bytes given fully qualified name of proto message.
 	// Returns ErrNotFound error if given class name is not found
 	Serialize(string, interface{}) ([]byte, error)
-	// SerializeWithRefresh serializes data to bytes given fully qualified name of proto message.
-	// Refreshes proto definitions if message has unknown fields and serialized the message again.
-	// Returns ErrNotFound error if given class name is not found.
-	SerializeWithRefresh(string, interface{}) ([]byte, error)
 	// GetDescriptor returns protoreflect.MessageDescriptor given fully qualified proto java class name
 	GetDescriptor(string) (protoreflect.MessageDescriptor, error)
 	// Close stops background refresh if configured.
 	Close()
-	// Refresh downloads latest proto definitions
-	Refresh() error
+	// Refresh loads new values from specified url. If the schema is already fetched, the previous value
+	// will continue to be used by Parse methods while the new value is loading.
+	// If schemas not loaded, then this function will block until the value is loaded.
+	Refresh()
 }
 
 // HTTPOptions options for http client
@@ -66,6 +58,8 @@ type Options struct {
 	RefreshInterval time.Duration
 	// HTTPOptions options for http client
 	HTTPOptions
+	// RefreshStrategy refresh strategy to use while fetching schema
+	RefreshStrategy
 }
 
 func (o *Options) setDefaults() {
@@ -77,32 +71,37 @@ func (o *Options) setDefaults() {
 	}
 }
 
+// NewClient creates stencil client. Downloads proto descriptor file from given url and stores the definitions.
+// It will throw error if download fails or downloaded file is not fully contained descriptor file
+func NewClient(urls []string, options Options) (Client, error) {
+	cacheOptions := []cache.Option{cache.WithMaximumSize(len(urls) + 3)}
+	options.setDefaults()
+	if options.AutoRefresh {
+		cacheOptions = append(cacheOptions, cache.WithRefreshAfterWrite(options.RefreshInterval), cache.WithExpireAfterWrite(options.RefreshInterval))
+	}
+	newCache := cache.NewLoadingCache(options.RefreshStrategy.getLoader(options), cacheOptions...)
+	s, err := newStore(urls, newCache)
+	if err != nil {
+		return nil, err
+	}
+	return &stencilClient{urls: urls, store: s, options: options}, nil
+}
+
 type stencilClient struct {
-	timer   io.Closer
 	urls    []string
-	store   *descriptorStore
+	store   *store
 	options Options
 }
 
 func (s *stencilClient) Parse(className string, data []byte) (protoreflect.ProtoMessage, error) {
-	desc, ok := s.store.get(className)
+	resolver, ok := s.getMatchingResolver(className)
 	if !ok {
 		return nil, ErrNotFound
 	}
-	m := dynamicpb.NewMessage(desc).New().Interface()
-	err := proto.UnmarshalOptions{Resolver: s.store.extensionResolver}.Unmarshal(data, m)
+	messageType, _ := resolver.Get(className)
+	m := messageType.New().Interface()
+	err := proto.UnmarshalOptions{Resolver: resolver.GetTypeResolver()}.Unmarshal(data, m)
 	return m, err
-}
-
-func (s *stencilClient) ParseWithRefresh(className string, data []byte) (protoreflect.ProtoMessage, error) {
-	m, err := s.Parse(className, data)
-	if err != nil || m.ProtoReflect().GetUnknown() == nil {
-		return m, err
-	}
-	if err = s.Refresh(); err != nil {
-		return m, err
-	}
-	return s.Parse(className, data)
 }
 
 func (s *stencilClient) Serialize(className string, data interface{}) (bytes []byte, err error) {
@@ -112,15 +111,16 @@ func (s *stencilClient) Serialize(className string, data interface{}) (bytes []b
 		return
 	}
 
-	// get descriptor
-	desc, err := s.GetDescriptor(className)
-	if err != nil {
-		return
+	resolver, ok := s.getMatchingResolver(className)
+	if !ok {
+		return nil, ErrNotFound
 	}
 
+	// get descriptor
+	messageType, _ := resolver.Get(className)
 	// construct proto message
-	m := dynamicpb.NewMessage(desc).New().Interface()
-	err = protojson.UnmarshalOptions{Resolver: s.store.extensionResolver}.Unmarshal(jsonBytes, m)
+	m := messageType.New().Interface()
+	err = protojson.UnmarshalOptions{Resolver: resolver.GetTypeResolver()}.Unmarshal(jsonBytes, m)
 	if err != nil {
 		return bytes, ErrInvalidDescriptor
 	}
@@ -129,63 +129,37 @@ func (s *stencilClient) Serialize(className string, data interface{}) (bytes []b
 	return proto.Marshal(m)
 }
 
-func (s *stencilClient) SerializeWithRefresh(className string, data interface{}) (bytes []byte, err error) {
-	bytes, err = s.Serialize(className, data)
-	if err == nil || (err != ErrNotFound && err != ErrInvalidDescriptor) {
-		return
+func (s *stencilClient) getMatchingResolver(className string) (*Resolver, bool) {
+	for _, url := range s.urls {
+		resolver, ok := s.store.getResolver(url)
+		if !ok {
+			return nil, false
+		}
+		_, ok = resolver.Get(className)
+		if ok {
+			return resolver, ok
+		}
 	}
-
-	if err = s.Refresh(); err != nil {
-		return bytes, errors.Wrap(err, "error refreshing descriptor")
-	}
-
-	return s.Serialize(className, data)
+	return nil, false
 }
 
 func (s *stencilClient) GetDescriptor(className string) (protoreflect.MessageDescriptor, error) {
-	desc, ok := s.store.get(className)
+	resolver, ok := s.getMatchingResolver(className)
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return desc, nil
+	desc, _ := resolver.Get(className)
+	return desc.Descriptor(), nil
 }
 
 func (s *stencilClient) Close() {
-	if s.timer != nil {
-		s.timer.Close()
+	if s.store != nil {
+		s.store.Close()
 	}
 }
 
-func (s *stencilClient) Refresh() error {
-	var err error
+func (s *stencilClient) Refresh() {
 	for _, url := range s.urls {
-		err = multierr.Combine(err, s.store.loadFromURI(url, s.options))
+		s.store.Refresh(url)
 	}
-	return err
-}
-
-func (s *stencilClient) load() error {
-	s.options.setDefaults()
-	if s.options.AutoRefresh {
-		s.timer = setInterval(s.options.RefreshInterval, func() { s.Refresh() })
-	}
-	err := s.Refresh()
-	return err
-}
-
-// NewClient creates stencil client. Downloads proto descriptor file from given url and stores the definitions.
-// It will throw error if download fails or downloaded file is not fully contained descriptor file
-func NewClient(url string, options Options) (Client, error) {
-	s := &stencilClient{store: newStore(), urls: []string{url}, options: options}
-	err := s.load()
-	return s, err
-}
-
-// NewMultiURLClient creates stencil client with multiple urls. Downloads proto descriptor file from given urls and stores the definitions.
-// If descriptor files from multiple urls has different schema definitions with same name, last downloaded proto descriptor will override previous entries.
-// It will throw error if any of the download fails or any downloaded file is not fully contained descriptor file
-func NewMultiURLClient(urls []string, options Options) (Client, error) {
-	s := &stencilClient{store: newStore(), urls: urls, options: options}
-	err := s.load()
-	return s, err
 }

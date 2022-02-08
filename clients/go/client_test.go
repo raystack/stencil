@@ -78,7 +78,7 @@ func getUpdatedDescriptorDataAndMsgData(t *testing.T, includeImports bool) ([]by
 	}))
 	defer ts.Close()
 	url := ts.URL
-	client, err := stencil.NewClient(url, stencil.Options{})
+	client, err := stencil.NewClient([]string{url}, stencil.Options{})
 	assert.Nil(t, err)
 	assert.NotNil(t, client)
 	msgDesc, err := client.GetDescriptor("test.stencil.One")
@@ -98,13 +98,13 @@ func getUpdatedDescriptorDataAndMsgData(t *testing.T, includeImports bool) ([]by
 func TestNewClient(t *testing.T) {
 	t.Run("should return error if url is not valid", func(t *testing.T) {
 		url := "h_ttp://invalidurl"
-		_, err := stencil.NewClient(url, stencil.Options{})
+		_, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Contains(t, err.Error(), "invalid request")
 	})
 
 	t.Run("should return error if request fails", func(t *testing.T) {
 		url := "ithttp://localhost"
-		_, err := stencil.NewClient(url, stencil.Options{})
+		_, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Contains(t, err.Error(), "request failed")
 	})
 
@@ -114,7 +114,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		_, err := stencil.NewClient(url, stencil.Options{})
+		_, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Contains(t, err.Error(), "request failed.")
 	})
 
@@ -125,7 +125,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		_, err := stencil.NewClient(url, stencil.Options{})
+		_, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Contains(t, err.Error(), "invalid file descriptorset file.")
 	})
 
@@ -137,7 +137,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		_, err = stencil.NewClient(url, stencil.Options{})
+		_, err = stencil.NewClient([]string{url}, stencil.Options{})
 		if assert.NotNil(t, err) {
 			assert.Contains(t, err.Error(), "file is not fully contained descriptor file.")
 		}
@@ -151,7 +151,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencil.NewClient(url, stencil.Options{})
+		client, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 	})
@@ -167,7 +167,7 @@ func TestNewClient(t *testing.T) {
 			}
 			w.Write(data)
 		}))
-		client, err := stencil.NewClient(ts.URL, stencil.Options{HTTPOptions: stencil.HTTPOptions{Headers: headers}})
+		client, err := stencil.NewClient([]string{ts.URL}, stencil.Options{HTTPOptions: stencil.HTTPOptions{Headers: headers}})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 	})
@@ -179,29 +179,14 @@ func TestNewClient(t *testing.T) {
 			callCount++
 			w.Write(data)
 		}))
-		client, _ := stencil.NewClient(ts.URL, stencil.Options{AutoRefresh: true, RefreshInterval: 5 * time.Millisecond})
-		time.Sleep(6 * time.Millisecond)
+		client, _ := stencil.NewClient([]string{ts.URL}, stencil.Options{AutoRefresh: true, RefreshInterval: 2 * time.Millisecond})
+		// wait for interval to end
+		time.Sleep(2 * time.Millisecond)
+		client.GetDescriptor("test.One")
+		time.Sleep(1 * time.Millisecond)
 		client.Close()
 		assert.Equal(t, 2, callCount)
 	})
-}
-
-func TestNewMultiURLClient(t *testing.T) {
-	data, err := getDescriptorData(t, true)
-	assert.NoError(t, err)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(data)
-	}))
-	defer ts.Close()
-	url := ts.URL
-	ts2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-	}))
-	defer ts2.Close()
-	url2 := ts2.URL
-	_, err = stencil.NewMultiURLClient([]string{url, url2}, stencil.Options{})
-	assert.NotNil(t, err)
-	assert.Contains(t, err.Error(), "request failed.")
 }
 
 func TestClient(t *testing.T) {
@@ -213,7 +198,7 @@ func TestClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencil.NewClient(url, stencil.Options{})
+		client, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 		t.Run("should return notFoundErr if not found", func(t *testing.T) {
@@ -243,7 +228,7 @@ func TestClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencil.NewClient(url, stencil.Options{})
+		client, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 		t.Run("should return notFoundErr if not found", func(t *testing.T) {
@@ -300,78 +285,7 @@ func TestClient(t *testing.T) {
 			assert.Nil(t, parsed.ProtoReflect().GetUnknown())
 		})
 	})
-	t.Run("ParseWithRefresh", func(t *testing.T) {
 
-		t.Run("should return notFoundErr if not found", func(t *testing.T) {
-			data, err := getDescriptorData(t, true)
-			assert.NoError(t, err)
-			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write(data)
-			}))
-			defer ts.Close()
-			url := ts.URL
-			client, err := stencil.NewClient(url, stencil.Options{})
-			assert.Nil(t, err)
-			assert.NotNil(t, client)
-			msg, err := client.ParseWithRefresh("test.stencil.Two.Unknown", []byte(""))
-			assert.Nil(t, msg)
-			assert.NotNil(t, err)
-			assert.Equal(t, stencil.ErrNotFound, err)
-		})
-
-		t.Run("should return error if refresh fails", func(t *testing.T) {
-			_, msgData := getUpdatedDescriptorDataAndMsgData(t, true)
-			data, err := getDescriptorData(t, true)
-			assert.NoError(t, err)
-			count := 0
-			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if count == 1 {
-					http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-					count++
-					return
-				}
-				count++
-				w.Write(data)
-			}))
-			defer ts.Close()
-			url := ts.URL
-			client, err := stencil.NewClient(url, stencil.Options{})
-			assert.Nil(t, err)
-			assert.NotNil(t, client)
-			_, err = client.ParseWithRefresh("test.stencil.One", msgData)
-			assert.NotNil(t, err)
-		})
-
-		t.Run("should refresh proto definitions should parse without any UnknownFields", func(t *testing.T) {
-			data, msgData := getUpdatedDescriptorDataAndMsgData(t, true)
-			oldData, err := getDescriptorData(t, true)
-			count := 0
-			ts2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if count == 0 {
-					w.Write(oldData)
-					count++
-					return
-				}
-				w.Write(data)
-			}))
-			defer ts2.Close()
-			newClient, err := stencil.NewClient(ts2.URL, stencil.Options{})
-			parsed, err := newClient.Parse("test.stencil.One", msgData)
-			assert.NotNil(t, parsed.ProtoReflect().GetUnknown())
-			parsed, err = newClient.ParseWithRefresh("test.stencil.One", msgData)
-			assert.Nil(t, err)
-			assert.Nil(t, parsed.ProtoReflect().GetUnknown())
-			parsed.ProtoReflect().Range(func(field protoreflect.FieldDescriptor, value protoreflect.Value) bool {
-				if field.Name() == "field_one" {
-					assert.Equal(t, int64(200), value.Int())
-				}
-				if field.Name() == "field_two" {
-					assert.Equal(t, int64(300), value.Int())
-				}
-				return true
-			})
-		})
-	})
 	t.Run("Serialize", func(t *testing.T) {
 		desc, err := getDescriptorData(t, true)
 		assert.NoError(t, err)
@@ -380,7 +294,7 @@ func TestClient(t *testing.T) {
 		}))
 		defer ts.Close()
 		url := ts.URL
-		client, err := stencil.NewClient(url, stencil.Options{})
+		client, err := stencil.NewClient([]string{url}, stencil.Options{})
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
 
@@ -422,94 +336,58 @@ func TestClient(t *testing.T) {
 			assert.Equal(t, int64(fieldOneValue), val.Int())
 		})
 	})
-	t.Run("SerializeWithRefresh", func(t *testing.T) {
-		descriptor, err := getDescriptorData(t, true)
-		if err != nil {
-			t.Fatal(err)
-		}
+}
 
-		validData := map[string]interface{}{
-			"field_one": 23,
-		}
-
-		t.Run("should return error when unable to get descriptor", func(t *testing.T) {
-			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write(descriptor)
-			}))
-			defer ts.Close()
-			url := ts.URL
-			client, err := stencil.NewClient(url, stencil.Options{})
-
-			result, err := client.SerializeWithRefresh("invalidClass", validData)
-			assert.Nil(t, result)
-			assert.Equal(t, stencil.ErrNotFound, err)
+func TestRefreshStrategies(t *testing.T) {
+	t.Run("VersionBasedRefresh", func(t *testing.T) {
+		dataDownloadOneCount := 0
+		dataDownloadTwoCount := 0
+		versionsDownloadCount := 0
+		// setup
+		data, err := getDescriptorDataByPath(t, true, "./test_data")
+		assert.NoError(t, err)
+		versions := `{"versions": [1]}`
+		mux := http.NewServeMux()
+		mux.HandleFunc("/v1beta1/namespaces/test-namespace/schemas/test-schema/versions", func(rw http.ResponseWriter, r *http.Request) {
+			rw.Header().Set("Content-Type", "application/json")
+			rw.Write([]byte(versions))
+			versionsDownloadCount++
 		})
-		t.Run("should return error if refresh fails", func(t *testing.T) {
-			count := 0
-			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if count == 1 {
-					http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-					count++
-					return
-				}
-				count++
-				w.Write(descriptor)
-			}))
-			defer ts.Close()
-			url := ts.URL
-			client, err := stencil.NewClient(url, stencil.Options{})
-			assert.Nil(t, err)
-			assert.NotNil(t, client)
-
-			invalidData := make(map[string]interface{})
-			invalidData["key1"] = "value1"
-
-			result, err := client.SerializeWithRefresh("test.stencil.One", invalidData)
-			assert.Nil(t, result)
-			assert.Error(t, err)
-			assert.Contains(t, err.Error(), "error refreshing descriptor")
+		mux.HandleFunc("/v1beta1/namespaces/test-namespace/schemas/test-schema/versions/1", func(rw http.ResponseWriter, r *http.Request) {
+			rw.Write(data)
+			dataDownloadOneCount++
 		})
-		t.Run("should return error when unable to serialize to bytes", func(t *testing.T) {
-			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write(descriptor)
-			}))
-			defer ts.Close()
-			url := ts.URL
-			client, err := stencil.NewClient(url, stencil.Options{})
-
-			invalidData := make(map[string]interface{})
-			invalidData["key1"] = "value1"
-
-			result, err := client.SerializeWithRefresh("test.stencil.One", invalidData)
-			assert.Nil(t, result)
-			assert.Error(t, err)
-			assert.Equal(t, stencil.ErrInvalidDescriptor, err)
+		mux.HandleFunc("/v1beta1/namespaces/test-namespace/schemas/test-schema/versions/2", func(rw http.ResponseWriter, r *http.Request) {
+			rw.Write(data)
+			dataDownloadTwoCount++
 		})
-		t.Run("should return bytes", func(t *testing.T) {
-			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write(descriptor)
-			}))
-			defer ts.Close()
-			url := ts.URL
-			client, err := stencil.NewClient(url, stencil.Options{})
+		ts := httptest.NewServer(mux)
 
-			className := "test.stencil.One"
-			bytes, err := client.SerializeWithRefresh(className, validData)
-			assert.NoError(t, err)
+		// test
+		opts := stencil.Options{AutoRefresh: true, RefreshStrategy: stencil.VersionBasedRefresh, RefreshInterval: 2 * time.Millisecond}
+		client, err := stencil.NewClient([]string{fmt.Sprintf("%s/v1beta1/namespaces/test-namespace/schemas/test-schema", ts.URL)}, opts)
+		assert.NoError(t, err)
+		assert.NotNil(t, client)
+		// wait for refresh interval
+		time.Sleep(2 * time.Millisecond)
+		desc, err := client.GetDescriptor("test.stencil.One")
+		assert.Nil(t, err)
+		assert.NotNil(t, desc)
+		time.Sleep(1 * time.Millisecond)
+		assert.Equal(t, 2, versionsDownloadCount)
+		assert.Equal(t, 1, dataDownloadOneCount)
+		assert.Equal(t, 0, dataDownloadTwoCount)
+		// simulates version update
+		versions = `{"versions": [1,2]}`
+		// wait for refresh interval
+		time.Sleep(2 * time.Millisecond)
+		desc, err = client.GetDescriptor("test.stencil.One")
+		assert.Nil(t, err)
+		assert.NotNil(t, desc)
 
-			parsed, err := client.Parse(className, bytes)
-			if err != nil {
-				t.Fatal(err)
-			}
-			descriptor, err := client.GetDescriptor(className)
-			if err != nil {
-				t.Fatal(err)
-			}
-			fieldOneValue := validData["field_one"].(int)
-			fieldOne := descriptor.Fields().ByName("field_one")
-			val := parsed.ProtoReflect().Get(fieldOne)
-
-			assert.Equal(t, int64(fieldOneValue), val.Int())
-		})
+		time.Sleep(1 * time.Millisecond)
+		assert.Equal(t, 3, versionsDownloadCount)
+		assert.Equal(t, 1, dataDownloadOneCount)
+		assert.Equal(t, 1, dataDownloadTwoCount)
 	})
 }
