@@ -69,6 +69,10 @@ func versionBasedRefresh(opts Options) cache.LoaderFunc {
 			return nil, err
 		}
 		versions := versionsResp.Versions
+		if len(versions) == 0 {
+			logger.Error("no versions available for this schema")
+			return nil, fmt.Errorf("no versions available")
+		}
 		maxVersion := getMaxVersion(versions)
 		if maxVersion > lastVersion {
 			data, err := loadFromURL(fmt.Sprintf("%s/%d", versionsURL, maxVersion), opts)

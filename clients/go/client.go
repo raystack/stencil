@@ -76,7 +76,7 @@ func (o *Options) setDefaults() {
 // NewClient creates stencil client. Downloads proto descriptor file from given url and stores the definitions.
 // It will throw error if download fails or downloaded file is not fully contained descriptor file
 func NewClient(urls []string, options Options) (Client, error) {
-	cacheOptions := []cache.Option{cache.WithMaximumSize(len(urls) + 3)}
+	cacheOptions := []cache.Option{cache.WithMaximumSize(len(urls))}
 	options.setDefaults()
 	if options.AutoRefresh {
 		cacheOptions = append(cacheOptions, cache.WithRefreshAfterWrite(options.RefreshInterval), cache.WithExpireAfterWrite(options.RefreshInterval))
