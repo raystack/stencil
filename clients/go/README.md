@@ -35,25 +35,16 @@ import stencil "github.com/odpf/stencil/clients/go"
 ```go
 import stencil "github.com/odpf/stencil/clients/go"
 
-url := "http://url/to/proto/descriptorset/file"
-client, err := stencil.NewClient(url, stencil.Options{})
-```
-
-### Creating a multiURLClient
-
-```go
-import stencil "github.com/odpf/stencil/clients/go"
-
-urls := []string{"http://urlA", "http://urlB"}
-client, err := stencil.NewMultiURLClient(urls, stencil.Options{})
+url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 ```
 
 ### Get Descriptor
 ```go
 import stencil "github.com/odpf/stencil/clients/go"
 
-url := "http://url/to/proto/descriptorset/file"
-client, err := stencil.NewClient(url, stencil.Options{})
+url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 if err != nil {
     return
 }
@@ -64,8 +55,8 @@ desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
 ```go
 import stencil "github.com/odpf/stencil/clients/go"
 
-url := "http://url/to/proto/descriptorset/file"
-client, err := stencil.NewClient(url, stencil.Options{})
+url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 if err != nil {
     return
 }
@@ -78,7 +69,7 @@ parsedMsg, err := client.Parse("google.protobuf.DescriptorProto", data)
 import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://url/to/proto/descriptorset/file"
-client, err := stencil.NewClient(url, stencil.Options{})
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 if err != nil {
     return
 }
@@ -86,4 +77,29 @@ data := map[string]interface{}{}
 serializedMsg, err := client.Serialize("google.protobuf.DescriptorProto", data)
 ```
 
+### Enable auto refresh of schemas
+```go
+import stencil "github.com/odpf/stencil/clients/go"
+
+url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
+// Configured to refresh schema every 12 hours
+client, err := stencil.NewClient([]string{url}, stencil.Options{AutoRefresh: true, RefreshInterval: time.Hours * 12})
+if err != nil {
+    return
+}
+desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
+```
+
+### Using VersionBasedRefresh strategy
+```go
+import stencil "github.com/odpf/stencil/clients/go"
+
+url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
+// Configured to refresh schema every 12 hours
+client, err := stencil.NewClient([]string{url}, stencil.Options{AutoRefresh: true, RefreshInterval: time.Hours * 12, RefreshStrategy: stencil.VersionBasedRefresh})
+if err != nil {
+    return
+}
+desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
+```
 Refer to [go documentation](https://pkg.go.dev/github.com/odpf/stencil/clients/go) for all available methods and options.
