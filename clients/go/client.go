@@ -60,6 +60,8 @@ type Options struct {
 	HTTPOptions
 	// RefreshStrategy refresh strategy to use while fetching schema
 	RefreshStrategy
+	// Logger is the interface used to get logging from stencil internals.
+	Logger
 }
 
 func (o *Options) setDefaults() {

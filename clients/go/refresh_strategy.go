@@ -31,10 +31,14 @@ func (r RefreshStrategy) getLoader(opts Options) cache.LoaderFunc {
 }
 
 func loadFromURL(url string, opts Options) (*Resolver, error) {
+	logger := wrapLogger(opts.Logger)
+	logger.Info(fmt.Sprintf("fetching schema from %s", url))
 	data, err := downloader(url, opts.HTTPOptions)
 	if err != nil {
+		logger.Error(fmt.Sprintf("failed to fetch schema from %s", url))
 		return nil, err
 	}
+	logger.Info(fmt.Sprintf("successfully fetched schema from %s", url))
 	return NewResolver(data)
 }
 
@@ -51,11 +55,13 @@ type versionsModel struct {
 
 func versionBasedRefresh(opts Options) cache.LoaderFunc {
 	lastVersion := 0
+	logger := wrapLogger(opts.Logger)
 	return func(k cache.Key) (cache.Value, error) {
 		url := k.(string)
 		versionsURL := fmt.Sprintf("%s/versions", strings.TrimRight(url, "/"))
 		data, err := downloader(versionsURL, opts.HTTPOptions)
 		if err != nil {
+			logger.Error(fmt.Sprintf("unable to download versions info, %s", err))
 			return nil, err
 		}
 		versionsResp := &versionsModel{}
