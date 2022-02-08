@@ -58,7 +58,8 @@ type Options struct {
 	RefreshInterval time.Duration
 	// HTTPOptions options for http client
 	HTTPOptions
-	// RefreshStrategy refresh strategy to use while fetching schema
+	// RefreshStrategy refresh strategy to use while fetching schema.
+	// Default strategy set to `stencil.LongPollingRefresh` strategy
 	RefreshStrategy
 	// Logger is the interface used to get logging from stencil internals.
 	Logger
