@@ -17,9 +17,7 @@ func NamespaceCmd() *cobra.Command {
 		Use:     "namespace",
 		Aliases: []string{"namespace"},
 		Short:   "Manage namespace",
-		Long: heredoc.Doc(`
-			Work with namespaces.
-		`),
+		Long:    "Work with namespaces",
 		Example: heredoc.Doc(`
 			$ stencil namespace list
 			$ stencil namespace create
@@ -47,7 +45,8 @@ func listNamespaceCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "list all namespaces",
+		Short: "List all namespaces",
+		Long:  "List and filter namespaces.",
 		Args:  cobra.NoArgs,
 		Example: heredoc.Doc(`
 			$ stencil namespace list
@@ -103,7 +102,7 @@ func createNamespaceCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "create all namespaces",
+		Short: "Create a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil namespace create <namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-desc=<description> 
@@ -164,7 +163,7 @@ func updateNamespaceCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "update",
-		Short: "update all namespaces",
+		Short: "Update a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil namespace update <namespace-id> –-format=<schema-format> –-comp=<schema-compatibility> –-desc=<description>
@@ -223,7 +222,7 @@ func getNamespaceCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "get",
-		Short: "get all namespaces",
+		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil namespace get <namespace-id>
@@ -281,7 +280,7 @@ func deleteNamespaceCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "delete",
-		Short: "delete all namespaces",
+		Short: "Delete a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil namespace delete <namespace-id>
