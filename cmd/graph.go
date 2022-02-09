@@ -15,7 +15,6 @@ import (
 
 // GraphCmd creates a new cobra command for descriptor set dependencies graph
 func GraphCmd() *cobra.Command {
-
 	var host, filePath string
 	var req stencilv1beta1.GetSchemaRequest
 

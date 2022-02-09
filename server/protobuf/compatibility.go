@@ -56,18 +56,18 @@ var (
 		enumValueDeleteWithoutReservedName,
 		enumValueNumberChange,
 		syntaxChange}
-	fullCompatibility = []diffKind{
-		messageDelete,
-		nonInclusivereservedRange,
-		nonInclusiceReservedNames,
-		fieldNameChange,
-		fieldLabelchange,
-		fieldKindChange,
-		fieldTypeChange,
-		enumDelete,
-		enumValueDelete,
-		enumValueNumberChange,
-		syntaxChange}
+	// fullCompatibility = []diffKind{
+	// 	messageDelete,
+	// 	nonInclusivereservedRange,
+	// 	nonInclusiceReservedNames,
+	// 	fieldNameChange,
+	// 	fieldLabelchange,
+	// 	fieldKindChange,
+	// 	fieldTypeChange,
+	// 	enumDelete,
+	// 	enumValueDelete,
+	// 	enumValueNumberChange,
+	// 	syntaxChange}
 )
 
 func (d diffKind) contains(others []diffKind) bool {

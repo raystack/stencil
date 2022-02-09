@@ -9,6 +9,7 @@ import (
 )
 
 func getParsedSchema(t *testing.T) schema.ParsedSchema {
+	t.Helper()
 	data := getDescriptorData(t, "./testdata/valid", true)
 	sc, err := protobuf.GetParsedSchema(data)
 	assert.NoError(t, err)

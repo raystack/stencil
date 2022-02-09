@@ -14,7 +14,6 @@ import (
 
 // UploadCmd creates a new cobra command for upload
 func UploadCmd() *cobra.Command {
-
 	var host, filePath string
 	var req stencilv1beta1.CreateSchemaRequest
 	var format, compatibility string

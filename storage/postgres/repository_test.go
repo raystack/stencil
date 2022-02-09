@@ -12,6 +12,7 @@ import (
 )
 
 func getStore(t *testing.T) *postgres.Store {
+	t.Helper()
 	connectionString := os.Getenv("TEST_DB_CONNECTIONSTRING")
 	if connectionString == "" {
 		t.Skip("Skipping test since DB info not available")
@@ -23,6 +24,7 @@ func getStore(t *testing.T) *postgres.Store {
 }
 
 func tearDown(t *testing.T) {
+	t.Helper()
 	connectionString := os.Getenv("TEST_DB_CONNECTIONSTRING")
 	if connectionString == "" {
 		t.Skip("Skipping test since DB info not available")
@@ -35,6 +37,7 @@ func tearDown(t *testing.T) {
 }
 
 func assertNamespace(t *testing.T, expected, actual domain.Namespace) {
+	t.Helper()
 	assert.Equal(t, expected.ID, actual.ID)
 	assert.Equal(t, expected.Compatibility, actual.Compatibility)
 	assert.Equal(t, expected.Format, actual.Format)
@@ -158,7 +161,6 @@ func TestStorage(t *testing.T) {
 			assert.Nil(t, err)
 			assert.Equal(t, 0, len(schemaList))
 		})
-
 	})
 	tearDown(t)
 }

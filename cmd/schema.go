@@ -389,7 +389,6 @@ func deleteSchemaCmd() *cobra.Command {
 				if err != nil {
 					return err
 				}
-
 			}
 
 			spinner.Stop()
