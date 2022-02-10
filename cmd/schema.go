@@ -289,20 +289,23 @@ func getSchemaCmd() *cobra.Command {
 
 			fmt.Printf("Schema successfully written to %s\n", output)
 
-			if metadata && resMetadata != nil {
-				report := [][]string{}
-
-				fmt.Printf("\nMETADATA\n")
-				report = append(report, []string{"FORMAT", "COMPATIBILITY", "AUTHORITY"})
-
-				report = append(report, []string{
-					stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())],
-					stencilv1beta1.Schema_Compatibility_name[int32(resMetadata.GetCompatibility())],
-					resMetadata.GetAuthority(),
-				})
-
-				printer.Table(os.Stdout, report)
+			if resMetadata == nil || !metadata {
+				return nil
 			}
+
+			report := [][]string{}
+
+			fmt.Printf("\nMETADATA\n")
+			report = append(report, []string{"FORMAT", "COMPATIBILITY", "AUTHORITY"})
+
+			report = append(report, []string{
+				stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())],
+				stencilv1beta1.Schema_Compatibility_name[int32(resMetadata.GetCompatibility())],
+				resMetadata.GetAuthority(),
+			})
+
+			printer.Table(os.Stdout, report)
+
 			return nil
 		},
 	}
