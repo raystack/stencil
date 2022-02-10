@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -12,8 +13,15 @@ import (
 	"github.com/odpf/salt/printer"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
+	"github.com/yudai/gojsondiff"
+	"github.com/yudai/gojsondiff/formatter"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func SchemaCmd() *cobra.Command {
@@ -42,6 +50,7 @@ func SchemaCmd() *cobra.Command {
 	cmd.AddCommand(getSchemaCmd())
 	cmd.AddCommand(updateSchemaCmd())
 	cmd.AddCommand(deleteSchemaCmd())
+	cmd.AddCommand(diffSchemaCmd())
 	cmd.AddCommand(versionSchemaCmd())
 
 	return cmd
@@ -408,6 +417,119 @@ func deleteSchemaCmd() *cobra.Command {
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "particular version to be deleted")
 
+	return cmd
+}
+
+func diffSchemaCmd() *cobra.Command {
+	var namespace string
+	var earlierVersion int32
+	var laterVersion int32
+	var host string
+	var fullname string
+
+	var getJsonMessage = func(req stencilv1beta1.GetSchemaRequest, conn *grpc.ClientConn) ([]byte, error) {
+		client := stencilv1beta1.NewStencilServiceClient(conn)
+		res, err := client.GetSchema(context.Background(), &req)
+		if err != nil {
+			return nil, err
+		}
+		fds := &descriptorpb.FileDescriptorSet{}
+		if err := proto.Unmarshal(res.Data, fds); err != nil {
+			return nil, fmt.Errorf("descriptor set file is not valid. %w", err)
+		}
+		files, err := protodesc.NewFiles(fds)
+		if err != nil {
+			return nil, fmt.Errorf("file is not fully contained descriptor file. hint: generate file descriptorset with --include_imports option. %w", err)
+		}
+		desc, err := files.FindDescriptorByName(protoreflect.FullName(fullname))
+		if err != nil {
+			return nil, fmt.Errorf("unable to find message. %w", err)
+		}
+		mDesc, ok := desc.(protoreflect.MessageDescriptor)
+		if !ok {
+			return nil, fmt.Errorf("not a message desc")
+		}
+		jsonByte, err := protojson.Marshal(protodesc.ToDescriptorProto(mDesc))
+		if err != nil {
+			return nil, fmt.Errorf("fail to convert o json. %w", err)
+		}
+		return jsonByte, nil
+	}
+
+	cmd := &cobra.Command{
+		Use:   "diff",
+		Short: "Diff(s) of two schema versions",
+		Args:  cobra.ExactArgs(1),
+		Example: heredoc.Doc(`
+		$ stencil schema diff <schema-id> --namespace=<namespace-id> --later-version=<later-version> --earlier-version=<earlier-version> --fullname=<fullname>
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			spinner := printer.Spin("")
+			schemaID := args[0]
+			eReq := stencilv1beta1.GetSchemaRequest{
+				NamespaceId: namespace,
+				SchemaId:    schemaID,
+				VersionId:   earlierVersion,
+			}
+			lReq := stencilv1beta1.GetSchemaRequest{
+				NamespaceId: namespace,
+				SchemaId:    schemaID,
+				VersionId:   laterVersion,
+			}
+
+			host, _ := cmd.Flags().GetString("host")
+			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			if err != nil {
+				return err
+			}
+			defer conn.Close()
+
+			eJson, err := getJsonMessage(eReq, conn)
+			if err != nil {
+				return err
+			}
+
+			lJson, err := getJsonMessage(lReq, conn)
+			if err != nil {
+				return err
+			}
+
+			d, err := gojsondiff.New().Compare(eJson, lJson)
+
+			var placeholder map[string]interface{}
+			json.Unmarshal(eJson, &placeholder)
+			config := formatter.AsciiFormatterConfig{
+				ShowArrayIndex: true,
+				Coloring:       true,
+			}
+
+			formatter := formatter.NewAsciiFormatter(placeholder, config)
+			diffString, err := formatter.Format(d)
+			if err != nil {
+				return err
+			}
+
+			spinner.Stop()
+			if !d.Modified() {
+				fmt.Print("No diff!")
+				return nil
+			}
+			fmt.Print(diffString)
+
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+	cmd.Flags().StringVar(&namespace, "namespace", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
+	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "earlier version of the schema")
+	cmd.MarkFlagRequired("earlier-version")
+	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "later version of the schema")
+	cmd.MarkFlagRequired("later-version")
+	cmd.Flags().StringVar(&fullname, "fullname", "", "fullname of proto schema eg: odpf.common.v1.Version")
+	cmd.MarkFlagRequired("fullname")
 	return cmd
 }
 
