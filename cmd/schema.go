@@ -276,7 +276,7 @@ func getSchemaCmd() *cobra.Command {
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 
-			data, resMetadata, err = getSchemaBasedOnVersion(client, version, namespaceID, schemaID)
+			data, resMetadata, err = fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
 			if err != nil {
 				return err
 			}
@@ -485,7 +485,7 @@ func printCmd() *cobra.Command {
 
 			schemaID := args[0]
 
-			data, resMetadata, err := getSchemaBasedOnVersion(client, version, namespaceID, schemaID)
+			data, resMetadata, err := fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
 			if err != nil {
 				return err
 			}
@@ -590,7 +590,7 @@ func graphCmd() *cobra.Command {
 
 			schemaID := args[0]
 
-			data, resMetadata, err := getSchemaBasedOnVersion(client, version, namespaceID, schemaID)
+			data, resMetadata, err := fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
 			if err != nil {
 				return err
 			}
@@ -634,7 +634,7 @@ func graphCmd() *cobra.Command {
 	return cmd
 }
 
-func getSchemaBasedOnVersion(client stencilv1beta1.StencilServiceClient, version int32, namespaceID, schemaID string) ([]byte, *stencilv1beta1.GetSchemaMetadataResponse, error) {
+func fetchSchemaAndMetadata(client stencilv1beta1.StencilServiceClient, version int32, namespaceID, schemaID string) ([]byte, *stencilv1beta1.GetSchemaMetadataResponse, error) {
 	var req stencilv1beta1.GetSchemaRequest
 	var reqLatest stencilv1beta1.GetLatestSchemaRequest
 	var reqMetadata stencilv1beta1.GetSchemaMetadataRequest
