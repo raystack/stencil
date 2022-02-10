@@ -1,356 +1,482 @@
-<h1 id="stencil-server">Stencil server v0.1.4</h1>
+# API
+## Version: 0.1.6
 
-> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+### /v1beta1/namespaces
 
-<h1 id="stencil-server-health">health</h1>
+#### GET
+##### Summary
 
-## ping
+List names of namespaces
 
-<a id="opIdping"></a>
+##### Responses
 
-> Code samples
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1ListNamespacesResponse](#v1beta1listnamespacesresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-```shell
-# You can also use wget
-curl -X GET /ping
+#### POST
+##### Summary
 
-```
+Create namespace entry
 
-`GET /ping`
+##### Parameters
 
-_service health check_
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| body | body |  | Yes | [v1beta1CreateNamespaceRequest](#v1beta1createnamespacerequest) |
 
-<h3 id="ping-responses">Responses</h3>
+##### Responses
 
-| Status | Meaning                                                 | Description          | Schema |
-| ------ | ------------------------------------------------------- | -------------------- | ------ |
-| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | returns pong message | None   |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1CreateNamespaceResponse](#v1beta1createnamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+### /v1beta1/namespaces/{id}
 
-<h1 id="stencil-server-stencilservice">StencilService</h1>
+#### GET
+##### Summary
 
-## post\__v1_namespaces_{namespace}\_descriptors
+Get namespace by id
 
-> Code samples
+##### Parameters
 
-```shell
-# You can also use wget
-curl -X POST /v1/namespaces/{namespace}/descriptors \
-  -H 'Content-Type: multipart/form-data'
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | path |  | Yes | string |
 
-```
+##### Responses
 
-`POST /v1/namespaces/{namespace}/descriptors`
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1GetNamespaceResponse](#v1beta1getnamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-_upload descriptors_
+#### DELETE
+##### Summary
 
-> Body parameter
+Delete namespace by id
 
-```yaml
-name: string
-version: string
-latest: true
-dryrun: true
-skiprules:
-  - FILE_NO_BREAKING_CHANGE
-file: string
-```
+##### Description
 
-<h3 id="post__v1_namespaces_{namespace}_descriptors-parameters">Parameters</h3>
+Ensure all schemas under this namespace is deleted, otherwise it will throw error
 
-| Name        | In   | Type           | Required | Description                                                                           |
-| ----------- | ---- | -------------- | -------- | ------------------------------------------------------------------------------------- |
-| namespace   | path | string         | true     | none                                                                                  |
-| body        | body | object         | true     | none                                                                                  |
-| » name      | body | string         | true     | none                                                                                  |
-| » version   | body | string         | true     | version number for descriptor file. This should follow semantic version compatability |
-| » latest    | body | boolean        | false    | mark this descriptor file as latest                                                   |
-| » dryrun    | body | boolean        | false    | flag for dryRun                                                                       |
-| » skiprules | body | [string]       | false    | list of rules to skip                                                                 |
-| » file      | body | string(binary) | true     | descriptorset file to upload                                                          |
+##### Parameters
 
-#### Enumerated Values
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | path |  | Yes | string |
 
-| Parameter   | Value                    |
-| ----------- | ------------------------ |
-| » skiprules | FILE_NO_BREAKING_CHANGE  |
-| » skiprules | MESSAGE_NO_DELETE        |
-| » skiprules | FIELD_NO_BREAKING_CHANGE |
-| » skiprules | ENUM_NO_BREAKING_CHANGE  |
+##### Responses
 
-<h3 id="post__v1_namespaces_{namespace}_descriptors-responses">Responses</h3>
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1DeleteNamespaceResponse](#v1beta1deletenamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-| Status | Meaning                                                                    | Description                                                                                                                                                       | Schema |
-| ------ | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)                    | Success response if operation succeded                                                                                                                            | None   |
-| 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)           | Validation error response when user payload has missing required fields or currently being uploaded file is not backward compatible with previously uploaded file | None   |
-| 409    | [Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)              | conflict error reponse if namespace, name and version combination already present                                                                                 | None   |
-| 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | Unexpected internal error reponse                                                                                                                                 | None   |
+#### PUT
+##### Summary
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+Update namespace entity by id
 
-## get\__v1_namespaces_{namespace}_descriptors_{name}_versions_{version}
+##### Parameters
 
-> Code samples
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | path |  | Yes | string |
+| body | body |  | Yes | object |
 
-```shell
-# You can also use wget
-curl -X GET /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}
+##### Responses
 
-```
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1UpdateNamespaceResponse](#v1beta1updatenamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-`GET /v1/namespaces/{namespace}/descriptors/{name}/versions/{version}`
+### /v1beta1/namespaces/{id}/schemas
 
-_download specified descriptor file_
+#### GET
+##### Summary
 
-<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions_{version}-parameters">Parameters</h3>
+List schemas under the namespace
 
-| Name      | In    | Type          | Required | Description     |
-| --------- | ----- | ------------- | -------- | --------------- |
-| namespace | path  | string        | true     | none            |
-| name      | path  | string        | true     | none            |
-| version   | path  | string        | true     | none            |
-| fullnames | query | array[string] | false    | Proto fullnames |
+##### Parameters
 
-<h3 id="get__v1_namespaces_{namespace}_descriptors_{name}_versions_{version}-responses">Responses</h3>
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | path |  | Yes | string |
 
-| Status | Meaning                                                 | Description       | Schema |
-| ------ | ------------------------------------------------------- | ----------------- | ------ |
-| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | download response | None   |
+##### Responses
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1ListSchemasResponse](#v1beta1listschemasresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-## StencilService_ListSnapshots
+### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}
+#### POST
 
-<a id="opIdStencilService_ListSnapshots"></a>
+##### Summary
 
-> Code samples
+Create schema
 
-```shell
-# You can also use wget
-curl -X GET /v1/snapshots \
-  -H 'Accept: application/json'
+##### Parameters
 
-```
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+| X-Format | headers | Can be used to override schema format defined at namespace level | No | [SchemaFormat](#schemaformat) |
+| X-Compatibility | headers | Can be used to override schema compatibility defined at namespace level | No | [SchemaCompatibility](#schemacompatibility) |
+| body | body | schema data | Yes | valid fileDescriptorSet data/avro/json schemas |
 
-`GET /v1/snapshots`
+##### Responses
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1CreateSchemaResponse](#v1beta1CreateSchemaResponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-<h3 id="stencilservice_listsnapshots-parameters">Parameters</h3>
+#### GET
 
-| Name      | In    | Type    | Required | Description |
-| --------- | ----- | ------- | -------- | ----------- |
-| namespace | query | string  | false    | none        |
-| name      | query | string  | false    | none        |
-| version   | query | string  | false    | none        |
-| latest    | query | boolean | false    | none        |
+##### Summary
 
-> Example responses
+Get latest schema
 
-> 200 Response
+##### Parameters
 
-```json
-{
-  "snapshots": [
-    {
-      "id": "string",
-      "namespace": "string",
-      "name": "string",
-      "version": "string",
-      "latest": true
-    }
-  ]
-}
-```
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
 
-<h3 id="stencilservice_listsnapshots-responses">Responses</h3>
+##### Responses
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream` | json or byte data |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-| Status  | Meaning                                                 | Description                   | Schema                                                    |
-| ------- | ------------------------------------------------------- | ----------------------------- | --------------------------------------------------------- |
-| 200     | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | A successful response.        | [v1ListSnapshotsResponse](#schemav1listsnapshotsresponse) |
-| default | Default                                                 | An unexpected error response. | [rpcStatus](#schemarpcstatus)                             |
+#### DELETE
+##### Summary
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+Delete specified schema
 
-## StencilService_PromoteSnapshot
+##### Parameters
 
-<a id="opIdStencilService_PromoteSnapshot"></a>
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
 
-> Code samples
+##### Responses
 
-```shell
-# You can also use wget
-curl -X PATCH /v1/snapshots/{id}/promote \
-  -H 'Accept: application/json'
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1DeleteSchemaResponse](#v1beta1deleteschemaresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
-```
-
-`PATCH /v1/snapshots/{id}/promote`
-
-_PromoteSnapshot promotes particular snapshot version as latest_
-
-<h3 id="stencilservice_promotesnapshot-parameters">Parameters</h3>
-
-| Name | In   | Type          | Required | Description |
-| ---- | ---- | ------------- | -------- | ----------- |
-| id   | path | string(int64) | true     | none        |
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "snapshot": {
-    "id": "string",
-    "namespace": "string",
-    "name": "string",
-    "version": "string",
-    "latest": true
-  }
-}
-```
-
-<h3 id="stencilservice_promotesnapshot-responses">Responses</h3>
-
-| Status  | Meaning                                                 | Description                   | Schema                                                        |
-| ------- | ------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------- |
-| 200     | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | A successful response.        | [v1PromoteSnapshotResponse](#schemav1promotesnapshotresponse) |
-| default | Default                                                 | An unexpected error response. | [rpcStatus](#schemarpcstatus)                                 |
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-# Schemas
-
-<h2 id="tocS_protobufAny">protobufAny</h2>
-<a id="schemaprotobufany"></a>
-<a id="schema_protobufAny"></a>
-<a id="tocSprotobufany"></a>
-<a id="tocsprotobufany"></a>
-
-```json
-{
-  "typeUrl": "string",
-  "value": "string"
-}
-```
-
-### Properties
-
-| Name    | Type         | Required | Restrictions | Description |
-| ------- | ------------ | -------- | ------------ | ----------- |
-| typeUrl | string       | false    | none         | none        |
-| value   | string(byte) | false    | none         | none        |
-
-<h2 id="tocS_rpcStatus">rpcStatus</h2>
-<a id="schemarpcstatus"></a>
-<a id="schema_rpcStatus"></a>
-<a id="tocSrpcstatus"></a>
-<a id="tocsrpcstatus"></a>
-
-```json
-{
-  "code": 0,
-  "message": "string",
-  "details": [
-    {
-      "typeUrl": "string",
-      "value": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-| Name    | Type                                | Required | Restrictions | Description |
-| ------- | ----------------------------------- | -------- | ------------ | ----------- |
-| code    | integer(int32)                      | false    | none         | none        |
-| message | string                              | false    | none         | none        |
-| details | [[protobufAny](#schemaprotobufany)] | false    | none         | none        |
-
-<h2 id="tocS_v1ListSnapshotsResponse">v1ListSnapshotsResponse</h2>
-<a id="schemav1listsnapshotsresponse"></a>
-<a id="schema_v1ListSnapshotsResponse"></a>
-<a id="tocSv1listsnapshotsresponse"></a>
-<a id="tocsv1listsnapshotsresponse"></a>
-
-```json
-{
-  "snapshots": [
-    {
-      "id": "string",
-      "namespace": "string",
-      "name": "string",
-      "version": "string",
-      "latest": true
-    }
-  ]
-}
-```
-
-### Properties
-
-| Name      | Type                              | Required | Restrictions | Description |
-| --------- | --------------------------------- | -------- | ------------ | ----------- |
-| snapshots | [[v1Snapshot](#schemav1snapshot)] | false    | none         | none        |
-
-<h2 id="tocS_v1PromoteSnapshotResponse">v1PromoteSnapshotResponse</h2>
-<a id="schemav1promotesnapshotresponse"></a>
-<a id="schema_v1PromoteSnapshotResponse"></a>
-<a id="tocSv1promotesnapshotresponse"></a>
-<a id="tocsv1promotesnapshotresponse"></a>
-
-```json
-{
-  "snapshot": {
-    "id": "string",
-    "namespace": "string",
-    "name": "string",
-    "version": "string",
-    "latest": true
-  }
-}
-```
-
-### Properties
-
-| Name     | Type                            | Required | Restrictions | Description |
-| -------- | ------------------------------- | -------- | ------------ | ----------- |
-| snapshot | [v1Snapshot](#schemav1snapshot) | false    | none         | none        |
-
-<h2 id="tocS_v1Snapshot">v1Snapshot</h2>
-<a id="schemav1snapshot"></a>
-<a id="schema_v1Snapshot"></a>
-<a id="tocSv1snapshot"></a>
-<a id="tocsv1snapshot"></a>
-
-```json
-{
-  "id": "string",
-  "namespace": "string",
-  "name": "string",
-  "version": "string",
-  "latest": true
-}
-```
-
-### Properties
-
-| Name      | Type          | Required | Restrictions | Description |
-| --------- | ------------- | -------- | ------------ | ----------- |
-| id        | string(int64) | false    | none         | none        |
-| namespace | string        | true     | none         | none        |
-| name      | string        | false    | none         | none        |
-| version   | string        | false    | none         | none        |
-| latest    | boolean       | false    | none         | none        |
+#### PATCH
+##### Summary
+
+Update only schema metadata
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+| body | body |  | Yes | object |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1UpdateSchemaMetadataResponse](#v1beta1updateschemametadataresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/meta
+
+#### GET
+##### Summary
+
+Create schema under the namespace. Returns version number, unique ID and location
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1GetSchemaMetadataResponse](#v1beta1getschemametadataresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions
+
+#### GET
+##### Summary
+
+List all version numbers for schema
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1ListVersionsResponse](#v1beta1listversionsresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions/{versionId}
+
+#### GET
+
+##### Summary
+
+Get schema for specified version
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+| versionId | path |  | Yes | integer |
+
+##### Responses
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream` | json or byte data |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+#### DELETE
+##### Summary
+
+Delete specified version of the schema
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+| versionId | path |  | Yes | integer |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1DeleteVersionResponse](#v1beta1deleteversionresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+### /v1beta1/search
+
+#### GET
+##### Summary
+
+Global Search API
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | query |  | No | string |
+| schemaId | query |  | No | string |
+| query | query |  | No | string |
+| history | query |  | No | boolean |
+| versionId | query |  | No | integer |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1SearchResponse](#v1beta1searchresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+### Models
+
+#### SchemaCompatibility
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| SchemaCompatibility | string |  |  |
+
+Enumarated values for Schema compatibility
+
+| Values |
+| ---- |
+| COMPATIBILITY_BACKWARD |
+| COMPATIBILITY_FORWARD |
+| COMPATIBILITY_FULL |
+
+#### SchemaFormat
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| SchemaFormat | string |  |  |
+ 
+Enumarated schema format values
+
+| Values |
+| ---- |
+| FORMAT_PROTOBUF |
+| FORMAT_AVRO |
+| FORMAT_JSON |
+
+#### protobufAny
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| typeUrl | string |  | No |
+| value | byte |  | No |
+
+#### rpcStatus
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| code | integer |  | No |
+| message | string |  | No |
+| details | [ [protobufAny](#protobufany) ] |  | No |
+
+#### v1beta1CreateNamespaceRequest
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | string |  | Yes |
+| format | [SchemaFormat](#schemaformat) |  | No |
+| compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
+| description | string |  | No |
+
+#### v1beta1CreateNamespaceResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| namespace | [v1beta1Namespace](#v1beta1namespace) |  | No |
+
+#### v1beta1CreateSchemaResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| version | integer |  | No |
+| id | string |  | No |
+| location | string |  | No |
+
+#### v1beta1DeleteNamespaceResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| message | string |  | No |
+
+#### v1beta1DeleteSchemaResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| message | string |  | No |
+
+#### v1beta1DeleteVersionResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| message | string |  | No |
+
+#### v1beta1GetLatestSchemaResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| data | byte |  | No |
+
+#### v1beta1GetNamespaceResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| namespace | [v1beta1Namespace](#v1beta1namespace) |  | No |
+
+#### v1beta1GetSchemaMetadataResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| format | [SchemaFormat](#schemaformat) |  | No |
+| compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
+| authority | string |  | No |
+
+#### v1beta1GetSchemaResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| data | byte |  | No |
+
+#### v1beta1ListNamespacesResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| namespaces | [ string ] |  | No |
+
+#### v1beta1ListSchemasResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| schemas | [ string ] |  | No |
+
+#### v1beta1ListVersionsResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| versions | [ integer ] |  | No |
+
+#### v1beta1Namespace
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | string |  | No |
+| format | [SchemaFormat](#schemaformat) |  | No |
+| Compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
+| description | string |  | No |
+| createdAt | dateTime |  | No |
+| updatedAt | dateTime |  | No |
+
+#### v1beta1SearchHits
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| namespaceId | string |  | No |
+| schemaId | string |  | No |
+| versionId | integer |  | No |
+| fields | [ string ] |  | No |
+| types | [ string ] |  | No |
+
+#### v1beta1SearchMeta
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| total | long |  | No |
+
+#### v1beta1SearchResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| hits | [ [v1beta1SearchHits](#v1beta1searchhits) ] |  | No |
+| meta | [v1beta1SearchMeta](#v1beta1searchmeta) |  | No |
+
+#### v1beta1UpdateNamespaceResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| namespace | [v1beta1Namespace](#v1beta1namespace) |  | No |
+
+#### v1beta1UpdateSchemaMetadataResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| format | [SchemaFormat](#schemaformat) |  | No |
+| compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
+| authority | string |  | No |

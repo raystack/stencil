@@ -16,7 +16,7 @@ Stencil is dynamic protobuf schema registry. It provides REST interface for stor
 
 
 ## Requirements
- - postgres 11
+ - postgres 13
 
 ## Installation
 
@@ -64,25 +64,49 @@ $ echo "syntax=\"proto3\";\npackage stencil;\nmessage One {\n  int32 field_one =
 # create descriptor file
 $ protoc --descriptor_set_out=./file.desc --include_imports ./1.proto
 
-# upload descriptor file to server with name as `example` under `quickstart` namespace
-$ curl -X POST http://localhost:8080/v1/namespaces/quickstart/descriptors -F "file=@./file.desc" -F "version=0.0.1" -F "name=example" -F "latest=true" -H "Content-Type: multipart/form-data"
+# create namespace named "quickstart" with backward compatibility enabled
+curl -X POST http://localhost:8000/v1beta1/namespaces -H 'Content-Type: application/json' -d '{"id": "quickstart", "format": "FORMAT_PROTOBUF", "compatibility": "COMPATIBILITY_BACKWARD", "description": "This field can be used to store namespace description"}'
 
-# get list of descriptors available in a namespace
-$ curl -X GET http://localhost:8080/v1/namespaces/quickstart/descriptors
+# list namespaces
+curl http://localhost:8000/v1beta1/namespaces
 
-# get list of versions available for particular descriptor
-$ curl -X GET http://localhost:8080/v1/namespaces/quickstart/descriptors/example/versions
+# upload generated proto descriptor file to server with schema name as `example` under `quickstart` namespace.
+curl -X POST http://localhost:8000/v1beta1/namespaces/quickstart/schemas/example --data-binary "@file.desc"
 
-# download specific version of particular desciptor
-$ curl -X GET http://localhost:8080/v1/namespaces/quickstart/descriptors/example/versions/0.0.1
+# get list of schemas available in a namespace
+curl -X GET http://localhost:8000/v1beta1/namespaces/quickstart/schemas
 
-# download latest version of particular descriptor
-$ curl -X GET http://localhost:8080/v1/namespaces/quickstart/descriptors/example/versions/latest
+# get list of versions available for particular schema. These versions are auto generated. Version numbers managed by stencil.
+curl -X GET http://localhost:8000/v1beta1/namespaces/quickstart/schemas/example/versions
 
-# get latest version number of particular descriptor
-$ curl -X GET http://localhost:8080/v1/namespaces/quickstart/metadata/example
+# download specific version of particular schema
+curl -X GET http://localhost:8000/v1beta1/namespaces/quickstart/schemas/example/versions/1
 
-# modify latest version number of particular descriptor
-$ curl -X POST 'http://localhost:8080/v1/namespaces/quickstart/metadata' -H 'Content-Type: application/json' --data-raw '{"name": "example","version": "0.0.1"}'
+# download latest version of particular schema
+curl -X GET http://localhost:8000/v1beta1/namespaces/quickstart/schemas/example;
+
+# now let's try uploading breaking proto definition. Note that proto field number has changed from 1 to 2.
+echo "syntax=\"proto3\";\npackage stencil;\nmessage One {\n  int32 field_one = 2;\n}" > one.proto;
+
+# create descriptor file
+protoc --descriptor_set_out=./file.desc --include_imports ./**/*.proto;
+
+# now try to upload this descriptor file with same name as before. This call should fail, giving you reason it has failed.
+curl -X POST http://localhost:8000/v1/namespaces/quickstart/schemas --data-binary "@file.desc";
+
+# now let's try fixing our proto add a new field without having any breaking changes.
+echo "syntax=\"proto3\";\npackage stencil;\nmessage One {\n  int32 field_one = 1;\nint32 field_two = 2;\n}" > one.proto;
+
+# create descriptor file
+protoc --descriptor_set_out=./file.desc --include_imports ./**/*.proto
+
+# now try to upload this descriptor file with same name as before. This call should succeed
+curl -X POST http://localhost:8000/v1/namespaces/quickstart/schemas --data-binary "@file.desc"
+
+# now try versions api. It should have 2 versions now.
+curl -X GET http://localhost:8000/v1beta1/namespaces/quickstart/schemas/example/versions
+
+# upload schema can be called multiple times. Stencil server will retain old version if it's already uploaded. This call won't create new version again. You can verify by using versions API again.
+curl -X POST http://localhost:8000/v1/namespaces/quickstart/schemas --data-binary "@file.desc"
 ```
 

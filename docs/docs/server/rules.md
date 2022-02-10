@@ -1,8 +1,8 @@
-# Backward compatability rules
+# Compatability rules
 
-Stencil server by default performs following list of rules on file desciptorsets while uploading.
+Stencil server provides following compatibility rules
 
-## FILE_NO_BREAKING_CHANGE
+## BACKWARD_COMPATABILITY
 
 This rule checks for the following conditions,
 - **File delete**: no file has been deleted. Deleting a file will result in it's generated header file being deleted as well, which could break source code.
