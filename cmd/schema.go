@@ -467,7 +467,7 @@ func printCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "print",
-		Short: "prints snapshot details into .proto files",
+		Short: "Prints snapshot details into .proto files",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema print <schema-id> --namespace=<namespace-id> --version <version> --output=<output-path> --filter-path=<path-prefix>
