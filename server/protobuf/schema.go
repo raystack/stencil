@@ -67,5 +67,5 @@ func (s *Schema) IsFullCompatible(against schema.ParsedSchema) error {
 	if err != nil {
 		return err
 	}
-	return compareSchemas(s.Files, prev.Files, backwardCompatibility)
+	return compareSchemas(s.Files, prev.Files, fullCompatibility)
 }
