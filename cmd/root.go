@@ -42,8 +42,6 @@ func New() *cobra.Command {
 
 	cmd.AddCommand(ServeCmd())
 	cmd.AddCommand(MigrateCmd())
-	cmd.AddCommand(GraphCmd())
-	cmd.AddCommand(PrintCmd())
 	cmd.AddCommand(NamespaceCmd())
 	cmd.AddCommand(SchemaCmd())
 	return cmd

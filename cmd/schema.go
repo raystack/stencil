@@ -7,13 +7,19 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/jhump/protoreflect/desc"
+	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/odpf/salt/printer"
+	"github.com/odpf/stencil/graph"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func SchemaCmd() *cobra.Command {
@@ -31,6 +37,8 @@ func SchemaCmd() *cobra.Command {
 			$ stencil schema update
 			$ stencil schema delete
 			$ stencil schema version
+			$ stencil schema graph
+			$ stencil schema print
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -43,6 +51,8 @@ func SchemaCmd() *cobra.Command {
 	cmd.AddCommand(updateSchemaCmd())
 	cmd.AddCommand(deleteSchemaCmd())
 	cmd.AddCommand(versionSchemaCmd())
+	cmd.AddCommand(printCmd())
+	cmd.AddCommand(graphCmd())
 
 	return cmd
 }
@@ -57,7 +67,7 @@ func listSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema list <namespace-id>
-	    	`),
+	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -121,7 +131,7 @@ func createSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema create <schema-id> --namespace=<namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
-	    	`),
+	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -190,7 +200,7 @@ func updateSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema update <schema-id> --namespace=<namespace-id> –-comp=<schema-compatibility>
-	    	`),
+	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -240,9 +250,6 @@ func getSchemaCmd() *cobra.Command {
 	var version int32
 	var metadata bool
 	var data []byte
-	var req stencilv1beta1.GetSchemaRequest
-	var reqLatest stencilv1beta1.GetLatestSchemaRequest
-	var reqMetadata stencilv1beta1.GetSchemaMetadataRequest
 	var resMetadata *stencilv1beta1.GetSchemaMetadataResponse
 
 	cmd := &cobra.Command{
@@ -251,7 +258,7 @@ func getSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema get <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
-	    	`),
+	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -269,32 +276,9 @@ func getSchemaCmd() *cobra.Command {
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 
-			if version != 0 {
-				req.NamespaceId = namespaceID
-				req.SchemaId = schemaID
-				req.VersionId = version
-				res, err := client.GetSchema(context.Background(), &req)
-				if err != nil {
-					return err
-				}
-				data = res.GetData()
-			} else {
-				reqLatest.NamespaceId = namespaceID
-				reqLatest.SchemaId = schemaID
-				res, err := client.GetLatestSchema(context.Background(), &reqLatest)
-				if err != nil {
-					return err
-				}
-				data = res.GetData()
-			}
-
-			if metadata {
-				reqMetadata.NamespaceId = namespaceID
-				reqMetadata.SchemaId = schemaID
-				resMetadata, err = client.GetSchemaMetadata(context.Background(), &reqMetadata)
-				if err != nil {
-					return err
-				}
+			data, resMetadata, err = getSchemaBasedOnVersion(client, version, namespaceID, schemaID)
+			if err != nil {
+				return err
 			}
 
 			spinner.Stop()
@@ -306,19 +290,21 @@ func getSchemaCmd() *cobra.Command {
 
 			fmt.Printf("Schema successfully written to %s\n", output)
 
-			if resMetadata != nil {
-				report := [][]string{}
+			if metadata {
+				if resMetadata != nil {
+					report := [][]string{}
 
-				fmt.Printf("\nMETADATA\n")
-				report = append(report, []string{"FORMAT", "COMPATIBILITY", "AUTHORITY"})
+					fmt.Printf("\nMETADATA\n")
+					report = append(report, []string{"FORMAT", "COMPATIBILITY", "AUTHORITY"})
 
-				report = append(report, []string{
-					stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())],
-					stencilv1beta1.Schema_Compatibility_name[int32(resMetadata.GetCompatibility())],
-					resMetadata.GetAuthority(),
-				})
+					report = append(report, []string{
+						stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())],
+						stencilv1beta1.Schema_Compatibility_name[int32(resMetadata.GetCompatibility())],
+						resMetadata.GetAuthority(),
+					})
 
-				printer.Table(os.Stdout, report)
+					printer.Table(os.Stdout, report)
+				}
 			}
 			return nil
 		},
@@ -354,7 +340,7 @@ func deleteSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema delete <schema-id> --namespace=<namespace-id>
-	    	`),
+	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -421,7 +407,7 @@ func versionSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema version <schema-id> --namespace=<namespace-id>
-	    	`),
+	    `),
 		Annotations: map[string]string{
 			"group:core": "true",
 		},
@@ -475,4 +461,212 @@ func versionSchemaCmd() *cobra.Command {
 	cmd.MarkFlagRequired("namespace")
 
 	return cmd
+}
+
+func graphCmd() *cobra.Command {
+	var host, output, namespaceID string
+	var version int32
+
+	cmd := &cobra.Command{
+		Use:     "graph",
+		Aliases: []string{"g"},
+		Short:   "Generate file descriptorset dependencies graph",
+		Args:    cobra.ExactArgs(1),
+		Example: heredoc.Doc(`
+			$ stencil schema graph <schema-id> --namespace=<namespace-id> --version=<version> --output=<output-path>
+		`),
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			if err != nil {
+				return err
+			}
+			defer conn.Close()
+
+			client := stencilv1beta1.NewStencilServiceClient(conn)
+
+			schemaID := args[0]
+
+			data, resMetadata, err := getSchemaBasedOnVersion(client, version, namespaceID, schemaID)
+			if err != nil {
+				return err
+			}
+
+			format := stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())]
+			if format != "FORMAT_PROTOBUF" {
+				fmt.Printf("cannot create graph for %s", format)
+				return nil
+			}
+
+			msg := &descriptorpb.FileDescriptorSet{}
+			err = proto.Unmarshal(data, msg)
+			if err != nil {
+				return fmt.Errorf("invalid file descriptorset file. %w", err)
+			}
+
+			graph, err := graph.GetProtoFileDependencyGraph(msg)
+			if err != nil {
+				return err
+			}
+			if err = os.WriteFile(output, []byte(graph.String()), 0666); err != nil {
+				return err
+			}
+
+			fmt.Println(".dot file has been created in", output)
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
+	cmd.MarkFlagRequired("namespace")
+
+	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
+	cmd.MarkFlagRequired("version")
+
+	cmd.Flags().StringVarP(&output, "output", "o", "./proto_vis.dot", "write to .dot file")
+
+	return cmd
+}
+
+func printCmd() *cobra.Command {
+	var output, filterPathPrefix, host, namespaceID, schemaID string
+	var version int32
+
+	cmd := &cobra.Command{
+		Use:   "print",
+		Short: "prints snapshot details into .proto files",
+		Args:  cobra.ExactArgs(1),
+		Example: heredoc.Doc(`
+			$ stencil schema print <schema-id> --namespace=<namespace-id> --version <version> --output=<output-path> --filter-path=<path-prefix>
+		`),
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			if err != nil {
+				return err
+			}
+			defer conn.Close()
+			client := stencilv1beta1.NewStencilServiceClient(conn)
+
+			schemaID := args[0]
+
+			data, resMetadata, err := getSchemaBasedOnVersion(client, version, namespaceID, schemaID)
+			if err != nil {
+				return err
+			}
+
+			format := stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())]
+
+			if format == "FORMAT_AVRO" || format == "FORMAT_JSON" {
+				if output == "" {
+					fmt.Printf("\n// ----\n// SCHEMA\n// ----\n\n")
+					_, err := os.Stdout.Write(data)
+					if err != nil {
+						return fmt.Errorf("schema is not valid. %w", err)
+					}
+				} else {
+					err = os.WriteFile(output, data, 0666)
+					if err != nil {
+						return err
+					}
+
+					fmt.Printf("Schema successfully written to %s\n", output)
+				}
+			} else {
+				fds := &descriptorpb.FileDescriptorSet{}
+				if err := proto.Unmarshal(data, fds); err != nil {
+					return fmt.Errorf("descriptor set file is not valid. %w", err)
+				}
+				fdsMap, err := desc.CreateFileDescriptorsFromSet(fds)
+				if err != nil {
+					return err
+				}
+
+				var filteredFds []*desc.FileDescriptor
+				for fdName, fd := range fdsMap {
+					if filterPathPrefix != "" && !strings.HasPrefix(fdName, filterPathPrefix) {
+						continue
+					}
+					filteredFds = append(filteredFds, fd)
+				}
+
+				protoPrinter := &protoprint.Printer{}
+
+				if output == "" {
+					for _, fd := range filteredFds {
+						protoAsString, err := protoPrinter.PrintProtoToString(fd)
+						if err != nil {
+							return err
+						}
+						fmt.Printf("\n// ----\n// %s\n// ----\n%s", fd.GetName(), protoAsString)
+					}
+				} else {
+					if err := protoPrinter.PrintProtosToFileSystem(filteredFds, output); err != nil {
+						return err
+					}
+				}
+			}
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
+	cmd.MarkFlagRequired("namespace")
+
+	cmd.Flags().StringVarP(&schemaID, "schema", "s", "", "provide proto repo name")
+	cmd.MarkFlagRequired("name")
+
+	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
+	cmd.MarkFlagRequired("version")
+
+	cmd.Flags().StringVarP(&output, "output", "o", "", "the directory path to write the descriptor files, default is to print on stdout")
+
+	cmd.Flags().StringVar(&filterPathPrefix, "filter-path", "", "filter protocol buffer files by path prefix, e.g., --filter-path=google/protobuf")
+
+	return cmd
+}
+
+func getSchemaBasedOnVersion(client stencilv1beta1.StencilServiceClient, version int32, namespaceID, schemaID string) ([]byte, *stencilv1beta1.GetSchemaMetadataResponse, error) {
+	var req stencilv1beta1.GetSchemaRequest
+	var reqLatest stencilv1beta1.GetLatestSchemaRequest
+	var reqMetadata stencilv1beta1.GetSchemaMetadataRequest
+	var data []byte
+
+	if version != 0 {
+		req.NamespaceId = namespaceID
+		req.SchemaId = schemaID
+		req.VersionId = version
+		res, err := client.GetSchema(context.Background(), &req)
+		if err != nil {
+			return nil, nil, err
+		}
+		data = res.GetData()
+	} else {
+		reqLatest.NamespaceId = namespaceID
+		reqLatest.SchemaId = schemaID
+		res, err := client.GetLatestSchema(context.Background(), &reqLatest)
+		if err != nil {
+			return nil, nil, err
+		}
+		data = res.GetData()
+	}
+
+	reqMetadata.NamespaceId = namespaceID
+	reqMetadata.SchemaId = schemaID
+	resMetadata, err := client.GetSchemaMetadata(context.Background(), &reqMetadata)
+	if err != nil {
+		return data, nil, err
+	}
+
+	return data, resMetadata, nil
 }
