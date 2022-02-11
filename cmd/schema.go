@@ -404,14 +404,23 @@ func deleteSchemaCmd() *cobra.Command {
 }
 
 func diffSchemaCmd() *cobra.Command {
+	var fullname string
+	var host string
 	var namespace string
 	var earlierVersion int32
 	var laterVersion int32
-	var host string
-	var fullname string
 
-	var getJsonMessage = func(req stencilv1beta1.GetSchemaRequest, conn *grpc.ClientConn) ([]byte, error) {
-		client := stencilv1beta1.NewStencilServiceClient(conn)
+	var schemaFetcher = func(req stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
+		res, err := client.GetSchema(context.Background(), &req)
+		if err != nil {
+			return nil, err
+		}
+		return res.Data, nil
+	}
+	var protoSchemaFetcher = func(req stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
+		if fullname == "" {
+			return nil, fmt.Errorf("fullname flag is mandator for FORMAT_PROTO")
+		}
 		res, err := client.GetSchema(context.Background(), &req)
 		if err != nil {
 			return nil, err
@@ -434,7 +443,7 @@ func diffSchemaCmd() *cobra.Command {
 		}
 		jsonByte, err := protojson.Marshal(protodesc.ToDescriptorProto(mDesc))
 		if err != nil {
-			return nil, fmt.Errorf("fail to convert o json. %w", err)
+			return nil, fmt.Errorf("fail to convert json. %w", err)
 		}
 		return jsonByte, nil
 	}
@@ -448,7 +457,14 @@ func diffSchemaCmd() *cobra.Command {
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
+			defer spinner.Stop()
+
 			schemaID := args[0]
+
+			metaReq := stencilv1beta1.GetSchemaMetadataRequest{
+				NamespaceId: namespace,
+				SchemaId:    schemaID,
+			}
 			eReq := stencilv1beta1.GetSchemaRequest{
 				NamespaceId: namespace,
 				SchemaId:    schemaID,
@@ -460,19 +476,29 @@ func diffSchemaCmd() *cobra.Command {
 				VersionId:   laterVersion,
 			}
 
-			host, _ := cmd.Flags().GetString("host")
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
 				return err
 			}
 			defer conn.Close()
+			client := stencilv1beta1.NewStencilServiceClient(conn)
 
-			eJson, err := getJsonMessage(eReq, conn)
+			meta, err := client.GetSchemaMetadata(context.Background(), &metaReq)
 			if err != nil {
 				return err
 			}
 
-			lJson, err := getJsonMessage(lReq, conn)
+			var getSchema = schemaFetcher
+			if meta.Format == *stencilv1beta1.Schema_FORMAT_PROTOBUF.Enum() {
+				getSchema = protoSchemaFetcher
+			}
+
+			eJson, err := getSchema(eReq, client)
+			if err != nil {
+				return err
+			}
+
+			lJson, err := getSchema(lReq, client)
 			if err != nil {
 				return err
 			}
@@ -505,14 +531,13 @@ func diffSchemaCmd() *cobra.Command {
 
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
-	cmd.Flags().StringVar(&namespace, "namespace", "", "parent namespace ID")
+	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "parent namespace ID")
 	cmd.MarkFlagRequired("namespace")
 	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "earlier version of the schema")
 	cmd.MarkFlagRequired("earlier-version")
 	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "later version of the schema")
 	cmd.MarkFlagRequired("later-version")
-	cmd.Flags().StringVar(&fullname, "fullname", "", "fullname of proto schema eg: odpf.common.v1.Version")
-	cmd.MarkFlagRequired("fullname")
+	cmd.Flags().StringVar(&fullname, "fullname", "", "only required for FORMAT_PROTO. fullname of proto schema eg: odpf.common.v1.Version")
 	return cmd
 }
 
