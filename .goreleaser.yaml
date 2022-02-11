@@ -36,6 +36,7 @@ archives:
         format: zip
 
 changelog:
+  use: "github-native"
   sort: asc
   filters:
     exclude:
