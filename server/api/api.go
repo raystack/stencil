@@ -17,9 +17,17 @@ type errHandleFunc func(http.ResponseWriter, *http.Request, map[string]string) e
 type API struct {
 	stencilv1beta1.UnimplementedStencilServiceServer
 	grpc_health_v1.UnimplementedHealthServer
-	Namespace     domain.NamespaceService
-	Schema        domain.SchemaService
-	SearchService domain.SearchService
+	namespace domain.NamespaceService
+	schema    domain.SchemaService
+	search    domain.SearchService
+}
+
+func NewAPI(namespace domain.NamespaceService, schema domain.SchemaService, search domain.SearchService) *API {
+	return &API{
+		namespace: namespace,
+		schema:    schema,
+		search:    search,
+	}
 }
 
 // RegisterSchemaHandlers registers HTTP handlers for schema download

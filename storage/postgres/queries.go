@@ -131,7 +131,6 @@ DELETE from schema_files WHERE id NOT IN (SELECT DISTINCT vsf.schema_file_id fro
 const searchAllQuery = `
 SELECT jsonb_path_query_array(sf.search_data -> 'Fields', ('$[*] ? (@ like_regex "[A-Z0-9_\\-\\.]+\\.\\w*' || $4 || '\\w*$" flag "i")')::jsonpath) AS "fields",
        jsonb_path_query_array(sf.search_data -> 'Types', ('$[*] ? (@ like_regex "[A-Z0-9_\\-\\.]+\\.\\w*' || $4 || '\\w*$" flag "i")')::jsonpath)  AS "types",
-	   jsonb_path_query_array(sf.search_data -> 'Keys', ('$[*] ? (@ like_regex "[A-Z0-9_\\-\\.]+\\.\\w*' || $4 || '\\w*$" flag "i")')::jsonpath)   AS "keys",
        ns.id                                    																								   AS "namespace_id",
        s.name                                   																								   AS "schema_id",
        v.version                                																								   AS "version_id"
@@ -149,8 +148,7 @@ AND    s.name=COALESCE(NULLIF ($2, ''), s.name)
 AND    v.version=COALESCE(NULLIF ($3, 0), v.version)
 AND    (
               sf.search_data -> 'Fields' @? ('$[*] ? (@ like_regex "\\w+\\.\\w+\\.\\w*' || $4 || '\\w*" flag "i")')::jsonpath
-       OR     sf.search_data -> 'Types' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $4 || '\\w*" flag "i")')::jsonpath
-	   OR     sf.search_data -> 'Keys' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $4 || '\\w*" flag "i")')::jsonpath);
+       OR     sf.search_data -> 'Types' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $4 || '\\w*" flag "i")')::jsonpath);
 `
 
 const searchLatestQuery = `
@@ -168,7 +166,6 @@ WITH latest_version AS(
 	GROUP BY (ns.id, s.id))
 SELECT jsonb_path_query_array(sf.search_data -> 'Fields', ('$[*] ? (@ like_regex "[A-Z0-9_\\-\\.]+\\.\\w*' || $3 || '\\w*$" flag "i")')::jsonpath) AS "fields",
        jsonb_path_query_array(sf.search_data -> 'Types', ('$[*] ? (@ like_regex "[A-Z0-9_\\-\\.]+\\.\\w*' || $3 || '\\w*$" flag "i")')::jsonpath)  AS "types",
-	   jsonb_path_query_array(sf.search_data -> 'Keys', ('$[*] ? (@ like_regex "[A-Z0-9_\\-\\.]+\\.\\w*' || $3 || '\\w*$" flag "i")')::jsonpath)   AS "keys",
        lv.namespace_id                                                                                                                             AS "namespace_id",
        s.name                                                                                                                       		       AS "schema_id",
        lv.version_id                                                                                                                      		   AS "version_id"
@@ -184,6 +181,5 @@ JOIN   schemas AS s
 ON     s.id = lv.schema_id
 WHERE  (
               sf.search_data -> 'Fields' @? ('$[*] ? (@ like_regex "\\w+\\.\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath
-       OR     sf.search_data -> 'Types' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath
-	   OR 	  sf.search_data -> 'Keys' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath);
+       OR     sf.search_data -> 'Types' @? ('$[*] ? (@ like_regex "\\w+\\.\\w*' || $3 || '\\w*" flag "i")')::jsonpath);
 `

@@ -22,7 +22,7 @@ func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*st
 		searchReq.History = v.History
 	}
 
-	res, err := a.SearchService.Search(ctx, searchReq)
+	res, err := a.search.Search(ctx, searchReq)
 	if err != nil {
 		return nil, err
 	}

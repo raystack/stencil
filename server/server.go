@@ -48,14 +48,11 @@ func Start(cfg config.Config) {
 		panic(err)
 	}
 	schemaService := schema.NewService(store, provider.NewSchemaProvider(), namespaceService, cache)
-	searchService := search.Service{
+	searchService := &search.Service{
 		Repo: store,
 	}
-	api := &api.API{
-		Namespace:     namespaceService,
-		Schema:        schemaService,
-		SearchService: &searchService,
-	}
+	api := api.NewAPI(namespaceService, schemaService, searchService)
+
 	port := fmt.Sprintf(":%s", cfg.Port)
 	nr := getNewRelic(&cfg)
 	mux := runtime.NewServeMux()
