@@ -292,7 +292,7 @@ Global Search API
 | ---- | ---------- | ----------- | -------- | ---- |
 | namespaceId | query |  | No | string |
 | schemaId | query |  | No | string |
-| query | query |  | No | string |
+| query | query |  | Yes | string |
 | history | query |  | No | boolean |
 | versionId | query |  | No | integer |
 
