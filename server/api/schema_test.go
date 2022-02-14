@@ -17,7 +17,7 @@ func TestHTTPGetSchema(t *testing.T) {
 	nsName := "namespace1"
 	schemaName := "scName"
 	t.Run("should validate version number", func(t *testing.T) {
-		_, _, mux, _ := setup()
+		_, _, _, mux, _ := setup()
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/invalidNumber", nsName, schemaName), nil)
 		mux.ServeHTTP(w, req)
@@ -26,7 +26,7 @@ func TestHTTPGetSchema(t *testing.T) {
 	})
 	t.Run("should return http error if getSchema fails", func(t *testing.T) {
 		version := int32(2)
-		_, schemaSvc, mux, _ := setup()
+		_, schemaSvc, _, mux, _ := setup()
 		schemaSvc.On("Get", mock.Anything, nsName, schemaName, version).Return(nil, nil, errors.New("get error"))
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version), nil)
@@ -37,7 +37,7 @@ func TestHTTPGetSchema(t *testing.T) {
 	t.Run("should return octet-stream content type for protobuf schema", func(t *testing.T) {
 		version := int32(2)
 		data := []byte("test data")
-		_, schemaSvc, mux, _ := setup()
+		_, schemaSvc, _, mux, _ := setup()
 		schemaSvc.On("Get", mock.Anything, nsName, schemaName, version).Return(&domain.Metadata{Format: "FORMAT_PROTOBUF"}, data, nil)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version), nil)
@@ -55,7 +55,7 @@ func TestHTTPSchemaCreate(t *testing.T) {
 	compatibility := "FULL"
 	body := []byte("protobuf contents")
 	t.Run("should return error if schema create fails", func(t *testing.T) {
-		_, schemaSvc, mux, _ := setup()
+		_, schemaSvc, _, mux, _ := setup()
 		schemaSvc.On("Create", mock.Anything, nsName, scName, &domain.Metadata{Format: format, Compatibility: compatibility}, body).Return(domain.SchemaInfo{}, errors.New("create error"))
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("POST", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s", nsName, scName), bytes.NewBuffer(body))
@@ -66,7 +66,7 @@ func TestHTTPSchemaCreate(t *testing.T) {
 		schemaSvc.AssertExpectations(t)
 	})
 	t.Run("should return schemaInfo in JSON after create", func(t *testing.T) {
-		_, schemaSvc, mux, _ := setup()
+		_, schemaSvc, _, mux, _ := setup()
 		scInfo := domain.SchemaInfo{ID: "someID", Version: int32(2)}
 		schemaSvc.On("Create", mock.Anything, nsName, scName, &domain.Metadata{Format: format, Compatibility: compatibility}, body).Return(scInfo, nil)
 		w := httptest.NewRecorder()
