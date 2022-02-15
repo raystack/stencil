@@ -139,6 +139,36 @@ describe('Stencil', () => {
       await flushPromises();
       expect(fn).toHaveBeenCalledTimes(3);
     });
+
+    test('should refresh schema only if version changes', async () => {
+      fn = jest.fn();
+      fn.mockResolvedValue(dataWithImports);
+      const jsonFn = jest.fn();
+      jsonFn
+        .mockResolvedValueOnce({ versions: [1] })
+        .mockResolvedValueOnce({ versions: [1] })
+        .mockResolvedValueOnce({ versions: [1, 2] });
+      fetchMock.mockResolvedValue({ ok: true, buffer: fn, json: jsonFn });
+      const client = await main.Stencil.getInstance(
+        'http://localhost:8000/v1beta1/namespaces/a/schemas/b',
+        {
+          refreshStrategy: 'VERSION_BASED_REFRESH',
+          refreshInterval: 1,
+          shouldRefresh: true
+        }
+      );
+      expect(client).toBeDefined();
+      jest.advanceTimersByTime(1100);
+      await flushPromises();
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(jsonFn).toHaveBeenCalledTimes(2);
+      expect(client.getType('test.One')).toBeDefined();
+      jest.advanceTimersByTime(1100);
+      await flushPromises();
+      expect(fn).toHaveBeenCalledTimes(2);
+      expect(jsonFn).toHaveBeenCalledTimes(3);
+      expect(client.getType('test.One')).toBeDefined();
+    });
   });
 });
 
