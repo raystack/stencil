@@ -1,0 +1,21 @@
+name: Test stencil RUBY client
+on:
+  push:
+    paths:
+      - "clients/ruby/**"
+    branches:
+      - master
+  pull_request:
+    paths:
+      - "clients/ruby/**"
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.5'
+    - run: cd clients/ruby; bin/setup; rspec -fd
