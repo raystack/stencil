@@ -53,8 +53,7 @@ $ stencil version
 
 ## Usage
 
-Stencil has three major components. Server, CLI and clinets. Stencil server and CLI are bundled in a single binary.
-Stencil clients allows application to interact with stencil server to fetch schemas for serialization and deseralization of data.
+Stencil has three major components. Server, CLI and clients. Stencil server and CLI are bundled in a single binary.
 
 ### Server
 
@@ -66,7 +65,7 @@ Stencil CLI allows users to iteract with server to create, view, and search sche
 
 ## Clients
 
-Stencil supports clients in multiple languages. Clients interact with Stencil server to eserialize and deserialize messages using schema.
+Stencil clients allows application to interact with stencil server to eserialize and deserialize messages using schema. Stencil supports clients in multiple languages.
 
 - [Java](clients/java)
 - [Go](clients/go)
