@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS search_data_idx;

@@ -1,23 +1,20 @@
 const protobuf = require('protobufjs');
 const descriptor = require('protobufjs/ext/descriptor');
-const fetch = require('node-fetch');
+const {
+  longPollingRefresh,
+  versionBasedRefresh
+} = require('./refresh_strategy');
 
 /**
  * Stencil Client options
  * @typedef {Object} Options
  * @property {boolean} [shouldRefresh] - Boolean flag to enable or disable descriptor auto refresh
  * @property {number} [refreshInterval] - interval duration in seconds for refreshing the descriptors
+ * @property {('LONG_POLLING_STRATEGY'|'VERSION_BASED_REFRESH')} [refreshStrategy] - refresh strategy to fetch schema
  * @property {Object} [HTTPOptions] - HTTP Options for passing extra information while sending a request. Available options are https://www.npmjs.com/package/node-fetch#options
  * @property {Object.<string, string>} [HTTPOptions.headers] - headers to add while downloading descriptor file
  * @property {Object.<string, string>} [HTTPOptions.timeout] - req/res timeout in ms, it resets on redirect. 0 to disable (OS limit applies).
  */
-
-function checkStatus(res) {
-  if (res.ok) {
-    return res;
-  }
-  throw new Error('Unable to download descriptor file');
-}
 /**
  * Stencil Client class
  */
@@ -32,9 +29,14 @@ class Stencil {
     this.options = options;
     this.HTTPoptions = { method: 'GET', ...options.HTTPOptions };
     this.root = {};
+    this.refreshStrategy =
+      options.refreshStrategy === 'VERSION_BASED_REFRESH'
+        ? versionBasedRefresh()
+        : longPollingRefresh();
   }
 
   async init() {
+    await this.load();
     if (this.options.shouldRefresh) {
       this.timer = setInterval(
         () =>
@@ -45,7 +47,6 @@ class Stencil {
         this.options.refreshInterval * 1000
       );
     }
-    await this.load();
   }
 
   /**
@@ -56,12 +57,12 @@ class Stencil {
   }
 
   async load() {
-    const buffer = await fetch(this.url, this.HTTPoptions)
-      .then(checkStatus)
-      .then((res) => res.buffer());
-    const decodedDescriptor = descriptor.FileDescriptorSet.decode(buffer);
-    this.root = protobuf.Root.fromDescriptor(decodedDescriptor);
-    this.root.resolveAll();
+    const buffer = await this.refreshStrategy(this.url, this.HTTPoptions);
+    if (buffer !== null) {
+      const decodedDescriptor = descriptor.FileDescriptorSet.decode(buffer);
+      this.root = protobuf.Root.fromDescriptor(decodedDescriptor);
+      this.root.resolveAll();
+    }
   }
 
   /**
@@ -80,7 +81,13 @@ class Stencil {
    */
   static async getInstance(url, options) {
     const stencil = new Stencil(url, options);
-    await stencil.init();
+    try {
+      await stencil.init();
+    } catch (e) {
+      stencil.close();
+      throw e;
+    }
+
     return stencil;
   }
 }
