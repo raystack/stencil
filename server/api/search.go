@@ -36,7 +36,6 @@ func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*st
 			} else {
 				hit.Fields = append(hit.Fields, k[2:li])
 			}
-
 		}
 		hits = append(hits, &stencilv1beta1.SearchHits{
 			SchemaId:    hit.SchemaID,
