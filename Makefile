@@ -18,6 +18,9 @@ coverage: ## Print code coverage
 vet: ## Run the go vet tool
 	go vet ./...
 
+lint: ## Run golang-ci lint 
+	golangci-lint run
+
 proto: ## Generate the protobuf files
 	@echo " > generating protobuf from odpf/proton"
 	@echo " > [info] make sure correct version of dependencies are installed using 'make install'"
