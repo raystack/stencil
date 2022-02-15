@@ -27,10 +27,6 @@ func (c *compatibilityErr) add(kind diffKind, desc protoreflect.Descriptor, form
 	}
 }
 
-// func (c *compatibilityErr) addDiffs(diffs []diff) {
-// 	c.diffs = append(c.diffs, diffs...)
-// }
-
 func (c *compatibilityErr) isEmpty() bool {
 	return len(c.diffs) == 0
 }
