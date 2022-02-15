@@ -17,10 +17,8 @@ func New() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil namespace create
 			$ stencil schema create
-			$ stencil upload
-			$ stencil download
-			$ stencil snapshot list
 			$ stencil server start
+			$ stencil serve migrate
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
