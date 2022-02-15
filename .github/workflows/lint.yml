@@ -1,0 +1,36 @@
+name: "Lint"
+
+on: [push, pull_request]
+
+jobs:
+  golangci:
+    name: "Lint Go"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.17"
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          skip-go-installation: true
+
+  codeql:
+    name: "Analyze with CodeQL"
+    runs-on: "ubuntu-latest"
+    permissions:
+      actions: "read"
+      contents: "read"
+      security-events: "write"
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["go"]
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "github/codeql-action/init@v1"
+        with:
+          languages: "${{ matrix.language }}"
+      - uses: "github/codeql-action/autobuild@v1"
+      - uses: "github/codeql-action/analyze@v1"

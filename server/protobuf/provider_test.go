@@ -62,6 +62,7 @@ func getRandomName() string {
 }
 
 func getDescriptorData(t *testing.T, path string, includeImports bool) []byte {
+	t.Helper()
 	root, _ := filepath.Abs(path)
 	log.Println(t.Name())
 	targetFile := filepath.Join(t.TempDir(), getRandomName())

@@ -12,6 +12,7 @@ import (
 )
 
 func getCompatibilityData(t *testing.T, name string) (schema.ParsedSchema, schema.ParsedSchema) {
+	t.Helper()
 	rule := strings.ToLower(name)
 	currentPath := filepath.Join("./testdata", rule, "current")
 	currentData := getDescriptorData(t, currentPath, true)

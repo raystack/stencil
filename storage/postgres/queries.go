@@ -30,11 +30,6 @@ INSERT INTO schemas (name, namespace_id, format, compatibility, created_at, upda
 ON CONFLICT ON CONSTRAINT schema_name_namespace_unique_idx DO UPDATE SET updated_at=now() RETURNING id
 `
 
-const fileInsertQuery = `
-INSERT INTO schema_files (id, search_data, data, created_at, updated_at)
-	VALUES ($1, $2, $3, now(), now()) ON CONFLICT DO NOTHING
-`
-
 const getSchemaVersionByID = `
 SELECT vs.version from versions as vs WHERE vs.id=$1
 `

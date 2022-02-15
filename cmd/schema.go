@@ -381,7 +381,6 @@ func deleteSchemaCmd() *cobra.Command {
 				if err != nil {
 					return err
 				}
-
 			}
 
 			spinner.Stop()
@@ -410,18 +409,18 @@ func diffSchemaCmd() *cobra.Command {
 	var earlierVersion int32
 	var laterVersion int32
 
-	var schemaFetcher = func(req stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
-		res, err := client.GetSchema(context.Background(), &req)
+	var schemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
+		res, err := client.GetSchema(context.Background(), req)
 		if err != nil {
 			return nil, err
 		}
 		return res.Data, nil
 	}
-	var protoSchemaFetcher = func(req stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
+	var protoSchemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
 		if fullname == "" {
 			return nil, fmt.Errorf("fullname flag is mandator for FORMAT_PROTO")
 		}
-		res, err := client.GetSchema(context.Background(), &req)
+		res, err := client.GetSchema(context.Background(), req)
 		if err != nil {
 			return nil, err
 		}
@@ -465,12 +464,12 @@ func diffSchemaCmd() *cobra.Command {
 				NamespaceId: namespace,
 				SchemaId:    schemaID,
 			}
-			eReq := stencilv1beta1.GetSchemaRequest{
+			eReq := &stencilv1beta1.GetSchemaRequest{
 				NamespaceId: namespace,
 				SchemaId:    schemaID,
 				VersionId:   earlierVersion,
 			}
-			lReq := stencilv1beta1.GetSchemaRequest{
+			lReq := &stencilv1beta1.GetSchemaRequest{
 				NamespaceId: namespace,
 				SchemaId:    schemaID,
 				VersionId:   laterVersion,
@@ -504,6 +503,9 @@ func diffSchemaCmd() *cobra.Command {
 			}
 
 			d, err := gojsondiff.New().Compare(eJson, lJson)
+			if err != nil {
+				return err
+			}
 
 			var placeholder map[string]interface{}
 			json.Unmarshal(eJson, &placeholder)

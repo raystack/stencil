@@ -91,7 +91,6 @@ func Start(cfg config.Config) {
 		s.GracefulStop()
 		store.Close()
 	})
-
 }
 
 // grpcHandlerFunc returns an http.Handler that delegates to grpcServer on incoming gRPC

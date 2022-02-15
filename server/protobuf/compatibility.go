@@ -64,6 +64,7 @@ var (
 		fieldLabelchange,
 		fieldKindChange,
 		fieldTypeChange,
+		fieldDelete,
 		enumDelete,
 		enumValueDelete,
 		enumValueNumberChange,

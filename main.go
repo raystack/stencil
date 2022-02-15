@@ -13,7 +13,6 @@ const (
 )
 
 func main() {
-
 	command := cmd.New()
 
 	if err := command.Execute(); err != nil {

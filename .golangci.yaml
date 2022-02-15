@@ -1,0 +1,33 @@
+run:
+  timeout: 5m
+  skip-dirs:
+    - api/proto
+    - clients/java
+    - clients/js
+    - docs
+    - scripts
+output:
+  format: line-number
+linters:
+  enable-all: false
+  disable-all: true
+  enable:
+    - vet
+    - goimports
+    - thelper
+    - tparallel
+    - unconvert
+    - wastedassign
+    - revive
+    - unused
+    - gofmt
+    - whitespace
+    - misspell
+linters-settings:
+  revive:
+    ignore-generated-header: true
+    severity: warning
+issues:
+  fix: true
+severity:
+  default-severity: error
