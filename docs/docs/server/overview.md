@@ -1,50 +1,55 @@
-
 # Stencil server
 
 Stencil is dynamic protobuf schema registry. It provides REST interface for storing and retrieving protobuf file descriptors.
 
-
-
-
 ## Features
 
- - stores versioned history of proto descriptor file on specified namespace and name
- - enforce backward compatability check on upload by default
- - ability to skip some of the backward compatability checks while upload
- - ability to download fully contained proto descriptor file for specified proto message [fullName](https://pkg.go.dev/google.golang.org/protobuf@v1.27.1/reflect/protoreflect#FullName)
- - provides metadata API to retrieve latest version number given a name and namespace
-
+- stores versioned history of proto descriptor file on specified namespace and name
+- enforce backward compatability check on upload by default
+- ability to skip some of the backward compatability checks while upload
+- ability to download fully contained proto descriptor file for specified proto message [fullName](https://pkg.go.dev/google.golang.org/protobuf@v1.27.1/reflect/protoreflect#FullName)
+- provides metadata API to retrieve latest version number given a name and namespace
 
 ## Requirements
- - postgres 13
+
+- postgres 13
 
 ## Installation
 
 Run the following commands to run from docker image
+
 ```bash
 $ docker pull odpf/stencil
 ```
 
 Run the following commands to compile from source
+
 ```bash
 $ git clone git@github.com:odpf/stencil.git
-$ cd stencil/server
+$ cd stencil
 $ go build -o stencil
-$ ./stencil # specify envs before executing this command
+$ ./stencil --help
+
+# Create a sample config file.
+$ cp config/config.yaml config.yaml
+
+$ ./stencil server start -c config.yaml
+
 ```
 
 ### Configuring environment Variables
 
-To run the stencil server, you will need to add the following environment variables
+You can also specfify stencil server configurations through following environment variables.
+Note: ENV vars takes more precendence over config file.
 
-| ENV          | Description          |
-| :------------ | :--------------------- |
-| `PORT` | port number default to `8080` |
-| `TIMEOUT` | graceful time to wait before shutting down the server. Takes `time.Duration` format. Eg: `30s` or `20m` |
+| ENV                   | Description                                                                                                                                            |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                | port number default to `8080`                                                                                                                          |
+| `TIMEOUT`             | graceful time to wait before shutting down the server. Takes `time.Duration` format. Eg: `30s` or `20m`                                                |
 | `DB_CONNECTIONSTRING` | postgres db connection [url](https://www.postgresql.org/docs/11/libpq-connect.html#LIBPQ-CONNSTRING). Eg: `postgres://postgres@localhost:5432/db_name` |
-| `NEWRELIC_ENABLED` | boolean to enable newrelic |
-| `NEWRELIC_APPNAME` | appname |
-| `NEWRELIC_LICENSE` | License key for newrelic |
+| `NEWRELIC_ENABLED`    | boolean to enable newrelic                                                                                                                             |
+| `NEWRELIC_APPNAME`    | appname                                                                                                                                                |
+| `NEWRELIC_LICENSE`    | License key for newrelic                                                                                                                               |
 
 ## Reference
 
@@ -109,4 +114,3 @@ curl -X GET http://localhost:8000/v1beta1/namespaces/quickstart/schemas/example/
 # upload schema can be called multiple times. Stencil server will retain old version if it's already uploaded. This call won't create new version again. You can verify by using versions API again.
 curl -X POST http://localhost:8000/v1/namespaces/quickstart/schemas --data-binary "@file.desc"
 ```
-
