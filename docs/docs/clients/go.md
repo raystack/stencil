@@ -36,7 +36,7 @@ import stencil "github.com/odpf/stencil/clients/go"
 import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
-client, err := stencil.NewClient(url, stencil.Options{})
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 ```
 
 ### Get Descriptor
@@ -44,7 +44,7 @@ client, err := stencil.NewClient(url, stencil.Options{})
 import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
-client, err := stencil.NewClient(url, stencil.Options{})
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 if err != nil {
     return
 }
@@ -56,7 +56,7 @@ desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
 import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
-client, err := stencil.NewClient(url, stencil.Options{})
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 if err != nil {
     return
 }
@@ -69,7 +69,7 @@ parsedMsg, err := client.Parse("google.protobuf.DescriptorProto", data)
 import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://url/to/proto/descriptorset/file"
-client, err := stencil.NewClient(url, stencil.Options{})
+client, err := stencil.NewClient([]string{url}, stencil.Options{})
 if err != nil {
     return
 }
@@ -83,7 +83,7 @@ import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 // Configured to refresh schema every 12 hours
-client, err := stencil.NewClient(url, stencil.Options{AutoRefresh: true, RefreshInterval: time.Hours * 12})
+client, err := stencil.NewClient([]string{url}, stencil.Options{AutoRefresh: true, RefreshInterval: time.Hours * 12})
 if err != nil {
     return
 }
@@ -96,7 +96,7 @@ import stencil "github.com/odpf/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 // Configured to refresh schema every 12 hours
-client, err := stencil.NewClient(url, stencil.Options{AutoRefresh: true, RefreshInterval: time.Hours * 12, RefreshStrategy: stencil.VersionBasedRefresh})
+client, err := stencil.NewClient([]string{url}, stencil.Options{AutoRefresh: true, RefreshInterval: time.Hours * 12, RefreshStrategy: stencil.VersionBasedRefresh})
 if err != nil {
     return
 }
