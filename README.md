@@ -79,7 +79,7 @@ Stencil clients allows application to interact with stencil server to eserialize
   <summary>Dependencies:</summary>
 
     - Git
-    - Go 1.17 or above
+    - Go 1.16 or above
     - PostgreSQL 13 or above
 
 </details>
@@ -87,9 +87,6 @@ Stencil clients allows application to interact with stencil server to eserialize
 ```sh
 # Clone the repo
 $ git clone git@github.com:odpf/stencil.git
-
-# Install all the golang dependencies
-$ make install
 
 # Check all build comamnds available
 $ make help
