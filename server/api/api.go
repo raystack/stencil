@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/odpf/stencil/server/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -31,13 +32,13 @@ func NewAPI(namespace domain.NamespaceService, schema domain.SchemaService, sear
 }
 
 // RegisterSchemaHandlers registers HTTP handlers for schema download
-func (a *API) RegisterSchemaHandlers(mux *runtime.ServeMux) {
+func (a *API) RegisterSchemaHandlers(mux *runtime.ServeMux, app *newrelic.Application) {
 	mux.HandlePath("GET", "/ping", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		fmt.Fprint(w, "pong")
 	})
-	mux.HandlePath("GET", "/v1beta1/namespaces/{namespace}/schemas/{name}/versions/{version}", handleSchemaResponse(mux, a.HTTPGetSchema))
-	mux.HandlePath("GET", "/v1beta1/namespaces/{namespace}/schemas/{name}", handleSchemaResponse(mux, a.HTTPLatestSchema))
-	mux.HandlePath("POST", "/v1beta1/namespaces/{namespace}/schemas/{name}", wrapHandler(mux, a.HTTPUpload))
+	mux.HandlePath(wrapHandler(app, "GET", "/v1beta1/namespaces/{namespace}/schemas/{name}/versions/{version}", handleSchemaResponse(mux, a.HTTPGetSchema)))
+	mux.HandlePath(wrapHandler(app, "GET", "/v1beta1/namespaces/{namespace}/schemas/{name}", handleSchemaResponse(mux, a.HTTPLatestSchema)))
+	mux.HandlePath(wrapHandler(app, "POST", "/v1beta1/namespaces/{namespace}/schemas/{name}", wrapErrHandler(mux, a.HTTPUpload)))
 }
 
 func handleSchemaResponse(mux *runtime.ServeMux, getSchemaFn getSchemaData) runtime.HandlerFunc {
@@ -58,7 +59,7 @@ func handleSchemaResponse(mux *runtime.ServeMux, getSchemaFn getSchemaData) runt
 	}
 }
 
-func wrapHandler(mux *runtime.ServeMux, handler errHandleFunc) runtime.HandlerFunc {
+func wrapErrHandler(mux *runtime.ServeMux, handler errHandleFunc) runtime.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		err := handler(w, r, pathParams)
 		if err != nil {
@@ -66,5 +67,19 @@ func wrapHandler(mux *runtime.ServeMux, handler errHandleFunc) runtime.HandlerFu
 			runtime.DefaultHTTPErrorHandler(r.Context(), mux, outbound, w, r, err)
 			return
 		}
+	}
+}
+
+func wrapHandler(app *newrelic.Application, method, pattern string, handler runtime.HandlerFunc) (string, string, runtime.HandlerFunc) {
+	if app == nil {
+		return method, pattern, handler
+	}
+	return method, pattern, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		txn := app.StartTransaction(method + " " + pattern)
+		defer txn.End()
+		w = txn.SetWebResponse(w)
+		txn.SetWebRequestHTTP(r)
+		r = newrelic.RequestWithTransactionContext(r, txn)
+		handler(w, r, pathParams)
 	}
 }

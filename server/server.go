@@ -80,7 +80,7 @@ func Start(cfg config.Config) {
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
 	}
-	api.RegisterSchemaHandlers(mux)
+	api.RegisterSchemaHandlers(mux, nr)
 
 	if err = stencilv1beta1.RegisterStencilServiceHandler(ctx, mux, conn); err != nil {
 		log.Fatalln("Failed to register stencil service handler:", err)
