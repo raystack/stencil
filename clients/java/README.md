@@ -6,8 +6,8 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 
 ## Requirements
 
-  - [Gradle v6+](https://gradle.org/)
-  - [JDK 8+](https://openjdk.java.net/projects/jdk8/)
+- [Gradle v6+](https://gradle.org/)
+- [JDK 8+](https://openjdk.java.net/projects/jdk8/)
 
 ## Usage
 
@@ -16,7 +16,7 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 #### Gradle
 
 ```groovy
-  implementation group: 'io.odpf', name: 'stencil', version: '0.1.6'
+  implementation group: 'io.odpf', name: 'stencil', version: '0.2.0'
 ```
 
 #### Maven
@@ -42,7 +42,6 @@ import io.odpf.stencil.StencilClientFactory;
 StencilClient stencilClient = StencilClientFactory.getClient();
 ```
 
-
 #### Create client with remote URL
 
 ```java
@@ -53,6 +52,7 @@ StencilClient stencilClient = StencilClientFacorty.getClient(url, StencilConfig.
 ```
 
 #### Creating MultiURL client
+
 ```java
 import io.odpf.stencil.config.StencilConfig;
 
@@ -60,7 +60,6 @@ ArrayList<String> urls = new ArrayList<String>();
 urls.add("http://localhost:8082/v1beta1/...");
 StencilClient stencilClient = StencilClientFacorty.getClient(urls, StencilConfig.builder().build());
 ```
-
 
 #### With StatsD client for monitoring
 
@@ -74,7 +73,9 @@ StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.
 ```
 
 #### With Schema Update Listener
+
 Whenever schema has changed this listener will be called.
+
 ```java
 import io.odpf.stencil.SchemaUpdateListener;
 
@@ -83,7 +84,9 @@ StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.
 ```
 
 #### With version based refresh strategy
+
 If url belongs to stencil server, client can choose to refresh schema data only if there is a new version available.
+
 ```java
 import io.odpf.stencil.cache.SchemaRefreshStrategy;
 
@@ -92,7 +95,9 @@ StencilClient stencilClient = StencilClientFactory.getClient(url, config);
 ```
 
 #### Passing custom headers
+
 While sending request to specified URL, client can be configured to pass headers as well.
+
 ```java
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -127,6 +132,7 @@ DynamicMessage message = DynamicMessage.parseFrom(descriptor, bytes);
 ```
 
 #### Using Parser interface
+
 ```java
 import io.odpf.stencil.Parser;
 import com.google.protobuf.DynamicMessage;
