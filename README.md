@@ -1,7 +1,7 @@
 # Stencil
 
 ![Test](https://github.com/odpf/stencil/actions/workflows/test-server.yaml/badge.svg)
-![Release](https://github.com/odpf/stencil/actions/workflows/release.yml/badge.svg)
+![Release](https://github.com/odpf/stencil/actions/workflows/release-server.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/odpf/stencil?logo=semantic-release)](Version)
 

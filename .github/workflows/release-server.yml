@@ -1,4 +1,4 @@
-name: Release Stencil Server
+name: Release
 on:
   push:
     tags:
