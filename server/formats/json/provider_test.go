@@ -3,7 +3,7 @@ package json_test
 import (
 	"testing"
 
-	"github.com/odpf/stencil/server/json"
+	"github.com/odpf/stencil/server/formats/json"
 	"github.com/stretchr/testify/assert"
 )
 

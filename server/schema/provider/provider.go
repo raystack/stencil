@@ -3,9 +3,9 @@ package provider
 import (
 	"errors"
 
-	"github.com/odpf/stencil/server/avro"
-	"github.com/odpf/stencil/server/json"
-	"github.com/odpf/stencil/server/protobuf"
+	"github.com/odpf/stencil/server/formats/avro"
+	"github.com/odpf/stencil/server/formats/json"
+	"github.com/odpf/stencil/server/formats/protobuf"
 	"github.com/odpf/stencil/server/schema"
 )
 
