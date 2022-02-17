@@ -1,4 +1,4 @@
-package storage
+package store
 
 import (
 	"github.com/odpf/stencil/server/domain"

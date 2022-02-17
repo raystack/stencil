@@ -4,7 +4,7 @@ import (
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/stencil/config"
 	"github.com/odpf/stencil/server"
-	"github.com/odpf/stencil/storage/postgres"
+	"github.com/odpf/stencil/store/postgres"
 	"github.com/spf13/cobra"
 
 	// Importing postgres driver

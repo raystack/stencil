@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/odpf/stencil/server/domain"
-	"github.com/odpf/stencil/storage"
+	"github.com/odpf/stencil/store"
 )
 
 func wrapError(err error, format string, args ...interface{}) error {
@@ -18,14 +18,14 @@ func wrapError(err error, format string, args ...interface{}) error {
 	}
 	var pgErr *pgconn.PgError
 	if errors.Is(err, pgx.ErrNoRows) {
-		return storage.NoRowsErr.WithErr(err, fmt.Sprintf(format, args...))
+		return store.NoRowsErr.WithErr(err, fmt.Sprintf(format, args...))
 	}
 	if errors.As(err, &pgErr) {
 		if pgErr.Code == "23505" {
-			return storage.ConflictErr.WithErr(err, fmt.Sprintf(format, args...))
+			return store.ConflictErr.WithErr(err, fmt.Sprintf(format, args...))
 		}
 	}
-	return storage.UnknownErr.WithErr(err, fmt.Sprintf(format, args...))
+	return store.UnknownErr.WithErr(err, fmt.Sprintf(format, args...))
 }
 
 type searchData struct {

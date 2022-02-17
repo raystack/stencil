@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/odpf/stencil/server/domain"
-	"github.com/odpf/stencil/storage"
+	"github.com/odpf/stencil/store"
 )
 
 func getNonEmpty(args ...string) string {
@@ -68,7 +68,7 @@ func (s *Service) cachedGetSchema(ctx context.Context, nsName, schemaName string
 func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
 	prevMeta, prevSchemaData, err := s.GetLatest(ctx, nsName, schemaName)
 	if err != nil {
-		if errors.Is(err, storage.NoRowsErr) {
+		if errors.Is(err, store.NoRowsErr) {
 			return nil
 		}
 		return err

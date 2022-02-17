@@ -8,7 +8,7 @@ import (
 	"github.com/odpf/stencil/mocks"
 	"github.com/odpf/stencil/server/domain"
 	"github.com/odpf/stencil/server/schema"
-	"github.com/odpf/stencil/storage"
+	"github.com/odpf/stencil/store"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -30,10 +30,10 @@ func TestSchemaCreate(t *testing.T) {
 	t.Run("should return error if namespace not found", func(t *testing.T) {
 		svc, nsService, _, _ := getSvc()
 		nsName := "testNamespace"
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{}, storage.NoRowsErr)
+		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{}, store.NoRowsErr)
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, []byte(""))
 		assert.NotNil(t, err)
-		assert.ErrorIs(t, err, storage.NoRowsErr)
+		assert.ErrorIs(t, err, store.NoRowsErr)
 		nsService.AssertExpectations(t)
 	})
 
@@ -67,7 +67,7 @@ func TestSchemaCreate(t *testing.T) {
 		data := []byte("data")
 		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
-		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(2), storage.NoRowsErr)
+		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(2), store.NoRowsErr)
 		parsedSchema.On("GetCanonicalValue").Return(scFile)
 		schemaRepo.On("CreateSchema", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(int32(1), nil)
 		scInfo, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
