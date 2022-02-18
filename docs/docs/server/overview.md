@@ -1,4 +1,4 @@
-# Stencil server
+# Overview
 
 Stencil is dynamic protobuf schema registry. It provides REST interface for storing and retrieving protobuf file descriptors.
 
