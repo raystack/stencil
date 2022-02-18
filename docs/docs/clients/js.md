@@ -1,4 +1,4 @@
-# Stencil nodejs client
+# JavaScript
 
 Stencil nodejs client package provides a store to lookup protobuf descriptors and options to keep the protobuf descriptors upto date.
 
