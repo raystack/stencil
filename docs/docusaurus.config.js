@@ -1,11 +1,11 @@
-const lightCodeTheme = require('prism-react-renderer/themes/github');
+const lightCodeTheme = require('prism-react-renderer/themes/dracula');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
   title: 'Stencil',
-  tagline: 'Schema registry',
+  tagline: 'Schema registry engineered for scale',
   url: 'https://odpf.github.io/',
   baseUrl: '/stencil/',
   onBrokenLinks: 'throw',
@@ -18,9 +18,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
     [
       '@docusaurus/preset-classic',
       ({
+        gtag: {
+          trackingID: 'G-XXX',
+        },
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/odpf/stencil/edit/master/docs/',
+          sidebarCollapsed: true,
         },
         blog: {
           showReadingTime: true,
@@ -30,10 +34,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         theme: {
           customCss: [
             require.resolve('./src/css/theme.css'),
-            require.resolve('./src/css/custom.css')
+            require.resolve('./src/css/custom.css'),
+            require.resolve('./src/css/icons.css'),
           ],
         },
-      }),
+      })
     ],
   ],
 
@@ -50,6 +55,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       navbar: {
         title: 'Stencil',
         logo: { src: 'img/logo.svg', },
+        hideOnScroll: true,
         items: [
           {
             type: 'doc',
@@ -103,9 +109,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-      },
-      gtag: {
-        trackingID: 'G-XXX',
       },
       announcementBar: {
         id: 'star-repo',

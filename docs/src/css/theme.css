@@ -4,16 +4,19 @@
  * work well for content-centric websites.
  */
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #b32e1a;
-  --ifm-color-primary-dark: #a12917;
-  --ifm-color-primary-darker: #982716;
-  --ifm-color-primary-darkest: #7d2012;
-  --ifm-color-primary-light: #c5331d;
-  --ifm-color-primary-lighter: #ce351e;
-  --ifm-color-primary-lightest: #e0422a;
-  --ifm-code-font-size: 95%;
+  --ifm-color-primary: #4d4dcb;
+  --ifm-color-primary-dark: #3939c3;
+  --ifm-color-primary-darker: #3636b8;
+  --ifm-color-primary-darkest: #2c2c98;
+  --ifm-color-primary-light: #6363d1;
+  --ifm-color-primary-lighter: #6e6ed4;
+  --ifm-color-primary-lightest: #8e8ede;
+  --ifm-code-font-size: 90%;
+  --ifm-font-family-base: "Inter", sans-serif;
 }
 
 .docusaurus-highlight-code-line {
@@ -37,4 +40,19 @@ html[data-theme="dark"] {
   --main-bg-color: var(--ifm-color-primary);
   --light-bg-color: transparent;
   --dark-bg-color: #131313;
+}
+
+.menu {
+  font-size: 90%;
+}
+
+.markdown h1 {
+  font-size: 2.5rem;
+}
+.markdown h2 {
+  font-size: 1.7rem;
+}
+
+.markdown h3 {
+  font-size: 1.4rem;
 }

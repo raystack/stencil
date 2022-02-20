@@ -1,4 +1,4 @@
-# Concepts
+# Glossary
 
 This section describes the core elements of a schema registry.
 
