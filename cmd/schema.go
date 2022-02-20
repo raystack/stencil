@@ -323,7 +323,6 @@ func getSchemaCmd() *cobra.Command {
 	cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "version of the schema")
-	cmd.MarkFlagRequired("version")
 
 	cmd.Flags().BoolVarP(&metadata, "metadata", "m", false, "set this flag to get metadata")
 	cmd.MarkFlagRequired("metadata")
@@ -703,7 +702,6 @@ func printCmd() *cobra.Command {
 	cmd.MarkFlagRequired("name")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
-	cmd.MarkFlagRequired("version")
 
 	cmd.Flags().StringVarP(&output, "output", "o", "", "the directory path to write the descriptor files, default is to print on stdout")
 
@@ -775,7 +773,6 @@ func graphCmd() *cobra.Command {
 	cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
-	cmd.MarkFlagRequired("version")
 
 	cmd.Flags().StringVarP(&output, "output", "o", "./proto_vis.dot", "write to .dot file")
 
