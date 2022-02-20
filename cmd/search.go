@@ -78,7 +78,7 @@ func SearchCmd() *cobra.Command {
 			report = append(report, []string{"INDEX", "NAMESPACE", "SCHEMA", "FIELDS", "TYPES", "VERSION"})
 			for i, h := range hits {
 				report = append(report, []string{
-					strconv.Itoa(int(i) + 1),
+					strconv.Itoa(i + 1),
 					h.GetNamespaceId(),
 					h.GetSchemaId(),
 					strings.Join(h.GetFields(), ","),
