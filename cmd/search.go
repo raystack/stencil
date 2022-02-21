@@ -25,6 +25,7 @@ func SearchCmd() *cobra.Command {
 		Aliases: []string{"search"},
 		Short:   "Search",
 		Long:    "Search your queries on schemas",
+		Args:    cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil search <query> --namespace=<namespace> --schema=<schema> --version=<version> --history=<history>
 		`),
