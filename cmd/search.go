@@ -64,9 +64,9 @@ func SearchCmd() *cobra.Command {
 			}
 
 			hits := res.GetHits()
-			meta := res.GetMeta()
 
 			report := [][]string{}
+			total := 0
 			s.Stop()
 
 			if len(hits) == 0 {
@@ -74,25 +74,27 @@ func SearchCmd() *cobra.Command {
 				return nil
 			}
 
-			fmt.Printf(" \nShowing %d result(s) \n", len(hits))
+			fmt.Printf(" \nShowing %d versions \n", len(hits))
 
-			report = append(report, []string{"INDEX", "NAMESPACE", "SCHEMA", "FIELDS", "TYPES", "VERSION"})
-			for i, h := range hits {
-				report = append(report, []string{
-					strconv.Itoa(i + 1),
-					h.GetNamespaceId(),
-					h.GetSchemaId(),
-					strings.Join(h.GetFields(), ","),
-					strings.Join(h.GetTypes(), ","),
-					strconv.Itoa(int(h.GetVersionId())),
-				})
+			report = append(report, []string{"NAMESPACE", "SCHEMA", "VERSION", "TYPES", "FIELDS"})
+			for _, h := range hits {
+				m := groupByType(h.GetFields())
+				for t, f := range m {
+					report = append(report, []string{
+						h.GetNamespaceId(),
+						h.GetSchemaId(),
+						strconv.Itoa(int(h.GetVersionId())),
+						t,
+						strings.Join(f, ", "),
+					})
+
+					total++
+				}
+				report = append(report, []string{"", "", "", "", ""})
 			}
 			printer.Table(os.Stdout, report)
 
-			report = [][]string{}
-			report = append(report, []string{"\nTOTAL"})
-			report = append(report, []string{strconv.Itoa(int(meta.GetTotal()))})
-			printer.Table(os.Stdout, report)
+			fmt.Println("TOTAL: ", total)
 
 			return nil
 		},
@@ -108,4 +110,18 @@ func SearchCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&history, "history", "h", false, "set this to enable history")
 
 	return cmd
+}
+
+func groupByType(fields []string) map[string][]string {
+	m := make(map[string][]string)
+	for _, field := range fields {
+		f := field[strings.LastIndex(field, ".")+1:]
+		t := field[:strings.LastIndex(field, ".")]
+		if m[t] != nil {
+			m[t] = append(m[t], f)
+		} else {
+			m[t] = []string{f}
+		}
+	}
+	return m
 }
