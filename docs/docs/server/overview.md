@@ -53,7 +53,7 @@ Note: ENV vars takes more precendence over config file.
 
 ## Reference
 
-- [API](./api.md)
+- [API](../reference/api.md)
 - [Rules](./rules.md)
 
 ## Quick start API usage examples
