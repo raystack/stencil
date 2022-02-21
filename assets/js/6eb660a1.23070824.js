@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkstencil=self.webpackChunkstencil||[]).push([[798],{2314:function(e){e.exports=JSON.parse('{"permalink":"/stencil/blog/tags/odpf","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"previousPage":null,"nextPage":null,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

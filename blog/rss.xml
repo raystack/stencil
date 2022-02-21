@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Stencil Blog</title>
         <link>https://odpf.github.io/stencil/blog</link>
@@ -13,6 +13,9 @@
             <guid>introducing-stencil</guid>
             <pubDate>Fri, 20 Aug 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[We are live!]]></description>
+            <content:encoded><![CDATA[<p>We are live!</p>]]></content:encoded>
+            <category>odpf</category>
+            <category>stencil</category>
         </item>
     </channel>
 </rss>

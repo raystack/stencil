@@ -13,9 +13,12 @@
         <link href="https://odpf.github.io/stencil/blog/introducing-stencil"/>
         <updated>2021-08-20T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[We are live!]]></summary>
+        <content type="html"><![CDATA[<p>We are live!</p>]]></content>
         <author>
             <name>Ravi Suhag</name>
             <uri>https://github.com/ravisuhag</uri>
         </author>
+        <category label="odpf" term="odpf"/>
+        <category label="stencil" term="stencil"/>
     </entry>
 </feed>
