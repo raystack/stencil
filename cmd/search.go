@@ -76,15 +76,15 @@ func SearchCmd() *cobra.Command {
 
 			fmt.Printf(" \nShowing %d versions \n", len(hits))
 
-			report = append(report, []string{"NAMESPACE", "SCHEMA", "VERSION", "TYPES", "FIELDS"})
+			report = append(report, []string{"TYPES", "NAMESPACE", "SCHEMA", "VERSION", "FIELDS"})
 			for _, h := range hits {
 				m := groupByType(h.GetFields())
 				for t, f := range m {
 					report = append(report, []string{
+						t,
 						h.GetNamespaceId(),
 						h.GetSchemaId(),
 						strconv.Itoa(int(h.GetVersionId())),
-						t,
 						strings.Join(f, ", "),
 					})
 
