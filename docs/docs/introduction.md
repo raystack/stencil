@@ -1,10 +1,14 @@
 # Introduction
 
+Welcome to intro guide to Stencil! This guide is the best place to start with Stencil. We cover what Stencil is, what problems it can solve, how it compares to existing schema registry, and how you can get started using it. If you are familiar with the basics of Stencil, the guide provides a more detailed reference of available features.
+
+### What is Stencil?
+
 Stencil is a schema registry that provides schema mangement and validation to ensure data compatibility across applications. It enables developers to create, manage and consume schemas dynamically, efficiently, and reliably, and provides a simple way to validate data against those schemas. Stencil support multiple formats including Protobuf, Avro and JSON.
 
-![](/assets/overview.svg)
+![](/assets/intro.svg)
 
-## What is schema registry?
+### What is schema registry?
 
 Schema registry is the sole source of truth for schema definitions. When producers or developers create a specific data schema for use within the system, the data schema is stored in the registry that is accessible to all consumers and relevant parties. A central schema registry
 
@@ -17,7 +21,7 @@ Schema registry is the sole source of truth for schema definitions. When produce
 - Provides multiple backends as a storage system to schemas.
 - Help in tackling organisational challenges by data policy enforcement.
 
-## Need for schemas
+### Need for schemas
 
 Schema is a strongly typed description of your data/record that clearly defines the structure, type, and meaning of data. Schemas serve as contracts to enforce communication protocol between consumers and producers using messaging systems. It can also serve as a contract between services as well as between teams to establish a common contract of trust between two parties.
 Lack of schema poses multiple challenges. Data producers can make arbitrary changes to the data which can create issues for downstream services to interpret the data. For example:
@@ -27,7 +31,7 @@ Lack of schema poses multiple challenges. Data producers can make arbitrary chan
 
 Schemas in an event-driven architecture should not be an afterthought and should be defined before you start sending the events.
 
-## Data formats
+### Data formats
 
 When sending data over the network, you need a way to encode data into bytes. There is a wide variety of data serialization formats, including XML, JSON, BSON, YAML, MessagePack, Protocol Buffers, Thrift, and Avro. 
 Multiple programming languages also provide specific serialization methods but using language-specific serialization makes consuming data very hard in different programming languages.
@@ -40,6 +44,6 @@ Choice of format for an application is subject to a variety of factors, includin
 - The data format should have very little protocol parsing time.
 - The data format should support the versioning and schema evolution.
 
-## Schema evolution
+### Schema evolution
 
 Schema can be changed, producers and consumers can hold different versions of the scheme simultaneously, and it all continues to work. The schema can be changed, producers and consumers can hold different versions of the scheme simultaneously, and it all continues to work. When working with a large production system, this is a highly valuable feature as it allows you to independently update different elements of the system at different times without concerns about compatibility.

@@ -55,15 +55,15 @@ $ stencil version
 
 Stencil has three major components. Server, CLI and clients. Stencil server and CLI are bundled in a single binary.
 
-### Server
+**Server**
 
 Stencil server provides a way to store and fetch schemas and enforce compatability rules. Run `stencil server --help` to see instructions to manage Stencil server.
 
-### CLI
+**CLI**
 
 Stencil CLI allows users to iteract with server to create, view, and search schemas. CLI is fully featured but simple to use, even for those who have very limited experience working from the command line. Run `stencil --help` to see list of all available commands and instructions to use.
 
-## Clients
+**Clients**
 
 Stencil clients allows application to interact with stencil server to eserialize and deserialize messages using schema. Stencil supports clients in multiple languages.
 

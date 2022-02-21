@@ -15,10 +15,7 @@ const Hero = () => {
         <div className="row">
           <div className={clsx('col col--5')}>
             <div className="homeTitle">{siteConfig.tagline}</div>
-            <small className="homeSubTitle">Stencil is a schema registry that provides schema mangement and validation to ensure data
-              compatibility across applications. It enables developers to create, manage and consume
-              schemas dynamically, efficiently, and reliably, and provides a simple way to validate data
-              against those schemas.</small>
+            <small className="homeSubTitle">Manage, enforce, and evolve schemas for your event-driven applications.</small>
             <a className="button" href="docs/introduction">Documentation</a>
           </div>
           <div className={clsx('col col--1')}></div>
