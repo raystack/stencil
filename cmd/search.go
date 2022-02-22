@@ -44,6 +44,12 @@ func SearchCmd() *cobra.Command {
 
 			query := args[0]
 			req.Query = query
+
+			if len(schemaID) > 0 && len(namespaceID) == 0 {
+				s.Stop()
+				fmt.Println("Namespace ID not specified for", schemaID)
+				return nil
+			}
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
 
@@ -74,7 +80,7 @@ func SearchCmd() *cobra.Command {
 				return nil
 			}
 
-			fmt.Printf(" \nShowing %d versions \n", len(hits))
+			fmt.Printf(" \nFound results across %d schema(s)/version(s) \n\n", len(hits))
 
 			report = append(report, []string{"TYPES", "NAMESPACE", "SCHEMA", "VERSION", "FIELDS"})
 			for _, h := range hits {
@@ -103,9 +109,7 @@ func SearchCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
 	cmd.Flags().StringVarP(&schemaID, "schema", "s", "", "related schema ID")
-	cmd.MarkFlagRequired("schema")
 	cmd.Flags().Int32VarP(&versionID, "version", "v", 0, "version of the schema")
 	cmd.Flags().BoolVarP(&history, "history", "h", false, "set this to enable history")
 
