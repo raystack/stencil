@@ -35,6 +35,7 @@ func New() *cobra.Command {
 	cmd.AddCommand(ServerCommand())
 	cmd.AddCommand(NamespaceCmd())
 	cmd.AddCommand(SchemaCmd())
+	cmd.AddCommand(SearchCmd())
 
 	// Help topics
 	cmdx.SetHelp(cmd)
