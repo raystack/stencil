@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package io.odpf.stencil_clj_test;
+
+option java_multiple_files = true;
+option java_package = "io.odpf.stencil_clj_test";
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/empty.proto";
+
+
+enum Group {
+  UNKNOWN = 0;
+	VALUE_1 = 1;
+	VALUE_2 = 2;
+	VALUE3 = 3;
+	value4 = 4;
+}
+// Message with all scalar types
+message Scalar {
+	double field_one = 1;
+	float float_field = 2;
+	int32 field_int32 = 3;
+	int64 field_int64 = 4;
+	uint32 field_uint32 = 5;
+	uint64 field_uint64 = 6;
+	sint32 field_sint32 = 7;
+	sint64 field_sint64 = 8;
+	fixed32 field_fixed32 = 9;
+	fixed64 field_fixed64 = 10;
+	sfixed32 field_sfixed32 = 11;
+	sfixed64 field_sfixed64 = 12;
+	bool field_bool = 13;
+	string field_string = 14;
+	bytes field_bytes = 15;
+}
+
+message Wrappers {
+	google.protobuf.StringValue one = 1;
+	google.protobuf.DoubleValue two = 2;
+	google.protobuf.FloatValue three = 3;
+	google.protobuf.Int64Value four = 4;
+	google.protobuf.UInt64Value five = 5;
+	google.protobuf.Int32Value six = 6;
+	google.protobuf.UInt32Value seven = 7;
+	google.protobuf.BoolValue eight = 8;
+	google.protobuf.BytesValue nine = 9;
+}
+
+message SimpleMask {
+	google.protobuf.FieldMask mask = 1;
+}
+
+message SimpleEmpty {
+	google.protobuf.Empty empty_field = 1;
+}
+
+message SimpleNested {
+	Group field_name = 1;
+	string group = 2;
+	Scalar nested_field = 3;
+	google.protobuf.Timestamp duration_field = 4;
+	google.protobuf.Duration timestamp_field = 5;
+}
+
+message ComplexTypes {
+	string name = 1;
+	map<string, Scalar> map_field = 2;
+	google.protobuf.Struct struct_field = 3;
+}
+
+message SimpleArray {
+	repeated Group groups = 1;
+	repeated string values = 2;
+	repeated SimpleNested nested_fields = 3;
+}
+
+message Recursive {
+	string name = 1;
+	Recursive single_field = 2;
+	repeated Recursive multi_field = 3;
+	Group group_field = 4;
+}
