@@ -112,4 +112,21 @@
     (verify "io.odpf.stencil_clj_test.Recursive" recursive-data))
 
   (testing "should handle wrapper types"
-    (verify "io.odpf.stencil_clj_test.Wrappers" wrapper-data)))
+    (verify "io.odpf.stencil_clj_test.Wrappers" wrapper-data))
+
+  (testing "should throw error if unknown field is present"
+    (try (verify "io.odpf.stencil_clj_test.Scalar" {:x "test"})
+         (catch Exception e
+           (is (= {:cause :unknown-field, :info {:field-name :x}} (ex-data e))))))
+
+  (testing "should throw error if enum value is invalid"
+    (try (verify "io.odpf.stencil_clj_test.SimpleArray" {:groups [:invalid :UNKNOWN]})
+         (catch Exception e
+           (is (= {:cause :unknown-enum-value
+                   :info  {:field-name :invalid}} (ex-data e))))))
+
+  (testing "should throw error if non array value assigned to repeated(array) field"
+    (try (verify "io.odpf.stencil_clj_test.SimpleArray" {:groups :UNKNOWN})
+         (catch Exception e
+           (is (= {:cause :not-a-collection
+                   :info  {:value :UNKNOWN}} (ex-data e)))))))

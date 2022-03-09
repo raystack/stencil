@@ -6,14 +6,14 @@
   [^ByteString value]
   (.toByteArray value))
 
-(defn- replace-underscores-to-hyphen [k]
+(defn- underscores->hyphen [k]
   (string/replace k #"_" "-"))
 
 (defn- field-name->keyword
   [k]
   (-> k
-      (replace-underscores-to-hyphen)
-      (keyword)))
+      underscores->hyphen
+      keyword))
 
 (defn- enum-value->clj-name
   [^Descriptors$EnumValueDescriptor value]

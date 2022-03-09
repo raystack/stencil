@@ -2,7 +2,7 @@
   (:import [com.google.protobuf Descriptors$Descriptor Descriptors$FieldDescriptor Descriptors$EnumDescriptor DynamicMessage DynamicMessage$Builder ByteString])
   (:require [clojure.string :as string]))
 
-(defn- replace-hyphen-to-underscores [k]
+(defn- hyphen->underscores [k]
   (string/replace k #"-" "_"))
 
 (defn- bytes->byte-string
@@ -12,18 +12,29 @@
 (defn- keyword->field-name
   [k]
   (-> k
-      replace-hyphen-to-underscores
+      hyphen->underscores
       (string/replace #"^:" "")
       name))
 
 (defn- clj-name->enum-value
   [^Descriptors$FieldDescriptor fd value]
   (let [^Descriptors$EnumDescriptor ed (.getEnumType fd)]
-    (if (number? value)
-      (.findValueByNumber ed value)
-      (.findValueByName ed (keyword->field-name value)))))
+    (if-let [enum-value (if (number? value)
+                          (.findValueByNumber ed value)
+                          (.findValueByName ed (keyword->field-name value)))]
+      enum-value
+      (throw (ex-info "Encoding failed" {:cause :unknown-enum-value
+                                         :info  {:field-name value}})))))
 
 (declare clojure-map->proto-message)
+
+(defn apply-fn-on-collection
+  [trans-fn]
+  (fn [value]
+    (if (coll? value)
+      (mapv trans-fn value)
+      (throw (ex-info "Encoding failed" {:cause :not-a-collection
+                                         :info  {:value value}})))))
 
 (defn- clojure-map->proto-field-fn
   [^Descriptors$FieldDescriptor fd]
@@ -41,7 +52,7 @@
                        "ENUM" (partial clj-name->enum-value fd)
                        "MESSAGE" (partial clojure-map->proto-message (.getMessageType fd)))]
     (if (.isRepeated fd)
-      (partial mapv transform-fn)
+      (apply-fn-on-collection transform-fn)
       transform-fn)))
 
 (defn- keyword->fd
@@ -55,7 +66,8 @@
   (fn [^DynamicMessage$Builder acc [k v]]
     (let [^Descriptors$FieldDescriptor fd (keyword->fd desc k)]
       (if (nil? fd)
-        acc
+        (throw (ex-info "Encoding failed" {:cause :unknown-field
+                                           :info  {:field-name k}}))
         (as-> fd $
           (clojure-map->proto-field-fn $)
           ($ v)
