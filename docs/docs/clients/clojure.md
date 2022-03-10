@@ -39,7 +39,7 @@ message Person {
 	int32 age = 5;
 }
 ```
-1. Create stencil client. You can refer to [java client](../java) documentation for all available options.
+1. Create stencil client. You can refer to [java client](java) documentation for all available options.
 
 ```clojure
 (ns test
