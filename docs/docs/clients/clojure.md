@@ -10,6 +10,91 @@ Add the below dependency to your `project.clj` file:
 ```
 
 ## Usage
+
+Consider following proto message
+```proto
+syntax = "proto3";
+
+package example;
+
+option java_multiple_files = true;
+option java_package = "io.odpf.CljTest";
+
+message Address {
+	string city = 1;
+	string street = 2;
+}
+
+message Person {
+	enum Gender {
+		UNKNOWN = 0;
+		MALE = 1;
+		FEMALE = 2;
+		NON_BINARY = 3;
+	}
+	string name = 1;
+	Address address = 2;
+	Gender gender = 3;
+	repeated string email_list = 4;
+	int32 age = 5;
+}
+```
+1. Create stencil client. You can refer to [java client](../java) documentation for all available options.
+
+```clojure
+(ns test
+  (:require [stencil.core :refer [create-client]]))
+
+(def client (create-client {:url "<stencil service url>"
+                :refresh-cache true
+                :refresh-strategy :version-based-refresh
+                :headers {"<headerkey>" "<header value>"}))
+```
+
+2. To serialize data from clojure map
+```clojure
+(:require [stencil.core :refer [serialize]])
+
+(def serialized-data
+     (serialize client "io.odpf.CljTest" {:name "Foo"
+                                          :address {:street "bar"}
+                                          :email-list ["a@example.com" "b@b.com"]
+                                          :gender :NON-BINARY
+                                          :age 10}))
+```
+
+3. Deserialize data from bytes to clojure map
+```clojure
+(:require [stencil.core :refer [deserialize]])
+
+(deserialize client "io.odpf.CljTest" serialized-data)
+;; prints
+;; {:name "Foo"
+;; :address {:street "bar"}
+;; :email-list ["a@example.com" "b@b.com"]
+;; :gender :NON-BINARY
+;; :age 10}
+```
+
+## Protocol buffers - Clojure interop
+
+| Protobuf | Clojure | Notes |
+| ----------- | --------------------------- | ---------------- |
+| field names   | keywords in kebab case | `name` -> `:name`, `field_name` -> `:field-name` |
+| scalar fields | Values follow [protobuf-java scalar value mappings](https://developers.google.com/protocol-buffers/docs/proto3#scalar) |  |
+| enums         | Values converted as keywords of enum's original value | `UNKNOWN` -> `:UNKNOWN` |
+| messages | clojure map | ```message Hello {string name = 1;}``` -> {:name "odpf"} |
+| repeated fields | clojure vector |  |
+| one-of fields | treated as regular fields | if two fields are set that are part of one-of, last seen value is considered while serializing data |
+| map | map values follow it's [wire representation](https://developers.google.com/protocol-buffers/docs/proto3#backwards_compatibility) | for `map<string, string>` type, example value will be `[{:key "key" :value "value"}]` |
+
+**Note on errors:**
+Serialize will throw error in following cases
+1. unknown field is passed that's not present in schema `{:cause :unknown-field :info {:field-name <field-name>}}`
+2. if non-collection type is passed to repeated field `{:cause :not-a-collection :info {:value <value>}}`
+3. If unknown enum value passed that's not present in schema `{:cause :unknown-enum-value :info {:field-name <field-name>}}`
+
+## API
 - `create-client (client-config)`
 
   Returns a new Stencil Clojure client instance by passing client-config.

@@ -20,6 +20,6 @@ Stencil clients abstracts handling of descriptorset file on client side. Current
 - [Java](java)
 - [Go](go)
 - [Javascript](js)
-- [Clojure] (clojure)
+- [Clojure](clojure)
 - Ruby - Coming soon
 - Python - Coming soon
