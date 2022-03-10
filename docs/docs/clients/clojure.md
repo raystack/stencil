@@ -1,6 +1,6 @@
-# Stencil Clojure Client
+# Clojure
 
-A Clojure library designed to easily encode and decode protobuf messages by using Clojure maps. 
+A Clojure library designed to easily encode and decode protobuf messages by using Clojure maps.
 
 ## Installation
 
@@ -9,7 +9,7 @@ Add the below dependency to your `project.clj` file:
            [io.odpf/stencil-clj "0.2.0-SNAPSHOT"]
 ```
 
-## API
+## Usage
 - `create-client (client-config)`
 
   Returns a new Stencil Clojure client instance by passing client-config.

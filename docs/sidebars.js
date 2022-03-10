@@ -39,6 +39,7 @@ module.exports = {
         "clients/overview",
         "clients/go",
         "clients/java",
+        "clients/clojure",
         "clients/js",
       ],
     },
