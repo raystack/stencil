@@ -21,6 +21,7 @@ vendor/
 
 # Project specific ignore
 .env
-stencil
+!*/stencil
+/stencil
 /config.yaml
 node_modules

@@ -207,8 +207,3 @@ Serialize will throw error in following cases
 - Run tests: ```lein clean && lein javac && lein test```
 
 - Run formatting: ```lein cljfmt fix```
-
-
-## License
-
-Stencil clojure client is [Apache 2.0](LICENSE) licensed.
