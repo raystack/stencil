@@ -1,0 +1,33 @@
+name: Test stencil clients
+on:
+  push:
+    paths:
+      - "clients/clojure/**"
+    branches:
+      - master
+  pull_request:
+    paths:
+      - "clients/clojure/**"
+    branches:
+      - master
+jobs:
+  test-clojure-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: adopt
+          java-version: 8
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@4.0
+        with:
+          lein: 2.9.8
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: check formatting
+        run: lein cljfmt check
+        working-directory: clients/clojure
+      - name: Run tests
+        run: lein test
+        working-directory: clients/clojure
