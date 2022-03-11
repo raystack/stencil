@@ -47,10 +47,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       colorMode: {
         defaultMode: 'light',
         respectPrefersColorScheme: true,
-        switchConfig: {
-          darkIcon: '☾',
-          lightIcon: '☀️',
-        },
       },
       navbar: {
         title: 'Stencil',

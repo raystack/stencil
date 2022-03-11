@@ -122,7 +122,7 @@ $ echo "{
 
 ```bash
 # Create namespace named "quickstart" with backward compatibility enabled
-$ stencil namespace create -c COMPATIBILITY_BACKWARD -f FORMAT_PROTOBUF -d "For quickstart guide" --host http://localhost:8000
+$ stencil namespace create quickstart -c COMPATIBILITY_BACKWARD -f FORMAT_PROTOBUF -d "For quickstart guide" --host http://localhost:8000
 
 # List namespaces
 $ stencil namespace list
