@@ -39,8 +39,8 @@ func SchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema list
 			$ stencil schema create
-			$ stencil schema get
-			$ stencil schema update
+			$ stencil schema view
+			$ stencil schema edit
 			$ stencil schema delete
 			$ stencil schema version
 			$ stencil schema graph
@@ -202,11 +202,11 @@ func updateSchemaCmd() *cobra.Command {
 	var req stencilv1beta1.UpdateSchemaMetadataRequest
 
 	cmd := &cobra.Command{
-		Use:   "update",
+		Use:   "edit",
 		Short: "Edit a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema update <schema-id> --namespace=<namespace-id> –-comp=<schema-compatibility>
+			$ stencil schema edit <schema-id> --namespace=<namespace-id> --comp=<schema-compatibility>
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -260,11 +260,11 @@ func getSchemaCmd() *cobra.Command {
 	var resMetadata *stencilv1beta1.GetSchemaMetadataResponse
 
 	cmd := &cobra.Command{
-		Use:   "get",
+		Use:   "view",
 		Short: "View a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema get <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
+			$ stencil schema view <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
 	    	`),
 		Annotations: map[string]string{
 			"group:core": "true",

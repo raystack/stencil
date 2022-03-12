@@ -21,7 +21,7 @@ func SearchCmd() *cobra.Command {
 	var req stencilv1beta1.SearchRequest
 
 	cmd := &cobra.Command{
-		Use:     "search",
+		Use:     "search <query>",
 		Aliases: []string{"search"},
 		Short:   "Search",
 		Long:    "Search your queries on schemas",

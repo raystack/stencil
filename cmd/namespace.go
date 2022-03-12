@@ -7,6 +7,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
+	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -17,12 +18,12 @@ func NamespaceCmd() *cobra.Command {
 		Use:     "namespace",
 		Aliases: []string{"namespace"},
 		Short:   "Manage namespace",
-		Long:    "Work with namespaces",
+		Long:    "Work with namespaces.",
 		Example: heredoc.Doc(`
 			$ stencil namespace list
 			$ stencil namespace create
-			$ stencil namespace get
-			$ stencil namespace update
+			$ stencil namespace view
+			$ stencil namespace edit
 			$ stencil namespace delete
 		`),
 		Annotations: map[string]string{
@@ -55,6 +56,7 @@ func listNamespaceCmd() *cobra.Command {
 			"group:core": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			cs := term.NewColorScheme()
 			s := printer.Spin("")
 			defer s.Stop()
 
@@ -75,14 +77,14 @@ func listNamespaceCmd() *cobra.Command {
 
 			s.Stop()
 
-			fmt.Printf(" \nShowing %d namespaces \n", len(namespaces))
+			fmt.Printf(" \nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
 
-			report = append(report, []string{"NAMESPACE"})
+			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
+			index := 1
 
 			for _, n := range namespaces {
-				report = append(report, []string{
-					n,
-				})
+				report = append(report, []string{cs.Greenf("#%02d", index), n, "-", "-", "-"})
+				index++
 			}
 			printer.Table(os.Stdout, report)
 			return nil
@@ -105,7 +107,7 @@ func createNamespaceCmd() *cobra.Command {
 		Short: "Create a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace create <namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-desc=<description> 
+			$ stencil namespace create <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description> 
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -137,7 +139,7 @@ func createNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("namespace successfully created with id: %s", namespace.GetId())
+			fmt.Printf("Namespace successfully created with id: %s", namespace.GetId())
 			return nil
 		},
 	}
@@ -162,11 +164,11 @@ func updateNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.UpdateNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "update",
-		Short: "Update a namespace",
+		Use:   "edit",
+		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace update <namespace-id> –-format=<schema-format> –-comp=<schema-compatibility> –-desc=<description>
+			$ stencil namespace edit <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -196,7 +198,7 @@ func updateNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("namespace successfully updated")
+			fmt.Printf("Namespace successfully updated")
 			return nil
 		},
 	}
@@ -221,11 +223,11 @@ func getNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.GetNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "get",
+		Use:   "view",
 		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace get <namespace-id>
+			$ stencil namespace view <namespace-id>
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -310,7 +312,7 @@ func deleteNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("namespace successfully deleted")
+			fmt.Printf("Namespace successfully deleted")
 
 			return nil
 		},
