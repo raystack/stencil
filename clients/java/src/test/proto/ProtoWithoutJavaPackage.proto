@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package io.odpf.stencil;
+
+message ImplicitOuterClass {
+    string sample_string = 1;
+    message Inner {
+      string one = 1;
+    }
+}

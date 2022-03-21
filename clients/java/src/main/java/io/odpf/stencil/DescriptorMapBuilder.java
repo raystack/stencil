@@ -51,24 +51,27 @@ public class DescriptorMapBuilder {
         fileDescriptors.forEach(fd -> {
             String javaPackage = fd.getOptions().getJavaPackage();
             String protoPackage = fd.getPackage();
-            fd.getMessageTypes().stream().forEach(desc -> descriptorMap.putAll(getFlattenedDescriptors(desc, javaPackage, protoPackage, "", new HashMap<>())));
+            fd.getMessageTypes().stream().forEach(desc -> descriptorMap.putAll(getFlattenedDescriptors(desc, javaPackage, protoPackage, new HashMap<>())));
         });
 
         return descriptorMap;
     }
 
-    private static Map<String, Descriptors.Descriptor> getFlattenedDescriptors(Descriptors.Descriptor descriptor, String javaPackage, String protoPackage, String parentClassName, Map<String, Descriptors.Descriptor> initialDescriptorMap) {
-        String className = getClassName(descriptor, parentClassName);
-        String javaClassName = javaPackage.isEmpty() ? className : String.format("%s.%s", javaPackage, className);
-        initialDescriptorMap.put(javaClassName, descriptor);
+    private static Map<String, Descriptors.Descriptor> getFlattenedDescriptors(Descriptors.Descriptor descriptor, String javaPackage, String protoPackage, Map<String, Descriptors.Descriptor> initialDescriptorMap) {
+        String fullName = descriptor.getFullName();
+        initialDescriptorMap.put(fullName, descriptor);
+        if (!javaPackage.isEmpty() && !javaPackage.equals(protoPackage)) {
+            initialDescriptorMap.put(getClassName(descriptor, protoPackage, javaPackage), descriptor);
+        }
         descriptor.getNestedTypes()
-                .forEach(desc -> getFlattenedDescriptors(desc, javaPackage, protoPackage, className, initialDescriptorMap));
+                .forEach(desc -> getFlattenedDescriptors(desc, javaPackage, protoPackage, initialDescriptorMap));
         return initialDescriptorMap;
     }
 
-
-    private static String getClassName(Descriptors.Descriptor descriptor, String parentClassName) {
-        return parentClassName.isEmpty() ? descriptor.getName() : parentClassName + "." + descriptor.getName();
+    private static String getClassName(Descriptors.Descriptor descriptor, String protoPackage, String javaPackage) {
+        if (protoPackage.isEmpty()) {
+            return String.format("%s.%s", javaPackage, descriptor.getFullName());
+        }
+        return descriptor.getFullName().replaceFirst(protoPackage, javaPackage);
     }
-
 }
