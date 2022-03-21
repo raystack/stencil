@@ -20,7 +20,7 @@ type Resolver struct {
 func (r *Resolver) Get(className string) (protoreflect.MessageType, bool) {
 	fullName, ok := r.javaToProtoName[className]
 	if !ok {
-		return nil, false
+		fullName = className
 	}
 	msg, err := r.types.FindMessageByName(protoreflect.FullName(fullName))
 	if err != nil {

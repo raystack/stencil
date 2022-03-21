@@ -1,0 +1,5 @@
+syntax = "proto3";
+option java_package = "test.stencil";
+message Root {
+  int64 field_one = 1;
+}
