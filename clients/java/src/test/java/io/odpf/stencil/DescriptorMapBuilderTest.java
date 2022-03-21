@@ -65,4 +65,30 @@ public class DescriptorMapBuilderTest {
         assertEquals(".RootField", String.format(".%s", protoWithoutPackage.getFullName()));
     }
 
+    @Test
+    public void TestDescriptorsByProtoFullName() throws IOException, Descriptors.DescriptorValidationException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String descriptorFilePath = "__files/descriptors.bin";
+        InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
+        Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
+
+        final Descriptors.Descriptor protoWithoutJavaPackage = descriptorMap.get("io.odpf.stencil.ImplicitOuterClass");
+        assertNotNull(protoWithoutJavaPackage);
+        assertEquals("io.odpf.stencil.ImplicitOuterClass", protoWithoutJavaPackage.getFullName());
+    }
+
+    @Test
+    public void TestDescriptorsByProtoFullNameOrJavaName() throws IOException, Descriptors.DescriptorValidationException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String descriptorFilePath = "__files/descriptors.bin";
+        InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
+        Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
+
+        Descriptors.Descriptor protoWithoutPackage = descriptorMap.get("io.odpf.stencil.RootField");
+        assertEquals("RootField", protoWithoutPackage.getFullName());
+        Descriptors.Descriptor descriptorByProtoName = descriptorMap.get("RootField");
+        assertNotNull(descriptorByProtoName);
+        assertEquals(protoWithoutPackage, descriptorByProtoName);
+    }
+
 }
