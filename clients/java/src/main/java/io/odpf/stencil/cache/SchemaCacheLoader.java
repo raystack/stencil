@@ -40,7 +40,7 @@ public class SchemaCacheLoader extends CacheLoader<String, Map<String, Descripto
     @Override
     public Map<String, Descriptors.Descriptor> load(String key) {
         logger.info("loading stencil cache");
-        return DescriptorMapBuilder.buildFrom(key, remoteFile);
+        return refreshStrategy.refresh(key, remoteFile, null);
     }
 
     @Override
