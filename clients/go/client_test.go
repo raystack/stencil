@@ -219,6 +219,18 @@ func TestClient(t *testing.T) {
 			field := msg.Fields().ByName("field_one")
 			assert.NotNil(t, field)
 		})
+		t.Run("should get descriptor if package name is not defined", func(t *testing.T) {
+			msg, err := client.GetDescriptor("Root")
+			assert.Nil(t, err)
+			field := msg.Fields().ByName("field_one")
+			assert.NotNil(t, field)
+		})
+		t.Run("should get descriptor if proto package name is not defined but java package is defined", func(t *testing.T) {
+			msg, err := client.GetDescriptor("test.stencil.Root")
+			assert.Nil(t, err)
+			field := msg.Fields().ByName("field_one")
+			assert.NotNil(t, field)
+		})
 	})
 	t.Run("Parse", func(t *testing.T) {
 		data, err := getDescriptorData(t, true)

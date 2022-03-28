@@ -27,6 +27,8 @@ func defaultKeyFn(msg protoreflect.MessageDescriptor) string {
 	pkg := getJavaPackage(file)
 	if pkg == "" {
 		return fullName
+	} else if protoPackage == "" {
+		return fmt.Sprintf("%s.%s", pkg, fullName)
 	}
 	return strings.Replace(fullName, protoPackage, pkg, 1)
 }
