@@ -539,7 +539,6 @@ func local_request_StencilService_DeleteSchema_0(ctx context.Context, marshaler 
 
 }
 
-
 func request_StencilService_ListVersions_0(ctx context.Context, marshaler runtime.Marshaler, client StencilServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListVersionsRequest
 	var metadata runtime.ServerMetadata

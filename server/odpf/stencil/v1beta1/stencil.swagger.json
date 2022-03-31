@@ -417,6 +417,62 @@
           "version"
         ]
       }
+    },
+    "/v1beta1/search": {
+      "get": {
+        "summary": "Global Search API",
+        "operationId": "StencilService_Search",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1SearchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "history",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "schema"
+        ]
+      }
     }
   },
   "definitions": {
@@ -639,6 +695,59 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "v1beta1SearchHits": {
+      "type": "object",
+      "properties": {
+        "namespaceId": {
+          "type": "string"
+        },
+        "schemaId": {
+          "type": "string"
+        },
+        "versionId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1SearchMeta": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "v1beta1SearchResponse": {
+      "type": "object",
+      "properties": {
+        "hits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1SearchHits"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/v1beta1SearchMeta"
         }
       }
     },

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/odpf/stencil/server/domain"
@@ -43,6 +44,7 @@ func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*st
 			Fields:      hit.Fields,
 			Types:       hit.Types,
 			NamespaceId: hit.NamespaceID,
+			Path:        fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", hit.NamespaceID, hit.SchemaID, hit.VersionID),
 		})
 	}
 	return &stencilv1beta1.SearchResponse{
