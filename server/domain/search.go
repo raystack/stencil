@@ -26,7 +26,7 @@ type SearchResponse struct {
 type SearchHits struct {
 	Fields      []string
 	Types       []string
-	Keys        []string
+	Path        string
 	NamespaceID string
 	SchemaID    string
 	VersionID   int32
