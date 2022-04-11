@@ -39,6 +39,7 @@ func (a *API) RegisterSchemaHandlers(mux *runtime.ServeMux, app *newrelic.Applic
 	mux.HandlePath(wrapHandler(app, "GET", "/v1beta1/namespaces/{namespace}/schemas/{name}/versions/{version}", handleSchemaResponse(mux, a.HTTPGetSchema)))
 	mux.HandlePath(wrapHandler(app, "GET", "/v1beta1/namespaces/{namespace}/schemas/{name}", handleSchemaResponse(mux, a.HTTPLatestSchema)))
 	mux.HandlePath(wrapHandler(app, "POST", "/v1beta1/namespaces/{namespace}/schemas/{name}", wrapErrHandler(mux, a.HTTPUpload)))
+	mux.HandlePath(wrapHandler(app, "POST", "/v1beta1/namespaces/{namespace}/schemas/{name}/check", wrapErrHandler(mux, a.HTTPCheckCompatibility)))
 }
 
 func handleSchemaResponse(mux *runtime.ServeMux, getSchemaFn getSchemaData) runtime.HandlerFunc {

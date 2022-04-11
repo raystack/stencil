@@ -25,6 +25,7 @@ type StencilServiceClient interface {
 	DeleteNamespace(ctx context.Context, in *DeleteNamespaceRequest, opts ...grpc.CallOption) (*DeleteNamespaceResponse, error)
 	ListSchemas(ctx context.Context, in *ListSchemasRequest, opts ...grpc.CallOption) (*ListSchemasResponse, error)
 	CreateSchema(ctx context.Context, in *CreateSchemaRequest, opts ...grpc.CallOption) (*CreateSchemaResponse, error)
+	CheckCompatibility(ctx context.Context, in *CheckCompatibilityRequest, opts ...grpc.CallOption) (*CheckCompatibilityResponse, error)
 	GetSchemaMetadata(ctx context.Context, in *GetSchemaMetadataRequest, opts ...grpc.CallOption) (*GetSchemaMetadataResponse, error)
 	UpdateSchemaMetadata(ctx context.Context, in *UpdateSchemaMetadataRequest, opts ...grpc.CallOption) (*UpdateSchemaMetadataResponse, error)
 	GetLatestSchema(ctx context.Context, in *GetLatestSchemaRequest, opts ...grpc.CallOption) (*GetLatestSchemaResponse, error)
@@ -100,6 +101,15 @@ func (c *stencilServiceClient) ListSchemas(ctx context.Context, in *ListSchemasR
 func (c *stencilServiceClient) CreateSchema(ctx context.Context, in *CreateSchemaRequest, opts ...grpc.CallOption) (*CreateSchemaResponse, error) {
 	out := new(CreateSchemaResponse)
 	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/CreateSchema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stencilServiceClient) CheckCompatibility(ctx context.Context, in *CheckCompatibilityRequest, opts ...grpc.CallOption) (*CheckCompatibilityResponse, error) {
+	out := new(CheckCompatibilityResponse)
+	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/CheckCompatibility", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -189,6 +199,7 @@ type StencilServiceServer interface {
 	DeleteNamespace(context.Context, *DeleteNamespaceRequest) (*DeleteNamespaceResponse, error)
 	ListSchemas(context.Context, *ListSchemasRequest) (*ListSchemasResponse, error)
 	CreateSchema(context.Context, *CreateSchemaRequest) (*CreateSchemaResponse, error)
+	CheckCompatibility(context.Context, *CheckCompatibilityRequest) (*CheckCompatibilityResponse, error)
 	GetSchemaMetadata(context.Context, *GetSchemaMetadataRequest) (*GetSchemaMetadataResponse, error)
 	UpdateSchemaMetadata(context.Context, *UpdateSchemaMetadataRequest) (*UpdateSchemaMetadataResponse, error)
 	GetLatestSchema(context.Context, *GetLatestSchemaRequest) (*GetLatestSchemaResponse, error)
@@ -224,6 +235,9 @@ func (UnimplementedStencilServiceServer) ListSchemas(context.Context, *ListSchem
 }
 func (UnimplementedStencilServiceServer) CreateSchema(context.Context, *CreateSchemaRequest) (*CreateSchemaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSchema not implemented")
+}
+func (UnimplementedStencilServiceServer) CheckCompatibility(context.Context, *CheckCompatibilityRequest) (*CheckCompatibilityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckCompatibility not implemented")
 }
 func (UnimplementedStencilServiceServer) GetSchemaMetadata(context.Context, *GetSchemaMetadataRequest) (*GetSchemaMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSchemaMetadata not implemented")
@@ -384,6 +398,24 @@ func _StencilService_CreateSchema_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).CreateSchema(ctx, req.(*CreateSchemaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StencilService_CheckCompatibility_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckCompatibilityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StencilServiceServer).CheckCompatibility(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/odpf.stencil.v1beta1.StencilService/CheckCompatibility",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StencilServiceServer).CheckCompatibility(ctx, req.(*CheckCompatibilityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -566,6 +598,10 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateSchema",
 			Handler:    _StencilService_CreateSchema_Handler,
+		},
+		{
+			MethodName: "CheckCompatibility",
+			Handler:    _StencilService_CheckCompatibility_Handler,
 		},
 		{
 			MethodName: "GetSchemaMetadata",

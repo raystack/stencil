@@ -46,4 +46,5 @@ type SchemaService interface {
 	GetMetadata(context.Context, string, string) (*Metadata, error)
 	UpdateMetadata(context.Context, string, string, *Metadata) (*Metadata, error)
 	DeleteVersion(context.Context, string, string, int32) error
+	CheckCompatibility(context.Context, string, string, string, []byte) error
 }

@@ -43,6 +43,23 @@ func (a *API) HTTPUpload(w http.ResponseWriter, req *http.Request, pathParams ma
 	return nil
 }
 
+func (a *API) CheckCompatibility(ctx context.Context, req *stencilv1beta1.CheckCompatibilityRequest) (*stencilv1beta1.CheckCompatibilityResponse, error) {
+	resp := &stencilv1beta1.CheckCompatibilityResponse{}
+	err := a.schema.CheckCompatibility(ctx, req.GetNamespaceId(), req.GetSchemaId(), req.GetCompatibility().String(), req.GetData())
+	return resp, err
+}
+
+func (a *API) HTTPCheckCompatibility(w http.ResponseWriter, req *http.Request, pathParams map[string]string) error {
+	data, err := io.ReadAll(req.Body)
+	if err != nil {
+		return err
+	}
+	compatibility := req.Header.Get("X-Compatibility")
+	namespaceID := pathParams["namespace"]
+	schemaName := pathParams["name"]
+	return a.schema.CheckCompatibility(req.Context(), namespaceID, schemaName, compatibility, data)
+}
+
 func (a *API) ListSchemas(ctx context.Context, in *stencilv1beta1.ListSchemasRequest) (*stencilv1beta1.ListSchemasResponse, error) {
 	schemas, err := a.schema.List(ctx, in.Id)
 	return &stencilv1beta1.ListSchemasResponse{Schemas: schemas}, err
