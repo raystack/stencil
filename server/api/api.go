@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -54,6 +55,7 @@ func handleSchemaResponse(mux *runtime.ServeMux, getSchemaFn getSchemaData) runt
 			contentType = "application/octet-stream"
 		}
 		w.Header().Set("Content-Type", contentType)
+		w.Header().Set("Content-Length", strconv.Itoa(len(data)))
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 	}
