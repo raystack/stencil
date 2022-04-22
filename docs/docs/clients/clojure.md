@@ -6,7 +6,7 @@ A Clojure library designed to easily encode and decode protobuf messages by usin
 
 Add the below dependency to your `project.clj` file:
 ```clj
-           [io.odpf/stencil-clj "0.2.0-SNAPSHOT"]
+           [io.odpf/stencil-clj "0.2.1"]
 ```
 
 ## Usage

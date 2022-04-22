@@ -1,5 +1,5 @@
 # API
-## Version: 0.2.0
+## Version: 0.2.1
 
 ### /v1beta1/namespaces
 
@@ -115,34 +115,16 @@ List schemas under the namespace
 | default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}
-#### POST
-
-##### Summary
-
-Create schema
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
-| X-Format | headers | Can be used to override schema format defined at namespace level | No | [SchemaFormat](#schemaformat) |
-| X-Compatibility | headers | Can be used to override schema compatibility defined at namespace level | No | [SchemaCompatibility](#schemacompatibility) |
-| body | body | schema data | Yes | valid fileDescriptorSet data/avro/json schemas |
-
-##### Responses
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1CreateSchemaResponse](#v1beta1CreateSchemaResponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
 #### GET
-
 ##### Summary
 
 Get latest schema
 
+##### Description
+
+Returns latest schema in it's own data type. For protobuf response type would be 'application/octet-stream'. Avro, json schema response type would be 'application/json'
+
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
@@ -151,9 +133,30 @@ Get latest schema
 | schemaId | path |  | Yes | string |
 
 ##### Responses
+
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | A successful response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream` | json or byte data |
+| 200 | A successful schema response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream`. |  |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+#### POST
+##### Summary
+
+Create schema under the namespace
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+| body | body | Request payload should be equivalent to `curl` `--data-binary` option | Yes | binary |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1CreateSchemaResponse](#v1beta1createschemaresponse) |
 | default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
 #### DELETE
@@ -193,6 +196,33 @@ Update only schema metadata
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | A successful response. | [v1beta1UpdateSchemaMetadataResponse](#v1beta1updateschemametadataresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+
+### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/check
+
+#### POST
+##### Summary
+
+Check schema compatibility
+
+##### Description
+
+Checks comptibility with existing latest schema
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| namespaceId | path |  | Yes | string |
+| schemaId | path |  | Yes | string |
+| body | body |  | Yes | binary |
+| X-Compatibility | header |  | No | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | A successful response. | [v1beta1CreateSchemaResponse](#v1beta1createschemaresponse) |
 | default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/meta
@@ -238,26 +268,6 @@ List all version numbers for schema
 | default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions/{versionId}
-
-#### GET
-
-##### Summary
-
-Get schema for specified version
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
-| versionId | path |  | Yes | integer |
-
-##### Responses
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream` | json or byte data |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
 
 #### DELETE
 ##### Summary
@@ -311,27 +321,11 @@ Global Search API
 | ---- | ---- | ----------- | -------- |
 | SchemaCompatibility | string |  |  |
 
-Enumarated values for Schema compatibility
-
-| Values |
-| ---- |
-| COMPATIBILITY_BACKWARD |
-| COMPATIBILITY_FORWARD |
-| COMPATIBILITY_FULL |
-
 #### SchemaFormat
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | SchemaFormat | string |  |  |
- 
-Enumarated schema format values
-
-| Values |
-| ---- |
-| FORMAT_PROTOBUF |
-| FORMAT_AVRO |
-| FORMAT_JSON |
 
 #### protobufAny
 
@@ -347,6 +341,12 @@ Enumarated schema format values
 | code | integer |  | No |
 | message | string |  | No |
 | details | [ [protobufAny](#protobufany) ] |  | No |
+
+#### v1beta1CheckCompatibilityResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| v1beta1CheckCompatibilityResponse | object |  |  |
 
 #### v1beta1CreateNamespaceRequest
 
@@ -453,6 +453,7 @@ Enumarated schema format values
 | versionId | integer |  | No |
 | fields | [ string ] |  | No |
 | types | [ string ] |  | No |
+| path | string |  | No |
 
 #### v1beta1SearchMeta
 
