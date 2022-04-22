@@ -70,6 +70,7 @@ Stencil clients allows application to interact with stencil server to eserialize
 - [Java](clients/java)
 - [Go](clients/go)
 - [Javascript](clients/js)
+- [Clojure](clients/clojure)
 - Ruby - Coming soon
 - Python - Coming soon
 

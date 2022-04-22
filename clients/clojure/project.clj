@@ -1,4 +1,4 @@
-(defproject io.odpf/stencil-clj "0.2.0-SNAPSHOT"
+(defproject io.odpf/stencil-clj "0.2.1"
   :description "Stencil client for clojure"
   :url "https://github.com/odpf/stencil"
   :license {:name "Apache 2.0"
