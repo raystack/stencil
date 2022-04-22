@@ -65,7 +65,20 @@ func (s *Service) cachedGetSchema(ctx context.Context, nsName, schemaName string
 	return getBytes(val), nil
 }
 
-func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
+func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, compatibility string, data []byte) error {
+	ns, err := s.NamespaceSvc.Get(ctx, nsName)
+	if err != nil {
+		return err
+	}
+	compatibility = getNonEmpty(compatibility, ns.Compatibility)
+	parsedSchema, err := s.SchemaProvider.ParseSchema(ns.Format, data)
+	if err != nil {
+		return err
+	}
+	return s.checkCompatibility(ctx, nsName, schemaName, ns.Format, compatibility, parsedSchema)
+}
+
+func (s *Service) checkCompatibility(ctx context.Context, nsName, schemaName, format, compatibility string, current ParsedSchema) error {
 	prevMeta, prevSchemaData, err := s.GetLatest(ctx, nsName, schemaName)
 	if err != nil {
 		if errors.Is(err, store.NoRowsErr) {
@@ -93,7 +106,7 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	if err != nil {
 		return scInfo, err
 	}
-	if err := s.CheckCompatibility(ctx, nsName, schemaName, format, compatibility, parsedSchema); err != nil {
+	if err := s.checkCompatibility(ctx, nsName, schemaName, format, compatibility, parsedSchema); err != nil {
 		return scInfo, err
 	}
 	sf := parsedSchema.GetCanonicalValue()

@@ -45,6 +45,7 @@ func SchemaCmd() *cobra.Command {
 			$ stencil schema version
 			$ stencil schema graph
 			$ stencil schema print
+			$ stencil schema check
 		`),
 		Annotations: map[string]string{
 			"group:core": "true",
@@ -52,6 +53,7 @@ func SchemaCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(createSchemaCmd())
+	cmd.AddCommand(checkSchemaCmd())
 	cmd.AddCommand(listSchemaCmd())
 	cmd.AddCommand(getSchemaCmd())
 	cmd.AddCommand(updateSchemaCmd())
@@ -187,6 +189,69 @@ func createSchemaCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
 	cmd.MarkFlagRequired("format")
+
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
+	cmd.MarkFlagRequired("comp")
+
+	cmd.Flags().StringVarP(&filePath, "filePath", "F", "", "path to the schema file")
+	cmd.MarkFlagRequired("filePath")
+
+	return cmd
+}
+
+func checkSchemaCmd() *cobra.Command {
+	var host, comp, filePath, namespaceID string
+	var req stencilv1beta1.CheckCompatibilityRequest
+
+	cmd := &cobra.Command{
+		Use:   "check",
+		Short: "Check schema compatibility",
+		Args:  cobra.ExactArgs(1),
+		Example: heredoc.Doc(`
+			$ stencil schema check <schema-id> --namespace=<namespace-id> comp=<schema-compatibility> filePath=<schema-filePath>
+	    	`),
+		Annotations: map[string]string{
+			"group:core": "true",
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			spinner := printer.Spin("")
+			defer spinner.Stop()
+
+			fileData, err := ioutil.ReadFile(filePath)
+			if err != nil {
+				return err
+			}
+			req.Data = fileData
+
+			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			if err != nil {
+				return err
+			}
+			defer conn.Close()
+			schemaID := args[0]
+
+			req.NamespaceId = namespaceID
+			req.SchemaId = schemaID
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
+
+			client := stencilv1beta1.NewStencilServiceClient(conn)
+			_, err = client.CheckCompatibility(context.Background(), &req)
+			if err != nil {
+				errStatus := status.Convert(err)
+				return errors.New(errStatus.Message())
+			}
+
+			spinner.Stop()
+			fmt.Println("schema is compatible")
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
 	cmd.MarkFlagRequired("comp")

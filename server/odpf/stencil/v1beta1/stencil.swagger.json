@@ -452,7 +452,7 @@
           {
             "name": "query",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
@@ -528,6 +528,9 @@
           }
         }
       }
+    },
+    "v1beta1CheckCompatibilityResponse": {
+      "type": "object"
     },
     "v1beta1CreateNamespaceRequest": {
       "type": "object",
