@@ -45,7 +45,8 @@
                                 (.cacheTtlMs (long (:refresh-ttl client-config)))
                                 (.fetchHeaders (let [array-list (new ArrayList)]
                                                  (doseq [[k v] (:headers client-config)]
-                                                   (.add array-list (BasicHeader. k v)))))
+                                                   (.add array-list (BasicHeader. k v)))
+                                                 array-list))
                                 (.refreshStrategy (if (= :version-based-refresh (:refresh-strategy client-config))
                                                     (SchemaRefreshStrategy/versionBasedRefresh)
                                                     (SchemaRefreshStrategy/longPollingStrategy)))
