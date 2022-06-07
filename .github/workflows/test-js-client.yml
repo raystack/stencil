@@ -4,12 +4,12 @@ on:
     paths:
       - "clients/js/**"
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "clients/js/**"
     branches:
-      - master
+      - main
 jobs:
   test:
     runs-on: ubuntu-latest

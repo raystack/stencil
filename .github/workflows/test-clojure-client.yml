@@ -4,12 +4,12 @@ on:
     paths:
       - "clients/clojure/**"
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "clients/clojure/**"
     branches:
-      - master
+      - main
 jobs:
   test-clojure-client:
     runs-on: ubuntu-latest
