@@ -4,12 +4,12 @@ on:
     paths:
       - "clients/go/**"
     branches:
-      - master
+      - main
   pull_request:
     paths:
       - "clients/go/**"
     branches:
-      - master
+      - main
 jobs:
   test-go:
     runs-on: ubuntu-latest
