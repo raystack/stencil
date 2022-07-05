@@ -28,8 +28,8 @@ func checkIfFieldRequired(f protoreflect.FieldDescriptor) bool {
 	return false
 }
 
-func checkValueExists(kind protoreflect.Kind, v protoreflect.Value) bool {
-	switch kind {
+func checkValueExists(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
+	switch fd.Kind() {
 	case protoreflect.BytesKind:
 		d := v.Bytes()
 		return len(d) > 0
@@ -38,8 +38,8 @@ func checkValueExists(kind protoreflect.Kind, v protoreflect.Value) bool {
 		return len(d) > 0
 	case protoreflect.EnumKind:
 		d := v.Enum()
-		// This relies on the convention that, in enum definition 0 value is UNSPECIFIED
-		return d != 0
+		ed := fd.Enum().Values().ByNumber(d)
+		return ed != nil
 	default:
 		return true
 	}
@@ -65,7 +65,7 @@ func validateMessage(m protoreflect.ProtoMessage) []string {
 			prefixedFields := addPrefix(fd.JSONName(), nestedFields)
 			missingFields = append(missingFields, prefixedFields...)
 		}
-		if checkIfFieldRequired(fd) && !checkValueExists(fd.Kind(), v) {
+		if checkIfFieldRequired(fd) && !checkValueExists(fd, v) {
 			missingFields = append(missingFields, fd.JSONName())
 		}
 	}
