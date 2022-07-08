@@ -36,7 +36,7 @@ func (a *API) CreateNamespace(ctx context.Context, in *stencilv1beta1.CreateName
 }
 
 func (a *API) UpdateNamespace(ctx context.Context, in *stencilv1beta1.UpdateNamespaceRequest) (*stencilv1beta1.UpdateNamespaceResponse, error) {
-	ns, err := a.namespace.Update(ctx, domain.Namespace{ID: in.GetId(), Format: in.GetFormat().String(), Description: in.GetDescription()})
+	ns, err := a.namespace.Update(ctx, domain.Namespace{ID: in.GetId(), Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String(), Description: in.GetDescription()})
 	return &stencilv1beta1.UpdateNamespaceResponse{Namespace: namespaceToProto(ns)}, err
 }
 
