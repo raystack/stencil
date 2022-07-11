@@ -4,6 +4,10 @@ on:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      goreleaserArgs:
+        required: false
+        type: string
 
 jobs:
   publish-server:
@@ -28,6 +32,6 @@ jobs:
         with:
           distribution: goreleaser
           version: 1.9.2
-          args: --rm-dist
+          args: --rm-dist ${{ inputs.goreleaserArgs }}
         env:
           GITHUB_TOKEN: ${{ secrets.GO_RELEASER_TOKEN }}
