@@ -67,7 +67,7 @@ brews:
     description: "Schema registry"
     tap:
       owner: odpf
-      name: homebrew-taps
+      name: homebrew-tap
     license: "Apache 2.0"
     folder: Formula
     dependencies:

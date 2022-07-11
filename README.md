@@ -42,7 +42,7 @@ Ideally, you should install it somewhere in your PATH for easy use. `/usr/local/
 
 ```sh
 # Install stencil (requires homebrew installed)
-$ brew install odpf/taps/stencil
+$ brew install odpf/tap/stencil
 
 # Upgrade stencil (requires homebrew installed)
 $ brew upgrade stencil
