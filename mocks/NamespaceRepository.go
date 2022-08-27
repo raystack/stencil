@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	domain "github.com/odpf/stencil/domain"
+	namespace "github.com/odpf/stencil/core/namespace"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -15,18 +15,18 @@ type NamespaceRepository struct {
 }
 
 // CreateNamespace provides a mock function with given fields: _a0, _a1
-func (_m *NamespaceRepository) CreateNamespace(_a0 context.Context, _a1 domain.Namespace) (domain.Namespace, error) {
+func (_m *NamespaceRepository) CreateNamespace(_a0 context.Context, _a1 namespace.Namespace) (namespace.Namespace, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 domain.Namespace
-	if rf, ok := ret.Get(0).(func(context.Context, domain.Namespace) domain.Namespace); ok {
+	var r0 namespace.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, namespace.Namespace) namespace.Namespace); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(domain.Namespace)
+		r0 = ret.Get(0).(namespace.Namespace)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, domain.Namespace) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, namespace.Namespace) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -50,14 +50,14 @@ func (_m *NamespaceRepository) DeleteNamespace(_a0 context.Context, _a1 string) 
 }
 
 // GetNamespace provides a mock function with given fields: _a0, _a1
-func (_m *NamespaceRepository) GetNamespace(_a0 context.Context, _a1 string) (domain.Namespace, error) {
+func (_m *NamespaceRepository) GetNamespace(_a0 context.Context, _a1 string) (namespace.Namespace, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 domain.Namespace
-	if rf, ok := ret.Get(0).(func(context.Context, string) domain.Namespace); ok {
+	var r0 namespace.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, string) namespace.Namespace); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(domain.Namespace)
+		r0 = ret.Get(0).(namespace.Namespace)
 	}
 
 	var r1 error
@@ -94,18 +94,18 @@ func (_m *NamespaceRepository) ListNamespaces(_a0 context.Context) ([]string, er
 }
 
 // UpdateNamespace provides a mock function with given fields: _a0, _a1
-func (_m *NamespaceRepository) UpdateNamespace(_a0 context.Context, _a1 domain.Namespace) (domain.Namespace, error) {
+func (_m *NamespaceRepository) UpdateNamespace(_a0 context.Context, _a1 namespace.Namespace) (namespace.Namespace, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 domain.Namespace
-	if rf, ok := ret.Get(0).(func(context.Context, domain.Namespace) domain.Namespace); ok {
+	var r0 namespace.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, namespace.Namespace) namespace.Namespace); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(domain.Namespace)
+		r0 = ret.Get(0).(namespace.Namespace)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, domain.Namespace) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, namespace.Namespace) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

@@ -7,6 +7,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/odpf/stencil/core/namespace"
+	"github.com/odpf/stencil/core/search"
 	"github.com/odpf/stencil/domain"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -19,12 +21,12 @@ type errHandleFunc func(http.ResponseWriter, *http.Request, map[string]string) e
 type API struct {
 	stencilv1beta1.UnimplementedStencilServiceServer
 	grpc_health_v1.UnimplementedHealthServer
-	namespace domain.NamespaceService
+	namespace namespace.NamespaceService
 	schema    domain.SchemaService
-	search    domain.SearchService
+	search    search.SearchService
 }
 
-func NewAPI(namespace domain.NamespaceService, schema domain.SchemaService, search domain.SearchService) *API {
+func NewAPI(namespace namespace.NamespaceService, schema domain.SchemaService, search search.SearchService) *API {
 	return &API{
 		namespace: namespace,
 		schema:    schema,

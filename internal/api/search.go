@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/core/search"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 )
 
 func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*stencilv1beta1.SearchResponse, error) {
-	searchReq := &domain.SearchRequest{
+	searchReq := &search.SearchRequest{
 		NamespaceID: in.GetNamespaceId(),
 		Query:       in.GetQuery(),
 		SchemaID:    in.GetSchemaId(),

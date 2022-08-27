@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	domain "github.com/odpf/stencil/domain"
+	search "github.com/odpf/stencil/core/search"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -15,20 +15,20 @@ type SearchRepository struct {
 }
 
 // Search provides a mock function with given fields: _a0, _a1
-func (_m *SearchRepository) Search(_a0 context.Context, _a1 *domain.SearchRequest) ([]*domain.SearchHits, error) {
+func (_m *SearchRepository) Search(_a0 context.Context, _a1 *search.SearchRequest) ([]*search.SearchHits, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 []*domain.SearchHits
-	if rf, ok := ret.Get(0).(func(context.Context, *domain.SearchRequest) []*domain.SearchHits); ok {
+	var r0 []*search.SearchHits
+	if rf, ok := ret.Get(0).(func(context.Context, *search.SearchRequest) []*search.SearchHits); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*domain.SearchHits)
+			r0 = ret.Get(0).([]*search.SearchHits)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *domain.SearchRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *search.SearchRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -38,20 +38,20 @@ func (_m *SearchRepository) Search(_a0 context.Context, _a1 *domain.SearchReques
 }
 
 // SearchLatest provides a mock function with given fields: _a0, _a1
-func (_m *SearchRepository) SearchLatest(_a0 context.Context, _a1 *domain.SearchRequest) ([]*domain.SearchHits, error) {
+func (_m *SearchRepository) SearchLatest(_a0 context.Context, _a1 *search.SearchRequest) ([]*search.SearchHits, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 []*domain.SearchHits
-	if rf, ok := ret.Get(0).(func(context.Context, *domain.SearchRequest) []*domain.SearchHits); ok {
+	var r0 []*search.SearchHits
+	if rf, ok := ret.Get(0).(func(context.Context, *search.SearchRequest) []*search.SearchHits); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*domain.SearchHits)
+			r0 = ret.Get(0).([]*search.SearchHits)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *domain.SearchRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *search.SearchRequest) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	domain "github.com/odpf/stencil/domain"
+	namespace "github.com/odpf/stencil/core/namespace"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -15,18 +15,18 @@ type NamespaceService struct {
 }
 
 // Create provides a mock function with given fields: ctx, ns
-func (_m *NamespaceService) Create(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
+func (_m *NamespaceService) Create(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
 	ret := _m.Called(ctx, ns)
 
-	var r0 domain.Namespace
-	if rf, ok := ret.Get(0).(func(context.Context, domain.Namespace) domain.Namespace); ok {
+	var r0 namespace.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, namespace.Namespace) namespace.Namespace); ok {
 		r0 = rf(ctx, ns)
 	} else {
-		r0 = ret.Get(0).(domain.Namespace)
+		r0 = ret.Get(0).(namespace.Namespace)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, domain.Namespace) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, namespace.Namespace) error); ok {
 		r1 = rf(ctx, ns)
 	} else {
 		r1 = ret.Error(1)
@@ -50,14 +50,14 @@ func (_m *NamespaceService) Delete(ctx context.Context, name string) error {
 }
 
 // Get provides a mock function with given fields: ctx, name
-func (_m *NamespaceService) Get(ctx context.Context, name string) (domain.Namespace, error) {
+func (_m *NamespaceService) Get(ctx context.Context, name string) (namespace.Namespace, error) {
 	ret := _m.Called(ctx, name)
 
-	var r0 domain.Namespace
-	if rf, ok := ret.Get(0).(func(context.Context, string) domain.Namespace); ok {
+	var r0 namespace.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, string) namespace.Namespace); ok {
 		r0 = rf(ctx, name)
 	} else {
-		r0 = ret.Get(0).(domain.Namespace)
+		r0 = ret.Get(0).(namespace.Namespace)
 	}
 
 	var r1 error
@@ -94,18 +94,18 @@ func (_m *NamespaceService) List(ctx context.Context) ([]string, error) {
 }
 
 // Update provides a mock function with given fields: ctx, ns
-func (_m *NamespaceService) Update(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
+func (_m *NamespaceService) Update(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
 	ret := _m.Called(ctx, ns)
 
-	var r0 domain.Namespace
-	if rf, ok := ret.Get(0).(func(context.Context, domain.Namespace) domain.Namespace); ok {
+	var r0 namespace.Namespace
+	if rf, ok := ret.Get(0).(func(context.Context, namespace.Namespace) namespace.Namespace); ok {
 		r0 = rf(ctx, ns)
 	} else {
-		r0 = ret.Get(0).(domain.Namespace)
+		r0 = ret.Get(0).(namespace.Namespace)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, domain.Namespace) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, namespace.Namespace) error); ok {
 		r1 = rf(ctx, ns)
 	} else {
 		r1 = ret.Error(1)

@@ -8,6 +8,8 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
+	"github.com/odpf/stencil/core/namespace"
+	"github.com/odpf/stencil/core/search"
 	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/internal/store"
 )
@@ -42,20 +44,20 @@ func (r *Store) Close() {
 	r.db.Close()
 }
 
-func (r *Store) CreateNamespace(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
-	newNamespace := domain.Namespace{}
+func (r *Store) CreateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceInsertQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
 	return newNamespace, wrapError(err, ns.ID)
 }
 
-func (r *Store) UpdateNamespace(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
-	newNamespace := domain.Namespace{}
+func (r *Store) UpdateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceUpdateQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
 	return newNamespace, wrapError(err, ns.ID)
 }
 
-func (r *Store) GetNamespace(ctx context.Context, id string) (domain.Namespace, error) {
-	newNamespace := domain.Namespace{}
+func (r *Store) GetNamespace(ctx context.Context, id string) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceGetQuery, id)
 	return newNamespace, wrapError(err, id)
 }
@@ -151,14 +153,14 @@ func (r *Store) DeleteVersion(ctx context.Context, ns string, sc string, version
 	return wrapError(err, "delete version")
 }
 
-func (r *Store) Search(ctx context.Context, req *domain.SearchRequest) ([]*domain.SearchHits, error) {
-	var searchHits []*domain.SearchHits
+func (r *Store) Search(ctx context.Context, req *search.SearchRequest) ([]*search.SearchHits, error) {
+	var searchHits []*search.SearchHits
 	err := pgxscan.Select(ctx, r.db, &searchHits, searchAllQuery, req.NamespaceID, req.SchemaID, req.VersionID, req.Query)
 	return searchHits, err
 }
 
-func (r *Store) SearchLatest(ctx context.Context, req *domain.SearchRequest) ([]*domain.SearchHits, error) {
-	var searchHits []*domain.SearchHits
+func (r *Store) SearchLatest(ctx context.Context, req *search.SearchRequest) ([]*search.SearchHits, error) {
+	var searchHits []*search.SearchHits
 	err := pgxscan.Select(ctx, r.db, &searchHits, searchLatestQuery, req.NamespaceID, req.SchemaID, req.Query)
 	return searchHits, err
 }

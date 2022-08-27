@@ -1,4 +1,4 @@
-package domain
+package search
 
 import "context"
 

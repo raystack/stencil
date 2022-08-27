@@ -1,4 +1,4 @@
-package domain
+package namespace
 
 import (
 	"context"
