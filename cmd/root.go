@@ -14,16 +14,10 @@ func New() *cobra.Command {
 		Long:          "Schema registry to manage schemas efficiently.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
-		Example: heredoc.Doc(`
-			$ stencil namespace create
-			$ stencil schema create
-			$ stencil server start
-			$ stencil serve migrate
-		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 			"help:learn": heredoc.Doc(`
-				Use 'stencil <command> <subcommand> --help' for more information about a command.
+				Use 'stencil <command> --help' for info about a command.
 				Read the manual at https://odpf.github.io/stencil/
 			`),
 			"help:feedback": heredoc.Doc(`
@@ -40,7 +34,7 @@ func New() *cobra.Command {
 	// Help topics
 	cmdx.SetHelp(cmd)
 	cmd.AddCommand(cmdx.SetCompletionCmd("stencil"))
-	cmd.AddCommand(cmdx.SetHelpTopic("environment", envHelp))
+	cmd.AddCommand(cmdx.SetHelpTopicCmd("environment", envHelp))
 	cmd.AddCommand(cmdx.SetRefCmd(cmd))
 
 	return cmd

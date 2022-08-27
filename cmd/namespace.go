@@ -17,7 +17,7 @@ func NamespaceCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "namespace",
 		Aliases: []string{"namespace"},
-		Short:   "Manage namespace",
+		Short:   "Manage namespaces",
 		Long:    "Work with namespaces.",
 		Example: heredoc.Doc(`
 			$ stencil namespace list
@@ -27,7 +27,7 @@ func NamespaceCmd() *cobra.Command {
 			$ stencil namespace delete
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 	}
 
@@ -53,10 +53,9 @@ func listNamespaceCmd() *cobra.Command {
 			$ stencil namespace list
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cs := term.NewColorScheme()
 			s := printer.Spin("")
 			defer s.Stop()
 
@@ -83,7 +82,7 @@ func listNamespaceCmd() *cobra.Command {
 			index := 1
 
 			for _, n := range namespaces {
-				report = append(report, []string{cs.Greenf("#%02d", index), n, "-", "-", "-"})
+				report = append(report, []string{term.Greenf("#%02d", index), n, "-", "-", "-"})
 				index++
 			}
 			printer.Table(os.Stdout, report)
@@ -110,7 +109,7 @@ func createNamespaceCmd() *cobra.Command {
 			$ stencil namespace create <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description> 
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -171,7 +170,7 @@ func updateNamespaceCmd() *cobra.Command {
 			$ stencil namespace edit <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -230,7 +229,7 @@ func getNamespaceCmd() *cobra.Command {
 			$ stencil namespace view <namespace-id>
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -288,7 +287,7 @@ func deleteNamespaceCmd() *cobra.Command {
 			$ stencil namespace delete <namespace-id>
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
