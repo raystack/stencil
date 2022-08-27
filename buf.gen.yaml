@@ -1,13 +1,17 @@
 version: v1
 plugins:
   - name: go
-    out: ./server
+    out: ./proto
     opt: paths=source_relative
   - name: go-grpc
-    out: ./server
+    out: ./proto
     opt: paths=source_relative
+  - remote: buf.build/odpf/plugins/validate
+    out: "proto"
+    opt: "paths=source_relative,lang=go"
   - name: grpc-gateway
-    out: ./server
+    out: ./proto
     opt: paths=source_relative
   - name: openapiv2
-    out: ./server
+    out: ./proto
+    opt: "allow_merge=true"
