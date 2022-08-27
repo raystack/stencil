@@ -15,7 +15,7 @@ import (
 	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/stencil/graph"
-	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"

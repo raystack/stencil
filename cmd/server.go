@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/stencil/config"
+	"github.com/odpf/stencil/internal/server"
 	"github.com/odpf/stencil/internal/store/postgres"
-	"github.com/odpf/stencil/server"
 	"github.com/spf13/cobra"
 
 	// Importing postgres driver

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/odpf/stencil/domain"
-	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

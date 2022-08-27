@@ -8,7 +8,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/odpf/stencil/domain"
-	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 

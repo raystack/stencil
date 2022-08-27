@@ -12,7 +12,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/httpfs"
 	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/odpf/stencil/server/logger"
+	"github.com/odpf/stencil/pkg/logger"
 	"github.com/pkg/errors"
 )
 
