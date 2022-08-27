@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/odpf/stencil/core/namespace"
 	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/internal/store"
 	"github.com/odpf/stencil/internal/store/postgres"
@@ -36,7 +37,7 @@ func tearDown(t *testing.T) {
 	}
 }
 
-func assertNamespace(t *testing.T, expected, actual domain.Namespace) {
+func assertNamespace(t *testing.T, expected, actual namespace.Namespace) {
 	t.Helper()
 	assert.Equal(t, expected.ID, actual.ID)
 	assert.Equal(t, expected.Compatibility, actual.Compatibility)
@@ -50,7 +51,7 @@ func TestStorage(t *testing.T) {
 	tearDown(t)
 	db := getStore(t)
 	ctx := context.Background()
-	n := &domain.Namespace{ID: "test", Format: "protobuf", Compatibility: "FULL", Description: "testDesc"}
+	n := &namespace.Namespace{ID: "test", Format: "protobuf", Compatibility: "FULL", Description: "testDesc"}
 	t.Run("Namespace", func(t *testing.T) {
 		t.Run("create: should create namespace", func(t *testing.T) {
 			ns, err := db.CreateNamespace(ctx, *n)
@@ -95,7 +96,7 @@ func TestStorage(t *testing.T) {
 	})
 
 	t.Run("schema", func(t *testing.T) {
-		n := &domain.Namespace{ID: "testschema", Format: "protobuf", Compatibility: "FULL", Description: "testDesc"}
+		n := &namespace.Namespace{ID: "testschema", Format: "protobuf", Compatibility: "FULL", Description: "testDesc"}
 		_, err := db.CreateNamespace(ctx, *n)
 		assert.Nil(t, err)
 		meta := &domain.Metadata{

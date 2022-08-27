@@ -8,6 +8,7 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
+	"github.com/odpf/stencil/core/namespace"
 	"github.com/odpf/stencil/core/search"
 	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/internal/store"
@@ -43,20 +44,20 @@ func (r *Store) Close() {
 	r.db.Close()
 }
 
-func (r *Store) CreateNamespace(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
-	newNamespace := domain.Namespace{}
+func (r *Store) CreateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceInsertQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
 	return newNamespace, wrapError(err, ns.ID)
 }
 
-func (r *Store) UpdateNamespace(ctx context.Context, ns domain.Namespace) (domain.Namespace, error) {
-	newNamespace := domain.Namespace{}
+func (r *Store) UpdateNamespace(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceUpdateQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
 	return newNamespace, wrapError(err, ns.ID)
 }
 
-func (r *Store) GetNamespace(ctx context.Context, id string) (domain.Namespace, error) {
-	newNamespace := domain.Namespace{}
+func (r *Store) GetNamespace(ctx context.Context, id string) (namespace.Namespace, error) {
+	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceGetQuery, id)
 	return newNamespace, wrapError(err, id)
 }

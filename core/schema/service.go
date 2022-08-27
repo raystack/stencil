@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/odpf/stencil/core/namespace"
 	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/internal/store"
 )
@@ -28,7 +29,7 @@ func getBytes(key interface{}) []byte {
 	return buf
 }
 
-func NewService(repo domain.SchemaRepository, provider SchemaProvider, nsSvc domain.NamespaceService, cache schemaCache) *Service {
+func NewService(repo domain.SchemaRepository, provider SchemaProvider, nsSvc namespace.NamespaceService, cache schemaCache) *Service {
 	return &Service{
 		Repo:           repo,
 		SchemaProvider: provider,
@@ -45,7 +46,7 @@ type schemaCache interface {
 type Service struct {
 	SchemaProvider SchemaProvider
 	Repo           domain.SchemaRepository
-	NamespaceSvc   domain.NamespaceService
+	NamespaceSvc   namespace.NamespaceService
 	cache          schemaCache
 }
 

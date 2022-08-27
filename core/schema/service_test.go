@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/odpf/stencil/core/namespace"
 	"github.com/odpf/stencil/core/schema"
 	"github.com/odpf/stencil/domain"
 	"github.com/odpf/stencil/internal/store"
@@ -30,7 +31,7 @@ func TestSchemaCreate(t *testing.T) {
 	t.Run("should return error if namespace not found", func(t *testing.T) {
 		svc, nsService, _, _ := getSvc()
 		nsName := "testNamespace"
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{}, store.NoRowsErr)
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{}, store.NoRowsErr)
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, []byte(""))
 		assert.NotNil(t, err)
 		assert.ErrorIs(t, err, store.NoRowsErr)
@@ -41,7 +42,7 @@ func TestSchemaCreate(t *testing.T) {
 		svc, nsService, schemaProvider, _ := getSvc()
 		nsName := "testNamespace"
 		data := []byte("data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "avro"}, nil)
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "avro"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(&mocks.ParsedSchema{}, errors.New("invalid schema"))
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{Format: "protobuf"}, data)
 		assert.NotNil(t, err)
@@ -52,7 +53,7 @@ func TestSchemaCreate(t *testing.T) {
 		svc, nsService, schemaProvider, _ := getSvc()
 		nsName := "testNamespace"
 		data := []byte("data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(&mocks.ParsedSchema{}, errors.New("invalid schema"))
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
 		assert.NotNil(t, err)
@@ -65,7 +66,7 @@ func TestSchemaCreate(t *testing.T) {
 		parsedSchema := &mocks.ParsedSchema{}
 		nsName := "testNamespace"
 		data := []byte("data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
 		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(2), store.NoRowsErr)
 		parsedSchema.On("GetCanonicalValue").Return(scFile)
@@ -81,7 +82,7 @@ func TestSchemaCreate(t *testing.T) {
 		parsedSchema := &mocks.ParsedSchema{}
 		nsName := "testNamespace"
 		data := []byte("data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf"}, nil)
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "protobuf"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
 		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(2), errors.New("some other error apart from noRowsError"))
 		_, err := svc.Create(ctx, nsName, "a", &domain.Metadata{}, data)
@@ -96,7 +97,7 @@ func TestSchemaCreate(t *testing.T) {
 		nsName := "testNamespace"
 		data := []byte("data aa")
 		prevData := []byte("some prev data")
-		nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
 		schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{Format: "protobuf"}, nil)
 		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(3), nil)
@@ -130,7 +131,7 @@ func TestSchemaCreate(t *testing.T) {
 				if test.isError {
 					compErr = errors.New("compatibilit error")
 				}
-				nsService.On("Get", mock.Anything, nsName).Return(domain.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
+				nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "protobuf", Compatibility: "COMPATIBILITY_BACKWARD"}, nil)
 				schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil).Once()
 				schemaRepo.On("GetSchemaMetadata", mock.Anything, nsName, "a").Return(&domain.Metadata{Format: "protobuf"}, nil)
 				schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(3), nil)
