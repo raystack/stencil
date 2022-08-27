@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/odpf/stencil/server/domain"
-	"github.com/odpf/stencil/store"
-	"github.com/odpf/stencil/store/postgres"
+	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/internal/store"
+	"github.com/odpf/stencil/internal/store/postgres"
 	"github.com/stretchr/testify/assert"
 )
 

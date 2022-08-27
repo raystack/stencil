@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/odpf/stencil/server/domain"
+	"github.com/odpf/stencil/domain"
 )
 
 // Store is the interface that all database objects must implement.

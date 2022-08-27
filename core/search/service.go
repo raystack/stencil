@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/odpf/stencil/server/domain"
+	"github.com/odpf/stencil/domain"
 )
 
 var (

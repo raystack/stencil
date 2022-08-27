@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/odpf/stencil/server/domain"
-	"github.com/odpf/stencil/store"
+	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/internal/store"
 )
 
 func getNonEmpty(args ...string) string {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/odpf/stencil/server/domain"
+	"github.com/odpf/stencil/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 )
 

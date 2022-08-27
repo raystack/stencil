@@ -7,7 +7,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/odpf/stencil/server/domain"
+	"github.com/odpf/stencil/domain"
 	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -15,7 +15,7 @@ import (
 type getSchemaData func(http.ResponseWriter, *http.Request, map[string]string) (*domain.Metadata, []byte, error)
 type errHandleFunc func(http.ResponseWriter, *http.Request, map[string]string) error
 
-//API holds all handlers
+// API holds all handlers
 type API struct {
 	stencilv1beta1.UnimplementedStencilServiceServer
 	grpc_health_v1.UnimplementedHealthServer

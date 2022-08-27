@@ -8,8 +8,8 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
-	"github.com/odpf/stencil/server/domain"
-	"github.com/odpf/stencil/store"
+	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/internal/store"
 )
 
 func wrapError(err error, format string, args ...interface{}) error {
