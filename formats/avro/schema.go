@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
-	"github.com/odpf/stencil/server/domain"
-	"github.com/odpf/stencil/server/schema"
+	"github.com/odpf/stencil/core/schema"
+	"github.com/odpf/stencil/domain"
 	"go.uber.org/multierr"
 )
 

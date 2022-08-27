@@ -5,10 +5,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
-	"github.com/odpf/stencil/server/schema"
+	"github.com/odpf/stencil/core/schema"
 )
 
-//ParseSchema parses avro schema bytes into ParsedSchema
+// ParseSchema parses avro schema bytes into ParsedSchema
 func ParseSchema(data []byte) (schema.ParsedSchema, error) {
 	sc, err := av.Parse(string(data))
 	if err != nil {

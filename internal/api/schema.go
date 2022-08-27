@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/server/domain"
-	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	"github.com/odpf/stencil/domain"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 )
 
 func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaRequest) (*stencilv1beta1.CreateSchemaResponse, error) {

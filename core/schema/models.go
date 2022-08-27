@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"github.com/odpf/stencil/server/domain"
+	"github.com/odpf/stencil/domain"
 )
 
 type ParsedSchema interface {

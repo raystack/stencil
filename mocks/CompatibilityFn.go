@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	schema "github.com/odpf/stencil/server/schema"
+	schema "github.com/odpf/stencil/core/schema"
 	mock "github.com/stretchr/testify/mock"
 )
 

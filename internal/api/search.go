@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/odpf/stencil/server/domain"
-	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	"github.com/odpf/stencil/domain"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 )
 
 func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*stencilv1beta1.SearchResponse, error) {

@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	stencilv1beta1 "github.com/odpf/stencil/server/odpf/stencil/v1beta1"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	mock "github.com/stretchr/testify/mock"
 )
 
