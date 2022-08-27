@@ -32,7 +32,7 @@ func SchemaCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "schema",
 		Aliases: []string{"schema"},
-		Short:   "Manage schema",
+		Short:   "Manage schemas",
 		Long: heredoc.Doc(`
 			Work with schemas.
 		`),
@@ -48,7 +48,7 @@ func SchemaCmd() *cobra.Command {
 			$ stencil schema check
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 	}
 
@@ -78,7 +78,7 @@ func listSchemaCmd() *cobra.Command {
 			$ stencil schema list <namespace-id>
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -142,7 +142,7 @@ func createSchemaCmd() *cobra.Command {
 			$ stencil schema create <schema-id> --namespace=<namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -211,7 +211,7 @@ func checkSchemaCmd() *cobra.Command {
 			$ stencil schema check <schema-id> --namespace=<namespace-id> comp=<schema-compatibility> filePath=<schema-filePath>
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -274,7 +274,7 @@ func updateSchemaCmd() *cobra.Command {
 			$ stencil schema edit <schema-id> --namespace=<namespace-id> --comp=<schema-compatibility>
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -332,7 +332,7 @@ func getSchemaCmd() *cobra.Command {
 			$ stencil schema view <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -412,7 +412,7 @@ func deleteSchemaCmd() *cobra.Command {
 			$ stencil schema delete <schema-id> --namespace=<namespace-id>
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -619,7 +619,7 @@ func versionSchemaCmd() *cobra.Command {
 			$ stencil schema version <schema-id> --namespace=<namespace-id>
 	    	`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -685,7 +685,7 @@ func printCmd() *cobra.Command {
 			$ stencil schema print <schema-id> --namespace=<namespace-id> --version <version> --output=<output-path> --filter-path=<path-prefix>
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
@@ -788,7 +788,7 @@ func graphCmd() *cobra.Command {
 			$ stencil schema graph <schema-id> --namespace=<namespace-id> --version=<version> --output=<output-path>
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := grpc.Dial(host, grpc.WithInsecure())

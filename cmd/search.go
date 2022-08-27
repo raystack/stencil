@@ -23,14 +23,14 @@ func SearchCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "search <query>",
 		Aliases: []string{"search"},
-		Short:   "Search",
+		Short:   "Search schemas",
 		Long:    "Search your queries on schemas",
 		Args:    cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil search <query> --namespace=<namespace> --schema=<schema> --version=<version> --history=<history>
 		`),
 		Annotations: map[string]string{
-			"group:core": "true",
+			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s := printer.Spin("")
