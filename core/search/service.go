@@ -3,8 +3,6 @@ package search
 import (
 	"context"
 	"errors"
-
-	"github.com/odpf/stencil/domain"
 )
 
 var (
@@ -14,10 +12,10 @@ var (
 )
 
 type Service struct {
-	Repo domain.SearchRepository
+	Repo SearchRepository
 }
 
-func (s *Service) Search(ctx context.Context, req *domain.SearchRequest) (*domain.SearchResponse, error) {
+func (s *Service) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	if req.Query == "" {
 		return nil, ErrEmptyQueryString
 	}
@@ -26,7 +24,7 @@ func (s *Service) Search(ctx context.Context, req *domain.SearchRequest) (*domai
 		return nil, ErrEmptyNamespaceID
 	}
 
-	var res []*domain.SearchHits
+	var res []*SearchHits
 	var err error
 	if req.VersionID == 0 && !req.History {
 		res, err = s.Repo.SearchLatest(ctx, req)
@@ -40,7 +38,7 @@ func (s *Service) Search(ctx context.Context, req *domain.SearchRequest) (*domai
 	if err != nil {
 		return nil, err
 	}
-	return &domain.SearchResponse{
+	return &SearchResponse{
 		Hits: res,
 	}, nil
 }
