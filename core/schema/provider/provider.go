@@ -15,7 +15,7 @@ type SchemaProvider struct {
 	mapper map[string]parseFn
 }
 
-func (s *SchemaProvider) ParseSchema(format string, data []byte) (schema.ParsedSchema, error) {
+func (s *SchemaProvider) Parse(format string, data []byte) (schema.ParsedSchema, error) {
 	fn, ok := s.mapper[format]
 	if ok {
 		return fn(data)

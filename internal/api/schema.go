@@ -9,12 +9,12 @@ import (
 	"strconv"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/core/schema"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 )
 
 func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaRequest) (*stencilv1beta1.CreateSchemaResponse, error) {
-	metadata := &domain.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
+	metadata := &schema.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
 	sc, err := a.schema.Create(ctx, in.NamespaceId, in.SchemaId, metadata, in.GetData())
 	return &stencilv1beta1.CreateSchemaResponse{
 		Version:  sc.Version,
@@ -29,7 +29,7 @@ func (a *API) HTTPUpload(w http.ResponseWriter, req *http.Request, pathParams ma
 	}
 	format := req.Header.Get("X-Format")
 	compatibility := req.Header.Get("X-Compatibility")
-	metadata := &domain.Metadata{Format: format, Compatibility: compatibility}
+	metadata := &schema.Metadata{Format: format, Compatibility: compatibility}
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
 	sc, err := a.schema.Create(req.Context(), namespaceID, schemaName, metadata, data)
@@ -72,7 +72,7 @@ func (a *API) GetLatestSchema(ctx context.Context, in *stencilv1beta1.GetLatestS
 	}, err
 }
 
-func (a *API) HTTPLatestSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*domain.Metadata, []byte, error) {
+func (a *API) HTTPLatestSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*schema.Metadata, []byte, error) {
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
 	return a.schema.GetLatest(req.Context(), namespaceID, schemaName)
@@ -85,7 +85,7 @@ func (a *API) GetSchema(ctx context.Context, in *stencilv1beta1.GetSchemaRequest
 	}, err
 }
 
-func (a *API) HTTPGetSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*domain.Metadata, []byte, error) {
+func (a *API) HTTPGetSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*schema.Metadata, []byte, error) {
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
 	versionString := pathParams["version"]
@@ -111,7 +111,7 @@ func (a *API) GetSchemaMetadata(ctx context.Context, in *stencilv1beta1.GetSchem
 }
 
 func (a *API) UpdateSchemaMetadata(ctx context.Context, in *stencilv1beta1.UpdateSchemaMetadataRequest) (*stencilv1beta1.UpdateSchemaMetadataResponse, error) {
-	meta, err := a.schema.UpdateMetadata(ctx, in.NamespaceId, in.SchemaId, &domain.Metadata{
+	meta, err := a.schema.UpdateMetadata(ctx, in.NamespaceId, in.SchemaId, &schema.Metadata{
 		Compatibility: in.Compatibility.String(),
 	})
 	return &stencilv1beta1.UpdateSchemaMetadataResponse{

@@ -35,10 +35,12 @@ import (
 func Start(cfg config.Config) {
 	ctx := context.Background()
 
-	store := postgres.NewStore(cfg.DB.ConnectionString)
-	namespaceService := namespace.Service{
-		Repo: store,
-	}
+	db := postgres.NewStore(cfg.DB.ConnectionString)
+
+	namespaceRepository := postgres.NewNamespaceRepository(db)
+	namespaceService := namespace.NewService(namespaceRepository)
+
+	schemaRepository := postgres.NewSchemaRepository(db)
 	cache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1000,
 		MaxCost:     cfg.CacheSizeInMB << 20,
@@ -47,10 +49,11 @@ func Start(cfg config.Config) {
 	if err != nil {
 		panic(err)
 	}
-	schemaService := schema.NewService(store, provider.NewSchemaProvider(), namespaceService, cache)
-	searchService := &search.Service{
-		Repo: store,
-	}
+	schemaService := schema.NewService(schemaRepository, provider.NewSchemaProvider(), namespaceService, cache)
+
+	searchRepository := postgres.NewSearchRepository(db)
+	searchService := search.NewService(searchRepository)
+
 	api := api.NewAPI(namespaceService, schemaService, searchService)
 
 	port := fmt.Sprintf(":%s", cfg.Port)
@@ -89,7 +92,7 @@ func Start(cfg config.Config) {
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, mux), func() {
 		conn.Close()
 		s.GracefulStop()
-		store.Close()
+		db.Close()
 	})
 }
 

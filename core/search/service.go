@@ -12,7 +12,13 @@ var (
 )
 
 type Service struct {
-	Repo SearchRepository
+	repo Repository
+}
+
+func NewService(repository Repository) *Service {
+	return &Service{
+		repo: repository,
+	}
 }
 
 func (s *Service) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
@@ -27,12 +33,12 @@ func (s *Service) Search(ctx context.Context, req *SearchRequest) (*SearchRespon
 	var res []*SearchHits
 	var err error
 	if req.VersionID == 0 && !req.History {
-		res, err = s.Repo.SearchLatest(ctx, req)
+		res, err = s.repo.SearchLatest(ctx, req)
 	} else {
 		if req.VersionID > 0 && req.SchemaID == "" {
 			return nil, ErrEmptySchemaID
 		}
-		res, err = s.Repo.Search(ctx, req)
+		res, err = s.repo.Search(ctx, req)
 	}
 
 	if err != nil {

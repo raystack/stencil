@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/odpf/stencil/core/schema"
+	"github.com/odpf/stencil/core/schema/mocks"
 	"github.com/odpf/stencil/formats/protobuf"
-	"github.com/odpf/stencil/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
