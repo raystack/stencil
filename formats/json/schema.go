@@ -5,7 +5,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/domain"
 	"go.uber.org/multierr"
 )
 
@@ -19,9 +18,9 @@ func (s *Schema) Format() string {
 	return jsonFormat
 }
 
-func (s *Schema) GetCanonicalValue() *domain.SchemaFile {
+func (s *Schema) GetCanonicalValue() *schema.SchemaFile {
 	id := uuid.NewSHA1(uuid.NameSpaceOID, s.data)
-	return &domain.SchemaFile{
+	return &schema.SchemaFile{
 		ID:   id.String(),
 		Data: s.data,
 	}

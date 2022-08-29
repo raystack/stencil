@@ -2,13 +2,9 @@ package search
 
 import "context"
 
-type SearchRepository interface {
+type Repository interface {
 	Search(context.Context, *SearchRequest) ([]*SearchHits, error)
 	SearchLatest(context.Context, *SearchRequest) ([]*SearchHits, error)
-}
-
-type SearchService interface {
-	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
 
 type SearchRequest struct {

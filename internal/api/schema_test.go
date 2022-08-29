@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/odpf/stencil/domain"
+	"github.com/odpf/stencil/core/schema"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -38,7 +38,7 @@ func TestHTTPGetSchema(t *testing.T) {
 		version := int32(2)
 		data := []byte("test data")
 		_, schemaSvc, _, mux, _ := setup()
-		schemaSvc.On("Get", mock.Anything, nsName, schemaName, version).Return(&domain.Metadata{Format: "FORMAT_PROTOBUF"}, data, nil)
+		schemaSvc.On("Get", mock.Anything, nsName, schemaName, version).Return(&schema.Metadata{Format: "FORMAT_PROTOBUF"}, data, nil)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version), nil)
 		mux.ServeHTTP(w, req)
@@ -56,7 +56,7 @@ func TestHTTPSchemaCreate(t *testing.T) {
 	body := []byte("protobuf contents")
 	t.Run("should return error if schema create fails", func(t *testing.T) {
 		_, schemaSvc, _, mux, _ := setup()
-		schemaSvc.On("Create", mock.Anything, nsName, scName, &domain.Metadata{Format: format, Compatibility: compatibility}, body).Return(domain.SchemaInfo{}, errors.New("create error"))
+		schemaSvc.On("Create", mock.Anything, nsName, scName, &schema.Metadata{Format: format, Compatibility: compatibility}, body).Return(schema.SchemaInfo{}, errors.New("create error"))
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("POST", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s", nsName, scName), bytes.NewBuffer(body))
 		req.Header.Add("X-Format", format)
@@ -67,8 +67,8 @@ func TestHTTPSchemaCreate(t *testing.T) {
 	})
 	t.Run("should return schemaInfo in JSON after create", func(t *testing.T) {
 		_, schemaSvc, _, mux, _ := setup()
-		scInfo := domain.SchemaInfo{ID: "someID", Version: int32(2)}
-		schemaSvc.On("Create", mock.Anything, nsName, scName, &domain.Metadata{Format: format, Compatibility: compatibility}, body).Return(scInfo, nil)
+		scInfo := schema.SchemaInfo{ID: "someID", Version: int32(2)}
+		schemaSvc.On("Create", mock.Anything, nsName, scName, &schema.Metadata{Format: format, Compatibility: compatibility}, body).Return(scInfo, nil)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("POST", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s", nsName, scName), bytes.NewBuffer(body))
 		req.Header.Add("X-Format", format)

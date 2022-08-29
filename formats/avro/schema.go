@@ -7,7 +7,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
 	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/domain"
 	"go.uber.org/multierr"
 )
 
@@ -22,10 +21,10 @@ func (s *Schema) Format() string {
 	return avroFormat
 }
 
-func (s *Schema) GetCanonicalValue() *domain.SchemaFile {
+func (s *Schema) GetCanonicalValue() *schema.SchemaFile {
 	fingerprint := s.sc.Fingerprint()
 	id := uuid.NewSHA1(uuid.NameSpaceOID, fingerprint[:])
-	return &domain.SchemaFile{
+	return &schema.SchemaFile{
 		ID:   id.String(),
 		Data: s.data,
 	}

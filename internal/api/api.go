@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -8,25 +9,49 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/odpf/stencil/core/namespace"
+	"github.com/odpf/stencil/core/schema"
 	"github.com/odpf/stencil/core/search"
-	"github.com/odpf/stencil/domain"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
-type getSchemaData func(http.ResponseWriter, *http.Request, map[string]string) (*domain.Metadata, []byte, error)
+type getSchemaData func(http.ResponseWriter, *http.Request, map[string]string) (*schema.Metadata, []byte, error)
 type errHandleFunc func(http.ResponseWriter, *http.Request, map[string]string) error
 
-// API holds all handlers
+type NamespaceService interface {
+	Create(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error)
+	Update(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error)
+	List(ctx context.Context) ([]string, error)
+	Get(ctx context.Context, name string) (namespace.Namespace, error)
+	Delete(ctx context.Context, name string) error
+}
+
+type SchemaService interface {
+	CheckCompatibility(ctx context.Context, nsName, schemaName, compatibility string, data []byte) error
+	Create(ctx context.Context, nsName string, schemaName string, metadata *schema.Metadata, data []byte) (schema.SchemaInfo, error)
+	Get(ctx context.Context, namespace string, schemaName string, version int32) (*schema.Metadata, []byte, error)
+	Delete(ctx context.Context, namespace string, schemaName string) error
+	DeleteVersion(ctx context.Context, namespace string, schemaName string, version int32) error
+	GetLatest(ctx context.Context, namespace string, schemaName string) (*schema.Metadata, []byte, error)
+	GetMetadata(ctx context.Context, namespace, schemaName string) (*schema.Metadata, error)
+	UpdateMetadata(ctx context.Context, namespace, schemaName string, meta *schema.Metadata) (*schema.Metadata, error)
+	List(ctx context.Context, namespaceID string) ([]string, error)
+	ListVersions(ctx context.Context, namespaceID string, schemaName string) ([]int32, error)
+}
+
+type SearchService interface {
+	Search(ctx context.Context, req *search.SearchRequest) (*search.SearchResponse, error)
+}
+
 type API struct {
 	stencilv1beta1.UnimplementedStencilServiceServer
 	grpc_health_v1.UnimplementedHealthServer
-	namespace namespace.NamespaceService
-	schema    domain.SchemaService
-	search    search.SearchService
+	namespace NamespaceService
+	schema    SchemaService
+	search    SearchService
 }
 
-func NewAPI(namespace namespace.NamespaceService, schema domain.SchemaService, search search.SearchService) *API {
+func NewAPI(namespace NamespaceService, schema SchemaService, search SearchService) *API {
 	return &API{
 		namespace: namespace,
 		schema:    schema,
