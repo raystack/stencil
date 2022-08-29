@@ -52,7 +52,7 @@ func (s *Service) CheckCompatibility(ctx context.Context, nsName, schemaName, co
 		return err
 	}
 	compatibility = getNonEmpty(compatibility, ns.Compatibility)
-	parsedSchema, err := s.provider.Parse(ns.Format, data)
+	parsedSchema, err := s.provider.ParseSchema(ns.Format, data)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (s *Service) checkCompatibility(ctx context.Context, nsName, schemaName, fo
 		}
 		return err
 	}
-	prevSchema, err := s.provider.Parse(prevMeta.Format, prevSchemaData)
+	prevSchema, err := s.provider.ParseSchema(prevMeta.Format, prevSchemaData)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	}
 	format := getNonEmpty(metadata.Format, ns.Format)
 	compatibility := getNonEmpty(metadata.Compatibility, ns.Compatibility)
-	parsedSchema, err := s.provider.Parse(format, data)
+	parsedSchema, err := s.provider.ParseSchema(format, data)
 	if err != nil {
 		return scInfo, err
 	}

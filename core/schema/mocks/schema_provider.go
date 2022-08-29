@@ -14,8 +14,8 @@ type SchemaProvider struct {
 	mock.Mock
 }
 
-// Parse provides a mock function with given fields: format, data
-func (_m *SchemaProvider) Parse(format string, data []byte) (schema.ParsedSchema, error) {
+// ParseSchema provides a mock function with given fields: format, data
+func (_m *SchemaProvider) ParseSchema(format string, data []byte) (schema.ParsedSchema, error) {
 	ret := _m.Called(format, data)
 
 	var r0 schema.ParsedSchema

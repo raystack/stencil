@@ -42,7 +42,7 @@ type ParsedSchema interface {
 }
 
 type Provider interface {
-	Parse(format string, data []byte) (ParsedSchema, error)
+	ParseSchema(format string, data []byte) (ParsedSchema, error)
 }
 
 type Cache interface {
