@@ -1,41 +1,45 @@
 # API
-## Version: 0.2.2
+
+## Version: 0.3.0
 
 ### /v1beta1/namespaces
 
 #### GET
+
 ##### Summary
 
 List names of namespaces
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1ListNamespacesResponse](#v1beta1listnamespacesresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                          |
+| ------- | ----------------------------- | --------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1ListNamespacesResponse](#v1beta1listnamespacesresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                         |
 
 #### POST
+
 ##### Summary
 
 Create namespace entry
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| body | body |  | Yes | [v1beta1CreateNamespaceRequest](#v1beta1createnamespacerequest) |
+| Name | Located in | Description | Required | Schema                                                          |
+| ---- | ---------- | ----------- | -------- | --------------------------------------------------------------- |
+| body | body       |             | Yes      | [v1beta1CreateNamespaceRequest](#v1beta1createnamespacerequest) |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1CreateNamespaceResponse](#v1beta1createnamespaceresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                            |
+| ------- | ----------------------------- | ----------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1CreateNamespaceResponse](#v1beta1createnamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                           |
 
 ### /v1beta1/namespaces/{id}
 
 #### GET
+
 ##### Summary
 
 Get namespace by id
@@ -43,17 +47,18 @@ Get namespace by id
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | path |  | Yes | string |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id   | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1GetNamespaceResponse](#v1beta1getnamespaceresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                      |
+| ------- | ----------------------------- | ----------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1GetNamespaceResponse](#v1beta1getnamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                     |
 
 #### DELETE
+
 ##### Summary
 
 Delete namespace by id
@@ -65,17 +70,18 @@ Ensure all schemas under this namespace is deleted, otherwise it will throw erro
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | path |  | Yes | string |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id   | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1DeleteNamespaceResponse](#v1beta1deletenamespaceresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                            |
+| ------- | ----------------------------- | ----------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1DeleteNamespaceResponse](#v1beta1deletenamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                           |
 
 #### PUT
+
 ##### Summary
 
 Update namespace entity by id
@@ -83,20 +89,21 @@ Update namespace entity by id
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | path |  | Yes | string |
-| body | body |  | Yes | object |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id   | path       |             | Yes      | string |
+| body | body       |             | Yes      | object |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1UpdateNamespaceResponse](#v1beta1updatenamespaceresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                            |
+| ------- | ----------------------------- | ----------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1UpdateNamespaceResponse](#v1beta1updatenamespaceresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                           |
 
 ### /v1beta1/namespaces/{id}/schemas
 
 #### GET
+
 ##### Summary
 
 List schemas under the namespace
@@ -104,19 +111,20 @@ List schemas under the namespace
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | path |  | Yes | string |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id   | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1ListSchemasResponse](#v1beta1listschemasresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                    |
+| ------- | ----------------------------- | --------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1ListSchemasResponse](#v1beta1listschemasresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                   |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}
 
 #### GET
+
 ##### Summary
 
 Get latest schema
@@ -127,80 +135,84 @@ Returns latest schema in it's own data type. For protobuf response type would be
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
+| Name        | Located in | Description | Required | Schema |
+| ----------- | ---------- | ----------- | -------- | ------ |
+| namespaceId | path       |             | Yes      | string |
+| schemaId    | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful schema response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream`. |  |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                                                                                                                                                                                                                  | Schema                  |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 200     | A successful schema response. Based on schema format, response will return different content types. For avro and json schemas response type is `application/json`. For protobuf response type is `application/octet-stream`. |                         |
+| default | An unexpected error response.                                                                                                                                                                                                | [rpcStatus](#rpcstatus) |
 
 #### POST
+
 ##### Summary
 
 Create schema under the namespace
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
-| body | body | Request payload should be equivalent to `curl` `--data-binary` option | Yes | binary |
+| Name        | Located in | Description                                                           | Required | Schema |
+| ----------- | ---------- | --------------------------------------------------------------------- | -------- | ------ |
+| namespaceId | path       |                                                                       | Yes      | string |
+| schemaId    | path       |                                                                       | Yes      | string |
+| body        | body       | Request payload should be equivalent to `curl` `--data-binary` option | Yes      | binary |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1CreateSchemaResponse](#v1beta1createschemaresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                      |
+| ------- | ----------------------------- | ----------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1CreateSchemaResponse](#v1beta1createschemaresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                     |
 
 #### DELETE
+
 ##### Summary
 
 Delete specified schema
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
+| Name        | Located in | Description | Required | Schema |
+| ----------- | ---------- | ----------- | -------- | ------ |
+| namespaceId | path       |             | Yes      | string |
+| schemaId    | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1DeleteSchemaResponse](#v1beta1deleteschemaresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                      |
+| ------- | ----------------------------- | ----------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1DeleteSchemaResponse](#v1beta1deleteschemaresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                     |
 
 #### PATCH
+
 ##### Summary
 
 Update only schema metadata
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
-| body | body |  | Yes | object |
+| Name        | Located in | Description | Required | Schema |
+| ----------- | ---------- | ----------- | -------- | ------ |
+| namespaceId | path       |             | Yes      | string |
+| schemaId    | path       |             | Yes      | string |
+| body        | body       |             | Yes      | object |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1UpdateSchemaMetadataResponse](#v1beta1updateschemametadataresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                                      |
+| ------- | ----------------------------- | --------------------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1UpdateSchemaMetadataResponse](#v1beta1updateschemametadataresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                                     |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/check
 
 #### POST
+
 ##### Summary
 
 Check schema compatibility
@@ -211,273 +223,277 @@ Checks comptibility with existing latest schema
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
-| body | body |  | Yes | binary |
-| X-Compatibility | header |  | No | string |
+| Name            | Located in | Description | Required | Schema |
+| --------------- | ---------- | ----------- | -------- | ------ |
+| namespaceId     | path       |             | Yes      | string |
+| schemaId        | path       |             | Yes      | string |
+| body            | body       |             | Yes      | binary |
+| X-Compatibility | header     |             | No       | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1CreateSchemaResponse](#v1beta1createschemaresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                      |
+| ------- | ----------------------------- | ----------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1CreateSchemaResponse](#v1beta1createschemaresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                     |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/meta
 
 #### GET
+
 ##### Summary
 
 Create schema under the namespace. Returns version number, unique ID and location
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
+| Name        | Located in | Description | Required | Schema |
+| ----------- | ---------- | ----------- | -------- | ------ |
+| namespaceId | path       |             | Yes      | string |
+| schemaId    | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1GetSchemaMetadataResponse](#v1beta1getschemametadataresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                                |
+| ------- | ----------------------------- | --------------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1GetSchemaMetadataResponse](#v1beta1getschemametadataresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                               |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions
 
 #### GET
+
 ##### Summary
 
 List all version numbers for schema
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
+| Name        | Located in | Description | Required | Schema |
+| ----------- | ---------- | ----------- | -------- | ------ |
+| namespaceId | path       |             | Yes      | string |
+| schemaId    | path       |             | Yes      | string |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1ListVersionsResponse](#v1beta1listversionsresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                      |
+| ------- | ----------------------------- | ----------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1ListVersionsResponse](#v1beta1listversionsresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                     |
 
 ### /v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions/{versionId}
 
 #### DELETE
+
 ##### Summary
 
 Delete specified version of the schema
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | path |  | Yes | string |
-| schemaId | path |  | Yes | string |
-| versionId | path |  | Yes | integer |
+| Name        | Located in | Description | Required | Schema  |
+| ----------- | ---------- | ----------- | -------- | ------- |
+| namespaceId | path       |             | Yes      | string  |
+| schemaId    | path       |             | Yes      | string  |
+| versionId   | path       |             | Yes      | integer |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1DeleteVersionResponse](#v1beta1deleteversionresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                                        |
+| ------- | ----------------------------- | ------------------------------------------------------------- |
+| 200     | A successful response.        | [v1beta1DeleteVersionResponse](#v1beta1deleteversionresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                                       |
 
 ### /v1beta1/search
 
 #### GET
+
 ##### Summary
 
 Global Search API
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| namespaceId | query |  | No | string |
-| schemaId | query |  | No | string |
-| query | query |  | Yes | string |
-| history | query |  | No | boolean |
-| versionId | query |  | No | integer |
+| Name        | Located in | Description | Required | Schema  |
+| ----------- | ---------- | ----------- | -------- | ------- |
+| namespaceId | query      |             | No       | string  |
+| schemaId    | query      |             | No       | string  |
+| query       | query      |             | Yes      | string  |
+| history     | query      |             | No       | boolean |
+| versionId   | query      |             | No       | integer |
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | A successful response. | [v1beta1SearchResponse](#v1beta1searchresponse) |
-| default | An unexpected error response. | [rpcStatus](#rpcstatus) |
+| Code    | Description                   | Schema                                          |
+| ------- | ----------------------------- | ----------------------------------------------- |
+| 200     | A successful response.        | [v1beta1SearchResponse](#v1beta1searchresponse) |
+| default | An unexpected error response. | [rpcStatus](#rpcstatus)                         |
 
 ### Models
 
 #### SchemaCompatibility
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| SchemaCompatibility | string |  |  |
+| Name                | Type   | Description | Required |
+| ------------------- | ------ | ----------- | -------- |
+| SchemaCompatibility | string |             |          |
 
 #### SchemaFormat
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| SchemaFormat | string |  |  |
+| Name         | Type   | Description | Required |
+| ------------ | ------ | ----------- | -------- |
+| SchemaFormat | string |             |          |
 
 #### protobufAny
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| typeUrl | string |  | No |
-| value | byte |  | No |
+| Name    | Type   | Description | Required |
+| ------- | ------ | ----------- | -------- |
+| typeUrl | string |             | No       |
+| value   | byte   |             | No       |
 
 #### rpcStatus
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| code | integer |  | No |
-| message | string |  | No |
-| details | [ [protobufAny](#protobufany) ] |  | No |
+| Name    | Type                            | Description | Required |
+| ------- | ------------------------------- | ----------- | -------- |
+| code    | integer                         |             | No       |
+| message | string                          |             | No       |
+| details | [ [protobufAny](#protobufany) ] |             | No       |
 
 #### v1beta1CheckCompatibilityResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| v1beta1CheckCompatibilityResponse | object |  |  |
+| Name                              | Type   | Description | Required |
+| --------------------------------- | ------ | ----------- | -------- |
+| v1beta1CheckCompatibilityResponse | object |             |          |
 
 #### v1beta1CreateNamespaceRequest
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| id | string |  | Yes |
-| format | [SchemaFormat](#schemaformat) |  | No |
-| compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
-| description | string |  | No |
+| Name          | Type                                        | Description | Required |
+| ------------- | ------------------------------------------- | ----------- | -------- |
+| id            | string                                      |             | Yes      |
+| format        | [SchemaFormat](#schemaformat)               |             | No       |
+| compatibility | [SchemaCompatibility](#schemacompatibility) |             | No       |
+| description   | string                                      |             | No       |
 
 #### v1beta1CreateNamespaceResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| namespace | [v1beta1Namespace](#v1beta1namespace) |  | No |
+| Name      | Type                                  | Description | Required |
+| --------- | ------------------------------------- | ----------- | -------- |
+| namespace | [v1beta1Namespace](#v1beta1namespace) |             | No       |
 
 #### v1beta1CreateSchemaResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| version | integer |  | No |
-| id | string |  | No |
-| location | string |  | No |
+| Name     | Type    | Description | Required |
+| -------- | ------- | ----------- | -------- |
+| version  | integer |             | No       |
+| id       | string  |             | No       |
+| location | string  |             | No       |
 
 #### v1beta1DeleteNamespaceResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| message | string |  | No |
+| Name    | Type   | Description | Required |
+| ------- | ------ | ----------- | -------- |
+| message | string |             | No       |
 
 #### v1beta1DeleteSchemaResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| message | string |  | No |
+| Name    | Type   | Description | Required |
+| ------- | ------ | ----------- | -------- |
+| message | string |             | No       |
 
 #### v1beta1DeleteVersionResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| message | string |  | No |
+| Name    | Type   | Description | Required |
+| ------- | ------ | ----------- | -------- |
+| message | string |             | No       |
 
 #### v1beta1GetLatestSchemaResponse
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| data | byte |  | No |
+| data | byte |             | No       |
 
 #### v1beta1GetNamespaceResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| namespace | [v1beta1Namespace](#v1beta1namespace) |  | No |
+| Name      | Type                                  | Description | Required |
+| --------- | ------------------------------------- | ----------- | -------- |
+| namespace | [v1beta1Namespace](#v1beta1namespace) |             | No       |
 
 #### v1beta1GetSchemaMetadataResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| format | [SchemaFormat](#schemaformat) |  | No |
-| compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
-| authority | string |  | No |
+| Name          | Type                                        | Description | Required |
+| ------------- | ------------------------------------------- | ----------- | -------- |
+| format        | [SchemaFormat](#schemaformat)               |             | No       |
+| compatibility | [SchemaCompatibility](#schemacompatibility) |             | No       |
+| authority     | string                                      |             | No       |
 
 #### v1beta1GetSchemaResponse
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| data | byte |  | No |
+| data | byte |             | No       |
 
 #### v1beta1ListNamespacesResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| namespaces | [ string ] |  | No |
+| Name       | Type       | Description | Required |
+| ---------- | ---------- | ----------- | -------- |
+| namespaces | [ string ] |             | No       |
 
 #### v1beta1ListSchemasResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| schemas | [ string ] |  | No |
+| Name    | Type       | Description | Required |
+| ------- | ---------- | ----------- | -------- |
+| schemas | [ string ] |             | No       |
 
 #### v1beta1ListVersionsResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| versions | [ integer ] |  | No |
+| Name     | Type        | Description | Required |
+| -------- | ----------- | ----------- | -------- |
+| versions | [ integer ] |             | No       |
 
 #### v1beta1Namespace
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| id | string |  | No |
-| format | [SchemaFormat](#schemaformat) |  | No |
-| Compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
-| description | string |  | No |
-| createdAt | dateTime |  | No |
-| updatedAt | dateTime |  | No |
+| Name          | Type                                        | Description | Required |
+| ------------- | ------------------------------------------- | ----------- | -------- |
+| id            | string                                      |             | No       |
+| format        | [SchemaFormat](#schemaformat)               |             | No       |
+| Compatibility | [SchemaCompatibility](#schemacompatibility) |             | No       |
+| description   | string                                      |             | No       |
+| createdAt     | dateTime                                    |             | No       |
+| updatedAt     | dateTime                                    |             | No       |
 
 #### v1beta1SearchHits
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| namespaceId | string |  | No |
-| schemaId | string |  | No |
-| versionId | integer |  | No |
-| fields | [ string ] |  | No |
-| types | [ string ] |  | No |
-| path | string |  | No |
+| Name        | Type       | Description | Required |
+| ----------- | ---------- | ----------- | -------- |
+| namespaceId | string     |             | No       |
+| schemaId    | string     |             | No       |
+| versionId   | integer    |             | No       |
+| fields      | [ string ] |             | No       |
+| types       | [ string ] |             | No       |
+| path        | string     |             | No       |
 
 #### v1beta1SearchMeta
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| total | long |  | No |
+| Name  | Type | Description | Required |
+| ----- | ---- | ----------- | -------- |
+| total | long |             | No       |
 
 #### v1beta1SearchResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| hits | [ [v1beta1SearchHits](#v1beta1searchhits) ] |  | No |
-| meta | [v1beta1SearchMeta](#v1beta1searchmeta) |  | No |
+| Name | Type                                        | Description | Required |
+| ---- | ------------------------------------------- | ----------- | -------- |
+| hits | [ [v1beta1SearchHits](#v1beta1searchhits) ] |             | No       |
+| meta | [v1beta1SearchMeta](#v1beta1searchmeta)     |             | No       |
 
 #### v1beta1UpdateNamespaceResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| namespace | [v1beta1Namespace](#v1beta1namespace) |  | No |
+| Name      | Type                                  | Description | Required |
+| --------- | ------------------------------------- | ----------- | -------- |
+| namespace | [v1beta1Namespace](#v1beta1namespace) |             | No       |
 
 #### v1beta1UpdateSchemaMetadataResponse
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| format | [SchemaFormat](#schemaformat) |  | No |
-| compatibility | [SchemaCompatibility](#schemacompatibility) |  | No |
-| authority | string |  | No |
+| Name          | Type                                        | Description | Required |
+| ------------- | ------------------------------------------- | ----------- | -------- |
+| format        | [SchemaFormat](#schemaformat)               |             | No       |
+| compatibility | [SchemaCompatibility](#schemacompatibility) |             | No       |
+| authority     | string                                      |             | No       |
