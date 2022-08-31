@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/odpf/salt/cmdx"
 	"github.com/odpf/stencil/cmd"
 )
 
@@ -13,10 +15,21 @@ const (
 )
 
 func main() {
-	command := cmd.New()
+	root := cmd.New()
 
-	if err := command.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(exitError)
+	command, err := root.ExecuteC()
+	if err == nil {
+		return
 	}
+
+	if cmdx.IsCmdErr(err) {
+		if !strings.HasSuffix(err.Error(), "\n") {
+			fmt.Println()
+		}
+		fmt.Println(command.UsageString())
+		os.Exit(exitOK)
+	}
+
+	fmt.Println(err)
+	os.Exit(exitError)
 }
