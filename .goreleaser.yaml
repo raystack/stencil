@@ -1,17 +1,13 @@
 project_name: stencil
-
 release:
-  draft: true
   prerelease: auto
-
 before:
   hooks:
     - go mod tidy
     - make clean
-
 builds:
-  - main: ./main.go
-    id: "stencil"
+  - id: "stencil"
+    main: ./main.go
     binary: stencil
     flags:
       - -a
@@ -23,7 +19,6 @@ builds:
     goarch: [amd64, 386, arm, arm64]
     env:
       - CGO_ENABLED=0
-
 archives:
   - replacements:
       darwin: macos
@@ -34,7 +29,6 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-
 changelog:
   use: "github-native"
   sort: asc
@@ -43,13 +37,10 @@ changelog:
       - "^docs:"
       - "^test:"
       - "^build:"
-
 checksum:
   name_template: "checksums.txt"
-
 snapshot:
   name_template: "{{ .Tag }}-next"
-
 dockers:
   - goos: linux
     goarch: amd64
@@ -60,7 +51,23 @@ dockers:
       - "docker.io/odpf/{{.ProjectName}}:latest"
       - "docker.io/odpf/{{.ProjectName}}:{{ .Version }}"
       - "docker.io/odpf/{{.ProjectName}}:{{ .Tag }}-amd64"
-
+nfpms:
+  - maintainer: ODPF
+    description: Schema registry
+    homepage: https://github.com/odpf/stencil
+    license: Apache 2.0
+    formats:
+      - deb
+      - rpm
+    replacements:
+      darwin: macOS
+scoop:
+  bucket:
+    owner: odpf
+    name: scoop-bucket
+  homepage: "https://github.com/odpf/stencil"
+  description: "Schema registry"
+  license: Apache 2.0
 brews:
   - name: stencil
     homepage: "https://github.com/odpf/stencil"
