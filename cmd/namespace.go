@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/dustin/go-humanize"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
@@ -49,9 +50,6 @@ func listNamespaceCmd() *cobra.Command {
 		Short: "List all namespaces",
 		Long:  "List and filter namespaces.",
 		Args:  cobra.NoArgs,
-		Example: heredoc.Doc(`
-			$ stencil namespace list
-		`),
 		Annotations: map[string]string{
 			"group": "core",
 		},
@@ -102,11 +100,11 @@ func createNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.CreateNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "create",
+		Use:   "create <name>",
 		Short: "Create a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace create <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description> 
+			$ stencil namespace create odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD --d="Event schemas"
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -135,7 +133,6 @@ func createNamespaceCmd() *cobra.Command {
 			}
 
 			namespace := res.GetNamespace()
-
 			spinner.Stop()
 
 			fmt.Printf("Namespace successfully created with id: %s", namespace.GetId())
@@ -163,11 +160,11 @@ func updateNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.UpdateNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "edit",
+		Use:   "edit <id>",
 		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace edit <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
+			$ stencil namespace edit <id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -197,11 +194,13 @@ func updateNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("Namespace successfully updated")
+			fmt.Println(term.SuccessIcon(), term.Green("Namespace successfully updated"))
+			// TODO(Ravi): Print details of updated namespace
 			return nil
 		},
 	}
 
+	// TODO(Ravi) : Edit should not require all flags
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
@@ -222,11 +221,11 @@ func getNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.GetNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "view",
+		Use:   "view <name>",
 		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace view <namespace-id>
+			$ stencil namespace view <id>
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -251,20 +250,12 @@ func getNamespaceCmd() *cobra.Command {
 				return err
 			}
 
-			report := [][]string{}
-
 			namespace := res.GetNamespace()
 
 			spinner.Stop()
 
-			report = append(report, []string{"ID", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
-			report = append(report, []string{
-				namespace.GetId(),
-				namespace.GetFormat().String(),
-				namespace.GetCompatibility().String(),
-				namespace.GetDescription(),
-			})
-			printer.Table(os.Stdout, report)
+			printNamespace(namespace)
+
 			return nil
 		},
 	}
@@ -284,7 +275,7 @@ func deleteNamespaceCmd() *cobra.Command {
 		Short: "Delete a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace delete <namespace-id>
+			$ stencil namespace delete <id>
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -321,4 +312,13 @@ func deleteNamespaceCmd() *cobra.Command {
 	cmd.MarkFlagRequired("host")
 
 	return cmd
+}
+
+func printNamespace(namespace *stencilv1beta1.Namespace) {
+	fmt.Printf("%s \t\t %s \n", term.Bold("Name:"), namespace.GetId())
+	fmt.Printf("%s \t %s \n", term.Bold("Format:"), namespace.GetFormat().String())
+	fmt.Printf("%s \t %s \n", term.Bold("Compatibility:"), namespace.GetCompatibility().String())
+	fmt.Printf("%s \t %s \n\n", term.Bold("Description:"), namespace.GetDescription())
+	fmt.Printf("%s %s, ", term.Grey("Created"), humanize.Time(namespace.GetCreatedAt().AsTime()))
+	fmt.Printf("%s %s \n\n", term.Grey("last updated"), humanize.Time(namespace.GetCreatedAt().AsTime()))
 }
