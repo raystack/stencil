@@ -135,7 +135,7 @@ func createNamespaceCmd() *cobra.Command {
 			namespace := res.GetNamespace()
 			spinner.Stop()
 
-			fmt.Printf("%s Created namespace with id: %s \n", term.SuccessIcon(), namespace.GetId())
+			fmt.Printf("%s Created namespace with id: %s \n", term.Green(term.SuccessIcon()), namespace.GetId())
 			return nil
 		},
 	}
@@ -195,7 +195,7 @@ func updateNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("%s Updated namespace with id: %s \n", term.SuccessIcon(), namespace.GetId())
+			fmt.Printf("%s Updated namespace with id: %s \n", term.Yellow(term.SuccessIcon()), namespace.GetId())
 			return nil
 		},
 	}
@@ -302,7 +302,7 @@ func deleteNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("%s Deleted namespace with id: %s \n", term.SuccessIcon(), id)
+			fmt.Printf("%s Deleted namespace with id: %s \n", term.Red(term.SuccessIcon()), id)
 
 			return nil
 		},
