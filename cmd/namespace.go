@@ -135,7 +135,7 @@ func createNamespaceCmd() *cobra.Command {
 			namespace := res.GetNamespace()
 			spinner.Stop()
 
-			fmt.Printf("Namespace successfully created with id: %s", namespace.GetId())
+			fmt.Printf("%s Created namespace with id: %s \n", term.SuccessIcon(), namespace.GetId())
 			return nil
 		},
 	}
@@ -187,15 +187,15 @@ func updateNamespaceCmd() *cobra.Command {
 			req.Description = desc
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
-			_, err = client.UpdateNamespace(context.Background(), &req)
+			res, err := client.UpdateNamespace(context.Background(), &req)
 			if err != nil {
 				return err
 			}
+			namespace := res.Namespace
 
 			spinner.Stop()
 
-			fmt.Println(term.SuccessIcon(), term.Green("Namespace successfully updated"))
-			// TODO(Ravi): Print details of updated namespace
+			fmt.Printf("%s Updated namespace with id: %s \n", term.SuccessIcon(), namespace.GetId())
 			return nil
 		},
 	}
@@ -302,7 +302,7 @@ func deleteNamespaceCmd() *cobra.Command {
 
 			spinner.Stop()
 
-			fmt.Printf("Namespace successfully deleted")
+			fmt.Printf("%s Deleted namespace with id: %s \n", term.SuccessIcon(), id)
 
 			return nil
 		},
