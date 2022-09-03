@@ -117,13 +117,14 @@ func createNamespaceCmd() *cobra.Command {
 
 			if format == "" {
 				formats := []string{"FORMAT_JSON", "FORMAT_PROTOBUF", "FORMAT_AVRO"}
-				formatAnswer, _ := prompter.Select("Select a default schema format for this namespace:", "", formats)
+				formatAnswer, _ := prompter.Select("Select a default schema format for this namespace:", formats[0], formats)
 				format = formats[formatAnswer]
 			}
 
 			if comp == "" {
 				comps := []string{"COMPATIBILITY_BACKWARD", "COMPATIBILITY_FORWARD", "COMPATIBILITY_FULL"}
-				formatAnswer, _ := prompter.Select("Select a default compatibility for this namespace:", "", comps)
+				formatAnswer, _ := prompter.Select("Select a default compatibility for this namespace:", comps[0], comps)
+				fmt.Println()
 				comp = comps[formatAnswer]
 			}
 
@@ -160,7 +161,7 @@ func createNamespaceCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&desc, "id", "n", "", "Supply an id. Will prompt otherwise")
+	cmd.Flags().StringVarP(&id, "id", "n", "", "Supply an id. Will prompt otherwise")
 	cmd.Flags().StringVarP(&format, "format", "f", "", "Default schema format for schemas in this namespace")
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Default schema compatibility for schemas in this namespace")
 	cmd.Flags().StringVarP(&desc, "desc", "d", "", "Supply a description. Will prompt otherwise")
