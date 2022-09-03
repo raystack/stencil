@@ -8,12 +8,10 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/jhump/protoreflect/desc"
-	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/odpf/salt/printer"
+	"github.com/odpf/salt/term"
 	"github.com/odpf/stencil/pkg/graph"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
@@ -31,7 +29,7 @@ import (
 func SchemaCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "schema",
-		Aliases: []string{"schema"},
+		Aliases: []string{"schemas"},
 		Short:   "Manage schemas",
 		Long: heredoc.Doc(`
 			Work with schemas.
@@ -67,19 +65,16 @@ func SchemaCmd() *cobra.Command {
 }
 
 func listSchemaCmd() *cobra.Command {
-	var host string
+	var host, namespace string
 	var req stencilv1beta1.ListSchemasRequest
 
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List all schemas",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
-			$ stencil schema list <namespace-id>
+			$ stencil schema list -n odpf
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -90,8 +85,7 @@ func listSchemaCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			namespaceID := args[0]
-			req.Id = namespaceID
+			req.Id = namespace
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.ListSchemas(context.Background(), &req)
@@ -105,27 +99,29 @@ func listSchemaCmd() *cobra.Command {
 
 			spinner.Stop()
 
+			// TODO(Ravi): List schemas should also handle namespace not found
 			if len(schemas) == 0 {
-				fmt.Printf("%s has no schemas", namespaceID)
+				fmt.Printf("No schema found in namespace %s.\n", term.Blue(namespace))
 				return nil
 			}
 
-			fmt.Printf(" \nShowing %d schemas \n", len(schemas))
-
-			report = append(report, []string{"SCHEMA"})
+			fmt.Printf("\nShowing %d of %d schemas \n\n", len(schemas), len(schemas))
+			index := 1
 
 			for _, s := range schemas {
-				report = append(report, []string{
-					s,
-				})
+				report = append(report, []string{term.Greenf("#%02d", index), s})
+				index++
 			}
 			printer.Table(os.Stdout, report)
 			return nil
 		},
 	}
 
+	// TODO(Ravi): Namespace should be optional.
+	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("namespace")
+
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	return cmd
 }
@@ -141,9 +137,6 @@ func createSchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema create <schema-id> --namespace=<namespace-id> --format=<schema-format> –-comp=<schema-compatibility> –-filePath=<schema-filePath> 
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -176,7 +169,7 @@ func createSchemaCmd() *cobra.Command {
 			id := res.GetId()
 
 			spinner.Stop()
-			fmt.Printf("schema successfully created with id: %s", id)
+			fmt.Printf("\n%s Created schema with id %s.\n", term.Green(term.SuccessIcon()), term.Cyan(id))
 			return nil
 		},
 	}
@@ -184,7 +177,7 @@ func createSchemaCmd() *cobra.Command {
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Namespace ID")
 	cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
@@ -210,9 +203,6 @@ func checkSchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema check <schema-id> --namespace=<namespace-id> comp=<schema-compatibility> filePath=<schema-filePath>
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -243,6 +233,7 @@ func checkSchemaCmd() *cobra.Command {
 
 			spinner.Stop()
 			fmt.Println("schema is compatible")
+			fmt.Printf("\n%s Schema is compatible.\n", term.Green(term.SuccessIcon()))
 			return nil
 		},
 	}
@@ -273,9 +264,6 @@ func updateSchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema edit <schema-id> --namespace=<namespace-id> --comp=<schema-compatibility>
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -331,9 +319,6 @@ func getSchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema view <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -411,9 +396,6 @@ func deleteSchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema delete <schema-id> --namespace=<namespace-id>
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -618,9 +600,6 @@ func versionSchemaCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema version <schema-id> --namespace=<namespace-id>
 	    	`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -673,108 +652,6 @@ func versionSchemaCmd() *cobra.Command {
 	return cmd
 }
 
-func printCmd() *cobra.Command {
-	var output, filterPathPrefix, host, namespaceID, schemaID string
-	var version int32
-
-	cmd := &cobra.Command{
-		Use:   "print",
-		Short: "Prints snapshot details into .proto files",
-		Args:  cobra.ExactArgs(1),
-		Example: heredoc.Doc(`
-			$ stencil schema print <schema-id> --namespace=<namespace-id> --version <version> --output=<output-path> --filter-path=<path-prefix>
-		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
-			if err != nil {
-				return err
-			}
-			defer conn.Close()
-			client := stencilv1beta1.NewStencilServiceClient(conn)
-
-			schemaID := args[0]
-
-			data, resMetadata, err := fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
-			if err != nil {
-				return err
-			}
-
-			format := stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())]
-
-			if format == "FORMAT_AVRO" || format == "FORMAT_JSON" {
-				if output == "" {
-					fmt.Printf("\n// ----\n// SCHEMA\n// ----\n\n")
-					_, err := os.Stdout.Write(data)
-					if err != nil {
-						return fmt.Errorf("schema is not valid. %w", err)
-					}
-				} else {
-					err = os.WriteFile(output, data, 0666)
-					if err != nil {
-						return err
-					}
-
-					fmt.Printf("Schema successfully written to %s\n", output)
-				}
-			} else {
-				fds := &descriptorpb.FileDescriptorSet{}
-				if err := proto.Unmarshal(data, fds); err != nil {
-					return fmt.Errorf("descriptor set file is not valid. %w", err)
-				}
-				fdsMap, err := desc.CreateFileDescriptorsFromSet(fds)
-				if err != nil {
-					return err
-				}
-
-				var filteredFds []*desc.FileDescriptor
-				for fdName, fd := range fdsMap {
-					if filterPathPrefix != "" && !strings.HasPrefix(fdName, filterPathPrefix) {
-						continue
-					}
-					filteredFds = append(filteredFds, fd)
-				}
-
-				protoPrinter := &protoprint.Printer{}
-
-				if output == "" {
-					for _, fd := range filteredFds {
-						protoAsString, err := protoPrinter.PrintProtoToString(fd)
-						if err != nil {
-							return err
-						}
-						fmt.Printf("\n// ----\n// %s\n// ----\n%s", fd.GetName(), protoAsString)
-					}
-				} else {
-					if err := protoPrinter.PrintProtosToFileSystem(filteredFds, output); err != nil {
-						return err
-					}
-				}
-			}
-			return nil
-		},
-	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
-	cmd.MarkFlagRequired("namespace")
-
-	cmd.Flags().StringVarP(&schemaID, "schema", "s", "", "provide proto repo name")
-	cmd.MarkFlagRequired("name")
-
-	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
-
-	cmd.Flags().StringVarP(&output, "output", "o", "", "the directory path to write the descriptor files, default is to print on stdout")
-
-	cmd.Flags().StringVar(&filterPathPrefix, "filter-path", "", "filter protocol buffer files by path prefix, e.g., --filter-path=google/protobuf")
-
-	return cmd
-}
-
 func graphCmd() *cobra.Command {
 	var host, output, namespaceID string
 	var version int32
@@ -787,9 +664,6 @@ func graphCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil schema graph <schema-id> --namespace=<namespace-id> --version=<version> --output=<output-path>
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
