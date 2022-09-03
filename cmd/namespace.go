@@ -50,9 +50,6 @@ func listNamespaceCmd() *cobra.Command {
 		Short: "List all namespaces",
 		Long:  "List and filter namespaces.",
 		Args:  cobra.NoArgs,
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s := printer.Spin("")
 			defer s.Stop()
@@ -106,9 +103,6 @@ func createNamespaceCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil namespace create odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD --d="Event schemas"
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -121,6 +115,10 @@ func createNamespaceCmd() *cobra.Command {
 
 			id := args[0]
 
+			fmt.Println("\nCreating namespace")
+
+			// TODO(Ravi): Make flags optional and prompt for options
+
 			req.Id = id
 			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
 			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
@@ -131,11 +129,12 @@ func createNamespaceCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// TODO(Ravi): Handle existing namespace error
 
 			namespace := res.GetNamespace()
 			spinner.Stop()
 
-			fmt.Printf("%s Created namespace with id: %s \n", term.Green(term.SuccessIcon()), namespace.GetId())
+			fmt.Printf("%s Created namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
 			return nil
 		},
 	}
@@ -166,9 +165,6 @@ func updateNamespaceCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil namespace edit <id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -191,11 +187,13 @@ func updateNamespaceCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// TODO(Ravi): Handle not found error
+
 			namespace := res.Namespace
 
 			spinner.Stop()
 
-			fmt.Printf("%s Updated namespace with id: %s \n", term.Yellow(term.SuccessIcon()), namespace.GetId())
+			fmt.Printf("%s Updated namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
 			return nil
 		},
 	}
@@ -227,9 +225,6 @@ func getNamespaceCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil namespace view <id>
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -249,6 +244,7 @@ func getNamespaceCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// TODO(Ravi): Handle not found error
 
 			namespace := res.GetNamespace()
 
@@ -277,9 +273,6 @@ func deleteNamespaceCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil namespace delete <id>
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -299,10 +292,11 @@ func deleteNamespaceCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// TODO(Ravi): Handle not found error
 
 			spinner.Stop()
 
-			fmt.Printf("%s Deleted namespace with id: %s \n", term.Red(term.SuccessIcon()), id)
+			fmt.Printf("%s Deleted namespace with id '%s'.\n", term.Red(term.SuccessIcon()), id)
 
 			return nil
 		},
