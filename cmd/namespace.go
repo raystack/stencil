@@ -52,8 +52,8 @@ func listNamespaceCmd() *cobra.Command {
 		Long:  "List and filter namespaces.",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := printer.Spin("")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -70,9 +70,9 @@ func listNamespaceCmd() *cobra.Command {
 
 			namespaces := res.GetNamespaces()
 
-			s.Stop()
+			spinner.Stop()
 
-			fmt.Printf(" \nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
+			fmt.Printf("\nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
 
 			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
 			index := 1
@@ -155,7 +155,7 @@ func createNamespaceCmd() *cobra.Command {
 			}
 
 			namespace := res.GetNamespace()
-			fmt.Printf("\n%s Created namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
+			fmt.Printf("\n%s Created namespace with id %s.\n", term.Green(term.SuccessIcon()), term.Bold(term.Blue(namespace.GetId())))
 			return nil
 		},
 	}
@@ -203,6 +203,7 @@ func editNamespaceCmd() *cobra.Command {
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.UpdateNamespace(context.Background(), &req)
 			spinner.Stop()
+
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
@@ -214,7 +215,7 @@ func editNamespaceCmd() *cobra.Command {
 
 			namespace := res.Namespace
 
-			fmt.Printf("%s Updated namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
+			fmt.Printf("%s Updated namespace with id %s.\n", term.Green(term.SuccessIcon()), term.Bold(term.Blue(namespace.GetId())))
 			return nil
 		},
 	}
@@ -257,7 +258,6 @@ func viewNamespaceCmd() *cobra.Command {
 			defer conn.Close()
 
 			id := args[0]
-
 			req.Id = id
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
@@ -267,7 +267,7 @@ func viewNamespaceCmd() *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
-					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					fmt.Printf("%s Namespace with id %s does not exist.\n", term.FailureIcon(), term.Bold(term.Blue(id)))
 					return nil
 				}
 				return err
@@ -333,7 +333,7 @@ func deleteNamespaceCmd() *cobra.Command {
 				return err
 			}
 
-			fmt.Printf("\n%s Deleted namespace with id '%s'.\n", term.Red(term.SuccessIcon()), id)
+			fmt.Printf("\n%s Deleted namespace with id %s.\n", term.Red(term.SuccessIcon()), term.Bold(term.Blue(id)))
 
 			return nil
 		},
