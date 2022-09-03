@@ -20,14 +20,13 @@ import (
 func NamespaceCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "namespace",
-		Aliases: []string{"namespace"},
+		Aliases: []string{"namespaces"},
 		Short:   "Manage namespaces",
 		Long:    "Work with namespaces.",
 		Example: heredoc.Doc(`
 			$ stencil namespace list
-			$ stencil namespace create
+			$ stencil namespace create -n odpf
 			$ stencil namespace view odpf
-			$ stencil namespace delete odpf
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -36,8 +35,8 @@ func NamespaceCmd() *cobra.Command {
 
 	cmd.AddCommand(listNamespaceCmd())
 	cmd.AddCommand(createNamespaceCmd())
-	cmd.AddCommand(getNamespaceCmd())
-	cmd.AddCommand(updateNamespaceCmd())
+	cmd.AddCommand(viewNamespaceCmd())
+	cmd.AddCommand(editNamespaceCmd())
 	cmd.AddCommand(deleteNamespaceCmd())
 
 	return cmd
@@ -172,7 +171,7 @@ func createNamespaceCmd() *cobra.Command {
 	return cmd
 }
 
-func updateNamespaceCmd() *cobra.Command {
+func editNamespaceCmd() *cobra.Command {
 	var host, format, comp string
 	var desc string
 	var req stencilv1beta1.UpdateNamespaceRequest
@@ -182,7 +181,7 @@ func updateNamespaceCmd() *cobra.Command {
 		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace edit <id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
+			$ stencil namespace edit odpf --format=FORMAT_JSON --comp=COMPATABILITY_BACKWARD --desc="Hello message"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -236,7 +235,7 @@ func updateNamespaceCmd() *cobra.Command {
 	return cmd
 }
 
-func getNamespaceCmd() *cobra.Command {
+func viewNamespaceCmd() *cobra.Command {
 	var host string
 	var req stencilv1beta1.GetNamespaceRequest
 
@@ -245,7 +244,7 @@ func getNamespaceCmd() *cobra.Command {
 		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace view <id>
+			$ stencil namespace view odpf
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -297,7 +296,7 @@ func deleteNamespaceCmd() *cobra.Command {
 		Short: "Delete a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace delete <id>
+			$ stencil namespace delete odpf
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
