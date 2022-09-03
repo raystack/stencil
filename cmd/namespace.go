@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/dustin/go-humanize"
 	"github.com/odpf/salt/printer"
@@ -285,6 +286,18 @@ func deleteNamespaceCmd() *cobra.Command {
 			$ stencil namespace delete <id>
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			id := args[0]
+			confirm := ""
+			prompt := &survey.Input{
+				Message: fmt.Sprintf("You're going to delete namespace `%s`. To confirm, type the namespace id:", id),
+			}
+			survey.AskOne(prompt, &confirm)
+
+			if id != confirm {
+				fmt.Printf("\n%s Namespace id '%s' did not match.\n", term.WarningIcon(), confirm)
+				return nil
+			}
+
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
@@ -293,8 +306,6 @@ func deleteNamespaceCmd() *cobra.Command {
 				return err
 			}
 			defer conn.Close()
-
-			id := args[0]
 
 			req.Id = id
 
@@ -306,13 +317,13 @@ func deleteNamespaceCmd() *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
-					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					fmt.Printf("\n%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
 					return nil
 				}
 				return err
 			}
 
-			fmt.Printf("%s Deleted namespace with id '%s'.\n", term.Red(term.SuccessIcon()), id)
+			fmt.Printf("\n%s Deleted namespace with id '%s'.\n", term.Red(term.SuccessIcon()), id)
 
 			return nil
 		},
