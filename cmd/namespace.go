@@ -12,6 +12,8 @@ import (
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func NamespaceCmd() *cobra.Command {
@@ -115,8 +117,6 @@ func createNamespaceCmd() *cobra.Command {
 
 			id := args[0]
 
-			fmt.Println("\nCreating namespace")
-
 			// TODO(Ravi): Make flags optional and prompt for options
 
 			req.Id = id
@@ -126,14 +126,18 @@ func createNamespaceCmd() *cobra.Command {
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.CreateNamespace(context.Background(), &req)
-			if err != nil {
-				return err
-			}
-			// TODO(Ravi): Handle existing namespace error
-
-			namespace := res.GetNamespace()
 			spinner.Stop()
 
+			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.AlreadyExists == errStatus.Code() {
+					fmt.Printf("%s Namespace with id '%s' already exist.\n", term.FailureIcon(), id)
+					return nil
+				}
+				return err
+			}
+
+			namespace := res.GetNamespace()
 			fmt.Printf("%s Created namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
 			return nil
 		},
@@ -184,14 +188,17 @@ func updateNamespaceCmd() *cobra.Command {
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.UpdateNamespace(context.Background(), &req)
+			spinner.Stop()
 			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.NotFound == errStatus.Code() {
+					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					return nil
+				}
 				return err
 			}
-			// TODO(Ravi): Handle not found error
 
 			namespace := res.Namespace
-
-			spinner.Stop()
 
 			fmt.Printf("%s Updated namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
 			return nil
@@ -241,14 +248,18 @@ func getNamespaceCmd() *cobra.Command {
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.GetNamespace(context.Background(), &req)
+			spinner.Stop()
+
 			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.NotFound == errStatus.Code() {
+					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					return nil
+				}
 				return err
 			}
-			// TODO(Ravi): Handle not found error
 
 			namespace := res.GetNamespace()
-
-			spinner.Stop()
 
 			printNamespace(namespace)
 
@@ -289,12 +300,17 @@ func deleteNamespaceCmd() *cobra.Command {
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			_, err = client.DeleteNamespace(context.Background(), &req)
-			if err != nil {
-				return err
-			}
-			// TODO(Ravi): Handle not found error
 
 			spinner.Stop()
+
+			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.NotFound == errStatus.Code() {
+					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					return nil
+				}
+				return err
+			}
 
 			fmt.Printf("%s Deleted namespace with id '%s'.\n", term.Red(term.SuccessIcon()), id)
 
