@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/dustin/go-humanize"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/salt/term"
+	"github.com/odpf/stencil/pkg/prompt"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -26,9 +26,8 @@ func NamespaceCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil namespace list
 			$ stencil namespace create
-			$ stencil namespace view
-			$ stencil namespace edit
-			$ stencil namespace delete
+			$ stencil namespace view odpf
+			$ stencil namespace delete odpf
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -95,18 +94,44 @@ func listNamespaceCmd() *cobra.Command {
 }
 
 func createNamespaceCmd() *cobra.Command {
-	var host, format, comp string
-	var desc string
+	var host, id, desc, format, comp string
 	var req stencilv1beta1.CreateNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "create <name>",
+		Use:   "create",
 		Short: "Create a namespace",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
-			$ stencil namespace create odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD --d="Event schemas"
+			$ stencil namespace create 
+			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD --d="Event schemas"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			prompter := prompt.New()
+			if id == "" {
+				id, _ = prompter.Input("What is the namespace id?", "")
+			}
+
+			if desc == "" {
+				desc, _ = prompter.Input("Provide a description?", "")
+			}
+
+			if format == "" {
+				formats := []string{"FORMAT_JSON", "FORMAT_PROTOBUF", "FORMAT_AVRO"}
+				formatAnswer, _ := prompter.Select("Select a default schema format for this namespace:", "", formats)
+				format = formats[formatAnswer]
+			}
+
+			if comp == "" {
+				comps := []string{"COMPATIBILITY_BACKWARD", "COMPATIBILITY_FORWARD", "COMPATIBILITY_FULL"}
+				formatAnswer, _ := prompter.Select("Select a default compatibility for this namespace:", "", comps)
+				comp = comps[formatAnswer]
+			}
+
+			req.Id = id
+			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
+			req.Description = desc
+
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
@@ -116,15 +141,6 @@ func createNamespaceCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			id := args[0]
-
-			// TODO(Ravi): Make flags optional and prompt for options
-
-			req.Id = id
-			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
-			req.Description = desc
-
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.CreateNamespace(context.Background(), &req)
 			spinner.Stop()
@@ -132,28 +148,25 @@ func createNamespaceCmd() *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.AlreadyExists == errStatus.Code() {
-					fmt.Printf("%s Namespace with id '%s' already exist.\n", term.FailureIcon(), id)
+					fmt.Printf("\n%s Namespace with id '%s' already exist.\n", term.FailureIcon(), id)
 					return nil
 				}
 				return err
 			}
 
 			namespace := res.GetNamespace()
-			fmt.Printf("%s Created namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
+			fmt.Printf("\n%s Created namespace with id '%s'.\n", term.Green(term.SuccessIcon()), namespace.GetId())
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVarP(&desc, "id", "n", "", "Supply an id. Will prompt otherwise")
+	cmd.Flags().StringVarP(&format, "format", "f", "", "Default schema format for schemas in this namespace")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Default schema compatibility for schemas in this namespace")
+	cmd.Flags().StringVarP(&desc, "desc", "d", "", "Supply a description. Will prompt otherwise")
+
+	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
-	cmd.MarkFlagRequired("format")
-
-	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
-	cmd.MarkFlagRequired("comp")
-
-	cmd.Flags().StringVarP(&desc, "desc", "d", "", "description")
 
 	return cmd
 }
@@ -227,7 +240,7 @@ func getNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.GetNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "view <name>",
+		Use:   "view <id>",
 		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
@@ -279,7 +292,7 @@ func deleteNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.DeleteNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "delete",
+		Use:   "delete <id>",
 		Short: "Delete a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
@@ -287,12 +300,9 @@ func deleteNamespaceCmd() *cobra.Command {
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
-			confirm := ""
-			prompt := &survey.Input{
-				Message: fmt.Sprintf("You're going to delete namespace `%s`. To confirm, type the namespace id:", id),
-			}
-			survey.AskOne(prompt, &confirm)
 
+			prompter := prompt.New()
+			confirm, _ := prompter.Input(fmt.Sprintf("You're going to delete namespace `%s`. To confirm, type the namespace id:", id), "")
 			if id != confirm {
 				fmt.Printf("\n%s Namespace id '%s' did not match.\n", term.WarningIcon(), confirm)
 				return nil
