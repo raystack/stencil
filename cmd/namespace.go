@@ -102,7 +102,7 @@ func createNamespaceCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
 			$ stencil namespace create 
-			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD --d="Event schemas"
+			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD -d="Event schemas"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			prompter := prompt.New()
@@ -181,7 +181,7 @@ func editNamespaceCmd() *cobra.Command {
 		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace edit odpf --format=FORMAT_JSON --comp=COMPATABILITY_BACKWARD --desc="Hello message"
+			$ stencil namespace edit odpf -f FORMAT_JSON -c COMPATABILITY_BACKWARD -d "Hello message"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
