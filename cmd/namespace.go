@@ -102,7 +102,7 @@ func createNamespaceCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
 			$ stencil namespace create 
-			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF --c=COMPATIBILITY_BACKWARD -d="Event schemas"
+			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF -c=COMPATIBILITY_BACKWARD -d="Event schemas"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			prompter := prompt.New()
