@@ -8,7 +8,7 @@ Generate shell completion scripts
 
 Manage namespace
 
-### `stencil namespace create [flags]`
+### `stencil namespace create <id> [flags]`
 
 Create a namespace
 
@@ -19,7 +19,7 @@ Create a namespace
 --host string stencil host address eg: localhost:8000
 ```
 
-### `stencil namespace delete [flags]`
+### `stencil namespace delete <id> [flags]`
 
 Delete a namespace
 
@@ -27,7 +27,7 @@ Delete a namespace
 --host string stencil host address eg: localhost:8000
 ```
 
-### `stencil namespace get [flags]`
+### `stencil namespace view <id> [flags]`
 
 View a namespace
 
@@ -43,9 +43,9 @@ List all namespaces
 --host string stencil host address eg: localhost:8000
 ```
 
-### `stencil namespace update [flags]`
+### `stencil namespace edit <id> [flags]`
 
-Update a namespace
+Edit a namespace
 
 ```
 -c, --comp string schema compatibility

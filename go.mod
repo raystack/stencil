@@ -3,8 +3,10 @@ module github.com/odpf/stencil
 go 1.16
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.3.5
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/dgraph-io/ristretto v0.1.0
+	github.com/dustin/go-humanize v1.0.0
 	github.com/emicklei/dot v0.16.0
 	github.com/georgysavva/scany v0.2.9
 	github.com/golang-migrate/migrate/v4 v4.14.1

@@ -6,25 +6,27 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/dustin/go-humanize"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/salt/term"
+	"github.com/odpf/stencil/pkg/prompt"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func NamespaceCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "namespace",
-		Aliases: []string{"namespace"},
+		Aliases: []string{"namespaces"},
 		Short:   "Manage namespaces",
 		Long:    "Work with namespaces.",
 		Example: heredoc.Doc(`
 			$ stencil namespace list
-			$ stencil namespace create
-			$ stencil namespace view
-			$ stencil namespace edit
-			$ stencil namespace delete
+			$ stencil namespace create -n odpf
+			$ stencil namespace view odpf
 		`),
 		Annotations: map[string]string{
 			"group": "core",
@@ -33,8 +35,8 @@ func NamespaceCmd() *cobra.Command {
 
 	cmd.AddCommand(listNamespaceCmd())
 	cmd.AddCommand(createNamespaceCmd())
-	cmd.AddCommand(getNamespaceCmd())
-	cmd.AddCommand(updateNamespaceCmd())
+	cmd.AddCommand(viewNamespaceCmd())
+	cmd.AddCommand(editNamespaceCmd())
 	cmd.AddCommand(deleteNamespaceCmd())
 
 	return cmd
@@ -49,15 +51,9 @@ func listNamespaceCmd() *cobra.Command {
 		Short: "List all namespaces",
 		Long:  "List and filter namespaces.",
 		Args:  cobra.NoArgs,
-		Example: heredoc.Doc(`
-			$ stencil namespace list
-		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			s := printer.Spin("")
-			defer s.Stop()
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 
 			conn, err := grpc.Dial(host, grpc.WithInsecure())
 			if err != nil {
@@ -74,9 +70,9 @@ func listNamespaceCmd() *cobra.Command {
 
 			namespaces := res.GetNamespaces()
 
-			s.Stop()
+			spinner.Stop()
 
-			fmt.Printf(" \nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
+			fmt.Printf("\nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
 
 			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
 			index := 1
@@ -97,21 +93,45 @@ func listNamespaceCmd() *cobra.Command {
 }
 
 func createNamespaceCmd() *cobra.Command {
-	var host, format, comp string
-	var desc string
+	var host, id, desc, format, comp string
 	var req stencilv1beta1.CreateNamespaceRequest
 
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create a namespace",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
-			$ stencil namespace create <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description> 
+			$ stencil namespace create 
+			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF -c=COMPATIBILITY_BACKWARD -d="Event schemas"
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			prompter := prompt.New()
+			if id == "" {
+				id, _ = prompter.Input("What is the namespace id?", "")
+			}
+
+			if desc == "" {
+				desc, _ = prompter.Input("Provide a description?", "")
+			}
+
+			if format == "" {
+				formats := []string{"FORMAT_JSON", "FORMAT_PROTOBUF", "FORMAT_AVRO"}
+				formatAnswer, _ := prompter.Select("Select a default schema format for this namespace:", formats[0], formats)
+				format = formats[formatAnswer]
+			}
+
+			if comp == "" {
+				comps := []string{"COMPATIBILITY_BACKWARD", "COMPATIBILITY_FORWARD", "COMPATIBILITY_FULL"}
+				formatAnswer, _ := prompter.Select("Select a default compatibility for this namespace:", comps[0], comps)
+				fmt.Println()
+				comp = comps[formatAnswer]
+			}
+
+			req.Id = id
+			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
+			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
+			req.Description = desc
+
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
@@ -121,57 +141,48 @@ func createNamespaceCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			id := args[0]
-
-			req.Id = id
-			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
-			req.Description = desc
-
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.CreateNamespace(context.Background(), &req)
+			spinner.Stop()
+
 			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.AlreadyExists == errStatus.Code() {
+					fmt.Printf("\n%s Namespace with id '%s' already exist.\n", term.FailureIcon(), id)
+					return nil
+				}
 				return err
 			}
 
 			namespace := res.GetNamespace()
-
-			spinner.Stop()
-
-			fmt.Printf("Namespace successfully created with id: %s", namespace.GetId())
+			fmt.Printf("\n%s Created namespace with id %s.\n", term.Green(term.SuccessIcon()), term.Bold(term.Blue(namespace.GetId())))
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVarP(&id, "id", "n", "", "Supply an id. Will prompt otherwise")
+	cmd.Flags().StringVarP(&format, "format", "f", "", "Default schema format for schemas in this namespace")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Default schema compatibility for schemas in this namespace")
+	cmd.Flags().StringVarP(&desc, "desc", "d", "", "Supply a description. Will prompt otherwise")
+
+	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
-	cmd.MarkFlagRequired("format")
-
-	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
-	cmd.MarkFlagRequired("comp")
-
-	cmd.Flags().StringVarP(&desc, "desc", "d", "", "description")
 
 	return cmd
 }
 
-func updateNamespaceCmd() *cobra.Command {
+func editNamespaceCmd() *cobra.Command {
 	var host, format, comp string
 	var desc string
 	var req stencilv1beta1.UpdateNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "edit",
+		Use:   "edit <id>",
 		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace edit <namespace-id> --format=<schema-format> --comp=<schema-compatibility> --desc=<description>
+			$ stencil namespace edit odpf -f FORMAT_JSON -c COMPATABILITY_BACKWARD -d "Hello message"
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -190,18 +201,26 @@ func updateNamespaceCmd() *cobra.Command {
 			req.Description = desc
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
-			_, err = client.UpdateNamespace(context.Background(), &req)
+			res, err := client.UpdateNamespace(context.Background(), &req)
+			spinner.Stop()
+
 			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.NotFound == errStatus.Code() {
+					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					return nil
+				}
 				return err
 			}
 
-			spinner.Stop()
+			namespace := res.Namespace
 
-			fmt.Printf("Namespace successfully updated")
+			fmt.Printf("%s Updated namespace with id %s.\n", term.Green(term.SuccessIcon()), term.Bold(term.Blue(namespace.GetId())))
 			return nil
 		},
 	}
 
+	// TODO(Ravi) : Edit should not require all flags
 	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
@@ -217,20 +236,17 @@ func updateNamespaceCmd() *cobra.Command {
 	return cmd
 }
 
-func getNamespaceCmd() *cobra.Command {
+func viewNamespaceCmd() *cobra.Command {
 	var host string
 	var req stencilv1beta1.GetNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "view",
+		Use:   "view <id>",
 		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace view <namespace-id>
+			$ stencil namespace view odpf
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -242,29 +258,25 @@ func getNamespaceCmd() *cobra.Command {
 			defer conn.Close()
 
 			id := args[0]
-
 			req.Id = id
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.GetNamespace(context.Background(), &req)
+			spinner.Stop()
+
 			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.NotFound == errStatus.Code() {
+					fmt.Printf("%s Namespace with id %s does not exist.\n", term.FailureIcon(), term.Bold(term.Blue(id)))
+					return nil
+				}
 				return err
 			}
 
-			report := [][]string{}
-
 			namespace := res.GetNamespace()
 
-			spinner.Stop()
+			printNamespace(namespace)
 
-			report = append(report, []string{"ID", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
-			report = append(report, []string{
-				namespace.GetId(),
-				namespace.GetFormat().String(),
-				namespace.GetCompatibility().String(),
-				namespace.GetDescription(),
-			})
-			printer.Table(os.Stdout, report)
 			return nil
 		},
 	}
@@ -280,16 +292,22 @@ func deleteNamespaceCmd() *cobra.Command {
 	var req stencilv1beta1.DeleteNamespaceRequest
 
 	cmd := &cobra.Command{
-		Use:   "delete",
+		Use:   "delete <id>",
 		Short: "Delete a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace delete <namespace-id>
+			$ stencil namespace delete odpf
 		`),
-		Annotations: map[string]string{
-			"group": "core",
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			id := args[0]
+
+			prompter := prompt.New()
+			confirm, _ := prompter.Input(fmt.Sprintf("You're going to delete namespace `%s`. To confirm, type the namespace id:", id), "")
+			if id != confirm {
+				fmt.Printf("\n%s Namespace id '%s' did not match.\n", term.WarningIcon(), confirm)
+				return nil
+			}
+
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
@@ -299,19 +317,23 @@ func deleteNamespaceCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			id := args[0]
-
 			req.Id = id
 
 			client := stencilv1beta1.NewStencilServiceClient(conn)
 			_, err = client.DeleteNamespace(context.Background(), &req)
-			if err != nil {
-				return err
-			}
 
 			spinner.Stop()
 
-			fmt.Printf("Namespace successfully deleted")
+			if err != nil {
+				errStatus, _ := status.FromError(err)
+				if codes.NotFound == errStatus.Code() {
+					fmt.Printf("\n%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					return nil
+				}
+				return err
+			}
+
+			fmt.Printf("\n%s Deleted namespace with id %s.\n", term.Red(term.SuccessIcon()), term.Bold(term.Blue(id)))
 
 			return nil
 		},
@@ -321,4 +343,13 @@ func deleteNamespaceCmd() *cobra.Command {
 	cmd.MarkFlagRequired("host")
 
 	return cmd
+}
+
+func printNamespace(namespace *stencilv1beta1.Namespace) {
+	fmt.Printf("%s \t\t %s \n", term.Bold("Name:"), namespace.GetId())
+	fmt.Printf("%s \t %s \n", term.Bold("Format:"), namespace.GetFormat().String())
+	fmt.Printf("%s \t %s \n", term.Bold("Compatibility:"), namespace.GetCompatibility().String())
+	fmt.Printf("%s \t %s \n\n", term.Bold("Description:"), namespace.GetDescription())
+	fmt.Printf("%s %s, ", term.Grey("Created"), humanize.Time(namespace.GetCreatedAt().AsTime()))
+	fmt.Printf("%s %s \n\n", term.Grey("last updated"), humanize.Time(namespace.GetCreatedAt().AsTime()))
 }

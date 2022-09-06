@@ -125,7 +125,7 @@ $ echo "{
 $ stencil namespace create quickstart -c COMPATIBILITY_BACKWARD -f FORMAT_PROTOBUF -d "For quickstart guide" --host http://localhost:8000
 
 # List namespaces
-$ stencil namespace list
+$ stencil namespace list --host http://localhost:8000
 
 # Upload generated schema proto descriptor file to server with schema name as `example` under `quickstart` namespace.
 $ stencil schema create example --namespace=quickstart –-filePath=schema.desc
