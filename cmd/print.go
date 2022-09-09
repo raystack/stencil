@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
@@ -47,25 +46,20 @@ func printCmd() *cobra.Command {
 			}
 			spinner.Stop()
 
-			page := term.New()
-			page.Start()
-			defer page.Stop()
-
 			format := stencilv1beta1.Schema_Format_name[int32(meta.GetFormat())]
 
 			switch format {
 			case "FORMAT_AVRO":
-				if err := printSchema(page.Out, data, output); err != nil {
+				if err := printSchema(data, output); err != nil {
 					return err
 				}
 			case "FORMAT_JSON":
-				if err := printSchema(page.Out, data, output); err != nil {
+				if err := printSchema(data, output); err != nil {
 					return err
 				}
 			case "FORMAT_PROTOBUF":
-				printProtoSchema(page.Out, data, filterPathPrefix, output)
+				printProtoSchema(data, filterPathPrefix, output)
 			default:
-				page.Stop()
 				fmt.Printf("%s Unknown schema format: %s\n", term.Red(term.FailureIcon()), format)
 			}
 			return nil
@@ -87,21 +81,26 @@ func printCmd() *cobra.Command {
 	return cmd
 }
 
-func printSchema(writer io.Writer, data []byte, output string) error {
+func printSchema(data []byte, output string) error {
 	if output != "" {
 		if err := os.WriteFile(output, data, 0666); err != nil {
 			return err
 		}
+		return nil
 	}
 
-	err := quick.Highlight(writer, string(data), "JSON", "terminal16m", "solarized-light")
+	page := term.New()
+	page.Start()
+	defer page.Stop()
+
+	err := quick.Highlight(page.Out, string(data), "JSON", "terminal16m", "solarized-light")
 	if err != nil {
-		writer.Write(data)
+		page.Out.Write(data)
 	}
 	return nil
 }
 
-func printProtoSchema(writer io.Writer, data []byte, filterPathPrefix string, output string) error {
+func printProtoSchema(data []byte, filterPathPrefix string, output string) error {
 	fds := &descriptorpb.FileDescriptorSet{}
 	if err := proto.Unmarshal(data, fds); err != nil {
 		return fmt.Errorf("descriptor set file is not valid. %w", err)
@@ -124,6 +123,7 @@ func printProtoSchema(writer io.Writer, data []byte, filterPathPrefix string, ou
 		if err := protoPrinter.PrintProtosToFileSystem(filteredFds, output); err != nil {
 			return err
 		}
+		return nil
 	}
 
 	var schema string
@@ -136,9 +136,13 @@ func printProtoSchema(writer io.Writer, data []byte, filterPathPrefix string, ou
 		schema = schema + fmt.Sprintf("\n//Schema file:: %s\n\n%s", fd.GetName(), protoAsString)
 	}
 
-	err = quick.Highlight(writer, schema, "Protocol Buffer", "terminal16m", "solarized-light")
+	page := term.New()
+	page.Start()
+	defer page.Stop()
+
+	err = quick.Highlight(page.Out, schema, "Protocol Buffer", "terminal16m", "solarized-light")
 	if err != nil {
-		fmt.Fprint(writer, schema)
+		fmt.Fprint(page.Out, schema)
 	}
 
 	return nil
