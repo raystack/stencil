@@ -12,7 +12,6 @@ import (
 	"github.com/odpf/stencil/pkg/prompt"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -54,13 +53,12 @@ func listNamespaceCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
-			client := stencilv1beta1.NewStencilServiceClient(conn)
+			defer cancel()
+
 			res, err := client.ListNamespaces(context.Background(), &req)
 			if err != nil {
 				return err
@@ -135,13 +133,12 @@ func createNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.CreateNamespace(context.Background(), &req)
 			spinner.Stop()
 
@@ -187,11 +184,11 @@ func editNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			id := args[0]
 
@@ -200,7 +197,6 @@ func editNamespaceCmd() *cobra.Command {
 			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
 			req.Description = desc
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.UpdateNamespace(context.Background(), &req)
 			spinner.Stop()
 
@@ -251,16 +247,15 @@ func viewNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			id := args[0]
 			req.Id = id
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.GetNamespace(context.Background(), &req)
 			spinner.Stop()
 
@@ -311,15 +306,14 @@ func deleteNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			req.Id = id
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			_, err = client.DeleteNamespace(context.Background(), &req)
 
 			spinner.Stop()
