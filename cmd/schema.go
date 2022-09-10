@@ -17,7 +17,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -79,15 +78,13 @@ func listSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			req.Id = namespace
-
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.ListSchemas(context.Background(), &req)
 			if err != nil {
 				return err
@@ -147,11 +144,12 @@ func createSchemaCmd() *cobra.Command {
 			}
 			req.Data = fileData
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
+
 			schemaID := args[0]
 
 			req.NamespaceId = namespaceID
@@ -159,7 +157,6 @@ func createSchemaCmd() *cobra.Command {
 			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
 			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.CreateSchema(context.Background(), &req)
 			if err != nil {
 				errStatus := status.Convert(err)
@@ -213,18 +210,18 @@ func checkSchemaCmd() *cobra.Command {
 			}
 			req.Data = fileData
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
+
 			schemaID := args[0]
 
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
 			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			_, err = client.CheckCompatibility(context.Background(), &req)
 			if err != nil {
 				errStatus := status.Convert(err)
@@ -268,11 +265,11 @@ func updateSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			schemaID := args[0]
 
@@ -280,7 +277,6 @@ func updateSchemaCmd() *cobra.Command {
 			req.SchemaId = schemaID
 			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			_, err = client.UpdateSchemaMetadata(context.Background(), &req)
 			if err != nil {
 				return err
@@ -323,15 +319,13 @@ func getSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			schemaID := args[0]
-
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 
 			data, resMetadata, err = fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
 			if err != nil {
@@ -400,15 +394,13 @@ func deleteSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			schemaID := args[0]
-
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 
 			if version == 0 {
 				req.NamespaceId = namespaceID
@@ -521,12 +513,11 @@ func diffSchemaCmd() *cobra.Command {
 				VersionId:   laterVersion,
 			}
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
-			client := stencilv1beta1.NewStencilServiceClient(conn)
+			defer cancel()
 
 			meta, err := client.GetSchemaMetadata(context.Background(), &metaReq)
 			if err != nil {
@@ -604,18 +595,17 @@ func versionSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			schemaID := args[0]
 
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.ListVersions(context.Background(), &req)
 			if err != nil {
 				return err
@@ -665,13 +655,11 @@ func graphCmd() *cobra.Command {
 			$ stencil schema graph <schema-id> --namespace=<namespace-id> --version=<version> --output=<output-path>
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
-
-			client := stencilv1beta1.NewStencilServiceClient(conn)
+			defer cancel()
 
 			schemaID := args[0]
 
