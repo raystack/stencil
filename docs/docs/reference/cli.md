@@ -127,7 +127,7 @@ List all schemas
 --host string stencil host address eg: localhost:8000
 ```
 
-### `stencil schema print [flags]`
+### `stencil schema print <id> [flags]`
 
 Prints snapshot details into .proto files
 
