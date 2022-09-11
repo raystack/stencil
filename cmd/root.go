@@ -6,6 +6,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var dict = map[string]string{
+	"COMPATIBILITY_BACKWARD": "backward",
+	"COMPATIBILITY_FORWARD":  "forward",
+	"COMPATIBILITY_FULL":     "full",
+	"FORMAT_PROTOBUF":        "protobuf",
+	"FORMAT_JSON":            "json",
+	"FORMAT_AVRO":            "avro",
+}
+
 // New root command
 func New() *cobra.Command {
 	var cmd = &cobra.Command{

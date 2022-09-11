@@ -44,9 +44,12 @@ func infoSchemaCmd() *cobra.Command {
 			}
 			spinner.Stop()
 
-			fmt.Printf("%s \t\t %s \n", term.Bold("Format:"), info.GetFormat())
-			fmt.Printf("%s \t\t %s \n", term.Bold("Compatibility:"), info.GetCompatibility())
-			fmt.Printf("%s \t\t %s \n", term.Bold("Authority:"), info.GetAuthority())
+			fmt.Printf("\n%s\n", term.Blue(args[0]))
+			fmt.Printf("\n%s\n\n", term.Grey("No description available for this schema."))
+			fmt.Printf("%s \t %s \n", term.Grey("Namespace:"), namespace)
+			fmt.Printf("%s \t %s \n", term.Grey("Format:"), dict[info.GetFormat().String()])
+			fmt.Printf("%s \t %s \n", term.Grey("Compatibility:"), dict[info.GetCompatibility().String()])
+			fmt.Printf("%s \t %s \n\n", term.Grey("Authority:"), dict[info.GetAuthority()])
 			return nil
 		},
 	}

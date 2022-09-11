@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func graphCmd() *cobra.Command {
+func graphSchemaCmd() *cobra.Command {
 	var host, output, namespaceID string
 	var version int32
 
