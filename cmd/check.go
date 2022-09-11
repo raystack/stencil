@@ -19,12 +19,16 @@ func checkSchemaCmd() *cobra.Command {
 	var req stencilv1beta1.CheckCompatibilityRequest
 
 	cmd := &cobra.Command{
-		Use:   "check",
-		Short: "Check schema compatibility",
+		Use:   "check <id>",
 		Args:  cobra.ExactArgs(1),
+		Short: "Check schema compatibility",
+		Long: heredoc.Doc(`
+			Check schema compatibility of a local schema
+			against a remote schema(against) on stencil server.
+		`),
 		Example: heredoc.Doc(`
-			$ stencil schema check <schema-id> --namespace=<namespace-id> comp=<schema-compatibility> filePath=<schema-filePath>
-	    	`),
+			$ stencil schema check <id> -n odpf -c COMPATABILITY_BACKWARD -F ./booking.desc
+	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -54,7 +58,6 @@ func checkSchemaCmd() *cobra.Command {
 			}
 
 			spinner.Stop()
-			fmt.Println("schema is compatible")
 			fmt.Printf("\n%s Schema is compatible.\n", term.Green(term.SuccessIcon()))
 			return nil
 		},

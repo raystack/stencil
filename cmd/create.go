@@ -8,6 +8,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
+	"github.com/odpf/salt/prompt"
 	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
@@ -23,18 +24,30 @@ func createSchemaCmd() *cobra.Command {
 		Short: "Create a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema create booking -n odpf -f FORMAT_JSON –c COMPATABILITY_BACKWARD –-filePath=<schema-filePath> 
+			$ stencil schema create booking -n odpf –F booking.json
+			$ stencil schema create booking -n odpf -f FORMAT_JSON –c COMPATABILITY_BACKWARD –F ./booking.json 
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			spinner := printer.Spin("")
-			defer spinner.Stop()
-
+			prompter := prompt.New()
 			fileData, err := os.ReadFile(filePath)
 			if err != nil {
 				return err
 			}
 			req.Data = fileData
 
+			if format == "" {
+				formatAnswer, _ := prompter.Select("Select schema format:", formats[0], formats)
+				format = formats[formatAnswer]
+			}
+
+			if comp == "" {
+				formatAnswer, _ := prompter.Select("Select schema compatibility:", comps[0], comps)
+				fmt.Println()
+				comp = comps[formatAnswer]
+			}
+
+			spinner := printer.Spin("")
+			defer spinner.Stop()
 			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
@@ -69,10 +82,8 @@ func createSchemaCmd() *cobra.Command {
 	cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
-	cmd.MarkFlagRequired("format")
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
-	cmd.MarkFlagRequired("comp")
 
 	cmd.Flags().StringVarP(&filePath, "filePath", "F", "", "path to the schema file")
 	cmd.MarkFlagRequired("filePath")
