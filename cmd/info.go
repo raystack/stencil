@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
@@ -52,6 +55,68 @@ func infoSchemaCmd() *cobra.Command {
 	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Provide schema namespace")
+	cmd.MarkFlagRequired("namespace")
+
+	return cmd
+}
+
+func versionSchemaCmd() *cobra.Command {
+	var host, namespaceID string
+	var req stencilv1beta1.ListVersionsRequest
+
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: "Version(s) of a schema",
+		Args:  cobra.ExactArgs(1),
+		Example: heredoc.Doc(`
+			$ stencil schema version <schema-id> --namespace=<namespace-id>
+	    	`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			spinner := printer.Spin("")
+			defer spinner.Stop()
+
+			client, cancel, err := createClient(cmd)
+			if err != nil {
+				return err
+			}
+			defer cancel()
+
+			schemaID := args[0]
+
+			req.NamespaceId = namespaceID
+			req.SchemaId = schemaID
+
+			res, err := client.ListVersions(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			report := [][]string{}
+			versions := res.GetVersions()
+
+			spinner.Stop()
+
+			if len(versions) == 0 {
+				fmt.Printf("%s has no versions in %s", schemaID, namespaceID)
+				return nil
+			}
+
+			report = append(report, []string{"VERSIONS(s)"})
+
+			for _, v := range versions {
+				report = append(report, []string{
+					strconv.FormatInt(int64(v), 10),
+				})
+			}
+			printer.Table(os.Stdout, report)
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
 	cmd.MarkFlagRequired("namespace")
 
 	return cmd

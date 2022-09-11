@@ -2,27 +2,17 @@ package cmd
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strconv"
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/salt/term"
-	"github.com/odpf/stencil/pkg/graph"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
-	"github.com/yudai/gojsondiff"
-	"github.com/yudai/gojsondiff/formatter"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/reflect/protodesc"
-	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func SchemaCmd() *cobra.Command {
@@ -179,67 +169,6 @@ func createSchemaCmd() *cobra.Command {
 	return cmd
 }
 
-func checkSchemaCmd() *cobra.Command {
-	var host, comp, filePath, namespaceID string
-	var req stencilv1beta1.CheckCompatibilityRequest
-
-	cmd := &cobra.Command{
-		Use:   "check",
-		Short: "Check schema compatibility",
-		Args:  cobra.ExactArgs(1),
-		Example: heredoc.Doc(`
-			$ stencil schema check <schema-id> --namespace=<namespace-id> comp=<schema-compatibility> filePath=<schema-filePath>
-	    	`),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			spinner := printer.Spin("")
-			defer spinner.Stop()
-
-			fileData, err := ioutil.ReadFile(filePath)
-			if err != nil {
-				return err
-			}
-			req.Data = fileData
-
-			client, cancel, err := createClient(cmd)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			schemaID := args[0]
-
-			req.NamespaceId = namespaceID
-			req.SchemaId = schemaID
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
-
-			_, err = client.CheckCompatibility(context.Background(), &req)
-			if err != nil {
-				errStatus := status.Convert(err)
-				return errors.New(errStatus.Message())
-			}
-
-			spinner.Stop()
-			fmt.Println("schema is compatible")
-			fmt.Printf("\n%s Schema is compatible.\n", term.Green(term.SuccessIcon()))
-			return nil
-		},
-	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
-
-	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
-	cmd.MarkFlagRequired("comp")
-
-	cmd.Flags().StringVarP(&filePath, "filePath", "F", "", "path to the schema file")
-	cmd.MarkFlagRequired("filePath")
-
-	return cmd
-}
-
 func updateSchemaCmd() *cobra.Command {
 	var host, comp, namespaceID string
 	var req stencilv1beta1.UpdateSchemaMetadataRequest
@@ -354,272 +283,6 @@ func deleteSchemaCmd() *cobra.Command {
 	return cmd
 }
 
-func diffSchemaCmd() *cobra.Command {
-	var fullname string
-	var host string
-	var namespace string
-	var earlierVersion int32
-	var laterVersion int32
-
-	var schemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
-		res, err := client.GetSchema(context.Background(), req)
-		if err != nil {
-			return nil, err
-		}
-		return res.Data, nil
-	}
-	var protoSchemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
-		if fullname == "" {
-			return nil, fmt.Errorf("fullname flag is mandator for FORMAT_PROTO")
-		}
-		res, err := client.GetSchema(context.Background(), req)
-		if err != nil {
-			return nil, err
-		}
-		fds := &descriptorpb.FileDescriptorSet{}
-		if err := proto.Unmarshal(res.Data, fds); err != nil {
-			return nil, fmt.Errorf("descriptor set file is not valid. %w", err)
-		}
-		files, err := protodesc.NewFiles(fds)
-		if err != nil {
-			return nil, fmt.Errorf("file is not fully contained descriptor file. hint: generate file descriptorset with --include_imports option. %w", err)
-		}
-		desc, err := files.FindDescriptorByName(protoreflect.FullName(fullname))
-		if err != nil {
-			return nil, fmt.Errorf("unable to find message. %w", err)
-		}
-		mDesc, ok := desc.(protoreflect.MessageDescriptor)
-		if !ok {
-			return nil, fmt.Errorf("not a message desc")
-		}
-		jsonByte, err := protojson.Marshal(protodesc.ToDescriptorProto(mDesc))
-		if err != nil {
-			return nil, fmt.Errorf("fail to convert json. %w", err)
-		}
-		return jsonByte, nil
-	}
-
-	cmd := &cobra.Command{
-		Use:   "diff",
-		Short: "Diff(s) of two schema versions",
-		Args:  cobra.ExactArgs(1),
-		Example: heredoc.Doc(`
-		$ stencil schema diff <schema-id> --namespace=<namespace-id> --later-version=<later-version> --earlier-version=<earlier-version> --fullname=<fullname>
-		`),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			spinner := printer.Spin("")
-			defer spinner.Stop()
-
-			schemaID := args[0]
-
-			metaReq := stencilv1beta1.GetSchemaMetadataRequest{
-				NamespaceId: namespace,
-				SchemaId:    schemaID,
-			}
-			eReq := &stencilv1beta1.GetSchemaRequest{
-				NamespaceId: namespace,
-				SchemaId:    schemaID,
-				VersionId:   earlierVersion,
-			}
-			lReq := &stencilv1beta1.GetSchemaRequest{
-				NamespaceId: namespace,
-				SchemaId:    schemaID,
-				VersionId:   laterVersion,
-			}
-
-			client, cancel, err := createClient(cmd)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			meta, err := client.GetSchemaMetadata(context.Background(), &metaReq)
-			if err != nil {
-				return err
-			}
-
-			var getSchema = schemaFetcher
-			if meta.Format == *stencilv1beta1.Schema_FORMAT_PROTOBUF.Enum() {
-				getSchema = protoSchemaFetcher
-			}
-
-			eJson, err := getSchema(eReq, client)
-			if err != nil {
-				return err
-			}
-
-			lJson, err := getSchema(lReq, client)
-			if err != nil {
-				return err
-			}
-
-			d, err := gojsondiff.New().Compare(eJson, lJson)
-			if err != nil {
-				return err
-			}
-
-			var placeholder map[string]interface{}
-			json.Unmarshal(eJson, &placeholder)
-			config := formatter.AsciiFormatterConfig{
-				ShowArrayIndex: true,
-				Coloring:       true,
-			}
-
-			formatter := formatter.NewAsciiFormatter(placeholder, config)
-			diffString, err := formatter.Format(d)
-			if err != nil {
-				return err
-			}
-
-			spinner.Stop()
-			if !d.Modified() {
-				fmt.Print("No diff!")
-				return nil
-			}
-			fmt.Print(diffString)
-
-			return nil
-		},
-	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
-	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "earlier version of the schema")
-	cmd.MarkFlagRequired("earlier-version")
-	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "later version of the schema")
-	cmd.MarkFlagRequired("later-version")
-	cmd.Flags().StringVar(&fullname, "fullname", "", "only required for FORMAT_PROTO. fullname of proto schema eg: odpf.common.v1.Version")
-	return cmd
-}
-
-func versionSchemaCmd() *cobra.Command {
-	var host, namespaceID string
-	var req stencilv1beta1.ListVersionsRequest
-
-	cmd := &cobra.Command{
-		Use:   "version",
-		Short: "Version(s) of a schema",
-		Args:  cobra.ExactArgs(1),
-		Example: heredoc.Doc(`
-			$ stencil schema version <schema-id> --namespace=<namespace-id>
-	    	`),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			spinner := printer.Spin("")
-			defer spinner.Stop()
-
-			client, cancel, err := createClient(cmd)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			schemaID := args[0]
-
-			req.NamespaceId = namespaceID
-			req.SchemaId = schemaID
-
-			res, err := client.ListVersions(context.Background(), &req)
-			if err != nil {
-				return err
-			}
-
-			report := [][]string{}
-			versions := res.GetVersions()
-
-			spinner.Stop()
-
-			if len(versions) == 0 {
-				fmt.Printf("%s has no versions in %s", schemaID, namespaceID)
-				return nil
-			}
-
-			report = append(report, []string{"VERSIONS(s)"})
-
-			for _, v := range versions {
-				report = append(report, []string{
-					strconv.FormatInt(int64(v), 10),
-				})
-			}
-			printer.Table(os.Stdout, report)
-			return nil
-		},
-	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
-
-	return cmd
-}
-
-func graphCmd() *cobra.Command {
-	var host, output, namespaceID string
-	var version int32
-
-	cmd := &cobra.Command{
-		Use:     "graph",
-		Aliases: []string{"g"},
-		Short:   "Generate file descriptorset dependencies graph",
-		Args:    cobra.ExactArgs(1),
-		Example: heredoc.Doc(`
-			$ stencil schema graph <schema-id> --namespace=<namespace-id> --version=<version> --output=<output-path>
-		`),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			client, cancel, err := createClient(cmd)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			schemaID := args[0]
-
-			data, resMetadata, err := fetchSchemaAndMeta(client, version, namespaceID, schemaID)
-			if err != nil {
-				return err
-			}
-
-			format := stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())]
-			if format != "FORMAT_PROTOBUF" {
-				fmt.Printf("cannot create graph for %s", format)
-				return nil
-			}
-
-			msg := &descriptorpb.FileDescriptorSet{}
-			err = proto.Unmarshal(data, msg)
-			if err != nil {
-				return fmt.Errorf("invalid file descriptorset file. %w", err)
-			}
-
-			graph, err := graph.GetProtoFileDependencyGraph(msg)
-			if err != nil {
-				return err
-			}
-			if err = os.WriteFile(output, []byte(graph.String()), 0666); err != nil {
-				return err
-			}
-
-			fmt.Println(".dot file has been created in", output)
-			return nil
-		},
-	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
-	cmd.MarkFlagRequired("namespace")
-
-	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
-
-	cmd.Flags().StringVarP(&output, "output", "o", "./proto_vis.dot", "write to .dot file")
-
-	return cmd
-}
-
 func fetchSchemaAndMeta(client stencilv1beta1.StencilServiceClient, version int32, namespaceID, schemaID string) ([]byte, *stencilv1beta1.GetSchemaMetadataResponse, error) {
 	var req stencilv1beta1.GetSchemaRequest
 	var reqLatest stencilv1beta1.GetLatestSchemaRequest
@@ -659,10 +322,10 @@ func fetchSchemaAndMeta(client stencilv1beta1.StencilServiceClient, version int3
 	return data, meta, nil
 }
 
-func fetchMeta(client stencilv1beta1.StencilServiceClient, namespace string, schema string) (*stencilv1beta1.GetSchemaMetadataResponse, error) {
-	req := stencilv1beta1.GetSchemaMetadataRequest{
-		NamespaceId: namespace,
-		SchemaId:    schema,
-	}
-	return client.GetSchemaMetadata(context.Background(), &req)
-}
+// func fetchMeta(client stencilv1beta1.StencilServiceClient, namespace string, schema string) (*stencilv1beta1.GetSchemaMetadataResponse, error) {
+// 	req := stencilv1beta1.GetSchemaMetadataRequest{
+// 		NamespaceId: namespace,
+// 		SchemaId:    schema,
+// 	}
+// 	return client.GetSchemaMetadata(context.Background(), &req)
+// }
