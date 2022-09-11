@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/MakeNowJust/heredoc"
@@ -17,17 +16,18 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func printCmd() *cobra.Command {
-	var output, filterPathPrefix, host, namespaceID string
+func printSchemaCmd() *cobra.Command {
+	var filter, host, namespaceID string
 	var version int32
 
 	cmd := &cobra.Command{
-		Use:   "print <id>",
-		Short: "Print a given schema snapshot",
-		Args:  cobra.ExactArgs(1),
+		Use:     "view <id>",
+		Short:   "Print a given schema snapshot",
+		Args:    cobra.ExactArgs(1),
+		Aliases: []string{"print"},
 		Example: heredoc.Doc(`
-			$ stencil schema print events -n odpf
-			$ stencil schema print events -n odpf -v 2 -o ./schema
+			$ stencil schema print booking -n odpf
+			$ stencil schema print booking -n odpf -v 2
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -40,7 +40,7 @@ func printCmd() *cobra.Command {
 
 			schemaID := args[0]
 
-			data, meta, err := fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
+			data, meta, err := fetchSchemaAndMeta(client, version, namespaceID, schemaID)
 			if err != nil {
 				return err
 			}
@@ -50,15 +50,15 @@ func printCmd() *cobra.Command {
 
 			switch format {
 			case "FORMAT_AVRO":
-				if err := printSchema(data, output); err != nil {
+				if err := printSchema(data); err != nil {
 					return err
 				}
 			case "FORMAT_JSON":
-				if err := printSchema(data, output); err != nil {
+				if err := printSchema(data); err != nil {
 					return err
 				}
 			case "FORMAT_PROTOBUF":
-				printProtoSchema(data, filterPathPrefix, output)
+				printProtoSchema(data, filter)
 			default:
 				fmt.Printf("%s Unknown schema format: %s\n", term.Red(term.FailureIcon()), format)
 			}
@@ -74,21 +74,12 @@ func printCmd() *cobra.Command {
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
 
-	cmd.Flags().StringVarP(&output, "output", "o", "", "the directory path to write the descriptor files, default is to print on stdout")
-
-	cmd.Flags().StringVar(&filterPathPrefix, "filter-path", "", "filter protocol buffer files by path prefix, e.g., --filter-path=google/protobuf")
+	cmd.Flags().StringVar(&filter, "filter", "", "filter protocol buffer files by path prefix, e.g., --filter-path=google/protobuf")
 
 	return cmd
 }
 
-func printSchema(data []byte, output string) error {
-	if output != "" {
-		if err := os.WriteFile(output, data, 0666); err != nil {
-			return err
-		}
-		return nil
-	}
-
+func printSchema(data []byte) error {
 	page := term.New()
 	page.Start()
 	defer page.Stop()
@@ -100,7 +91,7 @@ func printSchema(data []byte, output string) error {
 	return nil
 }
 
-func printProtoSchema(data []byte, filterPathPrefix string, output string) error {
+func printProtoSchema(data []byte, filter string) error {
 	fds := &descriptorpb.FileDescriptorSet{}
 	if err := proto.Unmarshal(data, fds); err != nil {
 		return fmt.Errorf("descriptor set file is not valid. %w", err)
@@ -111,20 +102,13 @@ func printProtoSchema(data []byte, filterPathPrefix string, output string) error
 	}
 	var filteredFds []*desc.FileDescriptor
 	for fdName, fd := range fdsMap {
-		if filterPathPrefix != "" && !strings.HasPrefix(fdName, filterPathPrefix) {
+		if filter != "" && !strings.HasPrefix(fdName, filter) {
 			continue
 		}
 		filteredFds = append(filteredFds, fd)
 	}
 
 	protoPrinter := &protoprint.Printer{}
-
-	if output != "" {
-		if err := protoPrinter.PrintProtosToFileSystem(filteredFds, output); err != nil {
-			return err
-		}
-		return nil
-	}
 
 	var schema string
 

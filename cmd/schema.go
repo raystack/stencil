@@ -33,31 +33,23 @@ func SchemaCmd() *cobra.Command {
 		Long: heredoc.Doc(`
 			Work with schemas.
 		`),
-		Example: heredoc.Doc(`
-			$ stencil schema list
-			$ stencil schema create
-			$ stencil schema view
-			$ stencil schema edit
-			$ stencil schema delete
-			$ stencil schema version
-			$ stencil schema graph
-			$ stencil schema print
-			$ stencil schema check
-		`),
 		Annotations: map[string]string{
 			"group": "core",
 		},
 	}
 
+	cmd.AddCommand(listSchemaCmd())
+	cmd.AddCommand(infoSchemaCmd())
+	cmd.AddCommand(printSchemaCmd())
+	cmd.AddCommand(downloadSchemaCmd())
+
 	cmd.AddCommand(createSchemaCmd())
 	cmd.AddCommand(checkSchemaCmd())
-	cmd.AddCommand(listSchemaCmd())
-	cmd.AddCommand(getSchemaCmd())
 	cmd.AddCommand(updateSchemaCmd())
 	cmd.AddCommand(deleteSchemaCmd())
 	cmd.AddCommand(diffSchemaCmd())
 	cmd.AddCommand(versionSchemaCmd())
-	cmd.AddCommand(printCmd())
+
 	cmd.AddCommand(graphCmd())
 
 	return cmd
@@ -90,10 +82,7 @@ func listSchemaCmd() *cobra.Command {
 				return err
 			}
 
-			report := [][]string{}
-
 			schemas := res.GetSchemas()
-
 			spinner.Stop()
 
 			// TODO(Ravi): List schemas should also handle namespace not found
@@ -105,6 +94,7 @@ func listSchemaCmd() *cobra.Command {
 			fmt.Printf("\nShowing %d of %d schemas \n\n", len(schemas), len(schemas))
 			index := 1
 
+			report := [][]string{}
 			for _, s := range schemas {
 				report = append(report, []string{term.Greenf("#%02d", index), s})
 				index++
@@ -297,82 +287,6 @@ func updateSchemaCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
 	cmd.MarkFlagRequired("comp")
-
-	return cmd
-}
-
-func getSchemaCmd() *cobra.Command {
-	var host, output, namespaceID string
-	var version int32
-	var metadata bool
-	var data []byte
-	var resMetadata *stencilv1beta1.GetSchemaMetadataResponse
-
-	cmd := &cobra.Command{
-		Use:   "view",
-		Short: "View a schema",
-		Args:  cobra.ExactArgs(1),
-		Example: heredoc.Doc(`
-			$ stencil schema view <schema-id> --namespace=<namespace-id> --version <version> --metadata <metadata>
-	    	`),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			spinner := printer.Spin("")
-			defer spinner.Stop()
-
-			client, cancel, err := createClient(cmd)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			schemaID := args[0]
-
-			data, resMetadata, err = fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
-			if err != nil {
-				return err
-			}
-			spinner.Stop()
-
-			err = os.WriteFile(output, data, 0666)
-			if err != nil {
-				return err
-			}
-
-			fmt.Printf("Schema successfully written to %s\n", output)
-
-			if resMetadata == nil || !metadata {
-				return nil
-			}
-
-			report := [][]string{}
-
-			fmt.Printf("\nMETADATA\n")
-			report = append(report, []string{"FORMAT", "COMPATIBILITY", "AUTHORITY"})
-
-			report = append(report, []string{
-				stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())],
-				stencilv1beta1.Schema_Compatibility_name[int32(resMetadata.GetCompatibility())],
-				resMetadata.GetAuthority(),
-			})
-
-			printer.Table(os.Stdout, report)
-
-			return nil
-		},
-	}
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
-
-	cmd.Flags().Int32VarP(&version, "version", "v", 0, "version of the schema")
-
-	cmd.Flags().BoolVarP(&metadata, "metadata", "m", false, "set this flag to get metadata")
-	cmd.MarkFlagRequired("metadata")
-
-	cmd.Flags().StringVarP(&output, "output", "o", "", "path to the output file")
-	cmd.MarkFlagRequired("output")
 
 	return cmd
 }
@@ -663,7 +577,7 @@ func graphCmd() *cobra.Command {
 
 			schemaID := args[0]
 
-			data, resMetadata, err := fetchSchemaAndMetadata(client, version, namespaceID, schemaID)
+			data, resMetadata, err := fetchSchemaAndMeta(client, version, namespaceID, schemaID)
 			if err != nil {
 				return err
 			}
@@ -706,17 +620,18 @@ func graphCmd() *cobra.Command {
 	return cmd
 }
 
-func fetchSchemaAndMetadata(client stencilv1beta1.StencilServiceClient, version int32, namespaceID, schemaID string) ([]byte, *stencilv1beta1.GetSchemaMetadataResponse, error) {
+func fetchSchemaAndMeta(client stencilv1beta1.StencilServiceClient, version int32, namespaceID, schemaID string) ([]byte, *stencilv1beta1.GetSchemaMetadataResponse, error) {
 	var req stencilv1beta1.GetSchemaRequest
 	var reqLatest stencilv1beta1.GetLatestSchemaRequest
-	var reqMetadata stencilv1beta1.GetSchemaMetadataRequest
 	var data []byte
+
+	ctx := context.Background()
 
 	if version != 0 {
 		req.NamespaceId = namespaceID
 		req.SchemaId = schemaID
 		req.VersionId = version
-		res, err := client.GetSchema(context.Background(), &req)
+		res, err := client.GetSchema(ctx, &req)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -724,19 +639,30 @@ func fetchSchemaAndMetadata(client stencilv1beta1.StencilServiceClient, version 
 	} else {
 		reqLatest.NamespaceId = namespaceID
 		reqLatest.SchemaId = schemaID
-		res, err := client.GetLatestSchema(context.Background(), &reqLatest)
+		res, err := client.GetLatestSchema(ctx, &reqLatest)
 		if err != nil {
 			return nil, nil, err
 		}
 		data = res.GetData()
 	}
 
-	reqMetadata.NamespaceId = namespaceID
-	reqMetadata.SchemaId = schemaID
-	resMetadata, err := client.GetSchemaMetadata(context.Background(), &reqMetadata)
+	reqMeta := stencilv1beta1.GetSchemaMetadataRequest{
+		NamespaceId: namespaceID,
+		SchemaId:    schemaID,
+	}
+	meta, err := client.GetSchemaMetadata(context.Background(), &reqMeta)
+
 	if err != nil {
-		return data, nil, err
+		return nil, nil, err
 	}
 
-	return data, resMetadata, nil
+	return data, meta, nil
+}
+
+func fetchMeta(client stencilv1beta1.StencilServiceClient, namespace string, schema string) (*stencilv1beta1.GetSchemaMetadataResponse, error) {
+	req := stencilv1beta1.GetSchemaMetadataRequest{
+		NamespaceId: namespace,
+		SchemaId:    schema,
+	}
+	return client.GetSchemaMetadata(context.Background(), &req)
 }
