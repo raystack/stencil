@@ -19,10 +19,10 @@ func graphSchemaCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "graph",
 		Aliases: []string{"g"},
-		Short:   "Generate file descriptorset dependencies graph",
+		Short:   "View schema dependencies graph",
 		Args:    cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema graph <schema-id> --namespace=<namespace-id> --version=<version> --output=<output-path>
+			$ stencil schema graph booking -n odpf -v 1 -o ./vis.dot
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, cancel, err := createClient(cmd)
@@ -40,7 +40,7 @@ func graphSchemaCmd() *cobra.Command {
 
 			format := stencilv1beta1.Schema_Format_name[int32(resMetadata.GetFormat())]
 			if format != "FORMAT_PROTOBUF" {
-				fmt.Printf("cannot create graph for %s", format)
+				fmt.Printf("Graph is not supported for %s", format)
 				return nil
 			}
 
@@ -58,7 +58,7 @@ func graphSchemaCmd() *cobra.Command {
 				return err
 			}
 
-			fmt.Println(".dot file has been created in", output)
+			fmt.Println("Created graph file at", output)
 			return nil
 		},
 	}

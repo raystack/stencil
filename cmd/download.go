@@ -6,6 +6,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
+	"github.com/odpf/salt/term"
 	"github.com/spf13/cobra"
 )
 
@@ -20,11 +21,10 @@ func downloadSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema download customer -n=odpf --version 1
-	    	`),
+	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-
 			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
@@ -42,7 +42,7 @@ func downloadSchemaCmd() *cobra.Command {
 				return err
 			}
 
-			fmt.Printf("Schema successfully written to %s\n", output)
+			fmt.Printf("%s Schema successfully written to %s\n", term.Green(term.SuccessIcon()), output)
 			return nil
 		},
 	}

@@ -19,7 +19,7 @@ func editSchemaCmd() *cobra.Command {
 		Short: "Edit a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema edit <schema-id> --namespace=<namespace-id> --comp=<schema-compatibility>
+			$ stencil schema edit booking -n odpf -c COMPATABILITY_BACKWARD
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -43,19 +43,18 @@ func editSchemaCmd() *cobra.Command {
 			}
 
 			spinner.Stop()
-
 			fmt.Printf("Schema successfully updated")
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVar(&host, "host", "", "Server host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")
 
-	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Schema compatibility")
 	cmd.MarkFlagRequired("comp")
 
 	return cmd

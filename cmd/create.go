@@ -12,11 +12,12 @@ import (
 	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func createSchemaCmd() *cobra.Command {
-	var host, format, comp, filePath, namespaceID string
+	var host, format, comp, file, namespaceID string
 	var req stencilv1beta1.CreateSchemaRequest
 
 	cmd := &cobra.Command{
@@ -29,7 +30,7 @@ func createSchemaCmd() *cobra.Command {
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			prompter := prompt.New()
-			fileData, err := os.ReadFile(filePath)
+			fileData, err := os.ReadFile(file)
 			if err != nil {
 				return err
 			}
@@ -64,6 +65,10 @@ func createSchemaCmd() *cobra.Command {
 			res, err := client.CreateSchema(context.Background(), &req)
 			if err != nil {
 				errStatus := status.Convert(err)
+				if codes.AlreadyExists == errStatus.Code() {
+					fmt.Printf("\n%s Schema with id '%s' already exist.\n", term.FailureIcon(), args[0])
+					return nil
+				}
 				return errors.New(errStatus.Message())
 			}
 
@@ -75,18 +80,18 @@ func createSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Namespace ID")
 	cmd.MarkFlagRequired("namespace")
 
-	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
+	cmd.Flags().StringVarP(&format, "format", "f", "", "Schema format")
 
-	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Schema compatibility")
 
-	cmd.Flags().StringVarP(&filePath, "filePath", "F", "", "path to the schema file")
-	cmd.MarkFlagRequired("filePath")
+	cmd.Flags().StringVarP(&file, "file", "F", "", "Path to the schema file")
+	cmd.MarkFlagRequired("file")
 
 	return cmd
 }

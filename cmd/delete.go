@@ -60,7 +60,7 @@ func deleteSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")

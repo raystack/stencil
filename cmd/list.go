@@ -19,10 +19,13 @@ func listSchemaCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List all schemas",
-		Args:  cobra.ExactArgs(0),
+		Long: heredoc.Doc(`
+			List schemas in a namespace.
+		`),
+		Args: cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
 			$ stencil schema list -n odpf
-	    	`),
+	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -43,12 +46,20 @@ func listSchemaCmd() *cobra.Command {
 
 			// TODO(Ravi): List schemas should also handle namespace not found
 			if len(schemas) == 0 {
-				fmt.Printf("No schema found in namespace %s.\n", term.Blue(namespace))
+				spinner.Stop()
+				fmt.Printf("No schema found in namespace %s\n", namespace)
 				return nil
 			}
 
-			index := 1
 			report := [][]string{}
+			index := 1
+			report = append(report, []string{
+				term.Bold("INDEX"),
+				term.Bold("NAME"),
+				term.Bold("FORMAT"),
+				term.Bold("COMPATIBILITY"),
+				term.Bold("AUTHORITY"),
+			})
 			for _, s := range schemas {
 				meta, _ := fetchMeta(client, namespace, s)
 				c := meta.GetCompatibility().String()
@@ -58,19 +69,17 @@ func listSchemaCmd() *cobra.Command {
 				if a == "" {
 					a = "-"
 				}
-
-				report = append(report, []string{term.Greenf("#%02d", index), s, term.Grey(dict[f]), term.Grey(dict[c]), a})
+				report = append(report, []string{term.Greenf("#%d", index), s, dict[f], dict[c], a})
 				index++
 			}
 
 			spinner.Stop()
-			fmt.Printf("\nShowing %d of %d schemas \n\n", len(schemas), len(schemas))
+			fmt.Printf("\nShowing %d of %d schemas in %s\n\n", len(schemas), len(schemas), namespace)
 			printer.Table(os.Stdout, report)
 			return nil
 		},
 	}
 
-	// TODO(Ravi): Namespace should be optional.
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Namespace ID")
 	cmd.MarkFlagRequired("namespace")
 

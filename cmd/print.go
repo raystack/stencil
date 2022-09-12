@@ -22,12 +22,12 @@ func printSchemaCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "view <id>",
-		Short:   "Print a given schema snapshot",
+		Short:   "Print snapshot of a schema",
 		Args:    cobra.ExactArgs(1),
 		Aliases: []string{"print"},
 		Example: heredoc.Doc(`
-			$ stencil schema print booking -n odpf
-			$ stencil schema print booking -n odpf -v 2
+			$ stencil schema view booking -n odpf
+			$ stencil schema view booking -n odpf -v 2
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -38,16 +38,13 @@ func printSchemaCmd() *cobra.Command {
 			}
 			defer cancel()
 
-			schemaID := args[0]
-
-			data, meta, err := fetchSchemaAndMeta(client, version, namespaceID, schemaID)
+			data, meta, err := fetchSchemaAndMeta(client, version, namespaceID, args[0])
 			if err != nil {
 				return err
 			}
 			spinner.Stop()
 
 			format := stencilv1beta1.Schema_Format_name[int32(meta.GetFormat())]
-
 			switch format {
 			case "FORMAT_AVRO":
 				if err := printSchema(data); err != nil {
@@ -66,15 +63,14 @@ func printSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVar(&host, "host", "", "Server host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")
 
-	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
-
-	cmd.Flags().StringVar(&filter, "filter", "", "filter protocol buffer files by path prefix, e.g., --filter-path=google/protobuf")
+	cmd.Flags().Int32VarP(&version, "version", "v", 0, "Provide version number")
+	cmd.Flags().StringVar(&filter, "filter", "", "Filter schema files by path prefix, e.g., --filter=google/protobuf")
 
 	return cmd
 }
@@ -128,6 +124,5 @@ func printProtoSchema(data []byte, filter string) error {
 	if err != nil {
 		fmt.Fprint(page.Out, schema)
 	}
-
 	return nil
 }

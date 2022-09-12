@@ -68,7 +68,7 @@ func diffSchemaCmd() *cobra.Command {
 		Short: "Diff(s) of two schema versions",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-		$ stencil schema diff <schema-id> --namespace=<namespace-id> --later-version=<later-version> --earlier-version=<earlier-version> --fullname=<fullname>
+			$ stencil schema diff booking -n=odpf --later-version=2 --earlier-version=1 --fullname=<fullname>
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -146,13 +146,13 @@ func diffSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
-	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "parent namespace ID")
+	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")
-	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "earlier version of the schema")
+	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "Earlier version of the schema")
 	cmd.MarkFlagRequired("earlier-version")
-	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "later version of the schema")
+	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "Later version of the schema")
 	cmd.MarkFlagRequired("later-version")
 	cmd.Flags().StringVar(&fullname, "fullname", "", "Only applicable for FORMAT_PROTO. fullname of proto schema eg: odpf.common.v1.Version")
 	return cmd

@@ -15,7 +15,7 @@ import (
 )
 
 func checkSchemaCmd() *cobra.Command {
-	var host, comp, filePath, namespaceID string
+	var host, comp, file, namespaceID string
 	var req stencilv1beta1.CheckCompatibilityRequest
 
 	cmd := &cobra.Command{
@@ -24,8 +24,7 @@ func checkSchemaCmd() *cobra.Command {
 		Short: "Check schema compatibility",
 		Long: heredoc.Doc(`
 			Check schema compatibility of a local schema
-			against a remote schema(against) on stencil server.
-		`),
+			against a remote schema(against) on stencil server.`),
 		Example: heredoc.Doc(`
 			$ stencil schema check <id> -n odpf -c COMPATABILITY_BACKWARD -F ./booking.desc
 	    `),
@@ -33,11 +32,10 @@ func checkSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			fileData, err := os.ReadFile(filePath)
+			fileData, err := os.ReadFile(file)
 			if err != nil {
 				return err
 			}
-			req.Data = fileData
 
 			client, cancel, err := createClient(cmd)
 			if err != nil {
@@ -47,6 +45,7 @@ func checkSchemaCmd() *cobra.Command {
 
 			schemaID := args[0]
 
+			req.Data = fileData
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
 			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
@@ -63,17 +62,17 @@ func checkSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
+	cmd.Flags().StringVar(&host, "host", "", "Server host address eg: localhost:8000")
 	cmd.MarkFlagRequired("host")
 
-	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")
 
-	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
+	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Schema compatibility")
 	cmd.MarkFlagRequired("comp")
 
-	cmd.Flags().StringVarP(&filePath, "filePath", "F", "", "path to the schema file")
-	cmd.MarkFlagRequired("filePath")
+	cmd.Flags().StringVarP(&file, "file", "F", "", "Path to the schema file")
+	cmd.MarkFlagRequired("file")
 
 	return cmd
 }

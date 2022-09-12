@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 
-	"github.com/MakeNowJust/heredoc"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
@@ -13,9 +12,7 @@ func SchemaCmd() *cobra.Command {
 		Use:     "schema",
 		Aliases: []string{"schemas"},
 		Short:   "Manage schemas",
-		Long: heredoc.Doc(`
-			Work with schemas.
-		`),
+		Long:    "Work with schemas.",
 		Annotations: map[string]string{
 			"group": "core",
 		},
