@@ -14,8 +14,8 @@ Stencil is a schema registry that provides schema mangement and validation to en
 Discover why users choose Stencil as their main schema registry
 
 - **Version history** Stencil stores versioned history of proto descriptor file on specified namespace and name
-- **Backward compatibility** enforce backward compatability check on upload by default
-- **Flexbility** ability to skip some of the backward compatability checks while upload
+- **Backward compatibility** enforce backward compatibility check on upload by default
+- **Flexbility** ability to skip some of the backward compatibility checks while upload
 - **Descriptor fetch** ability to download proto descriptor files
 - **Metadata** provides metadata API to retrieve latest version number given a name and namespace
 - **Clients in multiple languages** Stencil provides clients in GO, Java, JS languages to interact with Stencil server and deserialize messages using dynamic schema
@@ -90,7 +90,7 @@ Stencil has three major components. Server, CLI and clients. Stencil server and 
 
 **Server**
 
-Stencil server provides a way to store and fetch schemas and enforce compatability rules. Run `stencil server --help` to see instructions to manage Stencil server.
+Stencil server provides a way to store and fetch schemas and enforce compatibility rules. Run `stencil server --help` to see instructions to manage Stencil server.
 
 Stencil server also provides a fully-featured GRPC and HTTP API to interact with Stencil server. Both APIs adheres to a set of standards that are rigidly followed. Please refer to [proton](https://github.com/odpf/proton/tree/main/odpf/stencil/v1beta1) for GRPC API definitions.
 

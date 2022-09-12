@@ -19,7 +19,7 @@ func editSchemaCmd() *cobra.Command {
 		Short: "Edit a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema edit booking -n odpf -c COMPATABILITY_BACKWARD
+			$ stencil schema edit booking -n odpf -c COMPATIBILITY_BACKWARD
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

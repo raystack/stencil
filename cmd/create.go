@@ -26,7 +26,7 @@ func createSchemaCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
 			$ stencil schema create booking -n odpf –F booking.json
-			$ stencil schema create booking -n odpf -f FORMAT_JSON –c COMPATABILITY_BACKWARD –F ./booking.json 
+			$ stencil schema create booking -n odpf -f FORMAT_JSON –c COMPATIBILITY_BACKWARD –F ./booking.json 
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			prompter := prompt.New()

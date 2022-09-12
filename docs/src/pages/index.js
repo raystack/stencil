@@ -60,7 +60,7 @@ export default function Home() {
                 title: 'Backward compatibility',
                 content: (
                   <div>
-                    Enforce backward compatability check on upload by default.
+                    Enforce backward compatibility check on upload by default.
                   </div>
                 ),
               },
@@ -68,7 +68,7 @@ export default function Home() {
                 title: 'Flexbility',
                 content: (
                   <div>
-                    Ability to skip some of the backward compatability checks while upload.
+                    Ability to skip some of the backward compatibility checks while upload.
                   </div>
                 ),
               },
