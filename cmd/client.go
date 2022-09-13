@@ -29,7 +29,7 @@ func createConnection(ctx context.Context, host string) (*grpc.ClientConn, error
 func createClient(cmd *cobra.Command, cdk *CDK) (stencilv1beta1.StencilServiceClient, func(), error) {
 	c, err := loadClientConfig(cmd, cdk.Config)
 	if err != nil {
-		return nil, nil, ErrClientConfigNotFound
+		return nil, nil, err
 	}
 
 	host := c.Host
@@ -62,7 +62,7 @@ func loadClientConfig(cmd *cobra.Command, cmdxConfig *cmdx.Config) (*ClientConfi
 		cmdx.WithFlags(cmd.Flags()),
 	); err != nil {
 		if !errors.Is(err, new(config.ConfigFileNotFoundError)) {
-			return nil, err
+			return nil, ErrClientConfigNotFound
 		}
 	}
 
