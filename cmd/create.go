@@ -15,8 +15,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func createSchemaCmd() *cobra.Command {
-	var host, format, comp, file, namespaceID string
+func createSchemaCmd(cdk *CDK) *cobra.Command {
+	var format, comp, file, namespaceID string
 	var req stencilv1beta1.CreateSchemaRequest
 
 	cmd := &cobra.Command{
@@ -36,7 +36,7 @@ func createSchemaCmd() *cobra.Command {
 
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -65,9 +65,6 @@ func createSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Namespace ID")
 	cmd.MarkFlagRequired("namespace")

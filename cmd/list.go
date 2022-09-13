@@ -12,8 +12,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func listSchemaCmd() *cobra.Command {
-	var host, namespace string
+func listSchemaCmd(cdk *CDK) *cobra.Command {
+	var namespace string
 	var req stencilv1beta1.ListSchemasRequest
 
 	cmd := &cobra.Command{
@@ -30,7 +30,7 @@ func listSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -82,8 +82,6 @@ func listSchemaCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Namespace ID")
 	cmd.MarkFlagRequired("namespace")
-
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
 
 	return cmd
 }

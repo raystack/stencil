@@ -13,8 +13,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func SearchCmd() *cobra.Command {
-	var host, namespaceID, schemaID string
+func SearchCmd(cdk *CDK) *cobra.Command {
+	var namespaceID, schemaID string
 	var versionID int32
 	var history bool
 	var req stencilv1beta1.SearchRequest
@@ -29,13 +29,14 @@ func SearchCmd() *cobra.Command {
 			$ stencil search <query> --namespace=<namespace> --schema=<schema> --version=<version> --history=<history>
 		`),
 		Annotations: map[string]string{
-			"group": "core",
+			"group":  "core",
+			"client": "true",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s := printer.Spin("")
 			defer s.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -104,8 +105,6 @@ func SearchCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
 	cmd.Flags().StringVarP(&schemaID, "schema", "s", "", "related schema ID")
 	cmd.Flags().Int32VarP(&versionID, "version", "v", 0, "version of the schema")

@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func editSchemaCmd() *cobra.Command {
-	var host, comp, namespaceID string
+func editSchemaCmd(cdk *CDK) *cobra.Command {
+	var comp, namespaceID string
 	var req stencilv1beta1.UpdateSchemaMetadataRequest
 
 	cmd := &cobra.Command{
@@ -25,7 +25,7 @@ func editSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -47,9 +47,6 @@ func editSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "Server host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")

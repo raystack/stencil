@@ -15,8 +15,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func infoSchemaCmd() *cobra.Command {
-	var host, namespace string
+func infoSchemaCmd(cdk *CDK) *cobra.Command {
+	var namespace string
 
 	cmd := &cobra.Command{
 		Use:   "info <id>",
@@ -29,7 +29,7 @@ func infoSchemaCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -60,17 +60,14 @@ func infoSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Provide schema namespace")
 	cmd.MarkFlagRequired("namespace")
 
 	return cmd
 }
 
-func versionSchemaCmd() *cobra.Command {
-	var host, namespaceID string
+func versionSchemaCmd(cdk *CDK) *cobra.Command {
+	var namespaceID string
 	var req stencilv1beta1.ListVersionsRequest
 
 	cmd := &cobra.Command{
@@ -84,7 +81,7 @@ func versionSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -122,9 +119,6 @@ func versionSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
 	cmd.MarkFlagRequired("namespace")

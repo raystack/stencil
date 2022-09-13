@@ -14,8 +14,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func checkSchemaCmd() *cobra.Command {
-	var host, comp, file, namespaceID string
+func checkSchemaCmd(cdk *CDK) *cobra.Command {
+	var comp, file, namespaceID string
 	var req stencilv1beta1.CheckCompatibilityRequest
 
 	cmd := &cobra.Command{
@@ -37,7 +37,7 @@ func checkSchemaCmd() *cobra.Command {
 				return err
 			}
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -61,9 +61,6 @@ func checkSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "Server host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")

@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func NamespaceCmd() *cobra.Command {
+func NamespaceCmd(cdk *CDK) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "namespace",
 		Aliases: []string{"namespaces"},
@@ -28,21 +28,21 @@ func NamespaceCmd() *cobra.Command {
 			$ stencil namespace view odpf
 		`),
 		Annotations: map[string]string{
-			"group": "core",
+			"group":  "core",
+			"client": "true",
 		},
 	}
 
-	cmd.AddCommand(listNamespaceCmd())
-	cmd.AddCommand(createNamespaceCmd())
-	cmd.AddCommand(viewNamespaceCmd())
-	cmd.AddCommand(editNamespaceCmd())
-	cmd.AddCommand(deleteNamespaceCmd())
+	cmd.AddCommand(listNamespaceCmd(cdk))
+	cmd.AddCommand(createNamespaceCmd(cdk))
+	cmd.AddCommand(viewNamespaceCmd(cdk))
+	cmd.AddCommand(editNamespaceCmd(cdk))
+	cmd.AddCommand(deleteNamespaceCmd(cdk))
 
 	return cmd
 }
 
-func listNamespaceCmd() *cobra.Command {
-	var host string
+func listNamespaceCmd(cdk *CDK) *cobra.Command {
 	var req stencilv1beta1.ListNamespacesRequest
 
 	cmd := &cobra.Command{
@@ -53,7 +53,7 @@ func listNamespaceCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -85,14 +85,11 @@ func listNamespaceCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
 	return cmd
 }
 
-func createNamespaceCmd() *cobra.Command {
-	var host, id, desc, format, comp string
+func createNamespaceCmd(cdk *CDK) *cobra.Command {
+	var id, desc, format, comp string
 	var req stencilv1beta1.CreateNamespaceRequest
 
 	cmd := &cobra.Command{
@@ -132,7 +129,7 @@ func createNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -161,14 +158,11 @@ func createNamespaceCmd() *cobra.Command {
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Default schema compatibility for schemas in this namespace")
 	cmd.Flags().StringVarP(&desc, "desc", "d", "", "Supply a description. Will prompt otherwise")
 
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
 	return cmd
 }
 
-func editNamespaceCmd() *cobra.Command {
-	var host, format, comp string
+func editNamespaceCmd(cdk *CDK) *cobra.Command {
+	var format, comp string
 	var desc string
 	var req stencilv1beta1.UpdateNamespaceRequest
 
@@ -183,7 +177,7 @@ func editNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -216,9 +210,6 @@ func editNamespaceCmd() *cobra.Command {
 	}
 
 	// TODO(Ravi) : Edit should not require all flags
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
 	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
 	cmd.MarkFlagRequired("format")
 
@@ -231,8 +222,7 @@ func editNamespaceCmd() *cobra.Command {
 	return cmd
 }
 
-func viewNamespaceCmd() *cobra.Command {
-	var host string
+func viewNamespaceCmd(cdk *CDK) *cobra.Command {
 	var req stencilv1beta1.GetNamespaceRequest
 
 	cmd := &cobra.Command{
@@ -246,7 +236,7 @@ func viewNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -275,14 +265,10 @@ func viewNamespaceCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
 	return cmd
 }
 
-func deleteNamespaceCmd() *cobra.Command {
-	var host string
+func deleteNamespaceCmd(cdk *CDK) *cobra.Command {
 	var req stencilv1beta1.DeleteNamespaceRequest
 
 	cmd := &cobra.Command{
@@ -305,7 +291,7 @@ func deleteNamespaceCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -331,9 +317,6 @@ func deleteNamespaceCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	return cmd
 }
