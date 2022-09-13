@@ -11,7 +11,6 @@ import (
 	"github.com/odpf/salt/printer"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 )
 
 func SearchCmd() *cobra.Command {
@@ -36,11 +35,11 @@ func SearchCmd() *cobra.Command {
 			s := printer.Spin("")
 			defer s.Stop()
 
-			conn, err := grpc.Dial(host, grpc.WithInsecure())
+			client, cancel, err := createClient(cmd)
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer cancel()
 
 			query := args[0]
 			req.Query = query
@@ -63,7 +62,6 @@ func SearchCmd() *cobra.Command {
 				}
 			}
 
-			client := stencilv1beta1.NewStencilServiceClient(conn)
 			res, err := client.Search(context.Background(), &req)
 			if err != nil {
 				return err

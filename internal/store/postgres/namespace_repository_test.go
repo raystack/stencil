@@ -71,7 +71,6 @@ func TestNamespace(t *testing.T) {
 			assert.Nil(t, err)
 		})
 	})
-
 }
 
 func assertNamespace(t *testing.T, expected, actual namespace.Namespace) {
