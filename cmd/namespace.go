@@ -64,19 +64,20 @@ func listNamespaceCmd() *cobra.Command {
 				return err
 			}
 
-			report := [][]string{}
-
 			namespaces := res.GetNamespaces()
-
 			spinner.Stop()
 
+			if len(namespaces) == 0 {
+				fmt.Println("No namespace found")
+				return nil
+			}
+
 			fmt.Printf("\nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
-
-			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
+			report := [][]string{}
 			index := 1
-
+			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
 			for _, n := range namespaces {
-				report = append(report, []string{term.Greenf("#%02d", index), n, "-", "-", "-"})
+				report = append(report, []string{term.Greenf("#%d", index), n, "-", "-", "-"})
 				index++
 			}
 			printer.Table(os.Stdout, report)
@@ -113,13 +114,11 @@ func createNamespaceCmd() *cobra.Command {
 			}
 
 			if format == "" {
-				formats := []string{"FORMAT_JSON", "FORMAT_PROTOBUF", "FORMAT_AVRO"}
 				formatAnswer, _ := prompter.Select("Select a default schema format for this namespace:", formats[0], formats)
 				format = formats[formatAnswer]
 			}
 
 			if comp == "" {
-				comps := []string{"COMPATIBILITY_BACKWARD", "COMPATIBILITY_FORWARD", "COMPATIBILITY_FULL"}
 				formatAnswer, _ := prompter.Select("Select a default compatibility for this namespace:", comps[0], comps)
 				fmt.Println()
 				comp = comps[formatAnswer]
@@ -178,7 +177,7 @@ func editNamespaceCmd() *cobra.Command {
 		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace edit odpf -f FORMAT_JSON -c COMPATABILITY_BACKWARD -d "Hello message"
+			$ stencil namespace edit odpf -f FORMAT_JSON -c COMPATIBILITY_BACKWARD -d "Hello message"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -297,7 +296,7 @@ func deleteNamespaceCmd() *cobra.Command {
 			id := args[0]
 
 			prompter := prompt.New()
-			confirm, _ := prompter.Input(fmt.Sprintf("You're going to delete namespace `%s`. To confirm, type the namespace id:", id), "")
+			confirm, _ := prompter.Input(fmt.Sprintf("Deleting namespace `%s`. To confirm, type the namespace id:", id), "")
 			if id != confirm {
 				fmt.Printf("\n%s Namespace id '%s' did not match.\n", term.WarningIcon(), confirm)
 				return nil
@@ -340,10 +339,15 @@ func deleteNamespaceCmd() *cobra.Command {
 }
 
 func printNamespace(namespace *stencilv1beta1.Namespace) {
-	fmt.Printf("%s \t\t %s \n", term.Bold("Name:"), namespace.GetId())
-	fmt.Printf("%s \t %s \n", term.Bold("Format:"), namespace.GetFormat().String())
-	fmt.Printf("%s \t %s \n", term.Bold("Compatibility:"), namespace.GetCompatibility().String())
-	fmt.Printf("%s \t %s \n\n", term.Bold("Description:"), namespace.GetDescription())
-	fmt.Printf("%s %s, ", term.Grey("Created"), humanize.Time(namespace.GetCreatedAt().AsTime()))
-	fmt.Printf("%s %s \n\n", term.Grey("last updated"), humanize.Time(namespace.GetCreatedAt().AsTime()))
+	desc := namespace.GetDescription()
+	if desc == "" {
+		desc = "No description provided"
+	}
+
+	fmt.Printf("\n%s\n", term.Blue(namespace.GetId()))
+	fmt.Printf("\n%s.\n\n", term.Grey(desc))
+	fmt.Printf("%s \t %s \n", term.Grey("Format:"), namespace.GetFormat().String())
+	fmt.Printf("%s \t %s \n", term.Grey("Compatibility:"), namespace.GetCompatibility().String())
+	fmt.Printf("\n%s %s, ", term.Grey("Created"), humanize.Time(namespace.GetCreatedAt().AsTime()))
+	fmt.Printf("%s %s \n\n", term.Grey("last updated"), humanize.Time(namespace.GetUpdatedAt().AsTime()))
 }

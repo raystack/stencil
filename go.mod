@@ -3,7 +3,6 @@ module github.com/odpf/stencil
 go 1.16
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.5
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/alecthomas/chroma v0.8.2
 	github.com/dgraph-io/ristretto v0.1.0

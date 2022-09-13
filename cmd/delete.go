@@ -1,0 +1,72 @@
+package cmd
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/odpf/salt/printer"
+	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/spf13/cobra"
+)
+
+func deleteSchemaCmd() *cobra.Command {
+	var host, namespaceID string
+	var req stencilv1beta1.DeleteSchemaRequest
+	var reqVer stencilv1beta1.DeleteVersionRequest
+	var version int32
+
+	cmd := &cobra.Command{
+		Use:   "delete <id>",
+		Short: "Delete a schema",
+		Args:  cobra.ExactArgs(1),
+		Example: heredoc.Doc(`
+			$ stencil schema delete booking -n odpf
+	    `),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			spinner := printer.Spin("")
+			defer spinner.Stop()
+
+			client, cancel, err := createClient(cmd)
+			if err != nil {
+				return err
+			}
+			defer cancel()
+
+			schemaID := args[0]
+
+			if version == 0 {
+				req.NamespaceId = namespaceID
+				req.SchemaId = schemaID
+
+				_, err = client.DeleteSchema(context.Background(), &req)
+				if err != nil {
+					return err
+				}
+			} else {
+				reqVer.NamespaceId = namespaceID
+				reqVer.SchemaId = schemaID
+				reqVer.VersionId = version
+
+				_, err = client.DeleteVersion(context.Background(), &reqVer)
+				if err != nil {
+					return err
+				}
+			}
+
+			spinner.Stop()
+			fmt.Printf("Schema successfully deleted")
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
+	cmd.MarkFlagRequired("host")
+
+	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
+	cmd.MarkFlagRequired("namespace")
+
+	cmd.Flags().Int32VarP(&version, "version", "v", 0, "Particular version to be deleted")
+
+	return cmd
+}
