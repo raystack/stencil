@@ -27,7 +27,7 @@ func checkSchemaCmd() *cobra.Command {
 			against a remote schema(against) on stencil server.`),
 		Example: heredoc.Doc(`
 			$ stencil schema check <id> -n odpf -c COMPATIBILITY_BACKWARD -F ./booking.desc
-	    `),
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
