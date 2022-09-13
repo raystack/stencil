@@ -8,7 +8,6 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/prompt"
 	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
@@ -29,23 +28,11 @@ func createSchemaCmd() *cobra.Command {
 			$ stencil schema create booking -n odpf -f FORMAT_JSON –c COMPATIBILITY_BACKWARD –F ./booking.json 
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			prompter := prompt.New()
 			fileData, err := os.ReadFile(file)
 			if err != nil {
 				return err
 			}
 			req.Data = fileData
-
-			if format == "" {
-				formatAnswer, _ := prompter.Select("Select schema format:", formats[0], formats)
-				format = formats[formatAnswer]
-			}
-
-			if comp == "" {
-				formatAnswer, _ := prompter.Select("Select schema compatibility:", comps[0], comps)
-				fmt.Println()
-				comp = comps[formatAnswer]
-			}
 
 			spinner := printer.Spin("")
 			defer spinner.Stop()
@@ -56,7 +43,6 @@ func createSchemaCmd() *cobra.Command {
 			defer cancel()
 
 			schemaID := args[0]
-
 			req.NamespaceId = namespaceID
 			req.SchemaId = schemaID
 			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
