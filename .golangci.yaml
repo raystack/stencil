@@ -6,6 +6,7 @@ run:
     - clients/js
     - docs
     - scripts
+    - ui
 output:
   format: line-number
 linters:
