@@ -21,7 +21,6 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
 	github.com/odpf/salt v0.1.1-0.20220903111417-7d83984bc683
 	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.15.0
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
