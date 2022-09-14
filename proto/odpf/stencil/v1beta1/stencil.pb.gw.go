@@ -751,12 +751,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListNamespaces", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListNamespaces", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_ListNamespaces_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_ListNamespaces_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -774,12 +775,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_GetNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_GetNamespace_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -797,12 +799,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/CreateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/CreateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_CreateNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_CreateNamespace_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -820,12 +823,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_UpdateNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_UpdateNamespace_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -843,12 +847,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_DeleteNamespace_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_DeleteNamespace_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -866,12 +871,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListSchemas", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}/schemas"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListSchemas", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}/schemas"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_ListSchemas_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_ListSchemas_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -889,12 +895,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/meta"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/meta"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_GetSchemaMetadata_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_GetSchemaMetadata_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -912,12 +919,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_UpdateSchemaMetadata_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_UpdateSchemaMetadata_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -935,12 +943,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteSchema", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteSchema", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_DeleteSchema_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_DeleteSchema_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -958,12 +967,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListVersions", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListVersions", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_ListVersions_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_ListVersions_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -981,12 +991,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteVersion", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteVersion", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_DeleteVersion_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_DeleteVersion_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1004,12 +1015,13 @@ func RegisterStencilServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/Search", runtime.WithHTTPPathPattern("/v1beta1/search"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/Search", runtime.WithHTTPPathPattern("/v1beta1/search"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StencilService_Search_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StencilService_Search_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1066,12 +1078,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListNamespaces", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListNamespaces", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_ListNamespaces_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_ListNamespaces_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1086,12 +1099,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_GetNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_GetNamespace_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1106,12 +1120,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/CreateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/CreateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_CreateNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_CreateNamespace_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1126,12 +1141,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_UpdateNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_UpdateNamespace_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1146,12 +1162,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteNamespace", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_DeleteNamespace_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_DeleteNamespace_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1166,12 +1183,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListSchemas", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}/schemas"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListSchemas", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{id}/schemas"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_ListSchemas_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_ListSchemas_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1186,12 +1204,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/meta"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/GetSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/meta"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_GetSchemaMetadata_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_GetSchemaMetadata_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1206,12 +1225,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/UpdateSchemaMetadata", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_UpdateSchemaMetadata_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_UpdateSchemaMetadata_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1226,12 +1246,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteSchema", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteSchema", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_DeleteSchema_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_DeleteSchema_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1246,12 +1267,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListVersions", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/ListVersions", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_ListVersions_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_ListVersions_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1266,12 +1288,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteVersion", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/DeleteVersion", runtime.WithHTTPPathPattern("/v1beta1/namespaces/{namespace_id}/schemas/{schema_id}/versions/{version_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_DeleteVersion_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_DeleteVersion_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1286,12 +1309,13 @@ func RegisterStencilServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/Search", runtime.WithHTTPPathPattern("/v1beta1/search"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/odpf.stencil.v1beta1.StencilService/Search", runtime.WithHTTPPathPattern("/v1beta1/search"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StencilService_Search_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StencilService_Search_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

@@ -1,6 +1,6 @@
 NAME="github.com/odpf/stencil"
 VERSION=$(shell git describe --always --tags 2>/dev/null)
-PROTON_COMMIT := "d08a4916075438ed9c3a4510989bda2273e0a4e4"
+PROTON_COMMIT := "a6c7056fa80128145d00d5ee72f216c28578ec43"
 
 .PHONY: all build test clean dist vet proto install
 

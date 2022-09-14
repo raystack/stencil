@@ -75,9 +75,14 @@ func listNamespaceCmd() *cobra.Command {
 			fmt.Printf("\nShowing %[1]d of %[1]d namespaces \n \n", len(namespaces))
 			report := [][]string{}
 			index := 1
-			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY", "DESCRIPTION"})
+			report = append(report, []string{"INDEX", "NAMESPACE", "FORMAT", "COMPATIBILITY"})
 			for _, n := range namespaces {
-				report = append(report, []string{term.Greenf("#%d", index), n, "-", "-", "-"})
+				report = append(report,
+					[]string{term.Greenf("#%d", index),
+						n.Id,
+						dict[n.GetFormat().String()],
+						dict[n.GetCompatibility().String()],
+					})
 				index++
 			}
 			printer.Table(os.Stdout, report)

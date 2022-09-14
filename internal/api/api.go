@@ -21,7 +21,7 @@ type errHandleFunc func(http.ResponseWriter, *http.Request, map[string]string) e
 type NamespaceService interface {
 	Create(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error)
 	Update(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error)
-	List(ctx context.Context) ([]string, error)
+	List(ctx context.Context) ([]namespace.Namespace, error)
 	Get(ctx context.Context, name string) (namespace.Namespace, error)
 	Delete(ctx context.Context, name string) error
 }
@@ -35,7 +35,7 @@ type SchemaService interface {
 	GetLatest(ctx context.Context, namespace string, schemaName string) (*schema.Metadata, []byte, error)
 	GetMetadata(ctx context.Context, namespace, schemaName string) (*schema.Metadata, error)
 	UpdateMetadata(ctx context.Context, namespace, schemaName string, meta *schema.Metadata) (*schema.Metadata, error)
-	List(ctx context.Context, namespaceID string) ([]string, error)
+	List(ctx context.Context, namespaceID string) ([]schema.Schema, error)
 	ListVersions(ctx context.Context, namespaceID string, schemaName string) ([]int32, error)
 }
 

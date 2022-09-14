@@ -41,7 +41,6 @@ func listSchemaCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			schemas := res.GetSchemas()
 
 			// TODO(Ravi): List schemas should also handle namespace not found
@@ -61,15 +60,14 @@ func listSchemaCmd() *cobra.Command {
 				term.Bold("AUTHORITY"),
 			})
 			for _, s := range schemas {
-				meta, _ := fetchMeta(client, namespace, s)
-				c := meta.GetCompatibility().String()
-				f := meta.GetFormat().String()
-				a := meta.GetAuthority()
+				c := s.GetCompatibility().String()
+				f := s.GetFormat().String()
+				a := s.GetAuthority()
 
 				if a == "" {
 					a = "-"
 				}
-				report = append(report, []string{term.Greenf("#%d", index), s, dict[f], dict[c], a})
+				report = append(report, []string{term.Greenf("#%d", index), s.GetName(), dict[f], dict[c], a})
 				index++
 			}
 

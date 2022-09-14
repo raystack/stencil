@@ -13,6 +13,15 @@ import (
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 )
 
+func schemaToProto(s schema.Schema) *stencilv1beta1.Schema {
+	return &stencilv1beta1.Schema{
+		Name:          s.Name,
+		Format:        stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[s.Format]),
+		Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[s.Compatibility]),
+		Authority:     s.Authority,
+	}
+}
+
 func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaRequest) (*stencilv1beta1.CreateSchemaResponse, error) {
 	metadata := &schema.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
 	sc, err := a.schema.Create(ctx, in.NamespaceId, in.SchemaId, metadata, in.GetData())
@@ -62,7 +71,12 @@ func (a *API) HTTPCheckCompatibility(w http.ResponseWriter, req *http.Request, p
 
 func (a *API) ListSchemas(ctx context.Context, in *stencilv1beta1.ListSchemasRequest) (*stencilv1beta1.ListSchemasResponse, error) {
 	schemas, err := a.schema.List(ctx, in.Id)
-	return &stencilv1beta1.ListSchemasResponse{Schemas: schemas}, err
+
+	var ss []*stencilv1beta1.Schema
+	for _, s := range schemas {
+		ss = append(ss, schemaToProto(s))
+	}
+	return &stencilv1beta1.ListSchemasResponse{Schemas: ss}, err
 }
 
 func (a *API) GetLatestSchema(ctx context.Context, in *stencilv1beta1.GetLatestSchemaRequest) (*stencilv1beta1.GetLatestSchemaResponse, error) {
