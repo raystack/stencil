@@ -32,6 +32,7 @@ clean: ## Clean the build artifacts
 
 ui:
 	@echo " > generating ui build"
+	@yarn install
 	@cd ui && $(MAKE) dist
 
 help: ## Display this help message
