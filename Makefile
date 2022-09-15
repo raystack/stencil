@@ -2,17 +2,17 @@ NAME="github.com/odpf/stencil"
 VERSION=$(shell git describe --always --tags 2>/dev/null)
 PROTON_COMMIT := "d08a4916075438ed9c3a4510989bda2273e0a4e4"
 
-.PHONY: all build test clean dist vet proto install
+.PHONY: all build test clean dist vet proto install ui
 
 all: build
 
-build: ## Build the stencil binary
+build: ui ## Build the stencil binary
 	go build -ldflags "-X config.Version=${VERSION}" ${NAME}
 
-test: ## Run the tests
+test: ui ## Run the tests
 	go test ./... -coverprofile=coverage.out
 
-coverage: ## Print code coverage
+coverage: ui ## Print code coverage
 	go test -race -coverprofile coverage.txt -covermode=atomic ./... & go tool cover -html=coverage.out
 
 vet: ## Run the go vet tool
@@ -28,7 +28,11 @@ proto: ## Generate the protobuf files
 	@echo " > protobuf compilation finished"
 
 clean: ## Clean the build artifacts
-	rm -rf stencil dist/
+	rm -rf stencil dist/ ui/build/
+
+ui:
+	@echo " > generating ui build"
+	@cd ui && $(MAKE) dist
 
 help: ## Display this help message
 	@cat $(MAKEFILE_LIST) | grep -e "^[a-zA-Z_\-]*: *.*## *" | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
