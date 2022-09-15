@@ -5,3 +5,6 @@ dist:
 
 test:
 	@yarn run test
+
+dep: 
+	@yarn install
