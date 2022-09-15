@@ -452,7 +452,7 @@
           {
             "name": "query",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
@@ -525,6 +525,34 @@
           }
         }
       }
+    },
+    "stencilv1beta1Schema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/SchemaFormat"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1beta1CheckCompatibilityResponse": {
+      "type": "object"
     },
     "v1beta1CreateNamespaceRequest": {
       "type": "object",
@@ -624,6 +652,17 @@
         },
         "authority": {
           "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -642,7 +681,7 @@
         "namespaces": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/v1beta1Namespace"
           }
         }
       }
@@ -653,7 +692,7 @@
         "schemas": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/stencilv1beta1Schema"
           }
         }
       }
@@ -719,6 +758,9 @@
           "items": {
             "type": "string"
           }
+        },
+        "path": {
+          "type": "string"
         }
       }
     },

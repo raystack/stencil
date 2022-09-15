@@ -142,7 +142,7 @@ func (s *Service) UpdateMetadata(ctx context.Context, namespace, schemaName stri
 	return s.repo.UpdateMetadata(ctx, namespace, schemaName, meta)
 }
 
-func (s *Service) List(ctx context.Context, namespaceID string) ([]string, error) {
+func (s *Service) List(ctx context.Context, namespaceID string) ([]Schema, error) {
 	return s.repo.List(ctx, namespaceID)
 }
 

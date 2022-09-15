@@ -35,6 +35,14 @@ func TestNamespace(t *testing.T) {
 			assert.Nil(t, err)
 			assertNamespace(t, *n, ns)
 		})
+		t.Run("list: should list created namespaces", func(t *testing.T) {
+			ls, err := db.List(ctx)
+			assert.Nil(t, err)
+			assert.Equal(t, 1, len(ls))
+			assert.Equal(t, n.ID, ls[0].ID)
+			assert.Equal(t, n.Compatibility, ls[0].Compatibility)
+			assert.Equal(t, n.Format, ls[0].Format)
+		})
 		t.Run("create: should return error on duplicate namespace name", func(t *testing.T) {
 			_, err := db.Create(ctx, *n)
 			assert.ErrorIs(t, err, store.ConflictErr)
@@ -60,11 +68,6 @@ func TestNamespace(t *testing.T) {
 		t.Run("get: should return the error if namespace not found", func(t *testing.T) {
 			_, err := db.Get(ctx, "test1")
 			assert.ErrorIs(t, err, store.NoRowsErr)
-		})
-		t.Run("list: should list created namespaces", func(t *testing.T) {
-			ls, err := db.List(ctx)
-			assert.Nil(t, err)
-			assert.Equal(t, []string{"test"}, ls)
 		})
 		t.Run("delete: should delete namespace", func(t *testing.T) {
 			err := db.Delete(ctx, "test")

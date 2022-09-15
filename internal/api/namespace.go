@@ -48,7 +48,11 @@ func (a *API) GetNamespace(ctx context.Context, in *stencilv1beta1.GetNamespaceR
 // ListNamespaces handler for returning list of available namespaces
 func (a *API) ListNamespaces(ctx context.Context, in *stencilv1beta1.ListNamespacesRequest) (*stencilv1beta1.ListNamespacesResponse, error) {
 	namespaces, err := a.namespace.List(ctx)
-	return &stencilv1beta1.ListNamespacesResponse{Namespaces: namespaces}, err
+	var nsp []*stencilv1beta1.Namespace
+	for _, n := range namespaces {
+		nsp = append(nsp, namespaceToProto(n))
+	}
+	return &stencilv1beta1.ListNamespacesResponse{Namespaces: nsp}, err
 }
 
 func (a *API) DeleteNamespace(ctx context.Context, in *stencilv1beta1.DeleteNamespaceRequest) (*stencilv1beta1.DeleteNamespaceResponse, error) {

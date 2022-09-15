@@ -22,7 +22,7 @@ func TestHTTPGetSchema(t *testing.T) {
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/invalidNumber", nsName, schemaName), nil)
 		mux.ServeHTTP(w, req)
 		assert.Equal(t, 400, w.Code)
-		assert.JSONEq(t, `{"code":2,"message":"invalid version number","details":[]}`, string(w.Body.Bytes()))
+		assert.JSONEq(t, `{"code":2,"message":"invalid version number","details":[]}`, w.Body.String())
 	})
 	t.Run("should return http error if getSchema fails", func(t *testing.T) {
 		version := int32(2)
@@ -32,7 +32,7 @@ func TestHTTPGetSchema(t *testing.T) {
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version), nil)
 		mux.ServeHTTP(w, req)
 		assert.Equal(t, 500, w.Code)
-		assert.JSONEq(t, `{"code":2,"message":"get error","details":[]}`, string(w.Body.Bytes()))
+		assert.JSONEq(t, `{"code":2,"message":"get error","details":[]}`, w.Body.String())
 	})
 	t.Run("should return octet-stream content type for protobuf schema", func(t *testing.T) {
 		version := int32(2)

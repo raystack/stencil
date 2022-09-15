@@ -17,7 +17,7 @@ type Namespace struct {
 type Repository interface {
 	Create(context.Context, Namespace) (Namespace, error)
 	Update(context.Context, Namespace) (Namespace, error)
-	List(context.Context) ([]string, error)
+	List(context.Context) ([]Namespace, error)
 	Get(context.Context, string) (Namespace, error)
 	Delete(context.Context, string) error
 }

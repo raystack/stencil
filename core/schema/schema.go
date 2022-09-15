@@ -23,7 +23,7 @@ type SchemaFile struct {
 
 type Repository interface {
 	Create(ctx context.Context, namespace string, schema string, metadata *Metadata, versionID string, schemaFile *SchemaFile) (version int32, err error)
-	List(context.Context, string) ([]string, error)
+	List(context.Context, string) ([]Schema, error)
 	ListVersions(context.Context, string, string) ([]int32, error)
 	Get(context.Context, string, string, int32) ([]byte, error)
 	GetLatestVersion(context.Context, string, string) (int32, error)
@@ -48,4 +48,11 @@ type Provider interface {
 type Cache interface {
 	Get(interface{}) (interface{}, bool)
 	Set(interface{}, interface{}, int64) bool
+}
+
+type Schema struct {
+	Name          string
+	Format        string
+	Compatibility string
+	Authority     string
 }

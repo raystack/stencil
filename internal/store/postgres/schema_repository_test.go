@@ -55,7 +55,7 @@ func TestSchema(t *testing.T) {
 		t.Run("list_schemas: should return schema", func(t *testing.T) {
 			schemaList, err := db.List(ctx, "testschema")
 			assert.Nil(t, err)
-			assert.Equal(t, []string{"sName"}, schemaList)
+			assert.Equal(t, []schema.Schema{{Name: "sName", Format: "avro", Compatibility: "", Authority: ""}}, schemaList)
 		})
 		t.Run("list_versions: should return versions for specified schema", func(t *testing.T) {
 			schemaList, err := db.ListVersions(ctx, "testschema", "sName")

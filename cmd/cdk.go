@@ -1,12 +1,13 @@
 package cmd
 
 var dict = map[string]string{
-	"COMPATIBILITY_BACKWARD": "backward",
-	"COMPATIBILITY_FORWARD":  "forward",
-	"COMPATIBILITY_FULL":     "full",
-	"FORMAT_PROTOBUF":        "protobuf",
-	"FORMAT_JSON":            "json",
-	"FORMAT_AVRO":            "avro",
+	"COMPATIBILITY_BACKWARD":    "backward",
+	"COMPATIBILITY_FORWARD":     "forward",
+	"COMPATIBILITY_FULL":        "full",
+	"COMPATIBILITY_UNSPECIFIED": "-",
+	"FORMAT_PROTOBUF":           "protobuf",
+	"FORMAT_JSON":               "json",
+	"FORMAT_AVRO":               "avro",
 }
 
 var (

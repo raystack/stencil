@@ -8,7 +8,7 @@ import (
 )
 
 const namespaceListQuery = `
-SELECT id from namespaces
+SELECT id, format, compatibility from namespaces
 `
 
 const namespaceGetQuery = `
@@ -65,8 +65,8 @@ func (r *NamespaceRepository) Delete(ctx context.Context, id string) error {
 	return wrapError(err, id)
 }
 
-func (r *NamespaceRepository) List(ctx context.Context) ([]string, error) {
-	var namespaces []string
+func (r *NamespaceRepository) List(ctx context.Context) ([]namespace.Namespace, error) {
+	var namespaces []namespace.Namespace
 	err := pgxscan.Select(ctx, r.db, &namespaces, namespaceListQuery)
 	return namespaces, wrapError(err, "")
 }

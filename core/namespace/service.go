@@ -22,7 +22,7 @@ func (s Service) Update(ctx context.Context, ns Namespace) (Namespace, error) {
 	return s.repo.Update(ctx, ns)
 }
 
-func (s Service) List(ctx context.Context) ([]string, error) {
+func (s Service) List(ctx context.Context) ([]Namespace, error) {
 	return s.repo.List(ctx)
 }
 

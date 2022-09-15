@@ -72,11 +72,3 @@ func fetchSchemaAndMeta(client stencilv1beta1.StencilServiceClient, version int3
 
 	return data, meta, nil
 }
-
-func fetchMeta(client stencilv1beta1.StencilServiceClient, namespace string, schema string) (*stencilv1beta1.GetSchemaMetadataResponse, error) {
-	req := stencilv1beta1.GetSchemaMetadataRequest{
-		NamespaceId: namespace,
-		SchemaId:    schema,
-	}
-	return client.GetSchemaMetadata(context.Background(), &req)
-}

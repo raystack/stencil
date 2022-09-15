@@ -77,8 +77,8 @@ func (r *SchemaRepository) UpdateMetadata(ctx context.Context, namespace, sc str
 	return &meta, wrapError(err, "meta")
 }
 
-func (r *SchemaRepository) List(ctx context.Context, namespaceID string) ([]string, error) {
-	var schemas []string
+func (r *SchemaRepository) List(ctx context.Context, namespaceID string) ([]schema.Schema, error) {
+	var schemas []schema.Schema
 	err := pgxscan.Select(ctx, r.db, &schemas, schemaListQuery, namespaceID)
 	return schemas, wrapError(err, "List schemas")
 }
@@ -175,7 +175,7 @@ UPDATE schemas SET compatibility=$3, updated_at=now() WHERE namespace_id=$1 AND 
 `
 
 const schemaListQuery = `
-SELECT name from schemas where namespace_id=$1
+SELECT name, format, compatibility, COALESCE(authority, '') as authority from schemas where namespace_id=$1
 `
 const listVersionsQuery = `
 SELECT vs.version from versions as vs
