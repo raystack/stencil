@@ -56,7 +56,7 @@ docker pull odpf/stencil:latest
 To pull a specific version:
 
 ```
-docker pull odpf/stencil:v0.3.1
+docker pull odpf/stencil:v0.3.2
 ```
 
 ### Building from source
