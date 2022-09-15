@@ -16,8 +16,8 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func printSchemaCmd() *cobra.Command {
-	var filter, host, namespaceID string
+func printSchemaCmd(cdk *CDK) *cobra.Command {
+	var filter, namespaceID string
 	var version int32
 
 	cmd := &cobra.Command{
@@ -32,7 +32,7 @@ func printSchemaCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -63,9 +63,6 @@ func printSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "Server host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
-
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")
 
@@ -76,7 +73,7 @@ func printSchemaCmd() *cobra.Command {
 }
 
 func printSchema(data []byte) error {
-	page := term.New()
+	page := term.NewPager()
 	page.Start()
 	defer page.Stop()
 
@@ -116,7 +113,7 @@ func printProtoSchema(data []byte, filter string) error {
 		schema = schema + fmt.Sprintf("\n//Schema file:: %s\n\n%s", fd.GetName(), protoAsString)
 	}
 
-	page := term.New()
+	page := term.NewPager()
 	page.Start()
 	defer page.Stop()
 

@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func downloadSchemaCmd() *cobra.Command {
-	var host, output, namespaceID string
+func downloadSchemaCmd(cdk *CDK) *cobra.Command {
+	var output, namespaceID string
 	var version int32
 	var data []byte
 
@@ -25,7 +25,7 @@ func downloadSchemaCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -46,8 +46,6 @@ func downloadSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")

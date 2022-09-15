@@ -18,9 +18,8 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func diffSchemaCmd() *cobra.Command {
+func diffSchemaCmd(cdk *CDK) *cobra.Command {
 	var fullname string
-	var host string
 	var namespace string
 	var earlierVersion int32
 	var laterVersion int32
@@ -91,7 +90,7 @@ func diffSchemaCmd() *cobra.Command {
 				VersionId:   laterVersion,
 			}
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -146,8 +145,6 @@ func diffSchemaCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")
 	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "Earlier version of the schema")

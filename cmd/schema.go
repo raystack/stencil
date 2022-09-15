@@ -7,28 +7,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func SchemaCmd() *cobra.Command {
+func SchemaCmd(cdk *CDK) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "schema",
 		Aliases: []string{"schemas"},
 		Short:   "Manage schemas",
 		Long:    "Work with schemas.",
 		Annotations: map[string]string{
-			"group": "core",
+			"group":  "core",
+			"client": "true",
 		},
 	}
 
-	cmd.AddCommand(createSchemaCmd())
-	cmd.AddCommand(listSchemaCmd())
-	cmd.AddCommand(infoSchemaCmd())
-	cmd.AddCommand(versionSchemaCmd())
-	cmd.AddCommand(printSchemaCmd())
-	cmd.AddCommand(downloadSchemaCmd())
-	cmd.AddCommand(checkSchemaCmd())
-	cmd.AddCommand(editSchemaCmd())
-	cmd.AddCommand(deleteSchemaCmd())
-	cmd.AddCommand(diffSchemaCmd())
-	cmd.AddCommand(graphSchemaCmd())
+	cmd.AddCommand(createSchemaCmd(cdk))
+	cmd.AddCommand(listSchemaCmd(cdk))
+	cmd.AddCommand(infoSchemaCmd(cdk))
+	cmd.AddCommand(versionSchemaCmd(cdk))
+	cmd.AddCommand(printSchemaCmd(cdk))
+	cmd.AddCommand(downloadSchemaCmd(cdk))
+	cmd.AddCommand(checkSchemaCmd(cdk))
+	cmd.AddCommand(editSchemaCmd(cdk))
+	cmd.AddCommand(deleteSchemaCmd(cdk))
+	cmd.AddCommand(diffSchemaCmd(cdk))
+	cmd.AddCommand(graphSchemaCmd(cdk))
 
 	return cmd
 }

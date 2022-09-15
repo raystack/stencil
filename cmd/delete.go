@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func deleteSchemaCmd() *cobra.Command {
-	var host, namespaceID string
+func deleteSchemaCmd(cdk *CDK) *cobra.Command {
+	var namespaceID string
 	var req stencilv1beta1.DeleteSchemaRequest
 	var reqVer stencilv1beta1.DeleteVersionRequest
 	var version int32
@@ -27,7 +27,7 @@ func deleteSchemaCmd() *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -59,9 +59,6 @@ func deleteSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "Stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
 	cmd.MarkFlagRequired("namespace")

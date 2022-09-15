@@ -12,8 +12,8 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func graphSchemaCmd() *cobra.Command {
-	var host, output, namespaceID string
+func graphSchemaCmd(cdk *CDK) *cobra.Command {
+	var output, namespaceID string
 	var version int32
 
 	cmd := &cobra.Command{
@@ -25,7 +25,7 @@ func graphSchemaCmd() *cobra.Command {
 			$ stencil schema graph booking -n odpf -v 1 -o ./vis.dot
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client, cancel, err := createClient(cmd)
+			client, cancel, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
@@ -62,9 +62,6 @@ func graphSchemaCmd() *cobra.Command {
 			return nil
 		},
 	}
-
-	cmd.Flags().StringVar(&host, "host", "", "stencil host address eg: localhost:8000")
-	cmd.MarkFlagRequired("host")
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
 	cmd.MarkFlagRequired("namespace")

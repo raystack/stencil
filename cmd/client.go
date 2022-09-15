@@ -5,11 +5,17 @@ import (
 	"errors"
 	"time"
 
+	"github.com/odpf/salt/cmdx"
+	"github.com/odpf/salt/config"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
+
+type ClientConfig struct {
+	Host string `yaml:"host" cmdx:"host"`
+}
 
 func createConnection(ctx context.Context, host string) (*grpc.ClientConn, error) {
 	opts := []grpc.DialOption{
@@ -20,13 +26,16 @@ func createConnection(ctx context.Context, host string) (*grpc.ClientConn, error
 	return grpc.DialContext(ctx, host, opts...)
 }
 
-func createClient(cmd *cobra.Command) (stencilv1beta1.StencilServiceClient, func(), error) {
-	host, err := cmd.Flags().GetString("host")
+func createClient(cmd *cobra.Command, cdk *CDK) (stencilv1beta1.StencilServiceClient, func(), error) {
+	c, err := loadClientConfig(cmd, cdk.Config)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	host := c.Host
+
 	if host == "" {
-		return nil, nil, errors.New("\"host\" not set")
+		return nil, nil, ErrClientConfigHostNotFound
 	}
 
 	dialTimeoutCtx, dialCancel := context.WithTimeout(cmd.Context(), time.Second*2)
@@ -43,4 +52,19 @@ func createClient(cmd *cobra.Command) (stencilv1beta1.StencilServiceClient, func
 
 	client := stencilv1beta1.NewStencilServiceClient(conn)
 	return client, cancel, nil
+}
+
+func loadClientConfig(cmd *cobra.Command, cmdxConfig *cmdx.Config) (*ClientConfig, error) {
+	var clientConfig ClientConfig
+
+	if err := cmdxConfig.Load(
+		&clientConfig,
+		cmdx.WithFlags(cmd.Flags()),
+	); err != nil {
+		if !errors.Is(err, new(config.ConfigFileNotFoundError)) {
+			return nil, ErrClientConfigNotFound
+		}
+	}
+
+	return &clientConfig, nil
 }

@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type CDK struct {
+	Config *cmdx.Config
+}
+
 // New root command
 func New() *cobra.Command {
 	var cmd = &cobra.Command{
@@ -26,16 +30,24 @@ func New() *cobra.Command {
 		},
 	}
 
+	cdk := &CDK{Config: cmdx.SetConfig("stencil")}
+
 	cmd.AddCommand(ServerCommand())
-	cmd.AddCommand(NamespaceCmd())
-	cmd.AddCommand(SchemaCmd())
-	cmd.AddCommand(SearchCmd())
+	cmd.AddCommand(configCmd(cdk))
+	cmd.AddCommand(NamespaceCmd(cdk))
+	cmd.AddCommand(SchemaCmd(cdk))
+	cmd.AddCommand(SearchCmd(cdk))
 
 	// Help topics
 	cmdx.SetHelp(cmd)
 	cmd.AddCommand(cmdx.SetCompletionCmd("stencil"))
 	cmd.AddCommand(cmdx.SetHelpTopicCmd("environment", envHelp))
 	cmd.AddCommand(cmdx.SetRefCmd(cmd))
+
+	cmdx.SetClientHook(cmd, func(cmd *cobra.Command) {
+		// client config
+		cmd.PersistentFlags().StringP("host", "h", "", "Server host address")
+	})
 
 	return cmd
 }
