@@ -50,7 +50,7 @@ func (e StorageErr) GRPCStatus() *status.Status {
 	return status.New(codes.Unknown, e.Error())
 }
 
-//WithErr convenience function to override sentinel errors
+// WithErr convenience function to override sentinel errors
 func (e StorageErr) WithErr(err error, name string) StorageErr {
 	e.err = err
 	e.name = name

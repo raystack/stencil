@@ -3,17 +3,15 @@ package server
 import (
 	"context"
 	"fmt"
-	"io/fs"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+	"github.com/odpf/salt/spa"
 	"github.com/odpf/stencil/config"
 	"github.com/odpf/stencil/internal/store/postgres"
 	"github.com/odpf/stencil/ui"
@@ -95,7 +93,12 @@ func Start(cfg config.Config) {
 	}
 
 	rtr := mux.NewRouter()
-	rtr.PathPrefix("/ui").Handler(http.StripPrefix("/ui", newSpaHandler()))
+
+	spaHandler, err := spa.Handler(ui.Assets, "build", "index.html", false)
+	if err != nil {
+		log.Fatalln("Failed to load spa:", err)
+	}
+	rtr.PathPrefix("/ui").Handler(http.StripPrefix("/ui", spaHandler))
 
 	runWithGracefulShutdown(&cfg, grpcHandlerFunc(s, gatewayMux, rtr), func() {
 		conn.Close()
@@ -119,57 +122,4 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler, uiHandl
 			}
 		}
 	}), &http2.Server{})
-}
-
-func newSpaHandler() spaHandler {
-	fsys, err := fs.Sub(ui.Assets, "build")
-	if err != nil {
-		panic(err)
-	}
-	return spaHandler{
-		staticPath: "./",
-		indexFile:  "index.html",
-		buildFs:    fsys,
-	}
-}
-
-type spaHandler struct {
-	staticPath string
-	indexFile  string
-	buildFs    fs.FS
-}
-
-// ServeHTTP inspects the URL path to locate a file within the static dir
-// on the SPA handler. If a file is found, it will be served. If not, the
-// file located at the index path on the SPA handler will be served. This
-// is suitable behavior for serving an SPA (single page application).
-func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Println("ui path getting called")
-	// get the absolute path to prevent directory traversal
-	path := r.URL.Path
-
-	path = filepath.Join(h.staticPath, path)
-
-	// check whether a file exists at the given path
-	_, err := fs.Stat(h.buildFs, path)
-
-	log.Println(err, os.IsNotExist(err))
-	if os.IsNotExist(err) {
-		// file does not exist, serve index.html
-		data, err := fs.ReadFile(h.buildFs, filepath.Join(h.staticPath, h.indexFile))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-		w.Write(data)
-		return
-	} else if err != nil {
-		// if we got an error (that wasn't that the file doesn't exist) stating the
-		// file, return a 500 internal server error and stop
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// otherwise, use http.FileServer to serve the static dir
-	http.FileServer(http.FS(h.buildFs)).ServeHTTP(w, r)
 }
