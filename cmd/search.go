@@ -9,6 +9,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/odpf/salt/printer"
+	"github.com/odpf/salt/term"
 	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
@@ -26,83 +27,87 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 		Long:    "Search your queries on schemas",
 		Args:    cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil search <query> --namespace=<namespace> --schema=<schema> --version=<version> --history=<history>
+			$ stencil search email
+			$ stencil search email -s human
+			$ stencil search name -n odpf -s person -v 2
+			$ stencil search address -n odpf -s person -h true
 		`),
 		Annotations: map[string]string{
 			"group":  "core",
 			"client": "true",
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			s := printer.Spin("")
-			defer s.Stop()
+	}
 
-			client, cancel, err := createClient(cmd, cdk)
-			if err != nil {
-				return err
-			}
-			defer cancel()
+	cmd.RunE = func(cmd *cobra.Command, args []string) error {
+		s := printer.Spin("")
+		defer s.Stop()
 
-			query := args[0]
-			req.Query = query
+		client, cancel, err := createClient(cmd, cdk)
+		if err != nil {
+			return err
+		}
+		defer cancel()
 
-			if len(schemaID) > 0 && len(namespaceID) == 0 {
-				s.Stop()
-				fmt.Println("Namespace ID not specified for", schemaID)
-				return nil
-			}
-			req.NamespaceId = namespaceID
-			req.SchemaId = schemaID
+		query := args[0]
+		req.Query = query
 
-			if versionID != 0 {
-				req.Version = &stencilv1beta1.SearchRequest_VersionId{
-					VersionId: versionID,
-				}
-			} else if history {
-				req.Version = &stencilv1beta1.SearchRequest_History{
-					History: history,
-				}
-			}
-
-			res, err := client.Search(context.Background(), &req)
-			if err != nil {
-				return err
-			}
-
-			hits := res.GetHits()
-
-			report := [][]string{}
-			total := 0
+		if len(schemaID) > 0 && len(namespaceID) == 0 {
 			s.Stop()
-
-			if len(hits) == 0 {
-				fmt.Printf("No results found")
-				return nil
-			}
-
-			fmt.Printf(" \nFound results across %d schema(s)/version(s) \n\n", len(hits))
-
-			report = append(report, []string{"TYPES", "NAMESPACE", "SCHEMA", "VERSION", "FIELDS"})
-			for _, h := range hits {
-				m := groupByType(h.GetFields())
-				for t, f := range m {
-					report = append(report, []string{
-						t,
-						h.GetNamespaceId(),
-						h.GetSchemaId(),
-						strconv.Itoa(int(h.GetVersionId())),
-						strings.Join(f, ", "),
-					})
-
-					total++
-				}
-				report = append(report, []string{"", "", "", "", ""})
-			}
-			printer.Table(os.Stdout, report)
-
-			fmt.Println("TOTAL: ", total)
-
+			fmt.Println("Namespace ID not specified for", schemaID)
 			return nil
-		},
+		}
+		req.NamespaceId = namespaceID
+		req.SchemaId = schemaID
+
+		if versionID != 0 {
+			req.Version = &stencilv1beta1.SearchRequest_VersionId{
+				VersionId: versionID,
+			}
+		} else if history {
+			req.Version = &stencilv1beta1.SearchRequest_History{
+				History: history,
+			}
+		}
+
+		res, err := client.Search(context.Background(), &req)
+		if err != nil {
+			return err
+		}
+
+		hits := res.GetHits()
+
+		report := [][]string{}
+		s.Stop()
+
+		if len(hits) == 0 {
+			fmt.Println("No results found")
+			return nil
+		}
+
+		var total = 0
+		report = append(report, []string{
+			term.Bold("FIELD"),
+			term.Bold("TYPE"),
+			term.Bold("SCHEMA"),
+			term.Bold("VERSION"),
+			term.Bold("NAMESPACE"),
+		})
+		for _, h := range hits {
+			fields := h.GetFields()
+			for _, field := range fields {
+				report = append(report, []string{
+					field[strings.LastIndex(field, ".")+1:],
+					field[:strings.LastIndex(field, ".")],
+					h.GetSchemaId(),
+					strconv.Itoa(int(h.GetVersionId())),
+					h.GetNamespaceId(),
+				})
+				total++
+			}
+		}
+		fmt.Printf(" \nFound %d results across %d schema(s)/version(s) \n\n", total, len(hits))
+		printer.Table(os.Stdout, report)
+		return nil
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
@@ -111,18 +116,4 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 	cmd.Flags().BoolVarP(&history, "history", "h", false, "set this to enable history")
 
 	return cmd
-}
-
-func groupByType(fields []string) map[string][]string {
-	m := make(map[string][]string)
-	for _, field := range fields {
-		f := field[strings.LastIndex(field, ".")+1:]
-		t := field[:strings.LastIndex(field, ".")]
-		if m[t] != nil {
-			m[t] = append(m[t], f)
-		} else {
-			m[t] = []string{f}
-		}
-	}
-	return m
 }
