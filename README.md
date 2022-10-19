@@ -116,6 +116,7 @@ Stencil clients allows application to interact with stencil server to eserialize
 
     - Git
     - Go 1.16 or above
+    - Yarn (Needed for UI)
     - PostgreSQL 13 or above
 
 </details>
