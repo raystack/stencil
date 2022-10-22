@@ -46,7 +46,7 @@ func New() *cobra.Command {
 
 	cmdx.SetClientHook(cmd, func(cmd *cobra.Command) {
 		// client config
-		cmd.PersistentFlags().StringP("host", "h", "", "Server host address")
+		cmd.PersistentFlags().String("host", "", "Server host address")
 	})
 
 	return cmd
