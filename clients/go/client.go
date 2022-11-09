@@ -5,9 +5,9 @@ package stencil
 
 import (
 	"encoding/json"
+	"sync"
 	"time"
 
-	"github.com/goburrow/cache"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -77,22 +77,22 @@ func (o *Options) setDefaults() {
 // NewClient creates stencil client. Downloads proto descriptor file from given url and stores the definitions.
 // It will throw error if download fails or downloaded file is not fully contained descriptor file
 func NewClient(urls []string, options Options) (Client, error) {
-	cacheOptions := []cache.Option{cache.WithMaximumSize(len(urls))}
 	options.setDefaults()
-	if options.AutoRefresh {
-		cacheOptions = append(cacheOptions, cache.WithRefreshAfterWrite(options.RefreshInterval), cache.WithExpireAfterWrite(options.RefreshInterval))
+	stores := []*store{}
+	for _, url := range urls {
+		s, err := newStore(url, options)
+		if err != nil {
+			return nil, err
+		}
+		stores = append(stores, s)
 	}
-	newCache := cache.NewLoadingCache(options.RefreshStrategy.getLoader(options), cacheOptions...)
-	s, err := newStore(urls, newCache)
-	if err != nil {
-		return nil, err
-	}
-	return &stencilClient{urls: urls, store: s, options: options}, nil
+
+	return &stencilClient{urls: urls, stores: stores, options: options}, nil
 }
 
 type stencilClient struct {
 	urls    []string
-	store   *store
+	stores  []*store
 	options Options
 }
 
@@ -133,8 +133,8 @@ func (s *stencilClient) Serialize(className string, data interface{}) (bytes []b
 }
 
 func (s *stencilClient) getMatchingResolver(className string) (*Resolver, bool) {
-	for _, url := range s.urls {
-		resolver, ok := s.store.getResolver(url)
+	for _, store := range s.stores {
+		resolver, ok := store.getResolver()
 		if !ok {
 			return nil, false
 		}
@@ -156,13 +156,21 @@ func (s *stencilClient) GetDescriptor(className string) (protoreflect.MessageDes
 }
 
 func (s *stencilClient) Close() {
-	if s.store != nil {
-		s.store.Close()
+	for _, store := range s.stores {
+		if store != nil {
+			store.Close()
+		}
 	}
 }
 
 func (s *stencilClient) Refresh() {
-	for _, url := range s.urls {
-		s.store.Refresh(url)
+	var wg sync.WaitGroup
+	for _, st := range s.stores {
+		wg.Add(1)
+		go func(s *store) {
+			defer wg.Done()
+			s.refresh()
+		}(st)
 	}
+	wg.Wait()
 }

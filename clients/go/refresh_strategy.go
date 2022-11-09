@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-
-	"github.com/goburrow/cache"
 )
 
 // RefreshStrategy clients can configure which refresh strategy to use to download latest schema.
@@ -21,7 +19,7 @@ const (
 	VersionBasedRefresh
 )
 
-func (r RefreshStrategy) getLoader(opts Options) cache.LoaderFunc {
+func (r RefreshStrategy) getLoader(opts Options) loaderFunc {
 	switch r {
 	case VersionBasedRefresh:
 		return versionBasedRefresh(opts)
@@ -42,9 +40,8 @@ func loadFromURL(url string, opts Options) (*Resolver, error) {
 	return NewResolver(data)
 }
 
-func longPollingRefresh(opts Options) cache.LoaderFunc {
-	return func(k cache.Key) (cache.Value, error) {
-		url := k.(string)
+func longPollingRefresh(opts Options) loaderFunc {
+	return func(url string) (*Resolver, error) {
 		return loadFromURL(url, opts)
 	}
 }
@@ -53,11 +50,10 @@ type versionsModel struct {
 	Versions []int `json:"versions"`
 }
 
-func versionBasedRefresh(opts Options) cache.LoaderFunc {
+func versionBasedRefresh(opts Options) loaderFunc {
 	lastVersion := 0
 	logger := wrapLogger(opts.Logger)
-	return func(k cache.Key) (cache.Value, error) {
-		url := k.(string)
+	return func(url string) (*Resolver, error) {
 		versionsURL := fmt.Sprintf("%s/versions", strings.TrimRight(url, "/"))
 		data, err := downloader(versionsURL, opts.HTTPOptions)
 		if err != nil {
