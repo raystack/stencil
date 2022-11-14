@@ -181,7 +181,7 @@ func TestNewClient(t *testing.T) {
 		}))
 		client, _ := stencil.NewClient([]string{ts.URL}, stencil.Options{AutoRefresh: true, RefreshInterval: 2 * time.Millisecond})
 		// wait for interval to end
-		time.Sleep(2 * time.Millisecond)
+		time.Sleep(3 * time.Millisecond)
 		client.GetDescriptor("test.One")
 		time.Sleep(1 * time.Millisecond)
 		client.Close()
@@ -381,7 +381,7 @@ func TestRefreshStrategies(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, client)
 		// wait for refresh interval
-		time.Sleep(2 * time.Millisecond)
+		time.Sleep(3 * time.Millisecond)
 		desc, err := client.GetDescriptor("test.stencil.One")
 		assert.Nil(t, err)
 		assert.NotNil(t, desc)
@@ -392,7 +392,7 @@ func TestRefreshStrategies(t *testing.T) {
 		// simulates version update
 		versions = `{"versions": [1,2]}`
 		// wait for refresh interval
-		time.Sleep(2 * time.Millisecond)
+		time.Sleep(3 * time.Millisecond)
 		desc, err = client.GetDescriptor("test.stencil.One")
 		assert.Nil(t, err)
 		assert.NotNil(t, desc)
