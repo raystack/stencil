@@ -1,13 +1,12 @@
-package io.odpf.stencil;
+package com.gotocompany.stencil;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
 
+import com.gotocompany.stencil.exception.StencilRuntimeException;
+import com.gotocompany.stencil.http.RemoteFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.http.RemoteFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

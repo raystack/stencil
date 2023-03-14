@@ -22,10 +22,10 @@ func New() *cobra.Command {
 			"group": "core",
 			"help:learn": heredoc.Doc(`
 				Use 'stencil <command> --help' for info about a command.
-				Read the manual at https://odpf.github.io/stencil/
+				Read the manual at https://goto.github.io/stencil/
 			`),
 			"help:feedback": heredoc.Doc(`
-				Open an issue here https://github.com/odpf/stencil/issues
+				Open an issue here https://github.com/goto/stencil/issues
 			`),
 		},
 	}

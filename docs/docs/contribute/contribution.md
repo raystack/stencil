@@ -2,8 +2,8 @@
 
 The following is a set of guidelines for contributing to Stencil. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request. Here are some important resources:
 
-* [Stencil quick start guide](https://odpf.gitbook.io/stencil/quick_start) to get an idea about all components of stencil
-* Github [issues](https://github.com/odpf/stencil/issues) track the ongoing and reported issues.
+* [Stencil quick start guide](https://goto.github.io/stencil/) to get an idea about all components of stencil
+* Github [issues](https://github.com/goto/stencil/issues) track the ongoing and reported issues.
 
 ## How can I contribute?
 
@@ -32,5 +32,5 @@ Please follow these practices for you change to get merged fast and smoothly:
 * Contributions can only be accepted if they contain appropriate testing \(Unit and Integration Tests.\)
 * If you are introducing a completely new feature or making any major changes in an existing one, we recommend to start with an RFC and get consensus on the basic design first.
 * Make sure your local build is running with all the tests and [golint](https://github.com/golang/lint) checks passing.
-* Docs live in the code repo under [`docs`](https://github.com/odpf/raccoon/docs/README.md) so that changes to that can be done in the same PR as changes to the code.
+* Docs live in the code repo under [`docs`](https://github.com/goto/raccoon/docs/README.md) so that changes to that can be done in the same PR as changes to the code.
 * We follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.

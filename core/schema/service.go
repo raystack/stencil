@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/odpf/stencil/core/namespace"
-	"github.com/odpf/stencil/internal/store"
+	"github.com/goto/stencil/core/namespace"
+	"github.com/goto/stencil/internal/store"
 )
 
 func NewService(repo Repository, provider Provider, nsSvc NamespaceService, cache Cache) *Service {

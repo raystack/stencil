@@ -1,6 +1,6 @@
 {
-  "name": "@odpf/stencil",
-  "version": "0.3.3",
+  "name": "@goto-company/stencil",
+  "version": "0.4.0",
   "description": "Stencil js client package provides a store to lookup protobuf descriptors and options to keep the protobuf descriptors upto date.",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "stencil",
     "protobuf-schema-registry"
   ],
-  "author": "",
+  "author": "goto-company",
   "license": "Apache-2.0",
   "dependencies": {
     "node-fetch": "^2.6.7",

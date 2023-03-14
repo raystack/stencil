@@ -2,11 +2,11 @@
   (:require [stencil.encode :refer [map->bytes]]
             [stencil.decode :refer [bytes->map]])
   (:import
-   (io.odpf.stencil.client StencilClient)
-   (io.odpf.stencil StencilClientFactory)
-   (io.odpf.stencil.cache SchemaRefreshStrategy)
-   (io.odpf.stencil.exception StencilRuntimeException)
-   (io.odpf.stencil.config StencilConfig)
+   (com.gotocompany.stencil.client StencilClient)
+   (com.gotocompany.stencil StencilClientFactory)
+   (com.gotocompany.stencil.cache SchemaRefreshStrategy)
+   (com.gotocompany.stencil.exception StencilRuntimeException)
+   (com.gotocompany.stencil.config StencilConfig)
    (org.apache.http.message BasicHeader) (java.util ArrayList)))
 
 (defn create-client

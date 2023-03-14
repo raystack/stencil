@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	search "github.com/odpf/stencil/core/search"
+	search "github.com/goto/stencil/core/search"
 	mock "github.com/stretchr/testify/mock"
 
 	testing "testing"

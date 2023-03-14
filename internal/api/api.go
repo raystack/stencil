@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/goto/stencil/core/namespace"
+	"github.com/goto/stencil/core/schema"
+	"github.com/goto/stencil/core/search"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/odpf/stencil/core/namespace"
-	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/core/search"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 

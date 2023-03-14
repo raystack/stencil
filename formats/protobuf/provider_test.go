@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/odpf/stencil/formats/protobuf"
+	"github.com/goto/stencil/formats/protobuf"
 	"github.com/stretchr/testify/assert"
 )
 

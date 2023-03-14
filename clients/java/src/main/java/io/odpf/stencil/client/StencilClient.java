@@ -1,10 +1,10 @@
-package io.odpf.stencil.client;
+package com.gotocompany.stencil.client;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.odpf.stencil.Parser;
-import io.odpf.stencil.exception.StencilRuntimeException;
+import com.gotocompany.stencil.Parser;
+import com.gotocompany.stencil.exception.StencilRuntimeException;
 
 import java.io.Closeable;
 import java.util.Map;

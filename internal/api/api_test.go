@@ -1,9 +1,9 @@
 package api_test
 
 import (
+	"github.com/goto/stencil/internal/api"
+	"github.com/goto/stencil/internal/api/mocks"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/internal/api"
-	"github.com/odpf/stencil/internal/api/mocks"
 )
 
 func setup() (*mocks.NamespaceService, *mocks.SchemaService, *mocks.SearchService, *runtime.ServeMux, *api.API) {

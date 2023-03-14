@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/goto/stencil/core/schema"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/core/schema"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 )
 
 func schemaToProto(s schema.Schema) *stencilv1beta1.Schema {

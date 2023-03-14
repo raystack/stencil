@@ -3,7 +3,7 @@ package avro_test
 import (
 	"testing"
 
-	"github.com/odpf/stencil/formats/avro"
+	"github.com/goto/stencil/formats/avro"
 	"github.com/stretchr/testify/assert"
 )
 

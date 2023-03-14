@@ -1,15 +1,14 @@
-package io.odpf.stencil.cache;
+package com.gotocompany.stencil.cache;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.protobuf.Descriptors;
+import com.gotocompany.stencil.config.StencilConfig;
+import com.gotocompany.stencil.http.RemoteFile;
 import com.timgroup.statsd.StatsDClient;
-import io.odpf.stencil.DescriptorMapBuilder;
-import io.odpf.stencil.SchemaUpdateListener;
-import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.http.RemoteFile;
+import com.gotocompany.stencil.SchemaUpdateListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

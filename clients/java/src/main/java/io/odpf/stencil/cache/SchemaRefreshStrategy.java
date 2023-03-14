@@ -1,4 +1,4 @@
-package io.odpf.stencil.cache;
+package com.gotocompany.stencil.cache;
 
 import java.io.IOException;
 import java.util.Map;
@@ -6,12 +6,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.protobuf.Descriptors;
 
+import com.gotocompany.stencil.http.RemoteFile;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import io.odpf.stencil.DescriptorMapBuilder;
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.http.RemoteFile;
+import com.gotocompany.stencil.DescriptorMapBuilder;
+import com.gotocompany.stencil.exception.StencilRuntimeException;
 
 public interface SchemaRefreshStrategy {
     Map<String, Descriptors.Descriptor> refresh(String url, RemoteFile remoteFile, final Map<String, Descriptors.Descriptor> prevDescriptor);

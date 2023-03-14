@@ -1,7 +1,7 @@
 # Stencil go client
 
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/odpf/stencil/clients/go.svg)](https://pkg.go.dev/github.com/odpf/stencil/clients/go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/goto/stencil/clients/go.svg)](https://pkg.go.dev/github.com/goto/stencil/clients/go)
 
 Stencil go client package provides a store to lookup protobuf descriptors and options to keep the protobuf descriptors upto date.
 
@@ -20,12 +20,12 @@ It has following features
 
 Use `go get`
 ```
-go get github.com/odpf/stencil/clients/go
+go get github.com/goto/stencil/clients/go
 ```
 
 Then import the stencil package into your own code as mentioned below
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 ```
 
 ## Usage
@@ -33,7 +33,7 @@ import stencil "github.com/odpf/stencil/clients/go"
 ### Creating a client
 
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 client, err := stencil.NewClient([]string{url}, stencil.Options{})
@@ -41,7 +41,7 @@ client, err := stencil.NewClient([]string{url}, stencil.Options{})
 
 ### Get Descriptor
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 client, err := stencil.NewClient([]string{url}, stencil.Options{})
@@ -53,7 +53,7 @@ desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
 
 ### Parse protobuf message. 
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 client, err := stencil.NewClient([]string{url}, stencil.Options{})
@@ -66,7 +66,7 @@ parsedMsg, err := client.Parse("google.protobuf.DescriptorProto", data)
 
 ### Serialize data.
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 
 url := "http://url/to/proto/descriptorset/file"
 client, err := stencil.NewClient([]string{url}, stencil.Options{})
@@ -79,7 +79,7 @@ serializedMsg, err := client.Serialize("google.protobuf.DescriptorProto", data)
 
 ### Enable auto refresh of schemas
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 // Configured to refresh schema every 12 hours
@@ -92,7 +92,7 @@ desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
 
 ### Using VersionBasedRefresh strategy
 ```go
-import stencil "github.com/odpf/stencil/clients/go"
+import stencil "github.com/goto/stencil/clients/go"
 
 url := "http://localhost:8000/v1beta1/namespaces/{test-namespace}/schemas/{schema-name}"
 // Configured to refresh schema every 12 hours
@@ -102,4 +102,4 @@ if err != nil {
 }
 desc, err := client.GetDescriptor("google.protobuf.DescriptorProto")
 ```
-Refer to [go documentation](https://pkg.go.dev/github.com/odpf/stencil/clients/go) for all available methods and options.
+Refer to [go documentation](https://pkg.go.dev/github.com/goto/stencil/clients/go) for all available methods and options.

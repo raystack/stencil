@@ -3,9 +3,9 @@ package avro
 import (
 	"net/http"
 
+	"github.com/goto/stencil/core/schema"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
-	"github.com/odpf/stencil/core/schema"
 )
 
 // ParseSchema parses avro schema bytes into ParsedSchema

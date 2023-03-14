@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package io.odpf.stencil_clj_test;
+package com.gotocompany.stencil_clj_test;
 
 option java_multiple_files = true;
-option java_package = "io.odpf.stencil_clj_test";
+option java_package = "com.gotocompany.stencil_clj_test";
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";

@@ -19,13 +19,13 @@ Stencil is dynamic protobuf schema registry. It provides REST interface for stor
 Run the following commands to run from docker image
 
 ```bash
-$ docker pull odpf/stencil
+$ docker pull gotocompany/stencil
 ```
 
 Run the following commands to compile from source
 
 ```bash
-$ git clone git@github.com:odpf/stencil.git
+$ git clone git@github.com:goto/stencil.git
 $ cd stencil
 $ go build -o stencil
 $ ./stencil --help

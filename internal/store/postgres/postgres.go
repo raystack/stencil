@@ -10,12 +10,12 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/httpfs"
+	"github.com/goto/stencil/internal/store"
+	"github.com/goto/stencil/pkg/logger"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/odpf/stencil/internal/store"
-	"github.com/odpf/stencil/pkg/logger"
 	"github.com/pkg/errors"
 )
 

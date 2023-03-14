@@ -3,8 +3,8 @@ package server
 import (
 	"log"
 
+	"github.com/goto/stencil/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/odpf/stencil/config"
 )
 
 func getNewRelic(config *config.Config) *newrelic.Application {

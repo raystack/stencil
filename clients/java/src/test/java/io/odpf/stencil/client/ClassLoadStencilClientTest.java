@@ -1,7 +1,7 @@
-package io.odpf.stencil.client;
+package com.gotocompany.stencil.client;
 
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.StencilClientFactory;
+import com.gotocompany.stencil.StencilClientFactory;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNull;
 
 public class ClassLoadStencilClientTest {
 
-    private static final String LOOKUP_KEY = "io.odpf.stencil.TestMessage";
+    private static final String LOOKUP_KEY = "com.gotocompany.stencil.TestMessage";
 
     @Test
     public void getDescriptorFromClassPath() {

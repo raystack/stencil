@@ -5,6 +5,7 @@ before:
   hooks:
     - go mod tidy
     - make clean
+    - make ui
 builds:
   - id: "stencil"
     main: ./main.go
@@ -12,9 +13,9 @@ builds:
     flags:
       - -a
     ldflags:
-      - -X github.com/odpf/stencil/config.Version={{.Tag}}
-      - -X github.com/odpf/stencil/config.BuildCommit={{.FullCommit}}
-      - -X github.com/odpf/stencil/config.BuildDate={{.Date}}
+      - -X github.com/goto/stencil/config.Version={{.Tag}}
+      - -X github.com/goto/stencil/config.BuildCommit={{.FullCommit}}
+      - -X github.com/goto/stencil/config.BuildDate={{.Date}}
     goos: [darwin, linux, windows]
     goarch: [amd64, 386, arm, arm64]
     env:
@@ -48,39 +49,6 @@ dockers:
       - stencil
     dockerfile: Dockerfile
     image_templates:
-      - "docker.io/odpf/{{.ProjectName}}:latest"
-      - "docker.io/odpf/{{.ProjectName}}:{{ .Version }}"
-      - "docker.io/odpf/{{.ProjectName}}:{{ .Tag }}-amd64"
-nfpms:
-  - maintainer: ODPF
-    description: Schema registry
-    homepage: https://github.com/odpf/stencil
-    license: Apache 2.0
-    formats:
-      - deb
-      - rpm
-    replacements:
-      darwin: macOS
-scoop:
-  bucket:
-    owner: odpf
-    name: scoop-bucket
-  homepage: "https://github.com/odpf/stencil"
-  description: "Schema registry"
-  license: Apache 2.0
-brews:
-  - name: stencil
-    homepage: "https://github.com/odpf/stencil"
-    description: "Schema registry"
-    tap:
-      owner: odpf
-      name: homebrew-tap
-    license: "Apache 2.0"
-    folder: Formula
-    dependencies:
-      - name: git
-    install: |-
-      bin.install "stencil"
-    commit_author:
-      name: Ravi Suhag
-      email: suhag.ravi@gmail.com
+      - "docker.io/gotocompany/{{.ProjectName}}:latest"
+      - "docker.io/gotocompany/{{.ProjectName}}:{{ .Version }}"
+      - "docker.io/gotocompany/{{.ProjectName}}:{{ .Tag }}-amd64"

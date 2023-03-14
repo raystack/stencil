@@ -1,10 +1,10 @@
-package io.odpf.stencil;
+package com.gotocompany.stencil;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.config.StencilConfig;
+import com.gotocompany.stencil.client.StencilClient;
+import com.gotocompany.stencil.config.StencilConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class MultiURLStencilClientTest {
         StencilClient c = StencilClientFactory.getClient(urls, StencilConfig.builder().build());
         Map<String, Descriptors.Descriptor> descMap = c.getAll();
         assertNotNull(descMap);
-        Descriptors.Descriptor desc = c.get("io.odpf.stencil.TestMessage");
+        Descriptors.Descriptor desc = c.get("com.gotocompany.stencil.TestMessage");
         assertNotNull(desc);
     }
 }

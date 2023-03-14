@@ -87,7 +87,7 @@ Diff(s) of two schema versions
 
 ```
     --earlier-version int32   earlier version of the schema
-    --fullname string         only required for FORMAT_PROTO. fullname of proto schema eg: odpf.common.v1.Version
+    --fullname string         only required for FORMAT_PROTO. fullname of proto schema eg: goto.common.v1.Version
     --host string             stencil host address eg: localhost:8000
     --later-version int32     later version of the schema
 

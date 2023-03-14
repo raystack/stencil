@@ -4,8 +4,8 @@ import (
 	js "encoding/json"
 	"net/http"
 
+	"github.com/goto/stencil/core/schema"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/core/schema"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 

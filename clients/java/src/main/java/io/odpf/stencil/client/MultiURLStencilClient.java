@@ -1,8 +1,8 @@
-package io.odpf.stencil.client;
+package com.gotocompany.stencil.client;
 
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.cache.SchemaCacheLoader;
-import io.odpf.stencil.config.StencilConfig;
+import com.gotocompany.stencil.cache.SchemaCacheLoader;
+import com.gotocompany.stencil.config.StencilConfig;
 
 import java.io.IOException;
 import java.io.Serializable;

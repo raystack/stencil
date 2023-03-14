@@ -40,10 +40,10 @@ Note: Below command assumes `stencil_dev` db present in your postgres instance.
 
 ```bash
 # Run database migrations
-$ docker run -e PORT=8000 -e DB_CONNECTIONSTRING=postgres://postgres@host.docker.internal:5432/stencil_dev?sslmode=disable -p 8000:8000 odpf/stencil server migrate
+$ docker run -e PORT=8000 -e DB_CONNECTIONSTRING=postgres://postgres@host.docker.internal:5432/stencil_dev?sslmode=disable -p 8000:8000 gotocompany/stencil server migrate
 
 # Stencil server at port 8000
-$ docker run -e PORT=8000 -e DB_CONNECTIONSTRING=postgres://postgres@host.docker.internal:5432/stencil_dev?sslmode=disable -p 8000:8000 odpf/stencil server start
+$ docker run -e PORT=8000 -e DB_CONNECTIONSTRING=postgres://postgres@host.docker.internal:5432/stencil_dev?sslmode=disable -p 8000:8000 gotocompany/stencil server start
 
 # Check if server running
 $ curl -X GET http://localhost:8000/ping
@@ -183,7 +183,7 @@ package main
 
 import (
        "log"
-       stencil "github.com/odpf/stencil/clients/go"
+       stencil "github.com/goto/stencil/clients/go"
 )
 
 func main() {

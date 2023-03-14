@@ -3,8 +3,8 @@ package protobuf_test
 import (
 	"testing"
 
-	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/formats/protobuf"
+	"github.com/goto/stencil/core/schema"
+	"github.com/goto/stencil/formats/protobuf"
 	"github.com/stretchr/testify/assert"
 )
 

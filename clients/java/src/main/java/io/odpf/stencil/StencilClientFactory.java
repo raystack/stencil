@@ -1,22 +1,22 @@
-package io.odpf.stencil;
+package com.gotocompany.stencil;
 
-import io.odpf.stencil.cache.SchemaCacheLoader;
-import io.odpf.stencil.client.ClassLoadStencilClient;
-import io.odpf.stencil.client.MultiURLStencilClient;
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.client.URLStencilClient;
-import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.http.RemoteFileImpl;
-import io.odpf.stencil.http.RetryHttpClient;
+import com.gotocompany.stencil.cache.SchemaCacheLoader;
+import com.gotocompany.stencil.client.ClassLoadStencilClient;
+import com.gotocompany.stencil.client.MultiURLStencilClient;
+import com.gotocompany.stencil.client.StencilClient;
+import com.gotocompany.stencil.client.URLStencilClient;
+import com.gotocompany.stencil.config.StencilConfig;
+import com.gotocompany.stencil.http.RemoteFileImpl;
+import com.gotocompany.stencil.http.RetryHttpClient;
 
 import java.util.List;
 
 
 /**
- * Provides static methods for the creation of {@link io.odpf.stencil.client.StencilClient}
+ * Provides static methods for the creation of {@link StencilClient}
  * object with configurations and various options like
  * single URLs, multiple URLs, statsd client for monitoring
- * and {@link io.odpf.stencil.SchemaUpdateListener} for callback on schema change.
+ * and {@link SchemaUpdateListener} for callback on schema change.
  */
 public class StencilClientFactory {
     /**

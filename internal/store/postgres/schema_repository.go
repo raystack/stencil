@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/georgysavva/scany/pgxscan"
+	"github.com/goto/stencil/core/schema"
 	"github.com/jackc/pgx/v4"
-	"github.com/odpf/stencil/core/schema"
 	"github.com/pkg/errors"
 )
 

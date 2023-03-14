@@ -1,4 +1,4 @@
-module github.com/odpf/stencil/clients/go
+module github.com/goto/stencil/clients/go
 
 go 1.16
 

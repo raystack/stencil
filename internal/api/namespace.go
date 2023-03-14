@@ -3,8 +3,8 @@ package api
 import (
 	"context"
 
-	"github.com/odpf/stencil/core/namespace"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/goto/stencil/core/namespace"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

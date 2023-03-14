@@ -5,10 +5,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/odpf/stencil/core/namespace"
-	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/core/schema/mocks"
-	"github.com/odpf/stencil/internal/store"
+	"github.com/goto/stencil/core/namespace"
+	"github.com/goto/stencil/core/schema"
+	"github.com/goto/stencil/core/schema/mocks"
+	"github.com/goto/stencil/internal/store"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

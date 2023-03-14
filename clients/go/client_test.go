@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	stencil "github.com/odpf/stencil/clients/go"
+	stencil "github.com/goto/stencil/clients/go"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"

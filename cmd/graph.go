@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/stencil/pkg/graph"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/goto/stencil/pkg/graph"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -22,7 +22,7 @@ func graphSchemaCmd(cdk *CDK) *cobra.Command {
 		Short:   "View schema dependencies graph",
 		Args:    cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema graph booking -n odpf -v 1 -o ./vis.dot
+			$ stencil schema graph booking -n goto -v 1 -o ./vis.dot
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, cancel, err := createClient(cmd, cdk)

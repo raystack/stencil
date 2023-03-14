@@ -7,10 +7,10 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/dustin/go-humanize"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/salt/prompt"
 	"github.com/odpf/salt/term"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,8 +24,8 @@ func NamespaceCmd(cdk *CDK) *cobra.Command {
 		Long:    "Work with namespaces.",
 		Example: heredoc.Doc(`
 			$ stencil namespace list
-			$ stencil namespace create -n odpf
-			$ stencil namespace view odpf
+			$ stencil namespace create -n goto
+			$ stencil namespace view goto
 		`),
 		Annotations: map[string]string{
 			"group":  "core",
@@ -108,7 +108,7 @@ func createNamespaceCmd(cdk *CDK) *cobra.Command {
 		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
 			$ stencil namespace create 
-			$ stencil namespace create -n=odpf -f=FORMAT_PROTOBUF -c=COMPATIBILITY_BACKWARD -d="Event schemas"
+			$ stencil namespace create -n=goto -f=FORMAT_PROTOBUF -c=COMPATIBILITY_BACKWARD -d="Event schemas"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			prompter := prompt.New()
@@ -181,7 +181,7 @@ func editNamespaceCmd(cdk *CDK) *cobra.Command {
 		Short: "Edit a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace edit odpf -f FORMAT_JSON -c COMPATIBILITY_BACKWARD -d "Hello message"
+			$ stencil namespace edit goto -f FORMAT_JSON -c COMPATIBILITY_BACKWARD -d "Hello message"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -240,7 +240,7 @@ func viewNamespaceCmd(cdk *CDK) *cobra.Command {
 		Short: "View a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace view odpf
+			$ stencil namespace view goto
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -286,7 +286,7 @@ func deleteNamespaceCmd(cdk *CDK) *cobra.Command {
 		Short: "Delete a namespace",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil namespace delete odpf
+			$ stencil namespace delete goto
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package io.odpf.stencil;
+package com.gotocompany.stencil;
 
 message ImplicitOuterClass {
     string sample_string = 1;

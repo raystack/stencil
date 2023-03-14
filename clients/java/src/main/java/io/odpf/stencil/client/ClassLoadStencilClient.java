@@ -1,4 +1,4 @@
-package io.odpf.stencil.client;
+package com.gotocompany.stencil.client;
 
 import com.google.protobuf.Descriptors;
 

@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/spf13/cobra"
 )
 

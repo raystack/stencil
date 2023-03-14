@@ -16,16 +16,16 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 #### Gradle
 
 ```groovy
-  implementation group: 'io.odpf', name: 'stencil', version: '0.3.3'
+  implementation group: 'com.gotocompany', name: 'stencil', version: '0.4.0'
 ```
 
 #### Maven
 
 ```xml
 <dependency>
-  <groupId>io.odpf</groupId>
+  <groupId>com.gotocompany</groupId>
   <artifactId>stencil</artifactId>
-  <version>0.3.3</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
@@ -36,8 +36,8 @@ Stencil client can be created in different modes.
 #### Loading Descriptor from Protobuf Class available in the classpath
 
 ```java
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.StencilClientFactory;
+import com.gotocompany.stencil.client.StencilClient;
+import com.gotocompany.stencil.StencilClientFactory;
 
 StencilClient stencilClient = StencilClientFactory.getClient();
 ```
@@ -45,7 +45,7 @@ StencilClient stencilClient = StencilClientFactory.getClient();
 #### Create client with remote URL
 
 ```java
-import io.odpf.stencil.config.StencilConfig;
+import com.gotocompany.stencil.config.StencilConfig;
 
 String url = "http://url/to/proto/descriptor-set/file";
 StencilClient stencilClient = StencilClientFacorty.getClient(url, StencilConfig.builder().build());
@@ -54,7 +54,7 @@ StencilClient stencilClient = StencilClientFacorty.getClient(url, StencilConfig.
 #### Creating MultiURL client
 
 ```java
-import io.odpf.stencil.config.StencilConfig;
+import com.gotocompany.stencil.config.StencilConfig;
 
 ArrayList<String> urls = new ArrayList<String>();
 urls.add("http://localhost:8082/v1beta1/...");
@@ -77,7 +77,7 @@ StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.
 Whenever schema has changed this listener will be called.
 
 ```java
-import io.odpf.stencil.SchemaUpdateListener;
+import com.gotocompany.stencil.SchemaUpdateListener;
 
 SchemaUpdateListener updateListener = new SchemaUpdateListenerImpl();
 StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.builder().updateListener(updateListener).build());
@@ -88,7 +88,7 @@ StencilClient stencilClient = StencilClientFactory.getClient(url, StencilConfig.
 If url belongs to stencil server, client can choose to refresh schema data only if there is a new version available.
 
 ```java
-import io.odpf.stencil.cache.SchemaRefreshStrategy;
+import com.gotocompany.stencil.cache.SchemaRefreshStrategy;
 
 StencilConfig config = StencilConfig.builder().refreshStrategy(SchemaRefreshStrategy.versionBasedRefresh()).build();
 StencilClient stencilClient = StencilClientFactory.getClient(url, config);
@@ -134,7 +134,7 @@ DynamicMessage message = DynamicMessage.parseFrom(descriptor, bytes);
 #### Using Parser interface
 
 ```java
-import io.odpf.stencil.Parser;
+import com.gotocompany.stencil.Parser;
 import com.google.protobuf.DynamicMessage;
 
 Parser protoParser = stencilClient.getParser("com.example.proto.schema");

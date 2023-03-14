@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/odpf/stencil/internal/store/postgres"
+	"github.com/goto/stencil/internal/store/postgres"
 	"github.com/stretchr/testify/assert"
 )
 

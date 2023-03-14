@@ -3,7 +3,7 @@
             [stencil.encode :refer [map->bytes]]
             [stencil.decode :refer [bytes->map]])
   (:import
-   (io.odpf.stencil DescriptorMapBuilder)
+   (com.gotocompany.stencil DescriptorMapBuilder)
    (java.io File FileInputStream)))
 
 (defn file-desc-map [^String path]
@@ -81,7 +81,7 @@
 
 (deftest serialization-deserialization-test
   (testing "should handle scalar types"
-    (let [proto-name "io.odpf.stencil_clj_test.Scalar"
+    (let [proto-name "com.gotocompany.stencil_clj_test.Scalar"
           descriptor (local-get-descriptor proto-name)
           serialized-data (map->bytes descriptor scalar-data)
           deserialized-data (bytes->map descriptor serialized-data)]
@@ -89,10 +89,10 @@
       (is (= (seq (:field-bytes deserialized-data)) (seq (:field-bytes scalar-data))))))
 
   (testing "should handle enum type if enum value is by name"
-    (verify "io.odpf.stencil_clj_test.SimpleNested" {:field-name :VALUE-1}))
+    (verify "com.gotocompany.stencil_clj_test.SimpleNested" {:field-name :VALUE-1}))
 
   (testing "should handle enum type if enum value is by number"
-    (let [proto-name "io.odpf.stencil_clj_test.SimpleNested"
+    (let [proto-name "com.gotocompany.stencil_clj_test.SimpleNested"
           descriptor (local-get-descriptor proto-name)
           test-data {:field-name 2}
           serialized-data (map->bytes descriptor test-data)
@@ -100,33 +100,33 @@
       (is (= deserialized-data {:field-name :VALUE-2}))))
 
   (testing "should deserialize message type field"
-    (verify "io.odpf.stencil_clj_test.SimpleNested" simple-nested))
+    (verify "com.gotocompany.stencil_clj_test.SimpleNested" simple-nested))
 
   (testing "should handle struct and map types"
-    (verify "io.odpf.stencil_clj_test.ComplexTypes" complex-types))
+    (verify "com.gotocompany.stencil_clj_test.ComplexTypes" complex-types))
 
   (testing "should handle repeated fields"
-    (verify "io.odpf.stencil_clj_test.SimpleArray" simple-array))
+    (verify "com.gotocompany.stencil_clj_test.SimpleArray" simple-array))
 
   (testing "should handle self referencing types"
-    (verify "io.odpf.stencil_clj_test.Recursive" recursive-data))
+    (verify "com.gotocompany.stencil_clj_test.Recursive" recursive-data))
 
   (testing "should handle wrapper types"
-    (verify "io.odpf.stencil_clj_test.Wrappers" wrapper-data))
+    (verify "com.gotocompany.stencil_clj_test.Wrappers" wrapper-data))
 
   (testing "should throw error if unknown field is present"
-    (try (verify "io.odpf.stencil_clj_test.Scalar" {:x "test"})
+    (try (verify "com.gotocompany.stencil_clj_test.Scalar" {:x "test"})
          (catch Exception e
            (is (= {:cause :unknown-field, :info {:field-name :x}} (ex-data e))))))
 
   (testing "should throw error if enum value is invalid"
-    (try (verify "io.odpf.stencil_clj_test.SimpleArray" {:groups [:invalid :UNKNOWN]})
+    (try (verify "com.gotocompany.stencil_clj_test.SimpleArray" {:groups [:invalid :UNKNOWN]})
          (catch Exception e
            (is (= {:cause :unknown-enum-value
                    :info  {:field-name :invalid}} (ex-data e))))))
 
   (testing "should throw error if non array value assigned to repeated(array) field"
-    (try (verify "io.odpf.stencil_clj_test.SimpleArray" {:groups :UNKNOWN})
+    (try (verify "com.gotocompany.stencil_clj_test.SimpleArray" {:groups :UNKNOWN})
          (catch Exception e
            (is (= {:cause :not-a-collection
                    :info  {:value :UNKNOWN}} (ex-data e)))))))

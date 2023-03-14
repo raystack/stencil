@@ -1,4 +1,4 @@
-package io.odpf.stencil.http;
+package com.gotocompany.stencil.http;
 
 import java.io.IOException;
 

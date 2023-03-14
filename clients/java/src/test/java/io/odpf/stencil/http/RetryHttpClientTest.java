@@ -1,7 +1,7 @@
-package io.odpf.stencil.http;
+package com.gotocompany.stencil.http;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import io.odpf.stencil.config.StencilConfig;
+import com.gotocompany.stencil.config.StencilConfig;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;

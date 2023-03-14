@@ -1,9 +1,9 @@
 # Stencil
 
-![Test](https://github.com/odpf/stencil/actions/workflows/test-server.yaml/badge.svg)
-![Release](https://github.com/odpf/stencil/actions/workflows/release-server.yml/badge.svg)
+![Test](https://github.com/goto/stencil/actions/workflows/test-server.yaml/badge.svg)
+![Release](https://github.com/goto/stencil/actions/workflows/release-server.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](LICENSE)
-[![Version](https://img.shields.io/github/v/release/odpf/stencil?logo=semantic-release)](Version)
+[![Version](https://img.shields.io/github/v/release/goto/stencil?logo=semantic-release)](Version)
 
 Stencil is a schema registry that provides schema mangement and validation to ensure data compatibility across applications. It enables developers to create, manage and consume schemas dynamically, efficiently, and reliably, and provides a simple way to validate data against those schemas. Stencil support multiple formats including Protobuf, Avro and JSON.
 
@@ -24,9 +24,9 @@ Discover why users choose Stencil as their main schema registry
 
 Explore the following resources to get started with Stencil:
 
-- [Documentation](http://odpf.github.io/stencil) provides guidance on using stencil.
-- [Server](https://odpf.github.io/stencil/docs/server/overview) provides details on getting started with stencil server.
-- [Clients](https://odpf.github.io/stencil/docs/clients/overview) provides reference to supported stencil clients.
+- [Documentation](http://goto.github.io/stencil) provides guidance on using stencil.
+- [Server](https://goto.github.io/stencil/docs/server/overview) provides details on getting started with stencil server.
+- [Clients](https://goto.github.io/stencil/docs/clients/overview) provides reference to supported stencil clients.
 
 ## Installation
 
@@ -34,54 +34,22 @@ Install Stencil on macOS, Windows, Linux, OpenBSD, FreeBSD, and on any machine.
 
 #### Binary (Cross-platform)
 
-Download the appropriate version for your platform from [releases](https://github.com/odpf/stencil/releases) page. Once downloaded, the binary can be run from anywhere.
+Download the appropriate version for your platform from [releases](https://github.com/goto/stencil/releases) page. Once downloaded, the binary can be run from anywhere.
 You don’t need to install it into a global location. This works well for shared hosts and other systems where you don’t have a privileged account.
 Ideally, you should install it somewhere in your PATH for easy use. `/usr/local/bin` is the most probable location.
-
-#### MacOS
-
-`stencil` is available via a Homebrew Tap, and as downloadable binary from the [releases](https://github.com/odpf/stencil/releases/latest) page:
-
-```sh
-brew install odpf/tap/stencil
-```
-
-To upgrade to the latest version:
-
-```
-brew upgrade stencil
-```
-
-#### Linux
-
-`stencil` is available as downloadable binaries from the [releases](https://github.com/odpf/stencil/releases/latest) page. Download the `.deb` or `.rpm` from the releases page and install with `sudo dpkg -i` and `sudo rpm -i` respectively.
-
-#### Windows
-
-`stencil` is available via [scoop](https://scoop.sh/), and as a downloadable binary from the [releases](https://github.com/odpf/stencil/releases/latest) page:
-
-```
-scoop bucket add stencil https://github.com/odpf/scoop-bucket.git
-```
-
-To upgrade to the latest version:
-
-```
-scoop update stencil
-```
 
 #### Docker
 
 We provide ready to use Docker container images. To pull the latest image:
 
 ```
-docker pull odpf/stencil:latest
+docker pull gotocompany/stencil:latest
 ```
 
 To pull a specific version:
 
 ```
-docker pull odpf/stencil:v0.3.3
+docker pull gotocompany/stencil:v0.3.4
 ```
 
 ## Usage
@@ -92,7 +60,7 @@ Stencil has three major components. Server, CLI and clients. Stencil server and 
 
 Stencil server provides a way to store and fetch schemas and enforce compatibility rules. Run `stencil server --help` to see instructions to manage Stencil server.
 
-Stencil server also provides a fully-featured GRPC and HTTP API to interact with Stencil server. Both APIs adheres to a set of standards that are rigidly followed. Please refer to [proton](https://github.com/odpf/proton/tree/main/odpf/stencil/v1beta1) for GRPC API definitions.
+Stencil server also provides a fully-featured GRPC and HTTP API to interact with Stencil server. Both APIs adheres to a set of standards that are rigidly followed. Please refer [here](proto/v1beta1/) for GRPC API definitions.
 
 **CLI**
 
@@ -123,7 +91,7 @@ Stencil clients allows application to interact with stencil server to eserialize
 
 ```sh
 # Clone the repo
-$ git clone git@github.com:odpf/stencil.git
+$ git clone git@github.com:goto/stencil.git
 
 # Check all build comamnds available
 $ make help
@@ -157,6 +125,6 @@ Development of Stencil happens in the open on GitHub, and we are grateful to the
 
 Read our [contributing guide](docs/contribute/contribution.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to stencil.
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/odpf/stencil/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
+To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/goto/stencil/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
-This project exists thanks to all the [contributors](https://github.com/odpf/stencil/graphs/contributors).
+This project exists thanks to all the [contributors](https://github.com/goto/stencil/graphs/contributors).

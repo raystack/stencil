@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/odpf/salt/cmdx"
 	"github.com/odpf/salt/config"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

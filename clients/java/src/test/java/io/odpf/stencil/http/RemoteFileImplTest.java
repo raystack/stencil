@@ -1,4 +1,4 @@
-package io.odpf.stencil.http;
+package com.gotocompany.stencil.http;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;

@@ -1,0 +1,10 @@
+version: v1
+name: buf.build/goto/proton
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+breaking:
+  use:
+    - WIRE
+  except:
+    - RESERVED_MESSAGE_NO_DELETE

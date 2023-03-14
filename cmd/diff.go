@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/odpf/salt/printer"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
@@ -67,7 +67,7 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 		Short: "Diff(s) of two schema versions",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema diff booking -n=odpf --later-version=2 --earlier-version=1 --fullname=<fullname>
+			$ stencil schema diff booking -n=goto --later-version=2 --earlier-version=1 --fullname=<fullname>
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -151,6 +151,6 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 	cmd.MarkFlagRequired("earlier-version")
 	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "Later version of the schema")
 	cmd.MarkFlagRequired("later-version")
-	cmd.Flags().StringVar(&fullname, "fullname", "", "Only applicable for FORMAT_PROTO. fullname of proto schema eg: odpf.common.v1.Version")
+	cmd.Flags().StringVar(&fullname, "fullname", "", "Only applicable for FORMAT_PROTO. fullname of proto schema eg: goto.common.v1.Version")
 	return cmd
 }

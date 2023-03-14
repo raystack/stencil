@@ -1,4 +1,4 @@
-package io.odpf.stencil;
+package com.gotocompany.stencil;
 
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;

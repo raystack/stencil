@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/MakeNowJust/heredoc"
+	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/odpf/salt/printer"
 	"github.com/odpf/salt/term"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
@@ -29,8 +29,8 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 		Example: heredoc.Doc(`
 			$ stencil search email
 			$ stencil search email -s human
-			$ stencil search name -n odpf -s person -v 2
-			$ stencil search address -n odpf -s person -h true
+			$ stencil search name -n goto -s person -v 2
+			$ stencil search address -n goto -s person -h true
 		`),
 		Annotations: map[string]string{
 			"group":  "core",
