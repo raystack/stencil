@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/printer"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/salt/printer"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ func editSchemaCmd(cdk *CDK) *cobra.Command {
 		Short: "Edit a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema edit booking -n odpf -c COMPATIBILITY_BACKWARD
+			$ stencil schema edit booking -n raystack -c COMPATIBILITY_BACKWARD
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

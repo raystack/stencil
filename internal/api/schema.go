@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/core/schema"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/stencil/core/schema"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 )
 
 func schemaToProto(s schema.Schema) *stencilv1beta1.Schema {

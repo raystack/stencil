@@ -1,4 +1,4 @@
-package io.odpf.stencil.exception;
+package org.raystack.stencil.exception;
 
 public class StencilRuntimeException extends RuntimeException{
     public StencilRuntimeException(Throwable t) {

@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/salt/printer"
+	"github.com/raystack/salt/term"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,7 +24,7 @@ func infoSchemaCmd(cdk *CDK) *cobra.Command {
 		Long:  "Display the information about a schema.",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema info events -n odpf
+			$ stencil schema info events -n raystack
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
@@ -75,7 +75,7 @@ func versionSchemaCmd(cdk *CDK) *cobra.Command {
 		Short: "View versions of a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema version booking -n odpf
+			$ stencil schema version booking -n raystack
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

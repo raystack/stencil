@@ -8,10 +8,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/odpf/stencil/core/namespace"
-	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/core/search"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/stencil/core/namespace"
+	"github.com/raystack/stencil/core/schema"
+	"github.com/raystack/stencil/core/search"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 

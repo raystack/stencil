@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/georgysavva/scany/pgxscan"
-	"github.com/odpf/stencil/core/search"
+	"github.com/raystack/stencil/core/search"
 )
 
 const searchAllQuery = `

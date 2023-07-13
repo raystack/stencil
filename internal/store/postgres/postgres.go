@@ -14,9 +14,9 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/odpf/stencil/internal/store"
-	"github.com/odpf/stencil/pkg/logger"
 	"github.com/pkg/errors"
+	"github.com/raystack/stencil/internal/store"
+	"github.com/raystack/stencil/pkg/logger"
 )
 
 //go:embed migrations

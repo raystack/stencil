@@ -1,6 +1,6 @@
-package io.odpf.stencil.http;
+package org.raystack.stencil.http;
 
-import io.odpf.stencil.config.StencilConfig;
+import org.raystack.stencil.config.StencilConfig;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;

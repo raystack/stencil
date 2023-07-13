@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/odpf/stencil/core/namespace"
-	"github.com/odpf/stencil/internal/store"
-	"github.com/odpf/stencil/internal/store/postgres"
+	"github.com/raystack/stencil/core/namespace"
+	"github.com/raystack/stencil/internal/store"
+	"github.com/raystack/stencil/internal/store/postgres"
 	"github.com/stretchr/testify/assert"
 )
 

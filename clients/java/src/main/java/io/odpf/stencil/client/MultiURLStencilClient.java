@@ -1,8 +1,8 @@
-package io.odpf.stencil.client;
+package org.raystack.stencil.client;
 
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.cache.SchemaCacheLoader;
-import io.odpf.stencil.config.StencilConfig;
+import org.raystack.stencil.cache.SchemaCacheLoader;
+import org.raystack.stencil.config.StencilConfig;
 
 import java.io.IOException;
 import java.io.Serializable;

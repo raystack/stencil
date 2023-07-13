@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/odpf/stencil/core/schema"
+	"github.com/raystack/stencil/core/schema"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

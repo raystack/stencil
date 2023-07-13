@@ -1,22 +1,22 @@
-package io.odpf.stencil;
+package org.raystack.stencil;
 
-import io.odpf.stencil.cache.SchemaCacheLoader;
-import io.odpf.stencil.client.ClassLoadStencilClient;
-import io.odpf.stencil.client.MultiURLStencilClient;
-import io.odpf.stencil.client.StencilClient;
-import io.odpf.stencil.client.URLStencilClient;
-import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.http.RemoteFileImpl;
-import io.odpf.stencil.http.RetryHttpClient;
+import org.raystack.stencil.cache.SchemaCacheLoader;
+import org.raystack.stencil.client.ClassLoadStencilClient;
+import org.raystack.stencil.client.MultiURLStencilClient;
+import org.raystack.stencil.client.StencilClient;
+import org.raystack.stencil.client.URLStencilClient;
+import org.raystack.stencil.config.StencilConfig;
+import org.raystack.stencil.http.RemoteFileImpl;
+import org.raystack.stencil.http.RetryHttpClient;
 
 import java.util.List;
 
 
 /**
- * Provides static methods for the creation of {@link io.odpf.stencil.client.StencilClient}
+ * Provides static methods for the creation of {@link org.raystack.stencil.client.StencilClient}
  * object with configurations and various options like
  * single URLs, multiple URLs, statsd client for monitoring
- * and {@link io.odpf.stencil.SchemaUpdateListener} for callback on schema change.
+ * and {@link org.raystack.stencil.SchemaUpdateListener} for callback on schema change.
  */
 public class StencilClientFactory {
     /**

@@ -1,4 +1,4 @@
-package io.odpf.stencil.http;
+package org.raystack.stencil.http;
 
 import java.io.IOException;
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/odpf/stencil/cmd"
+	"github.com/raystack/stencil/cmd"
 )
 
 const (

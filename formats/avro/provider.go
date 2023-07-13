@@ -5,7 +5,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
-	"github.com/odpf/stencil/core/schema"
+	"github.com/raystack/stencil/core/schema"
 )
 
 // ParseSchema parses avro schema bytes into ParsedSchema

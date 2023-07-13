@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/stencil/config"
-	"github.com/odpf/stencil/internal/server"
-	"github.com/odpf/stencil/internal/store/postgres"
+	"github.com/raystack/stencil/config"
+	"github.com/raystack/stencil/internal/server"
+	"github.com/raystack/stencil/internal/store/postgres"
 	"github.com/spf13/cobra"
 
 	// Importing postgres driver

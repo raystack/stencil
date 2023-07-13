@@ -1,4 +1,4 @@
-package io.odpf.stencil.cache;
+package org.raystack.stencil.cache;
 
 import java.io.IOException;
 import java.util.Map;
@@ -9,9 +9,9 @@ import com.google.protobuf.Descriptors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import io.odpf.stencil.DescriptorMapBuilder;
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.http.RemoteFile;
+import org.raystack.stencil.DescriptorMapBuilder;
+import org.raystack.stencil.exception.StencilRuntimeException;
+import org.raystack.stencil.http.RemoteFile;
 
 public interface SchemaRefreshStrategy {
     Map<String, Descriptors.Descriptor> refresh(String url, RemoteFile remoteFile, final Map<String, Descriptors.Descriptor> prevDescriptor);

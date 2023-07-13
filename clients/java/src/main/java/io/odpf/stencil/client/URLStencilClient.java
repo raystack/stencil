@@ -1,13 +1,13 @@
-package io.odpf.stencil.client;
+package org.raystack.stencil.client;
 
 import com.google.common.base.Ticker;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Descriptors;
-import io.odpf.stencil.cache.SchemaCacheLoader;
-import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.exception.StencilRuntimeException;
+import org.raystack.stencil.cache.SchemaCacheLoader;
+import org.raystack.stencil.config.StencilConfig;
+import org.raystack.stencil.exception.StencilRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/cmdx"
+	"github.com/raystack/salt/cmdx"
 	"github.com/spf13/cobra"
 )
 
@@ -22,10 +22,10 @@ func New() *cobra.Command {
 			"group": "core",
 			"help:learn": heredoc.Doc(`
 				Use 'stencil <command> --help' for info about a command.
-				Read the manual at https://odpf.github.io/stencil/
+				Read the manual at https://raystack.github.io/stencil/
 			`),
 			"help:feedback": heredoc.Doc(`
-				Open an issue here https://github.com/odpf/stencil/issues
+				Open an issue here https://github.com/raystack/stencil/issues
 			`),
 		},
 	}

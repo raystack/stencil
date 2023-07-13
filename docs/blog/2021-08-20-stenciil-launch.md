@@ -5,7 +5,7 @@ authors:
   name: Ravi Suhag
   title: Maintainer
   url: https://github.com/ravisuhag
-tags: [odpf, stencil]
+tags: [raystack, stencil]
 ---
 
 We are live!

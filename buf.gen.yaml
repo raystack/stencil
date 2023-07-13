@@ -6,7 +6,7 @@ plugins:
   - name: go-grpc
     out: ./proto
     opt: paths=source_relative
-  - remote: buf.build/odpf/plugins/validate
+  - remote: buf.build/raystack/plugins/validate
     out: "proto"
     opt: "paths=source_relative,lang=go"
   - name: grpc-gateway

@@ -1,14 +1,14 @@
-package io.odpf.stencil.cache;
+package org.raystack.stencil.cache;
 
 import com.google.common.io.ByteStreams;
 import com.google.protobuf.Descriptors;
 import com.timgroup.statsd.NoOpStatsDClient;
 import com.timgroup.statsd.StatsDClient;
-import io.odpf.stencil.SchemaUpdateListener;
-import io.odpf.stencil.TestKey;
-import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.http.RemoteFile;
+import org.raystack.stencil.SchemaUpdateListener;
+import org.raystack.stencil.TestKey;
+import org.raystack.stencil.config.StencilConfig;
+import org.raystack.stencil.exception.StencilRuntimeException;
+import org.raystack.stencil.http.RemoteFile;
 import org.apache.http.client.ClientProtocolException;
 import org.junit.After;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class SchemaCacheLoaderTest {
     private SchemaCacheLoader cacheLoader;
     private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
-    private static final String LOOKUP_KEY = "io.odpf.stencil.TestMessage";
+    private static final String LOOKUP_KEY = "org.raystack.stencil.TestMessage";
     private StencilConfig config = StencilConfig.builder().build();
     private final StatsDClient statsDClient = new NoOpStatsDClient();
 

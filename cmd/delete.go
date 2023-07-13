@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/printer"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/salt/printer"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +21,7 @@ func deleteSchemaCmd(cdk *CDK) *cobra.Command {
 		Short: "Delete a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema delete booking -n odpf
+			$ stencil schema delete booking -n raystack
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

@@ -1,4 +1,4 @@
-package io.odpf.stencil;
+package org.raystack.stencil;
 
 import java.util.Map;
 import com.google.protobuf.Descriptors;

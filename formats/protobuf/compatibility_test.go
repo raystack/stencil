@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/core/schema/mocks"
-	"github.com/odpf/stencil/formats/protobuf"
+	"github.com/raystack/stencil/core/schema"
+	"github.com/raystack/stencil/core/schema/mocks"
+	"github.com/raystack/stencil/formats/protobuf"
 	"github.com/stretchr/testify/assert"
 )
 

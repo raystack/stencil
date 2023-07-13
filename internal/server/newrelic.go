@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/odpf/stencil/config"
+	"github.com/raystack/stencil/config"
 )
 
 func getNewRelic(config *config.Config) *newrelic.Application {

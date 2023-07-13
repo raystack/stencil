@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package io.odpf.stencil;
+package org.raystack.stencil;
 
 message ImplicitOuterClass {
     string sample_string = 1;

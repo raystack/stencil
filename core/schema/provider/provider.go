@@ -3,10 +3,10 @@ package provider
 import (
 	"errors"
 
-	"github.com/odpf/stencil/core/schema"
-	"github.com/odpf/stencil/formats/avro"
-	"github.com/odpf/stencil/formats/json"
-	"github.com/odpf/stencil/formats/protobuf"
+	"github.com/raystack/stencil/core/schema"
+	"github.com/raystack/stencil/formats/avro"
+	"github.com/raystack/stencil/formats/json"
+	"github.com/raystack/stencil/formats/protobuf"
 )
 
 type parseFn func([]byte) (schema.ParsedSchema, error)

@@ -1,4 +1,4 @@
-package io.odpf.stencil.client;
+package org.raystack.stencil.client;
 
 import com.google.protobuf.Descriptors;
 

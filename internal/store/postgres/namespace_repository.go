@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/georgysavva/scany/pgxscan"
-	"github.com/odpf/stencil/core/namespace"
+	"github.com/raystack/stencil/core/namespace"
 )
 
 const namespaceListQuery = `

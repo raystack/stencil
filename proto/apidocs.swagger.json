@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "odpf/stencil/v1beta1/stencil.proto",
+    "title": "raystack/stencil/v1beta1/stencil.proto",
     "version": "0.1.4"
   },
   "tags": [
@@ -9,15 +9,9 @@
       "name": "StencilService"
     }
   ],
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/v1beta1/namespaces": {
       "get": {
@@ -37,9 +31,7 @@
             }
           }
         },
-        "tags": [
-          "namespace"
-        ]
+        "tags": ["namespace"]
       },
       "post": {
         "summary": "Create namespace entry",
@@ -68,9 +60,7 @@
             }
           }
         ],
-        "tags": [
-          "namespace"
-        ]
+        "tags": ["namespace"]
       }
     },
     "/v1beta1/namespaces/{id}": {
@@ -99,9 +89,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "namespace"
-        ]
+        "tags": ["namespace"]
       },
       "delete": {
         "summary": "Delete namespace by id",
@@ -129,9 +117,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "namespace"
-        ]
+        "tags": ["namespace"]
       },
       "put": {
         "summary": "Update namespace entity by id",
@@ -177,9 +163,7 @@
             }
           }
         ],
-        "tags": [
-          "namespace"
-        ]
+        "tags": ["namespace"]
       }
     },
     "/v1beta1/namespaces/{id}/schemas": {
@@ -208,9 +192,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "schema"
-        ]
+        "tags": ["schema"]
       }
     },
     "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}": {
@@ -245,9 +227,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "schema"
-        ]
+        "tags": ["schema"]
       },
       "patch": {
         "summary": "Update only schema metadata",
@@ -293,9 +273,7 @@
             }
           }
         ],
-        "tags": [
-          "schema"
-        ]
+        "tags": ["schema"]
       }
     },
     "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/meta": {
@@ -330,9 +308,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "schema"
-        ]
+        "tags": ["schema"]
       }
     },
     "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions": {
@@ -367,10 +343,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "schema",
-          "version"
-        ]
+        "tags": ["schema", "version"]
       }
     },
     "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions/{versionId}": {
@@ -412,10 +385,7 @@
             "format": "int32"
           }
         ],
-        "tags": [
-          "schema",
-          "version"
-        ]
+        "tags": ["schema", "version"]
       }
     },
     "/v1beta1/search": {
@@ -469,9 +439,7 @@
             "format": "int32"
           }
         ],
-        "tags": [
-          "schema"
-        ]
+        "tags": ["schema"]
       }
     }
   },
@@ -559,9 +527,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "required": [
-            "id"
-          ]
+          "required": ["id"]
         },
         "format": {
           "$ref": "#/definitions/SchemaFormat"
@@ -573,9 +539,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "id"
-      ]
+      "required": ["id"]
     },
     "v1beta1CreateNamespaceResponse": {
       "type": "object",

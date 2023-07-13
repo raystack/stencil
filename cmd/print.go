@@ -8,9 +8,9 @@ import (
 	"github.com/alecthomas/chroma/quick"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoprint"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/salt/printer"
+	"github.com/raystack/salt/term"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -26,8 +26,8 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Aliases: []string{"print"},
 		Example: heredoc.Doc(`
-			$ stencil schema view booking -n odpf
-			$ stencil schema view booking -n odpf -v 2
+			$ stencil schema view booking -n raystack
+			$ stencil schema view booking -n raystack -v 2
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

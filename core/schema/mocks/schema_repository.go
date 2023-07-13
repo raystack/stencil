@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	schema "github.com/odpf/stencil/core/schema"
+	schema "github.com/raystack/stencil/core/schema"
 	mock "github.com/stretchr/testify/mock"
 )
 

@@ -1,7 +1,7 @@
-package io.odpf.stencil.http;
+package org.raystack.stencil.http;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import io.odpf.stencil.config.StencilConfig;
+import org.raystack.stencil.config.StencilConfig;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;

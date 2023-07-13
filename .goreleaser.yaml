@@ -12,9 +12,9 @@ builds:
     flags:
       - -a
     ldflags:
-      - -X github.com/odpf/stencil/config.Version={{.Tag}}
-      - -X github.com/odpf/stencil/config.BuildCommit={{.FullCommit}}
-      - -X github.com/odpf/stencil/config.BuildDate={{.Date}}
+      - -X github.com/raystack/stencil/config.Version={{.Tag}}
+      - -X github.com/raystack/stencil/config.BuildCommit={{.FullCommit}}
+      - -X github.com/raystack/stencil/config.BuildDate={{.Date}}
     goos: [darwin, linux, windows]
     goarch: [amd64, 386, arm, arm64]
     env:
@@ -48,13 +48,13 @@ dockers:
       - stencil
     dockerfile: Dockerfile
     image_templates:
-      - "docker.io/odpf/{{.ProjectName}}:latest"
-      - "docker.io/odpf/{{.ProjectName}}:{{ .Version }}"
-      - "docker.io/odpf/{{.ProjectName}}:{{ .Tag }}-amd64"
+      - "docker.io/raystack/{{.ProjectName}}:latest"
+      - "docker.io/raystack/{{.ProjectName}}:{{ .Version }}"
+      - "docker.io/raystack/{{.ProjectName}}:{{ .Tag }}-amd64"
 nfpms:
   - maintainer: ODPF
     description: Schema registry
-    homepage: https://github.com/odpf/stencil
+    homepage: https://github.com/raystack/stencil
     license: Apache 2.0
     formats:
       - deb
@@ -63,17 +63,17 @@ nfpms:
       darwin: macOS
 scoop:
   bucket:
-    owner: odpf
+    owner: raystack
     name: scoop-bucket
-  homepage: "https://github.com/odpf/stencil"
+  homepage: "https://github.com/raystack/stencil"
   description: "Schema registry"
   license: Apache 2.0
 brews:
   - name: stencil
-    homepage: "https://github.com/odpf/stencil"
+    homepage: "https://github.com/raystack/stencil"
     description: "Schema registry"
     tap:
-      owner: odpf
+      owner: raystack
       name: homebrew-tap
     license: "Apache 2.0"
     folder: Formula

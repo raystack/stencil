@@ -3,7 +3,7 @@ package protobuf
 import (
 	"fmt"
 
-	"github.com/odpf/stencil/core/schema"
+	"github.com/raystack/stencil/core/schema"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoregistry"

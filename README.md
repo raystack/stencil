@@ -43,7 +43,7 @@ Ideally, you should install it somewhere in your PATH for easy use. `/usr/local/
 `stencil` is available via a Homebrew Tap, and as downloadable binary from the [releases](https://github.com/raystack/stencil/releases/latest) page:
 
 ```sh
-brew install odpf/tap/stencil
+brew install raystack/tap/stencil
 ```
 
 To upgrade to the latest version:
@@ -75,13 +75,13 @@ scoop update stencil
 We provide ready to use Docker container images. To pull the latest image:
 
 ```sh
-docker pull odpf/stencil:latest
+docker pull raystack/stencil:latest
 ```
 
 To pull a specific version:
 
 ```sh
-docker pull odpf/stencil:v0.3.3
+docker pull raystack/stencil:v0.3.3
 ```
 
 ## Usage

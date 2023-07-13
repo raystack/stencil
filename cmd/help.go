@@ -8,7 +8,7 @@ var envHelp = map[string]string{
 	"short": "List of supported environment variables",
 	"long": heredoc.Doc(`
 			ODPF_CONFIG_DIR: the directory where stencil will store configuration files. Default:
-			"$XDG_CONFIG_HOME/odpf" or "$HOME/.config/odpf".
+			"$XDG_CONFIG_HOME/raystack" or "$HOME/.config/raystack".
 
 			NO_COLOR: set to any value to avoid printing ANSI escape sequences for color output.
 

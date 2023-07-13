@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.0
 // 	protoc        (unknown)
-// source: odpf/stencil/v1beta1/stencil.proto
+// source: raystack/stencil/v1beta1/stencil.proto
 
 package stencilv1beta1
 
@@ -60,11 +60,11 @@ func (x Schema_Format) String() string {
 }
 
 func (Schema_Format) Descriptor() protoreflect.EnumDescriptor {
-	return file_odpf_stencil_v1beta1_stencil_proto_enumTypes[0].Descriptor()
+	return file_raystack_stencil_v1beta1_stencil_proto_enumTypes[0].Descriptor()
 }
 
 func (Schema_Format) Type() protoreflect.EnumType {
-	return &file_odpf_stencil_v1beta1_stencil_proto_enumTypes[0]
+	return &file_raystack_stencil_v1beta1_stencil_proto_enumTypes[0]
 }
 
 func (x Schema_Format) Number() protoreflect.EnumNumber {
@@ -73,7 +73,7 @@ func (x Schema_Format) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Schema_Format.Descriptor instead.
 func (Schema_Format) EnumDescriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{1, 0}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{1, 0}
 }
 
 type Schema_Compatibility int32
@@ -121,11 +121,11 @@ func (x Schema_Compatibility) String() string {
 }
 
 func (Schema_Compatibility) Descriptor() protoreflect.EnumDescriptor {
-	return file_odpf_stencil_v1beta1_stencil_proto_enumTypes[1].Descriptor()
+	return file_raystack_stencil_v1beta1_stencil_proto_enumTypes[1].Descriptor()
 }
 
 func (Schema_Compatibility) Type() protoreflect.EnumType {
-	return &file_odpf_stencil_v1beta1_stencil_proto_enumTypes[1]
+	return &file_raystack_stencil_v1beta1_stencil_proto_enumTypes[1]
 }
 
 func (x Schema_Compatibility) Number() protoreflect.EnumNumber {
@@ -134,7 +134,7 @@ func (x Schema_Compatibility) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Schema_Compatibility.Descriptor instead.
 func (Schema_Compatibility) EnumDescriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{1, 1}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{1, 1}
 }
 
 type Namespace struct {
@@ -143,8 +143,8 @@ type Namespace struct {
 	unknownFields protoimpl.UnknownFields
 
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Format        Schema_Format          `protobuf:"varint,2,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
-	Compatibility Schema_Compatibility   `protobuf:"varint,3,opt,name=Compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"Compatibility,omitempty"`
+	Format        Schema_Format          `protobuf:"varint,2,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Compatibility Schema_Compatibility   `protobuf:"varint,3,opt,name=Compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"Compatibility,omitempty"`
 	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
@@ -153,7 +153,7 @@ type Namespace struct {
 func (x *Namespace) Reset() {
 	*x = Namespace{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[0]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -166,7 +166,7 @@ func (x *Namespace) String() string {
 func (*Namespace) ProtoMessage() {}
 
 func (x *Namespace) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[0]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -179,7 +179,7 @@ func (x *Namespace) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Namespace.ProtoReflect.Descriptor instead.
 func (*Namespace) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{0}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Namespace) GetId() string {
@@ -230,9 +230,9 @@ type Schema struct {
 	unknownFields protoimpl.UnknownFields
 
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Format        Schema_Format          `protobuf:"varint,2,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Format        Schema_Format          `protobuf:"varint,2,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
 	Authority     string                 `protobuf:"bytes,3,opt,name=authority,proto3" json:"authority,omitempty"`
-	Compatibility Schema_Compatibility   `protobuf:"varint,4,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Compatibility Schema_Compatibility   `protobuf:"varint,4,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 }
@@ -240,7 +240,7 @@ type Schema struct {
 func (x *Schema) Reset() {
 	*x = Schema{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[1]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -253,7 +253,7 @@ func (x *Schema) String() string {
 func (*Schema) ProtoMessage() {}
 
 func (x *Schema) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[1]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -266,7 +266,7 @@ func (x *Schema) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Schema.ProtoReflect.Descriptor instead.
 func (*Schema) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{1}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Schema) GetName() string {
@@ -320,7 +320,7 @@ type ListNamespacesRequest struct {
 func (x *ListNamespacesRequest) Reset() {
 	*x = ListNamespacesRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[2]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -333,7 +333,7 @@ func (x *ListNamespacesRequest) String() string {
 func (*ListNamespacesRequest) ProtoMessage() {}
 
 func (x *ListNamespacesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[2]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -346,7 +346,7 @@ func (x *ListNamespacesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListNamespacesRequest.ProtoReflect.Descriptor instead.
 func (*ListNamespacesRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{2}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{2}
 }
 
 type ListNamespacesResponse struct {
@@ -360,7 +360,7 @@ type ListNamespacesResponse struct {
 func (x *ListNamespacesResponse) Reset() {
 	*x = ListNamespacesResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[3]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -373,7 +373,7 @@ func (x *ListNamespacesResponse) String() string {
 func (*ListNamespacesResponse) ProtoMessage() {}
 
 func (x *ListNamespacesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[3]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -386,7 +386,7 @@ func (x *ListNamespacesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListNamespacesResponse.ProtoReflect.Descriptor instead.
 func (*ListNamespacesResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{3}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ListNamespacesResponse) GetNamespaces() []*Namespace {
@@ -407,7 +407,7 @@ type GetNamespaceRequest struct {
 func (x *GetNamespaceRequest) Reset() {
 	*x = GetNamespaceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[4]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -420,7 +420,7 @@ func (x *GetNamespaceRequest) String() string {
 func (*GetNamespaceRequest) ProtoMessage() {}
 
 func (x *GetNamespaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[4]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -433,7 +433,7 @@ func (x *GetNamespaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetNamespaceRequest.ProtoReflect.Descriptor instead.
 func (*GetNamespaceRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{4}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetNamespaceRequest) GetId() string {
@@ -454,7 +454,7 @@ type GetNamespaceResponse struct {
 func (x *GetNamespaceResponse) Reset() {
 	*x = GetNamespaceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[5]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -467,7 +467,7 @@ func (x *GetNamespaceResponse) String() string {
 func (*GetNamespaceResponse) ProtoMessage() {}
 
 func (x *GetNamespaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[5]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -480,7 +480,7 @@ func (x *GetNamespaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetNamespaceResponse.ProtoReflect.Descriptor instead.
 func (*GetNamespaceResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{5}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetNamespaceResponse) GetNamespace() *Namespace {
@@ -496,15 +496,15 @@ type CreateNamespaceRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Id            string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Format        Schema_Format        `protobuf:"varint,2,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
-	Compatibility Schema_Compatibility `protobuf:"varint,3,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Format        Schema_Format        `protobuf:"varint,2,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Compatibility Schema_Compatibility `protobuf:"varint,3,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 	Description   string               `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 }
 
 func (x *CreateNamespaceRequest) Reset() {
 	*x = CreateNamespaceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[6]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -517,7 +517,7 @@ func (x *CreateNamespaceRequest) String() string {
 func (*CreateNamespaceRequest) ProtoMessage() {}
 
 func (x *CreateNamespaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[6]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -530,7 +530,7 @@ func (x *CreateNamespaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateNamespaceRequest.ProtoReflect.Descriptor instead.
 func (*CreateNamespaceRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{6}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateNamespaceRequest) GetId() string {
@@ -572,7 +572,7 @@ type CreateNamespaceResponse struct {
 func (x *CreateNamespaceResponse) Reset() {
 	*x = CreateNamespaceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[7]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -585,7 +585,7 @@ func (x *CreateNamespaceResponse) String() string {
 func (*CreateNamespaceResponse) ProtoMessage() {}
 
 func (x *CreateNamespaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[7]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -598,7 +598,7 @@ func (x *CreateNamespaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateNamespaceResponse.ProtoReflect.Descriptor instead.
 func (*CreateNamespaceResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{7}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *CreateNamespaceResponse) GetNamespace() *Namespace {
@@ -614,15 +614,15 @@ type UpdateNamespaceRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Id            string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Format        Schema_Format        `protobuf:"varint,2,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
-	Compatibility Schema_Compatibility `protobuf:"varint,3,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Format        Schema_Format        `protobuf:"varint,2,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Compatibility Schema_Compatibility `protobuf:"varint,3,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 	Description   string               `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 }
 
 func (x *UpdateNamespaceRequest) Reset() {
 	*x = UpdateNamespaceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[8]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -635,7 +635,7 @@ func (x *UpdateNamespaceRequest) String() string {
 func (*UpdateNamespaceRequest) ProtoMessage() {}
 
 func (x *UpdateNamespaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[8]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -648,7 +648,7 @@ func (x *UpdateNamespaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateNamespaceRequest.ProtoReflect.Descriptor instead.
 func (*UpdateNamespaceRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{8}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateNamespaceRequest) GetId() string {
@@ -690,7 +690,7 @@ type UpdateNamespaceResponse struct {
 func (x *UpdateNamespaceResponse) Reset() {
 	*x = UpdateNamespaceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[9]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -703,7 +703,7 @@ func (x *UpdateNamespaceResponse) String() string {
 func (*UpdateNamespaceResponse) ProtoMessage() {}
 
 func (x *UpdateNamespaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[9]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -716,7 +716,7 @@ func (x *UpdateNamespaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateNamespaceResponse.ProtoReflect.Descriptor instead.
 func (*UpdateNamespaceResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{9}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateNamespaceResponse) GetNamespace() *Namespace {
@@ -737,7 +737,7 @@ type DeleteNamespaceRequest struct {
 func (x *DeleteNamespaceRequest) Reset() {
 	*x = DeleteNamespaceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[10]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -750,7 +750,7 @@ func (x *DeleteNamespaceRequest) String() string {
 func (*DeleteNamespaceRequest) ProtoMessage() {}
 
 func (x *DeleteNamespaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[10]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -763,7 +763,7 @@ func (x *DeleteNamespaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteNamespaceRequest.ProtoReflect.Descriptor instead.
 func (*DeleteNamespaceRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{10}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeleteNamespaceRequest) GetId() string {
@@ -784,7 +784,7 @@ type DeleteNamespaceResponse struct {
 func (x *DeleteNamespaceResponse) Reset() {
 	*x = DeleteNamespaceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[11]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -797,7 +797,7 @@ func (x *DeleteNamespaceResponse) String() string {
 func (*DeleteNamespaceResponse) ProtoMessage() {}
 
 func (x *DeleteNamespaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[11]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -810,7 +810,7 @@ func (x *DeleteNamespaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteNamespaceResponse.ProtoReflect.Descriptor instead.
 func (*DeleteNamespaceResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{11}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeleteNamespaceResponse) GetMessage() string {
@@ -831,7 +831,7 @@ type ListSchemasRequest struct {
 func (x *ListSchemasRequest) Reset() {
 	*x = ListSchemasRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[12]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -844,7 +844,7 @@ func (x *ListSchemasRequest) String() string {
 func (*ListSchemasRequest) ProtoMessage() {}
 
 func (x *ListSchemasRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[12]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -857,7 +857,7 @@ func (x *ListSchemasRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSchemasRequest.ProtoReflect.Descriptor instead.
 func (*ListSchemasRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{12}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListSchemasRequest) GetId() string {
@@ -878,7 +878,7 @@ type ListSchemasResponse struct {
 func (x *ListSchemasResponse) Reset() {
 	*x = ListSchemasResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[13]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -891,7 +891,7 @@ func (x *ListSchemasResponse) String() string {
 func (*ListSchemasResponse) ProtoMessage() {}
 
 func (x *ListSchemasResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[13]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -904,7 +904,7 @@ func (x *ListSchemasResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSchemasResponse.ProtoReflect.Descriptor instead.
 func (*ListSchemasResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{13}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ListSchemasResponse) GetSchemas() []*Schema {
@@ -926,7 +926,7 @@ type GetLatestSchemaRequest struct {
 func (x *GetLatestSchemaRequest) Reset() {
 	*x = GetLatestSchemaRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[14]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -939,7 +939,7 @@ func (x *GetLatestSchemaRequest) String() string {
 func (*GetLatestSchemaRequest) ProtoMessage() {}
 
 func (x *GetLatestSchemaRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[14]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -952,7 +952,7 @@ func (x *GetLatestSchemaRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestSchemaRequest.ProtoReflect.Descriptor instead.
 func (*GetLatestSchemaRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{14}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GetLatestSchemaRequest) GetNamespaceId() string {
@@ -980,7 +980,7 @@ type GetLatestSchemaResponse struct {
 func (x *GetLatestSchemaResponse) Reset() {
 	*x = GetLatestSchemaResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[15]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -993,7 +993,7 @@ func (x *GetLatestSchemaResponse) String() string {
 func (*GetLatestSchemaResponse) ProtoMessage() {}
 
 func (x *GetLatestSchemaResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[15]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1006,7 +1006,7 @@ func (x *GetLatestSchemaResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestSchemaResponse.ProtoReflect.Descriptor instead.
 func (*GetLatestSchemaResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{15}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GetLatestSchemaResponse) GetData() []byte {
@@ -1024,14 +1024,14 @@ type CreateSchemaRequest struct {
 	NamespaceId   string               `protobuf:"bytes,1,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
 	SchemaId      string               `protobuf:"bytes,2,opt,name=schema_id,json=schemaId,proto3" json:"schema_id,omitempty"`
 	Data          []byte               `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
-	Format        Schema_Format        `protobuf:"varint,4,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
-	Compatibility Schema_Compatibility `protobuf:"varint,5,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Format        Schema_Format        `protobuf:"varint,4,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Compatibility Schema_Compatibility `protobuf:"varint,5,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 }
 
 func (x *CreateSchemaRequest) Reset() {
 	*x = CreateSchemaRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[16]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1044,7 +1044,7 @@ func (x *CreateSchemaRequest) String() string {
 func (*CreateSchemaRequest) ProtoMessage() {}
 
 func (x *CreateSchemaRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[16]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1057,7 +1057,7 @@ func (x *CreateSchemaRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSchemaRequest.ProtoReflect.Descriptor instead.
 func (*CreateSchemaRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{16}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CreateSchemaRequest) GetNamespaceId() string {
@@ -1108,7 +1108,7 @@ type CreateSchemaResponse struct {
 func (x *CreateSchemaResponse) Reset() {
 	*x = CreateSchemaResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[17]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1121,7 +1121,7 @@ func (x *CreateSchemaResponse) String() string {
 func (*CreateSchemaResponse) ProtoMessage() {}
 
 func (x *CreateSchemaResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[17]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1134,7 +1134,7 @@ func (x *CreateSchemaResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSchemaResponse.ProtoReflect.Descriptor instead.
 func (*CreateSchemaResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{17}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *CreateSchemaResponse) GetVersion() int32 {
@@ -1166,13 +1166,13 @@ type CheckCompatibilityRequest struct {
 	NamespaceId   string               `protobuf:"bytes,1,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
 	SchemaId      string               `protobuf:"bytes,2,opt,name=schema_id,json=schemaId,proto3" json:"schema_id,omitempty"`
 	Data          []byte               `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
-	Compatibility Schema_Compatibility `protobuf:"varint,4,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Compatibility Schema_Compatibility `protobuf:"varint,4,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 }
 
 func (x *CheckCompatibilityRequest) Reset() {
 	*x = CheckCompatibilityRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[18]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1185,7 +1185,7 @@ func (x *CheckCompatibilityRequest) String() string {
 func (*CheckCompatibilityRequest) ProtoMessage() {}
 
 func (x *CheckCompatibilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[18]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1198,7 +1198,7 @@ func (x *CheckCompatibilityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckCompatibilityRequest.ProtoReflect.Descriptor instead.
 func (*CheckCompatibilityRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{18}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *CheckCompatibilityRequest) GetNamespaceId() string {
@@ -1238,7 +1238,7 @@ type CheckCompatibilityResponse struct {
 func (x *CheckCompatibilityResponse) Reset() {
 	*x = CheckCompatibilityResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[19]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1251,7 +1251,7 @@ func (x *CheckCompatibilityResponse) String() string {
 func (*CheckCompatibilityResponse) ProtoMessage() {}
 
 func (x *CheckCompatibilityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[19]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1264,7 +1264,7 @@ func (x *CheckCompatibilityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckCompatibilityResponse.ProtoReflect.Descriptor instead.
 func (*CheckCompatibilityResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{19}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{19}
 }
 
 type GetSchemaMetadataRequest struct {
@@ -1279,7 +1279,7 @@ type GetSchemaMetadataRequest struct {
 func (x *GetSchemaMetadataRequest) Reset() {
 	*x = GetSchemaMetadataRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[20]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1292,7 +1292,7 @@ func (x *GetSchemaMetadataRequest) String() string {
 func (*GetSchemaMetadataRequest) ProtoMessage() {}
 
 func (x *GetSchemaMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[20]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1305,7 +1305,7 @@ func (x *GetSchemaMetadataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSchemaMetadataRequest.ProtoReflect.Descriptor instead.
 func (*GetSchemaMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{20}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetSchemaMetadataRequest) GetNamespaceId() string {
@@ -1327,8 +1327,8 @@ type GetSchemaMetadataResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Format        Schema_Format          `protobuf:"varint,1,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
-	Compatibility Schema_Compatibility   `protobuf:"varint,2,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Format        Schema_Format          `protobuf:"varint,1,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Compatibility Schema_Compatibility   `protobuf:"varint,2,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 	Authority     string                 `protobuf:"bytes,3,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
@@ -1338,7 +1338,7 @@ type GetSchemaMetadataResponse struct {
 func (x *GetSchemaMetadataResponse) Reset() {
 	*x = GetSchemaMetadataResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[21]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1351,7 +1351,7 @@ func (x *GetSchemaMetadataResponse) String() string {
 func (*GetSchemaMetadataResponse) ProtoMessage() {}
 
 func (x *GetSchemaMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[21]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1364,7 +1364,7 @@ func (x *GetSchemaMetadataResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSchemaMetadataResponse.ProtoReflect.Descriptor instead.
 func (*GetSchemaMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{21}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *GetSchemaMetadataResponse) GetFormat() Schema_Format {
@@ -1416,13 +1416,13 @@ type UpdateSchemaMetadataRequest struct {
 
 	NamespaceId   string               `protobuf:"bytes,1,opt,name=namespace_id,json=namespaceId,proto3" json:"namespace_id,omitempty"`
 	SchemaId      string               `protobuf:"bytes,2,opt,name=schema_id,json=schemaId,proto3" json:"schema_id,omitempty"`
-	Compatibility Schema_Compatibility `protobuf:"varint,3,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Compatibility Schema_Compatibility `protobuf:"varint,3,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 }
 
 func (x *UpdateSchemaMetadataRequest) Reset() {
 	*x = UpdateSchemaMetadataRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[22]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1435,7 +1435,7 @@ func (x *UpdateSchemaMetadataRequest) String() string {
 func (*UpdateSchemaMetadataRequest) ProtoMessage() {}
 
 func (x *UpdateSchemaMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[22]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1448,7 +1448,7 @@ func (x *UpdateSchemaMetadataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSchemaMetadataRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSchemaMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{22}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *UpdateSchemaMetadataRequest) GetNamespaceId() string {
@@ -1477,15 +1477,15 @@ type UpdateSchemaMetadataResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Format        Schema_Format        `protobuf:"varint,1,opt,name=format,proto3,enum=odpf.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
-	Compatibility Schema_Compatibility `protobuf:"varint,2,opt,name=compatibility,proto3,enum=odpf.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
+	Format        Schema_Format        `protobuf:"varint,1,opt,name=format,proto3,enum=raystack.stencil.v1beta1.Schema_Format" json:"format,omitempty"`
+	Compatibility Schema_Compatibility `protobuf:"varint,2,opt,name=compatibility,proto3,enum=raystack.stencil.v1beta1.Schema_Compatibility" json:"compatibility,omitempty"`
 	Authority     string               `protobuf:"bytes,3,opt,name=authority,proto3" json:"authority,omitempty"`
 }
 
 func (x *UpdateSchemaMetadataResponse) Reset() {
 	*x = UpdateSchemaMetadataResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[23]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1498,7 +1498,7 @@ func (x *UpdateSchemaMetadataResponse) String() string {
 func (*UpdateSchemaMetadataResponse) ProtoMessage() {}
 
 func (x *UpdateSchemaMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[23]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1511,7 +1511,7 @@ func (x *UpdateSchemaMetadataResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSchemaMetadataResponse.ProtoReflect.Descriptor instead.
 func (*UpdateSchemaMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{23}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UpdateSchemaMetadataResponse) GetFormat() Schema_Format {
@@ -1547,7 +1547,7 @@ type DeleteSchemaRequest struct {
 func (x *DeleteSchemaRequest) Reset() {
 	*x = DeleteSchemaRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[24]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1560,7 +1560,7 @@ func (x *DeleteSchemaRequest) String() string {
 func (*DeleteSchemaRequest) ProtoMessage() {}
 
 func (x *DeleteSchemaRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[24]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1573,7 +1573,7 @@ func (x *DeleteSchemaRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSchemaRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSchemaRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{24}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *DeleteSchemaRequest) GetNamespaceId() string {
@@ -1601,7 +1601,7 @@ type DeleteSchemaResponse struct {
 func (x *DeleteSchemaResponse) Reset() {
 	*x = DeleteSchemaResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[25]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1614,7 +1614,7 @@ func (x *DeleteSchemaResponse) String() string {
 func (*DeleteSchemaResponse) ProtoMessage() {}
 
 func (x *DeleteSchemaResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[25]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1627,7 +1627,7 @@ func (x *DeleteSchemaResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSchemaResponse.ProtoReflect.Descriptor instead.
 func (*DeleteSchemaResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{25}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *DeleteSchemaResponse) GetMessage() string {
@@ -1649,7 +1649,7 @@ type ListVersionsRequest struct {
 func (x *ListVersionsRequest) Reset() {
 	*x = ListVersionsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[26]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1662,7 +1662,7 @@ func (x *ListVersionsRequest) String() string {
 func (*ListVersionsRequest) ProtoMessage() {}
 
 func (x *ListVersionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[26]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1675,7 +1675,7 @@ func (x *ListVersionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVersionsRequest.ProtoReflect.Descriptor instead.
 func (*ListVersionsRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{26}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *ListVersionsRequest) GetNamespaceId() string {
@@ -1703,7 +1703,7 @@ type ListVersionsResponse struct {
 func (x *ListVersionsResponse) Reset() {
 	*x = ListVersionsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[27]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1716,7 +1716,7 @@ func (x *ListVersionsResponse) String() string {
 func (*ListVersionsResponse) ProtoMessage() {}
 
 func (x *ListVersionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[27]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1729,7 +1729,7 @@ func (x *ListVersionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVersionsResponse.ProtoReflect.Descriptor instead.
 func (*ListVersionsResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{27}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *ListVersionsResponse) GetVersions() []int32 {
@@ -1752,7 +1752,7 @@ type GetSchemaRequest struct {
 func (x *GetSchemaRequest) Reset() {
 	*x = GetSchemaRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[28]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1765,7 +1765,7 @@ func (x *GetSchemaRequest) String() string {
 func (*GetSchemaRequest) ProtoMessage() {}
 
 func (x *GetSchemaRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[28]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1778,7 +1778,7 @@ func (x *GetSchemaRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSchemaRequest.ProtoReflect.Descriptor instead.
 func (*GetSchemaRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{28}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GetSchemaRequest) GetNamespaceId() string {
@@ -1813,7 +1813,7 @@ type GetSchemaResponse struct {
 func (x *GetSchemaResponse) Reset() {
 	*x = GetSchemaResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[29]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1826,7 +1826,7 @@ func (x *GetSchemaResponse) String() string {
 func (*GetSchemaResponse) ProtoMessage() {}
 
 func (x *GetSchemaResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[29]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1839,7 +1839,7 @@ func (x *GetSchemaResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSchemaResponse.ProtoReflect.Descriptor instead.
 func (*GetSchemaResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{29}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GetSchemaResponse) GetData() []byte {
@@ -1862,7 +1862,7 @@ type DeleteVersionRequest struct {
 func (x *DeleteVersionRequest) Reset() {
 	*x = DeleteVersionRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[30]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1875,7 +1875,7 @@ func (x *DeleteVersionRequest) String() string {
 func (*DeleteVersionRequest) ProtoMessage() {}
 
 func (x *DeleteVersionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[30]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1888,7 +1888,7 @@ func (x *DeleteVersionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteVersionRequest.ProtoReflect.Descriptor instead.
 func (*DeleteVersionRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{30}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *DeleteVersionRequest) GetNamespaceId() string {
@@ -1923,7 +1923,7 @@ type DeleteVersionResponse struct {
 func (x *DeleteVersionResponse) Reset() {
 	*x = DeleteVersionResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[31]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1936,7 +1936,7 @@ func (x *DeleteVersionResponse) String() string {
 func (*DeleteVersionResponse) ProtoMessage() {}
 
 func (x *DeleteVersionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[31]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1949,7 +1949,7 @@ func (x *DeleteVersionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteVersionResponse.ProtoReflect.Descriptor instead.
 func (*DeleteVersionResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{31}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *DeleteVersionResponse) GetMessage() string {
@@ -1977,7 +1977,7 @@ type SearchRequest struct {
 func (x *SearchRequest) Reset() {
 	*x = SearchRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[32]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1990,7 +1990,7 @@ func (x *SearchRequest) String() string {
 func (*SearchRequest) ProtoMessage() {}
 
 func (x *SearchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[32]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2003,7 +2003,7 @@ func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
 func (*SearchRequest) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{32}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *SearchRequest) GetNamespaceId() string {
@@ -2076,7 +2076,7 @@ type SearchResponse struct {
 func (x *SearchResponse) Reset() {
 	*x = SearchResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[33]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2089,7 +2089,7 @@ func (x *SearchResponse) String() string {
 func (*SearchResponse) ProtoMessage() {}
 
 func (x *SearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[33]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2102,7 +2102,7 @@ func (x *SearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
 func (*SearchResponse) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{33}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SearchResponse) GetHits() []*SearchHits {
@@ -2135,7 +2135,7 @@ type SearchHits struct {
 func (x *SearchHits) Reset() {
 	*x = SearchHits{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[34]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2148,7 +2148,7 @@ func (x *SearchHits) String() string {
 func (*SearchHits) ProtoMessage() {}
 
 func (x *SearchHits) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[34]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2161,7 +2161,7 @@ func (x *SearchHits) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchHits.ProtoReflect.Descriptor instead.
 func (*SearchHits) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{34}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *SearchHits) GetNamespaceId() string {
@@ -2217,7 +2217,7 @@ type SearchMeta struct {
 func (x *SearchMeta) Reset() {
 	*x = SearchMeta{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[35]
+		mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2230,7 +2230,7 @@ func (x *SearchMeta) String() string {
 func (*SearchMeta) ProtoMessage() {}
 
 func (x *SearchMeta) ProtoReflect() protoreflect.Message {
-	mi := &file_odpf_stencil_v1beta1_stencil_proto_msgTypes[35]
+	mi := &file_raystack_stencil_v1beta1_stencil_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2243,7 +2243,7 @@ func (x *SearchMeta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchMeta.ProtoReflect.Descriptor instead.
 func (*SearchMeta) Descriptor() ([]byte, []int) {
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{35}
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *SearchMeta) GetTotal() uint32 {
@@ -2253,9 +2253,9 @@ func (x *SearchMeta) GetTotal() uint32 {
 	return 0
 }
 
-var File_odpf_stencil_v1beta1_stencil_proto protoreflect.FileDescriptor
+var File_raystack_stencil_v1beta1_stencil_proto protoreflect.FileDescriptor
 
-var file_odpf_stencil_v1beta1_stencil_proto_rawDesc = []byte{
+var file_raystack_stencil_v1beta1_stencil_proto_rawDesc = []byte{
 	0x0a, 0x22, 0x6f, 0x64, 0x70, 0x66, 0x2f, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2f, 0x76,
 	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x73, 0x74, 0x65, 0x6e, 0x63, 0x69, 0x6c, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x14, 0x6f, 0x64, 0x70, 0x66, 0x2e, 0x73, 0x74, 0x65, 0x6e, 0x63,
@@ -2763,122 +2763,122 @@ var file_odpf_stencil_v1beta1_stencil_proto_rawDesc = []byte{
 }
 
 var (
-	file_odpf_stencil_v1beta1_stencil_proto_rawDescOnce sync.Once
-	file_odpf_stencil_v1beta1_stencil_proto_rawDescData = file_odpf_stencil_v1beta1_stencil_proto_rawDesc
+	file_raystack_stencil_v1beta1_stencil_proto_rawDescOnce sync.Once
+	file_raystack_stencil_v1beta1_stencil_proto_rawDescData = file_raystack_stencil_v1beta1_stencil_proto_rawDesc
 )
 
-func file_odpf_stencil_v1beta1_stencil_proto_rawDescGZIP() []byte {
-	file_odpf_stencil_v1beta1_stencil_proto_rawDescOnce.Do(func() {
-		file_odpf_stencil_v1beta1_stencil_proto_rawDescData = protoimpl.X.CompressGZIP(file_odpf_stencil_v1beta1_stencil_proto_rawDescData)
+func file_raystack_stencil_v1beta1_stencil_proto_rawDescGZIP() []byte {
+	file_raystack_stencil_v1beta1_stencil_proto_rawDescOnce.Do(func() {
+		file_raystack_stencil_v1beta1_stencil_proto_rawDescData = protoimpl.X.CompressGZIP(file_raystack_stencil_v1beta1_stencil_proto_rawDescData)
 	})
-	return file_odpf_stencil_v1beta1_stencil_proto_rawDescData
+	return file_raystack_stencil_v1beta1_stencil_proto_rawDescData
 }
 
-var file_odpf_stencil_v1beta1_stencil_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_odpf_stencil_v1beta1_stencil_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
-var file_odpf_stencil_v1beta1_stencil_proto_goTypes = []interface{}{
-	(Schema_Format)(0),                   // 0: odpf.stencil.v1beta1.Schema.Format
-	(Schema_Compatibility)(0),            // 1: odpf.stencil.v1beta1.Schema.Compatibility
-	(*Namespace)(nil),                    // 2: odpf.stencil.v1beta1.Namespace
-	(*Schema)(nil),                       // 3: odpf.stencil.v1beta1.Schema
-	(*ListNamespacesRequest)(nil),        // 4: odpf.stencil.v1beta1.ListNamespacesRequest
-	(*ListNamespacesResponse)(nil),       // 5: odpf.stencil.v1beta1.ListNamespacesResponse
-	(*GetNamespaceRequest)(nil),          // 6: odpf.stencil.v1beta1.GetNamespaceRequest
-	(*GetNamespaceResponse)(nil),         // 7: odpf.stencil.v1beta1.GetNamespaceResponse
-	(*CreateNamespaceRequest)(nil),       // 8: odpf.stencil.v1beta1.CreateNamespaceRequest
-	(*CreateNamespaceResponse)(nil),      // 9: odpf.stencil.v1beta1.CreateNamespaceResponse
-	(*UpdateNamespaceRequest)(nil),       // 10: odpf.stencil.v1beta1.UpdateNamespaceRequest
-	(*UpdateNamespaceResponse)(nil),      // 11: odpf.stencil.v1beta1.UpdateNamespaceResponse
-	(*DeleteNamespaceRequest)(nil),       // 12: odpf.stencil.v1beta1.DeleteNamespaceRequest
-	(*DeleteNamespaceResponse)(nil),      // 13: odpf.stencil.v1beta1.DeleteNamespaceResponse
-	(*ListSchemasRequest)(nil),           // 14: odpf.stencil.v1beta1.ListSchemasRequest
-	(*ListSchemasResponse)(nil),          // 15: odpf.stencil.v1beta1.ListSchemasResponse
-	(*GetLatestSchemaRequest)(nil),       // 16: odpf.stencil.v1beta1.GetLatestSchemaRequest
-	(*GetLatestSchemaResponse)(nil),      // 17: odpf.stencil.v1beta1.GetLatestSchemaResponse
-	(*CreateSchemaRequest)(nil),          // 18: odpf.stencil.v1beta1.CreateSchemaRequest
-	(*CreateSchemaResponse)(nil),         // 19: odpf.stencil.v1beta1.CreateSchemaResponse
-	(*CheckCompatibilityRequest)(nil),    // 20: odpf.stencil.v1beta1.CheckCompatibilityRequest
-	(*CheckCompatibilityResponse)(nil),   // 21: odpf.stencil.v1beta1.CheckCompatibilityResponse
-	(*GetSchemaMetadataRequest)(nil),     // 22: odpf.stencil.v1beta1.GetSchemaMetadataRequest
-	(*GetSchemaMetadataResponse)(nil),    // 23: odpf.stencil.v1beta1.GetSchemaMetadataResponse
-	(*UpdateSchemaMetadataRequest)(nil),  // 24: odpf.stencil.v1beta1.UpdateSchemaMetadataRequest
-	(*UpdateSchemaMetadataResponse)(nil), // 25: odpf.stencil.v1beta1.UpdateSchemaMetadataResponse
-	(*DeleteSchemaRequest)(nil),          // 26: odpf.stencil.v1beta1.DeleteSchemaRequest
-	(*DeleteSchemaResponse)(nil),         // 27: odpf.stencil.v1beta1.DeleteSchemaResponse
-	(*ListVersionsRequest)(nil),          // 28: odpf.stencil.v1beta1.ListVersionsRequest
-	(*ListVersionsResponse)(nil),         // 29: odpf.stencil.v1beta1.ListVersionsResponse
-	(*GetSchemaRequest)(nil),             // 30: odpf.stencil.v1beta1.GetSchemaRequest
-	(*GetSchemaResponse)(nil),            // 31: odpf.stencil.v1beta1.GetSchemaResponse
-	(*DeleteVersionRequest)(nil),         // 32: odpf.stencil.v1beta1.DeleteVersionRequest
-	(*DeleteVersionResponse)(nil),        // 33: odpf.stencil.v1beta1.DeleteVersionResponse
-	(*SearchRequest)(nil),                // 34: odpf.stencil.v1beta1.SearchRequest
-	(*SearchResponse)(nil),               // 35: odpf.stencil.v1beta1.SearchResponse
-	(*SearchHits)(nil),                   // 36: odpf.stencil.v1beta1.SearchHits
-	(*SearchMeta)(nil),                   // 37: odpf.stencil.v1beta1.SearchMeta
+var file_raystack_stencil_v1beta1_stencil_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_raystack_stencil_v1beta1_stencil_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
+var file_raystack_stencil_v1beta1_stencil_proto_goTypes = []interface{}{
+	(Schema_Format)(0),                   // 0: raystack.stencil.v1beta1.Schema.Format
+	(Schema_Compatibility)(0),            // 1: raystack.stencil.v1beta1.Schema.Compatibility
+	(*Namespace)(nil),                    // 2: raystack.stencil.v1beta1.Namespace
+	(*Schema)(nil),                       // 3: raystack.stencil.v1beta1.Schema
+	(*ListNamespacesRequest)(nil),        // 4: raystack.stencil.v1beta1.ListNamespacesRequest
+	(*ListNamespacesResponse)(nil),       // 5: raystack.stencil.v1beta1.ListNamespacesResponse
+	(*GetNamespaceRequest)(nil),          // 6: raystack.stencil.v1beta1.GetNamespaceRequest
+	(*GetNamespaceResponse)(nil),         // 7: raystack.stencil.v1beta1.GetNamespaceResponse
+	(*CreateNamespaceRequest)(nil),       // 8: raystack.stencil.v1beta1.CreateNamespaceRequest
+	(*CreateNamespaceResponse)(nil),      // 9: raystack.stencil.v1beta1.CreateNamespaceResponse
+	(*UpdateNamespaceRequest)(nil),       // 10: raystack.stencil.v1beta1.UpdateNamespaceRequest
+	(*UpdateNamespaceResponse)(nil),      // 11: raystack.stencil.v1beta1.UpdateNamespaceResponse
+	(*DeleteNamespaceRequest)(nil),       // 12: raystack.stencil.v1beta1.DeleteNamespaceRequest
+	(*DeleteNamespaceResponse)(nil),      // 13: raystack.stencil.v1beta1.DeleteNamespaceResponse
+	(*ListSchemasRequest)(nil),           // 14: raystack.stencil.v1beta1.ListSchemasRequest
+	(*ListSchemasResponse)(nil),          // 15: raystack.stencil.v1beta1.ListSchemasResponse
+	(*GetLatestSchemaRequest)(nil),       // 16: raystack.stencil.v1beta1.GetLatestSchemaRequest
+	(*GetLatestSchemaResponse)(nil),      // 17: raystack.stencil.v1beta1.GetLatestSchemaResponse
+	(*CreateSchemaRequest)(nil),          // 18: raystack.stencil.v1beta1.CreateSchemaRequest
+	(*CreateSchemaResponse)(nil),         // 19: raystack.stencil.v1beta1.CreateSchemaResponse
+	(*CheckCompatibilityRequest)(nil),    // 20: raystack.stencil.v1beta1.CheckCompatibilityRequest
+	(*CheckCompatibilityResponse)(nil),   // 21: raystack.stencil.v1beta1.CheckCompatibilityResponse
+	(*GetSchemaMetadataRequest)(nil),     // 22: raystack.stencil.v1beta1.GetSchemaMetadataRequest
+	(*GetSchemaMetadataResponse)(nil),    // 23: raystack.stencil.v1beta1.GetSchemaMetadataResponse
+	(*UpdateSchemaMetadataRequest)(nil),  // 24: raystack.stencil.v1beta1.UpdateSchemaMetadataRequest
+	(*UpdateSchemaMetadataResponse)(nil), // 25: raystack.stencil.v1beta1.UpdateSchemaMetadataResponse
+	(*DeleteSchemaRequest)(nil),          // 26: raystack.stencil.v1beta1.DeleteSchemaRequest
+	(*DeleteSchemaResponse)(nil),         // 27: raystack.stencil.v1beta1.DeleteSchemaResponse
+	(*ListVersionsRequest)(nil),          // 28: raystack.stencil.v1beta1.ListVersionsRequest
+	(*ListVersionsResponse)(nil),         // 29: raystack.stencil.v1beta1.ListVersionsResponse
+	(*GetSchemaRequest)(nil),             // 30: raystack.stencil.v1beta1.GetSchemaRequest
+	(*GetSchemaResponse)(nil),            // 31: raystack.stencil.v1beta1.GetSchemaResponse
+	(*DeleteVersionRequest)(nil),         // 32: raystack.stencil.v1beta1.DeleteVersionRequest
+	(*DeleteVersionResponse)(nil),        // 33: raystack.stencil.v1beta1.DeleteVersionResponse
+	(*SearchRequest)(nil),                // 34: raystack.stencil.v1beta1.SearchRequest
+	(*SearchResponse)(nil),               // 35: raystack.stencil.v1beta1.SearchResponse
+	(*SearchHits)(nil),                   // 36: raystack.stencil.v1beta1.SearchHits
+	(*SearchMeta)(nil),                   // 37: raystack.stencil.v1beta1.SearchMeta
 	(*timestamppb.Timestamp)(nil),        // 38: google.protobuf.Timestamp
 }
-var file_odpf_stencil_v1beta1_stencil_proto_depIdxs = []int32{
-	0,  // 0: odpf.stencil.v1beta1.Namespace.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 1: odpf.stencil.v1beta1.Namespace.Compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	38, // 2: odpf.stencil.v1beta1.Namespace.created_at:type_name -> google.protobuf.Timestamp
-	38, // 3: odpf.stencil.v1beta1.Namespace.updated_at:type_name -> google.protobuf.Timestamp
-	0,  // 4: odpf.stencil.v1beta1.Schema.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 5: odpf.stencil.v1beta1.Schema.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	38, // 6: odpf.stencil.v1beta1.Schema.created_at:type_name -> google.protobuf.Timestamp
-	38, // 7: odpf.stencil.v1beta1.Schema.updated_at:type_name -> google.protobuf.Timestamp
-	2,  // 8: odpf.stencil.v1beta1.ListNamespacesResponse.namespaces:type_name -> odpf.stencil.v1beta1.Namespace
-	2,  // 9: odpf.stencil.v1beta1.GetNamespaceResponse.namespace:type_name -> odpf.stencil.v1beta1.Namespace
-	0,  // 10: odpf.stencil.v1beta1.CreateNamespaceRequest.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 11: odpf.stencil.v1beta1.CreateNamespaceRequest.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	2,  // 12: odpf.stencil.v1beta1.CreateNamespaceResponse.namespace:type_name -> odpf.stencil.v1beta1.Namespace
-	0,  // 13: odpf.stencil.v1beta1.UpdateNamespaceRequest.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 14: odpf.stencil.v1beta1.UpdateNamespaceRequest.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	2,  // 15: odpf.stencil.v1beta1.UpdateNamespaceResponse.namespace:type_name -> odpf.stencil.v1beta1.Namespace
-	3,  // 16: odpf.stencil.v1beta1.ListSchemasResponse.schemas:type_name -> odpf.stencil.v1beta1.Schema
-	0,  // 17: odpf.stencil.v1beta1.CreateSchemaRequest.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 18: odpf.stencil.v1beta1.CreateSchemaRequest.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	1,  // 19: odpf.stencil.v1beta1.CheckCompatibilityRequest.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	0,  // 20: odpf.stencil.v1beta1.GetSchemaMetadataResponse.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 21: odpf.stencil.v1beta1.GetSchemaMetadataResponse.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	38, // 22: odpf.stencil.v1beta1.GetSchemaMetadataResponse.created_at:type_name -> google.protobuf.Timestamp
-	38, // 23: odpf.stencil.v1beta1.GetSchemaMetadataResponse.updated_at:type_name -> google.protobuf.Timestamp
-	1,  // 24: odpf.stencil.v1beta1.UpdateSchemaMetadataRequest.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	0,  // 25: odpf.stencil.v1beta1.UpdateSchemaMetadataResponse.format:type_name -> odpf.stencil.v1beta1.Schema.Format
-	1,  // 26: odpf.stencil.v1beta1.UpdateSchemaMetadataResponse.compatibility:type_name -> odpf.stencil.v1beta1.Schema.Compatibility
-	36, // 27: odpf.stencil.v1beta1.SearchResponse.hits:type_name -> odpf.stencil.v1beta1.SearchHits
-	37, // 28: odpf.stencil.v1beta1.SearchResponse.meta:type_name -> odpf.stencil.v1beta1.SearchMeta
-	4,  // 29: odpf.stencil.v1beta1.StencilService.ListNamespaces:input_type -> odpf.stencil.v1beta1.ListNamespacesRequest
-	6,  // 30: odpf.stencil.v1beta1.StencilService.GetNamespace:input_type -> odpf.stencil.v1beta1.GetNamespaceRequest
-	8,  // 31: odpf.stencil.v1beta1.StencilService.CreateNamespace:input_type -> odpf.stencil.v1beta1.CreateNamespaceRequest
-	10, // 32: odpf.stencil.v1beta1.StencilService.UpdateNamespace:input_type -> odpf.stencil.v1beta1.UpdateNamespaceRequest
-	12, // 33: odpf.stencil.v1beta1.StencilService.DeleteNamespace:input_type -> odpf.stencil.v1beta1.DeleteNamespaceRequest
-	14, // 34: odpf.stencil.v1beta1.StencilService.ListSchemas:input_type -> odpf.stencil.v1beta1.ListSchemasRequest
-	18, // 35: odpf.stencil.v1beta1.StencilService.CreateSchema:input_type -> odpf.stencil.v1beta1.CreateSchemaRequest
-	20, // 36: odpf.stencil.v1beta1.StencilService.CheckCompatibility:input_type -> odpf.stencil.v1beta1.CheckCompatibilityRequest
-	22, // 37: odpf.stencil.v1beta1.StencilService.GetSchemaMetadata:input_type -> odpf.stencil.v1beta1.GetSchemaMetadataRequest
-	24, // 38: odpf.stencil.v1beta1.StencilService.UpdateSchemaMetadata:input_type -> odpf.stencil.v1beta1.UpdateSchemaMetadataRequest
-	16, // 39: odpf.stencil.v1beta1.StencilService.GetLatestSchema:input_type -> odpf.stencil.v1beta1.GetLatestSchemaRequest
-	26, // 40: odpf.stencil.v1beta1.StencilService.DeleteSchema:input_type -> odpf.stencil.v1beta1.DeleteSchemaRequest
-	30, // 41: odpf.stencil.v1beta1.StencilService.GetSchema:input_type -> odpf.stencil.v1beta1.GetSchemaRequest
-	28, // 42: odpf.stencil.v1beta1.StencilService.ListVersions:input_type -> odpf.stencil.v1beta1.ListVersionsRequest
-	32, // 43: odpf.stencil.v1beta1.StencilService.DeleteVersion:input_type -> odpf.stencil.v1beta1.DeleteVersionRequest
-	34, // 44: odpf.stencil.v1beta1.StencilService.Search:input_type -> odpf.stencil.v1beta1.SearchRequest
-	5,  // 45: odpf.stencil.v1beta1.StencilService.ListNamespaces:output_type -> odpf.stencil.v1beta1.ListNamespacesResponse
-	7,  // 46: odpf.stencil.v1beta1.StencilService.GetNamespace:output_type -> odpf.stencil.v1beta1.GetNamespaceResponse
-	9,  // 47: odpf.stencil.v1beta1.StencilService.CreateNamespace:output_type -> odpf.stencil.v1beta1.CreateNamespaceResponse
-	11, // 48: odpf.stencil.v1beta1.StencilService.UpdateNamespace:output_type -> odpf.stencil.v1beta1.UpdateNamespaceResponse
-	13, // 49: odpf.stencil.v1beta1.StencilService.DeleteNamespace:output_type -> odpf.stencil.v1beta1.DeleteNamespaceResponse
-	15, // 50: odpf.stencil.v1beta1.StencilService.ListSchemas:output_type -> odpf.stencil.v1beta1.ListSchemasResponse
-	19, // 51: odpf.stencil.v1beta1.StencilService.CreateSchema:output_type -> odpf.stencil.v1beta1.CreateSchemaResponse
-	21, // 52: odpf.stencil.v1beta1.StencilService.CheckCompatibility:output_type -> odpf.stencil.v1beta1.CheckCompatibilityResponse
-	23, // 53: odpf.stencil.v1beta1.StencilService.GetSchemaMetadata:output_type -> odpf.stencil.v1beta1.GetSchemaMetadataResponse
-	25, // 54: odpf.stencil.v1beta1.StencilService.UpdateSchemaMetadata:output_type -> odpf.stencil.v1beta1.UpdateSchemaMetadataResponse
-	17, // 55: odpf.stencil.v1beta1.StencilService.GetLatestSchema:output_type -> odpf.stencil.v1beta1.GetLatestSchemaResponse
-	27, // 56: odpf.stencil.v1beta1.StencilService.DeleteSchema:output_type -> odpf.stencil.v1beta1.DeleteSchemaResponse
-	31, // 57: odpf.stencil.v1beta1.StencilService.GetSchema:output_type -> odpf.stencil.v1beta1.GetSchemaResponse
-	29, // 58: odpf.stencil.v1beta1.StencilService.ListVersions:output_type -> odpf.stencil.v1beta1.ListVersionsResponse
-	33, // 59: odpf.stencil.v1beta1.StencilService.DeleteVersion:output_type -> odpf.stencil.v1beta1.DeleteVersionResponse
-	35, // 60: odpf.stencil.v1beta1.StencilService.Search:output_type -> odpf.stencil.v1beta1.SearchResponse
+var file_raystack_stencil_v1beta1_stencil_proto_depIdxs = []int32{
+	0,  // 0: raystack.stencil.v1beta1.Namespace.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 1: raystack.stencil.v1beta1.Namespace.Compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	38, // 2: raystack.stencil.v1beta1.Namespace.created_at:type_name -> google.protobuf.Timestamp
+	38, // 3: raystack.stencil.v1beta1.Namespace.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 4: raystack.stencil.v1beta1.Schema.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 5: raystack.stencil.v1beta1.Schema.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	38, // 6: raystack.stencil.v1beta1.Schema.created_at:type_name -> google.protobuf.Timestamp
+	38, // 7: raystack.stencil.v1beta1.Schema.updated_at:type_name -> google.protobuf.Timestamp
+	2,  // 8: raystack.stencil.v1beta1.ListNamespacesResponse.namespaces:type_name -> raystack.stencil.v1beta1.Namespace
+	2,  // 9: raystack.stencil.v1beta1.GetNamespaceResponse.namespace:type_name -> raystack.stencil.v1beta1.Namespace
+	0,  // 10: raystack.stencil.v1beta1.CreateNamespaceRequest.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 11: raystack.stencil.v1beta1.CreateNamespaceRequest.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	2,  // 12: raystack.stencil.v1beta1.CreateNamespaceResponse.namespace:type_name -> raystack.stencil.v1beta1.Namespace
+	0,  // 13: raystack.stencil.v1beta1.UpdateNamespaceRequest.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 14: raystack.stencil.v1beta1.UpdateNamespaceRequest.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	2,  // 15: raystack.stencil.v1beta1.UpdateNamespaceResponse.namespace:type_name -> raystack.stencil.v1beta1.Namespace
+	3,  // 16: raystack.stencil.v1beta1.ListSchemasResponse.schemas:type_name -> raystack.stencil.v1beta1.Schema
+	0,  // 17: raystack.stencil.v1beta1.CreateSchemaRequest.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 18: raystack.stencil.v1beta1.CreateSchemaRequest.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	1,  // 19: raystack.stencil.v1beta1.CheckCompatibilityRequest.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	0,  // 20: raystack.stencil.v1beta1.GetSchemaMetadataResponse.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 21: raystack.stencil.v1beta1.GetSchemaMetadataResponse.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	38, // 22: raystack.stencil.v1beta1.GetSchemaMetadataResponse.created_at:type_name -> google.protobuf.Timestamp
+	38, // 23: raystack.stencil.v1beta1.GetSchemaMetadataResponse.updated_at:type_name -> google.protobuf.Timestamp
+	1,  // 24: raystack.stencil.v1beta1.UpdateSchemaMetadataRequest.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	0,  // 25: raystack.stencil.v1beta1.UpdateSchemaMetadataResponse.format:type_name -> raystack.stencil.v1beta1.Schema.Format
+	1,  // 26: raystack.stencil.v1beta1.UpdateSchemaMetadataResponse.compatibility:type_name -> raystack.stencil.v1beta1.Schema.Compatibility
+	36, // 27: raystack.stencil.v1beta1.SearchResponse.hits:type_name -> raystack.stencil.v1beta1.SearchHits
+	37, // 28: raystack.stencil.v1beta1.SearchResponse.meta:type_name -> raystack.stencil.v1beta1.SearchMeta
+	4,  // 29: raystack.stencil.v1beta1.StencilService.ListNamespaces:input_type -> raystack.stencil.v1beta1.ListNamespacesRequest
+	6,  // 30: raystack.stencil.v1beta1.StencilService.GetNamespace:input_type -> raystack.stencil.v1beta1.GetNamespaceRequest
+	8,  // 31: raystack.stencil.v1beta1.StencilService.CreateNamespace:input_type -> raystack.stencil.v1beta1.CreateNamespaceRequest
+	10, // 32: raystack.stencil.v1beta1.StencilService.UpdateNamespace:input_type -> raystack.stencil.v1beta1.UpdateNamespaceRequest
+	12, // 33: raystack.stencil.v1beta1.StencilService.DeleteNamespace:input_type -> raystack.stencil.v1beta1.DeleteNamespaceRequest
+	14, // 34: raystack.stencil.v1beta1.StencilService.ListSchemas:input_type -> raystack.stencil.v1beta1.ListSchemasRequest
+	18, // 35: raystack.stencil.v1beta1.StencilService.CreateSchema:input_type -> raystack.stencil.v1beta1.CreateSchemaRequest
+	20, // 36: raystack.stencil.v1beta1.StencilService.CheckCompatibility:input_type -> raystack.stencil.v1beta1.CheckCompatibilityRequest
+	22, // 37: raystack.stencil.v1beta1.StencilService.GetSchemaMetadata:input_type -> raystack.stencil.v1beta1.GetSchemaMetadataRequest
+	24, // 38: raystack.stencil.v1beta1.StencilService.UpdateSchemaMetadata:input_type -> raystack.stencil.v1beta1.UpdateSchemaMetadataRequest
+	16, // 39: raystack.stencil.v1beta1.StencilService.GetLatestSchema:input_type -> raystack.stencil.v1beta1.GetLatestSchemaRequest
+	26, // 40: raystack.stencil.v1beta1.StencilService.DeleteSchema:input_type -> raystack.stencil.v1beta1.DeleteSchemaRequest
+	30, // 41: raystack.stencil.v1beta1.StencilService.GetSchema:input_type -> raystack.stencil.v1beta1.GetSchemaRequest
+	28, // 42: raystack.stencil.v1beta1.StencilService.ListVersions:input_type -> raystack.stencil.v1beta1.ListVersionsRequest
+	32, // 43: raystack.stencil.v1beta1.StencilService.DeleteVersion:input_type -> raystack.stencil.v1beta1.DeleteVersionRequest
+	34, // 44: raystack.stencil.v1beta1.StencilService.Search:input_type -> raystack.stencil.v1beta1.SearchRequest
+	5,  // 45: raystack.stencil.v1beta1.StencilService.ListNamespaces:output_type -> raystack.stencil.v1beta1.ListNamespacesResponse
+	7,  // 46: raystack.stencil.v1beta1.StencilService.GetNamespace:output_type -> raystack.stencil.v1beta1.GetNamespaceResponse
+	9,  // 47: raystack.stencil.v1beta1.StencilService.CreateNamespace:output_type -> raystack.stencil.v1beta1.CreateNamespaceResponse
+	11, // 48: raystack.stencil.v1beta1.StencilService.UpdateNamespace:output_type -> raystack.stencil.v1beta1.UpdateNamespaceResponse
+	13, // 49: raystack.stencil.v1beta1.StencilService.DeleteNamespace:output_type -> raystack.stencil.v1beta1.DeleteNamespaceResponse
+	15, // 50: raystack.stencil.v1beta1.StencilService.ListSchemas:output_type -> raystack.stencil.v1beta1.ListSchemasResponse
+	19, // 51: raystack.stencil.v1beta1.StencilService.CreateSchema:output_type -> raystack.stencil.v1beta1.CreateSchemaResponse
+	21, // 52: raystack.stencil.v1beta1.StencilService.CheckCompatibility:output_type -> raystack.stencil.v1beta1.CheckCompatibilityResponse
+	23, // 53: raystack.stencil.v1beta1.StencilService.GetSchemaMetadata:output_type -> raystack.stencil.v1beta1.GetSchemaMetadataResponse
+	25, // 54: raystack.stencil.v1beta1.StencilService.UpdateSchemaMetadata:output_type -> raystack.stencil.v1beta1.UpdateSchemaMetadataResponse
+	17, // 55: raystack.stencil.v1beta1.StencilService.GetLatestSchema:output_type -> raystack.stencil.v1beta1.GetLatestSchemaResponse
+	27, // 56: raystack.stencil.v1beta1.StencilService.DeleteSchema:output_type -> raystack.stencil.v1beta1.DeleteSchemaResponse
+	31, // 57: raystack.stencil.v1beta1.StencilService.GetSchema:output_type -> raystack.stencil.v1beta1.GetSchemaResponse
+	29, // 58: raystack.stencil.v1beta1.StencilService.ListVersions:output_type -> raystack.stencil.v1beta1.ListVersionsResponse
+	33, // 59: raystack.stencil.v1beta1.StencilService.DeleteVersion:output_type -> raystack.stencil.v1beta1.DeleteVersionResponse
+	35, // 60: raystack.stencil.v1beta1.StencilService.Search:output_type -> raystack.stencil.v1beta1.SearchResponse
 	45, // [45:61] is the sub-list for method output_type
 	29, // [29:45] is the sub-list for method input_type
 	29, // [29:29] is the sub-list for extension type_name
@@ -2886,13 +2886,13 @@ var file_odpf_stencil_v1beta1_stencil_proto_depIdxs = []int32{
 	0,  // [0:29] is the sub-list for field type_name
 }
 
-func init() { file_odpf_stencil_v1beta1_stencil_proto_init() }
-func file_odpf_stencil_v1beta1_stencil_proto_init() {
-	if File_odpf_stencil_v1beta1_stencil_proto != nil {
+func init() { file_raystack_stencil_v1beta1_stencil_proto_init() }
+func file_raystack_stencil_v1beta1_stencil_proto_init() {
+	if File_raystack_stencil_v1beta1_stencil_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Namespace); i {
 			case 0:
 				return &v.state
@@ -2904,7 +2904,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Schema); i {
 			case 0:
 				return &v.state
@@ -2916,7 +2916,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListNamespacesRequest); i {
 			case 0:
 				return &v.state
@@ -2928,7 +2928,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListNamespacesResponse); i {
 			case 0:
 				return &v.state
@@ -2940,7 +2940,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetNamespaceRequest); i {
 			case 0:
 				return &v.state
@@ -2952,7 +2952,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetNamespaceResponse); i {
 			case 0:
 				return &v.state
@@ -2964,7 +2964,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateNamespaceRequest); i {
 			case 0:
 				return &v.state
@@ -2976,7 +2976,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateNamespaceResponse); i {
 			case 0:
 				return &v.state
@@ -2988,7 +2988,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateNamespaceRequest); i {
 			case 0:
 				return &v.state
@@ -3000,7 +3000,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateNamespaceResponse); i {
 			case 0:
 				return &v.state
@@ -3012,7 +3012,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteNamespaceRequest); i {
 			case 0:
 				return &v.state
@@ -3024,7 +3024,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteNamespaceResponse); i {
 			case 0:
 				return &v.state
@@ -3036,7 +3036,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListSchemasRequest); i {
 			case 0:
 				return &v.state
@@ -3048,7 +3048,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListSchemasResponse); i {
 			case 0:
 				return &v.state
@@ -3060,7 +3060,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetLatestSchemaRequest); i {
 			case 0:
 				return &v.state
@@ -3072,7 +3072,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetLatestSchemaResponse); i {
 			case 0:
 				return &v.state
@@ -3084,7 +3084,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateSchemaRequest); i {
 			case 0:
 				return &v.state
@@ -3096,7 +3096,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateSchemaResponse); i {
 			case 0:
 				return &v.state
@@ -3108,7 +3108,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CheckCompatibilityRequest); i {
 			case 0:
 				return &v.state
@@ -3120,7 +3120,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CheckCompatibilityResponse); i {
 			case 0:
 				return &v.state
@@ -3132,7 +3132,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetSchemaMetadataRequest); i {
 			case 0:
 				return &v.state
@@ -3144,7 +3144,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetSchemaMetadataResponse); i {
 			case 0:
 				return &v.state
@@ -3156,7 +3156,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateSchemaMetadataRequest); i {
 			case 0:
 				return &v.state
@@ -3168,7 +3168,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateSchemaMetadataResponse); i {
 			case 0:
 				return &v.state
@@ -3180,7 +3180,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteSchemaRequest); i {
 			case 0:
 				return &v.state
@@ -3192,7 +3192,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteSchemaResponse); i {
 			case 0:
 				return &v.state
@@ -3204,7 +3204,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListVersionsRequest); i {
 			case 0:
 				return &v.state
@@ -3216,7 +3216,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListVersionsResponse); i {
 			case 0:
 				return &v.state
@@ -3228,7 +3228,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetSchemaRequest); i {
 			case 0:
 				return &v.state
@@ -3240,7 +3240,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetSchemaResponse); i {
 			case 0:
 				return &v.state
@@ -3252,7 +3252,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteVersionRequest); i {
 			case 0:
 				return &v.state
@@ -3264,7 +3264,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteVersionResponse); i {
 			case 0:
 				return &v.state
@@ -3276,7 +3276,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SearchRequest); i {
 			case 0:
 				return &v.state
@@ -3288,7 +3288,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SearchResponse); i {
 			case 0:
 				return &v.state
@@ -3300,7 +3300,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SearchHits); i {
 			case 0:
 				return &v.state
@@ -3312,7 +3312,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 				return nil
 			}
 		}
-		file_odpf_stencil_v1beta1_stencil_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+		file_raystack_stencil_v1beta1_stencil_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SearchMeta); i {
 			case 0:
 				return &v.state
@@ -3325,7 +3325,7 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 			}
 		}
 	}
-	file_odpf_stencil_v1beta1_stencil_proto_msgTypes[32].OneofWrappers = []interface{}{
+	file_raystack_stencil_v1beta1_stencil_proto_msgTypes[32].OneofWrappers = []interface{}{
 		(*SearchRequest_History)(nil),
 		(*SearchRequest_VersionId)(nil),
 	}
@@ -3333,19 +3333,19 @@ func file_odpf_stencil_v1beta1_stencil_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_odpf_stencil_v1beta1_stencil_proto_rawDesc,
+			RawDescriptor: file_raystack_stencil_v1beta1_stencil_proto_rawDesc,
 			NumEnums:      2,
 			NumMessages:   36,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_odpf_stencil_v1beta1_stencil_proto_goTypes,
-		DependencyIndexes: file_odpf_stencil_v1beta1_stencil_proto_depIdxs,
-		EnumInfos:         file_odpf_stencil_v1beta1_stencil_proto_enumTypes,
-		MessageInfos:      file_odpf_stencil_v1beta1_stencil_proto_msgTypes,
+		GoTypes:           file_raystack_stencil_v1beta1_stencil_proto_goTypes,
+		DependencyIndexes: file_raystack_stencil_v1beta1_stencil_proto_depIdxs,
+		EnumInfos:         file_raystack_stencil_v1beta1_stencil_proto_enumTypes,
+		MessageInfos:      file_raystack_stencil_v1beta1_stencil_proto_msgTypes,
 	}.Build()
-	File_odpf_stencil_v1beta1_stencil_proto = out.File
-	file_odpf_stencil_v1beta1_stencil_proto_rawDesc = nil
-	file_odpf_stencil_v1beta1_stencil_proto_goTypes = nil
-	file_odpf_stencil_v1beta1_stencil_proto_depIdxs = nil
+	File_raystack_stencil_v1beta1_stencil_proto = out.File
+	file_raystack_stencil_v1beta1_stencil_proto_rawDesc = nil
+	file_raystack_stencil_v1beta1_stencil_proto_goTypes = nil
+	file_raystack_stencil_v1beta1_stencil_proto_depIdxs = nil
 }

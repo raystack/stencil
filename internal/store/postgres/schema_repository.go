@@ -5,8 +5,8 @@ import (
 
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4"
-	"github.com/odpf/stencil/core/schema"
 	"github.com/pkg/errors"
+	"github.com/raystack/stencil/core/schema"
 )
 
 type SchemaRepository struct {

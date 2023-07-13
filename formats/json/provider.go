@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/odpf/stencil/core/schema"
+	"github.com/raystack/stencil/core/schema"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 

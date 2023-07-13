@@ -1,4 +1,4 @@
-package io.odpf.stencil;
+package org.raystack.stencil;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
@@ -6,8 +6,8 @@ import com.google.protobuf.Descriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.odpf.stencil.exception.StencilRuntimeException;
-import io.odpf.stencil.http.RemoteFile;
+import org.raystack.stencil.exception.StencilRuntimeException;
+import org.raystack.stencil.http.RemoteFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

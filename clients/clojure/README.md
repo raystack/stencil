@@ -7,7 +7,7 @@ A Clojure library designed to easily encode and decode protobuf messages by usin
 Add the below dependency to your `project.clj` file:
 
 ```clj
-           [io.odpf/stencil-clj "0.3.3"]
+           [org.raystack/stencil-clj "0.3.3"]
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ syntax = "proto3";
 package example;
 
 option java_multiple_files = true;
-option java_package = "io.odpf.CljTest";
+option java_package = "org.raystack.CljTest";
 
 message Address {
 	string city = 1;
@@ -60,7 +60,7 @@ message Person {
 (:require [stencil.core :refer [serialize]])
 
 (def serialized-data
-     (serialize client "io.odpf.CljTest" {:name "Foo"
+     (serialize client "org.raystack.CljTest" {:name "Foo"
                                           :address {:street "bar"}
                                           :email-list ["a@example.com" "b@b.com"]
                                           :gender :NON-BINARY
@@ -72,7 +72,7 @@ message Person {
 ```clojure
 (:require [stencil.core :refer [deserialize]])
 
-(deserialize client "io.odpf.CljTest" serialized-data)
+(deserialize client "org.raystack.CljTest" serialized-data)
 ;; prints
 ;; {:name "Foo"
 ;; :address {:street "bar"}
@@ -88,7 +88,7 @@ message Person {
 | field names     | keywords in kebab case                                                                                                           | `name` -> `:name`, `field_name` -> `:field-name`                                                    |
 | scalar fields   | Values follow [protobuf-java scalar value mappings](https://developers.google.com/protocol-buffers/docs/proto3#scalar)           |                                                                                                     |
 | enums           | Values converted as keywords of enum's original value                                                                            | `UNKNOWN` -> `:UNKNOWN`                                                                             |
-| messages        | clojure map                                                                                                                      | `message Hello {string name = 1;}` -> {:name "odpf"}                                                |
+| messages        | clojure map                                                                                                                      | `message Hello {string name = 1;}` -> {:name "raystack"}                                            |
 | repeated fields | clojure vector                                                                                                                   |                                                                                                     |
 | one-of fields   | treated as regular fields                                                                                                        | if two fields are set that are part of one-of, last seen value is considered while serializing data |
 | map             | map values follow it's [wire representation](https://developers.google.com/protocol-buffers/docs/proto3#backwards_compatibility) | for `map<string, string>` type, example value will be `[{:key "key" :value "value"}]`               |
@@ -155,7 +155,7 @@ Serialize will throw error in following cases
 
   ```clojure
   (let [client (create-client sample-client-config)
-        proto-package "io.odpf.stencil_clj_test"
+        proto-package "org.raystack.stencil_clj_test"
         proto-class-name "Scalar"
         fully-qualified-proto-name (str proto-package "." proto-class-name)]
       (get-descriptor client fully-qualified-proto-name))
@@ -183,7 +183,7 @@ Serialize will throw error in following cases
 
   ```clojure
   (let [client (create-client sample-client-config)
-        proto-package "io.odpf.stencil_clj_test"
+        proto-package "org.raystack.stencil_clj_test"
         proto-class-name "Scalar"
         fully-qualified-proto-name (str proto-package "." proto-class-name)
         proto-desc (get-descriptor client fully-qualified-proto-name)
@@ -213,7 +213,7 @@ Serialize will throw error in following cases
 
   ```clojure
   (let [client (create-client sample-client-config)
-        proto-package "io.odpf.stencil_clj_test"
+        proto-package "org.raystack.stencil_clj_test"
         proto-class-name "Scalar"
         fully-qualified-proto-name (str proto-package "." proto-class-name)
         proto-desc (get-descriptor client fully-qualified-proto-name)]

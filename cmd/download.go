@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
+	"github.com/raystack/salt/printer"
+	"github.com/raystack/salt/term"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ func downloadSchemaCmd(cdk *CDK) *cobra.Command {
 		Short: "Download a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema download customer -n=odpf --version 1
+			$ stencil schema download customer -n=raystack --version 1
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

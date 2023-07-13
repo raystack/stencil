@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	namespace "github.com/odpf/stencil/core/namespace"
+	namespace "github.com/raystack/stencil/core/namespace"
 	mock "github.com/stretchr/testify/mock"
 
 	testing "testing"

@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/salt/printer"
+	"github.com/raystack/salt/term"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,8 +24,8 @@ func createSchemaCmd(cdk *CDK) *cobra.Command {
 		Short: "Create a schema",
 		Args:  cobra.ExactArgs(1),
 		Example: heredoc.Doc(`
-			$ stencil schema create booking -n odpf –F booking.json
-			$ stencil schema create booking -n odpf -f FORMAT_JSON –c COMPATIBILITY_BACKWARD –F ./booking.json 
+			$ stencil schema create booking -n raystack –F booking.json
+			$ stencil schema create booking -n raystack -f FORMAT_JSON –c COMPATIBILITY_BACKWARD –F ./booking.json 
 	    `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fileData, err := os.ReadFile(file)

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: odpf/stencil/v1beta1/stencil.proto
+// source: raystack/stencil/v1beta1/stencil.proto
 
 package stencilv1beta1
 
@@ -50,7 +50,7 @@ func NewStencilServiceClient(cc grpc.ClientConnInterface) StencilServiceClient {
 
 func (c *stencilServiceClient) ListNamespaces(ctx context.Context, in *ListNamespacesRequest, opts ...grpc.CallOption) (*ListNamespacesResponse, error) {
 	out := new(ListNamespacesResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/ListNamespaces", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/ListNamespaces", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *stencilServiceClient) ListNamespaces(ctx context.Context, in *ListNames
 
 func (c *stencilServiceClient) GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*GetNamespaceResponse, error) {
 	out := new(GetNamespaceResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/GetNamespace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/GetNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *stencilServiceClient) GetNamespace(ctx context.Context, in *GetNamespac
 
 func (c *stencilServiceClient) CreateNamespace(ctx context.Context, in *CreateNamespaceRequest, opts ...grpc.CallOption) (*CreateNamespaceResponse, error) {
 	out := new(CreateNamespaceResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/CreateNamespace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/CreateNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (c *stencilServiceClient) CreateNamespace(ctx context.Context, in *CreateNa
 
 func (c *stencilServiceClient) UpdateNamespace(ctx context.Context, in *UpdateNamespaceRequest, opts ...grpc.CallOption) (*UpdateNamespaceResponse, error) {
 	out := new(UpdateNamespaceResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/UpdateNamespace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/UpdateNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (c *stencilServiceClient) UpdateNamespace(ctx context.Context, in *UpdateNa
 
 func (c *stencilServiceClient) DeleteNamespace(ctx context.Context, in *DeleteNamespaceRequest, opts ...grpc.CallOption) (*DeleteNamespaceResponse, error) {
 	out := new(DeleteNamespaceResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/DeleteNamespace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/DeleteNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (c *stencilServiceClient) DeleteNamespace(ctx context.Context, in *DeleteNa
 
 func (c *stencilServiceClient) ListSchemas(ctx context.Context, in *ListSchemasRequest, opts ...grpc.CallOption) (*ListSchemasResponse, error) {
 	out := new(ListSchemasResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/ListSchemas", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/ListSchemas", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (c *stencilServiceClient) ListSchemas(ctx context.Context, in *ListSchemasR
 
 func (c *stencilServiceClient) CreateSchema(ctx context.Context, in *CreateSchemaRequest, opts ...grpc.CallOption) (*CreateSchemaResponse, error) {
 	out := new(CreateSchemaResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/CreateSchema", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/CreateSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (c *stencilServiceClient) CreateSchema(ctx context.Context, in *CreateSchem
 
 func (c *stencilServiceClient) CheckCompatibility(ctx context.Context, in *CheckCompatibilityRequest, opts ...grpc.CallOption) (*CheckCompatibilityResponse, error) {
 	out := new(CheckCompatibilityResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/CheckCompatibility", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/CheckCompatibility", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (c *stencilServiceClient) CheckCompatibility(ctx context.Context, in *Check
 
 func (c *stencilServiceClient) GetSchemaMetadata(ctx context.Context, in *GetSchemaMetadataRequest, opts ...grpc.CallOption) (*GetSchemaMetadataResponse, error) {
 	out := new(GetSchemaMetadataResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/GetSchemaMetadata", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/GetSchemaMetadata", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func (c *stencilServiceClient) GetSchemaMetadata(ctx context.Context, in *GetSch
 
 func (c *stencilServiceClient) UpdateSchemaMetadata(ctx context.Context, in *UpdateSchemaMetadataRequest, opts ...grpc.CallOption) (*UpdateSchemaMetadataResponse, error) {
 	out := new(UpdateSchemaMetadataResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/UpdateSchemaMetadata", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/UpdateSchemaMetadata", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func (c *stencilServiceClient) UpdateSchemaMetadata(ctx context.Context, in *Upd
 
 func (c *stencilServiceClient) GetLatestSchema(ctx context.Context, in *GetLatestSchemaRequest, opts ...grpc.CallOption) (*GetLatestSchemaResponse, error) {
 	out := new(GetLatestSchemaResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/GetLatestSchema", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/GetLatestSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func (c *stencilServiceClient) GetLatestSchema(ctx context.Context, in *GetLates
 
 func (c *stencilServiceClient) DeleteSchema(ctx context.Context, in *DeleteSchemaRequest, opts ...grpc.CallOption) (*DeleteSchemaResponse, error) {
 	out := new(DeleteSchemaResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/DeleteSchema", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/DeleteSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +158,7 @@ func (c *stencilServiceClient) DeleteSchema(ctx context.Context, in *DeleteSchem
 
 func (c *stencilServiceClient) GetSchema(ctx context.Context, in *GetSchemaRequest, opts ...grpc.CallOption) (*GetSchemaResponse, error) {
 	out := new(GetSchemaResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/GetSchema", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/GetSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (c *stencilServiceClient) GetSchema(ctx context.Context, in *GetSchemaReque
 
 func (c *stencilServiceClient) ListVersions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error) {
 	out := new(ListVersionsResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/ListVersions", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/ListVersions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +176,7 @@ func (c *stencilServiceClient) ListVersions(ctx context.Context, in *ListVersion
 
 func (c *stencilServiceClient) DeleteVersion(ctx context.Context, in *DeleteVersionRequest, opts ...grpc.CallOption) (*DeleteVersionResponse, error) {
 	out := new(DeleteVersionResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/DeleteVersion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/DeleteVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func (c *stencilServiceClient) DeleteVersion(ctx context.Context, in *DeleteVers
 
 func (c *stencilServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
 	out := new(SearchResponse)
-	err := c.cc.Invoke(ctx, "/odpf.stencil.v1beta1.StencilService/Search", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/raystack.stencil.v1beta1.StencilService/Search", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -290,7 +290,7 @@ func _StencilService_ListNamespaces_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/ListNamespaces",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/ListNamespaces",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).ListNamespaces(ctx, req.(*ListNamespacesRequest))
@@ -308,7 +308,7 @@ func _StencilService_GetNamespace_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/GetNamespace",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/GetNamespace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).GetNamespace(ctx, req.(*GetNamespaceRequest))
@@ -326,7 +326,7 @@ func _StencilService_CreateNamespace_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/CreateNamespace",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/CreateNamespace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).CreateNamespace(ctx, req.(*CreateNamespaceRequest))
@@ -344,7 +344,7 @@ func _StencilService_UpdateNamespace_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/UpdateNamespace",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/UpdateNamespace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).UpdateNamespace(ctx, req.(*UpdateNamespaceRequest))
@@ -362,7 +362,7 @@ func _StencilService_DeleteNamespace_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/DeleteNamespace",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/DeleteNamespace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).DeleteNamespace(ctx, req.(*DeleteNamespaceRequest))
@@ -380,7 +380,7 @@ func _StencilService_ListSchemas_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/ListSchemas",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/ListSchemas",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).ListSchemas(ctx, req.(*ListSchemasRequest))
@@ -398,7 +398,7 @@ func _StencilService_CreateSchema_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/CreateSchema",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/CreateSchema",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).CreateSchema(ctx, req.(*CreateSchemaRequest))
@@ -416,7 +416,7 @@ func _StencilService_CheckCompatibility_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/CheckCompatibility",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/CheckCompatibility",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).CheckCompatibility(ctx, req.(*CheckCompatibilityRequest))
@@ -434,7 +434,7 @@ func _StencilService_GetSchemaMetadata_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/GetSchemaMetadata",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/GetSchemaMetadata",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).GetSchemaMetadata(ctx, req.(*GetSchemaMetadataRequest))
@@ -452,7 +452,7 @@ func _StencilService_UpdateSchemaMetadata_Handler(srv interface{}, ctx context.C
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/UpdateSchemaMetadata",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/UpdateSchemaMetadata",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).UpdateSchemaMetadata(ctx, req.(*UpdateSchemaMetadataRequest))
@@ -470,7 +470,7 @@ func _StencilService_GetLatestSchema_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/GetLatestSchema",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/GetLatestSchema",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).GetLatestSchema(ctx, req.(*GetLatestSchemaRequest))
@@ -488,7 +488,7 @@ func _StencilService_DeleteSchema_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/DeleteSchema",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/DeleteSchema",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).DeleteSchema(ctx, req.(*DeleteSchemaRequest))
@@ -506,7 +506,7 @@ func _StencilService_GetSchema_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/GetSchema",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/GetSchema",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).GetSchema(ctx, req.(*GetSchemaRequest))
@@ -524,7 +524,7 @@ func _StencilService_ListVersions_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/ListVersions",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/ListVersions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).ListVersions(ctx, req.(*ListVersionsRequest))
@@ -542,7 +542,7 @@ func _StencilService_DeleteVersion_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/DeleteVersion",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/DeleteVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).DeleteVersion(ctx, req.(*DeleteVersionRequest))
@@ -560,7 +560,7 @@ func _StencilService_Search_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/odpf.stencil.v1beta1.StencilService/Search",
+		FullMethod: "/raystack.stencil.v1beta1.StencilService/Search",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StencilServiceServer).Search(ctx, req.(*SearchRequest))
@@ -572,7 +572,7 @@ func _StencilService_Search_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StencilService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "odpf.stencil.v1beta1.StencilService",
+	ServiceName: "raystack.stencil.v1beta1.StencilService",
 	HandlerType: (*StencilServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -641,5 +641,5 @@ var StencilService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "odpf/stencil/v1beta1/stencil.proto",
+	Metadata: "raystack/stencil/v1beta1/stencil.proto",
 }

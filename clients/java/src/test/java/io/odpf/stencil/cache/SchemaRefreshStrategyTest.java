@@ -1,4 +1,4 @@
-package io.odpf.stencil.cache;
+package org.raystack.stencil.cache;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -17,10 +17,10 @@ import com.google.protobuf.Descriptors;
 
 import org.junit.Test;
 
-import io.odpf.stencil.http.RemoteFile;
+import org.raystack.stencil.http.RemoteFile;
 
 public class SchemaRefreshStrategyTest {
-    private static final String TYPENAME_KEY = "io.odpf.stencil.TestMessage";
+    private static final String TYPENAME_KEY = "org.raystack.stencil.TestMessage";
     private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
     private static final String baseURL = "http://localhost:8000/v1beta1/namespaces/protobuf-test/schemas/esb-log-entities";
     private static final String versionsURL = String.format("%s/versions", baseURL);

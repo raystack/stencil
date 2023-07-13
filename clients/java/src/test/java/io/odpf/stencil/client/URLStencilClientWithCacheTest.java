@@ -1,16 +1,16 @@
-package io.odpf.stencil.client;
+package org.raystack.stencil.client;
 
 import com.google.common.testing.FakeTicker;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
-import io.odpf.stencil.DescriptorMapBuilder;
-import io.odpf.stencil.NestedField;
-import io.odpf.stencil.account_db_accounts.FULLDOCUMENT;
-import io.odpf.stencil.cache.SchemaCacheLoader;
-import io.odpf.stencil.config.StencilConfig;
-import io.odpf.stencil.exception.StencilRuntimeException;
+import org.raystack.stencil.DescriptorMapBuilder;
+import org.raystack.stencil.NestedField;
+import org.raystack.stencil.account_db_accounts.FULLDOCUMENT;
+import org.raystack.stencil.cache.SchemaCacheLoader;
+import org.raystack.stencil.config.StencilConfig;
+import org.raystack.stencil.exception.StencilRuntimeException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class URLStencilClientWithCacheTest {
     private Map<String, Descriptors.Descriptor> descriptorMap;
     private StencilClient stencilClient;
     private static final String DESCRIPTOR_FILE_PATH = "__files/descriptors.bin";
-    private static final String LOOKUP_KEY = "io.odpf.stencil.TestMessage";
+    private static final String LOOKUP_KEY = "org.raystack.stencil.TestMessage";
 
     @Before
     public void setup() throws IOException, Descriptors.DescriptorValidationException {
@@ -114,7 +114,7 @@ public class URLStencilClientWithCacheTest {
 
         stencilClient = new URLStencilClient(LOOKUP_KEY, stencilConfig, cacheLoader, fakeTicker);
         NestedField msg = NestedField.newBuilder().setStringField("stencil").setIntField(10).build();
-        stencilClient.parse("io.odpf.stencil.invalid", msg.toByteArray());
+        stencilClient.parse("org.raystack.stencil.invalid", msg.toByteArray());
     }
 
     @Test(expected = InvalidProtocolBufferException.class)
@@ -141,8 +141,8 @@ public class URLStencilClientWithCacheTest {
 
         stencilClient = new URLStencilClient(LOOKUP_KEY, stencilConfig, cacheLoader, fakeTicker);
         FULLDOCUMENT msg = FULLDOCUMENT.newBuilder().setCif("cifvalue").setId("idvalue").build();
-        DynamicMessage newMsg = stencilClient.parse("io.odpf.stencil.account_db_accounts.FULLDOCUMENT", msg.toByteArray());
-        Descriptors.Descriptor desc = stencilClient.get("io.odpf.stencil.account_db_accounts.FULLDOCUMENT");
+        DynamicMessage newMsg = stencilClient.parse("org.raystack.stencil.account_db_accounts.FULLDOCUMENT", msg.toByteArray());
+        Descriptors.Descriptor desc = stencilClient.get("org.raystack.stencil.account_db_accounts.FULLDOCUMENT");
         assertNotNull(newMsg);
         Object value = newMsg.getField(desc.findFieldByNumber(1));
         assertEquals("idvalue", value);

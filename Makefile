@@ -1,4 +1,4 @@
-NAME="github.com/odpf/stencil"
+NAME="github.com/raystack/stencil"
 VERSION=$(shell git describe --always --tags 2>/dev/null)
 PROTON_COMMIT := "a6c7056fa80128145d00d5ee72f216c28578ec43"
 
@@ -22,9 +22,9 @@ lint: ## Run golang-ci lint
 	golangci-lint run
 
 proto: ## Generate the protobuf files
-	@echo " > generating protobuf from odpf/proton"
+	@echo " > generating protobuf from raystack/proton"
 	@echo " > [info] make sure correct version of dependencies are installed using 'make install'"
-	@buf generate https://github.com/odpf/proton/archive/${PROTON_COMMIT}.zip#strip_components=1 --template buf.gen.yaml --path odpf/stencil
+	@buf generate https://github.com/raystack/proton/archive/${PROTON_COMMIT}.zip#strip_components=1 --template buf.gen.yaml --path raystack/stencil
 	@echo " > protobuf compilation finished"
 
 clean: ## Clean the build artifacts

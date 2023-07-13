@@ -1,4 +1,4 @@
-package io.odpf.stencil;
+package org.raystack.stencil;
 
 import com.google.protobuf.Descriptors;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class DescriptorMapBuilderTest {
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
         Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
         assertNotNull(descriptorMap);
-        assertNotNull(descriptorMap.get("io.odpf.stencil.TestMessage"));
+        assertNotNull(descriptorMap.get("org.raystack.stencil.TestMessage"));
     }
 
     @Test
@@ -30,13 +30,13 @@ public class DescriptorMapBuilderTest {
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
         Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
-        final Descriptors.Descriptor account_db_accounts = descriptorMap.get("io.odpf.stencil.account_db_accounts");
+        final Descriptors.Descriptor account_db_accounts = descriptorMap.get("org.raystack.stencil.account_db_accounts");
         assertNotNull(account_db_accounts.findFieldByName("id"));
-        final Descriptors.Descriptor ID = descriptorMap.get("io.odpf.stencil.account_db_accounts.ID");
+        final Descriptors.Descriptor ID = descriptorMap.get("org.raystack.stencil.account_db_accounts.ID");
         assertNotNull(ID.findFieldByName("data"));
-        final Descriptors.Descriptor fullDocument = descriptorMap.get("io.odpf.stencil.account_db_accounts.FULLDOCUMENT");
+        final Descriptors.Descriptor fullDocument = descriptorMap.get("org.raystack.stencil.account_db_accounts.FULLDOCUMENT");
         assertNotNull(fullDocument.findFieldByName("customerid"));
-        final Descriptors.Descriptor accounts_item = descriptorMap.get("io.odpf.stencil.account_db_accounts.FULLDOCUMENT.ACCOUNTS_ITEM");
+        final Descriptors.Descriptor accounts_item = descriptorMap.get("org.raystack.stencil.account_db_accounts.FULLDOCUMENT.ACCOUNTS_ITEM");
         assertNotNull(accounts_item.findFieldByName("monthlyaveragebalance"));
     }
 
@@ -47,9 +47,9 @@ public class DescriptorMapBuilderTest {
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
         Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
-        final Descriptors.Descriptor RecursiveLogMessage = descriptorMap.get("io.odpf.stencil.RecursiveLogMessage");
+        final Descriptors.Descriptor RecursiveLogMessage = descriptorMap.get("org.raystack.stencil.RecursiveLogMessage");
         assertNotNull(RecursiveLogMessage.findFieldByName("id"));
-        final Descriptors.Descriptor RECORD = descriptorMap.get("io.odpf.stencil.RecursiveLogMessage.RECORD");
+        final Descriptors.Descriptor RECORD = descriptorMap.get("org.raystack.stencil.RecursiveLogMessage.RECORD");
         assertNotNull(RECORD.findFieldByName("id"));
         assertNotNull(RECORD.findFieldByName("record"));
     }
@@ -61,7 +61,7 @@ public class DescriptorMapBuilderTest {
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
         Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
-        final Descriptors.Descriptor protoWithoutPackage = descriptorMap.get("io.odpf.stencil.RootField");
+        final Descriptors.Descriptor protoWithoutPackage = descriptorMap.get("org.raystack.stencil.RootField");
         assertEquals(".RootField", String.format(".%s", protoWithoutPackage.getFullName()));
     }
 
@@ -72,9 +72,9 @@ public class DescriptorMapBuilderTest {
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
         Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
-        final Descriptors.Descriptor protoWithoutJavaPackage = descriptorMap.get("io.odpf.stencil.ImplicitOuterClass");
+        final Descriptors.Descriptor protoWithoutJavaPackage = descriptorMap.get("org.raystack.stencil.ImplicitOuterClass");
         assertNotNull(protoWithoutJavaPackage);
-        assertEquals("io.odpf.stencil.ImplicitOuterClass", protoWithoutJavaPackage.getFullName());
+        assertEquals("org.raystack.stencil.ImplicitOuterClass", protoWithoutJavaPackage.getFullName());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class DescriptorMapBuilderTest {
         InputStream fileInputStream = new FileInputStream(Objects.requireNonNull(classLoader.getResource(descriptorFilePath)).getFile());
         Map<String, Descriptors.Descriptor> descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
 
-        Descriptors.Descriptor protoWithoutPackage = descriptorMap.get("io.odpf.stencil.RootField");
+        Descriptors.Descriptor protoWithoutPackage = descriptorMap.get("org.raystack.stencil.RootField");
         assertEquals("RootField", protoWithoutPackage.getFullName());
         Descriptors.Descriptor descriptorByProtoName = descriptorMap.get("RootField");
         assertNotNull(descriptorByProtoName);

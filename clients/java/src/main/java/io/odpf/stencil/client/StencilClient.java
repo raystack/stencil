@@ -1,10 +1,10 @@
-package io.odpf.stencil.client;
+package org.raystack.stencil.client;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.odpf.stencil.Parser;
-import io.odpf.stencil.exception.StencilRuntimeException;
+import org.raystack.stencil.Parser;
+import org.raystack.stencil.exception.StencilRuntimeException;
 
 import java.io.Closeable;
 import java.util.Map;

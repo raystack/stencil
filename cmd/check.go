@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
-	stencilv1beta1 "github.com/odpf/stencil/proto/odpf/stencil/v1beta1"
+	"github.com/raystack/salt/printer"
+	"github.com/raystack/salt/term"
+	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/status"
 )
@@ -26,7 +26,7 @@ func checkSchemaCmd(cdk *CDK) *cobra.Command {
 			Check schema compatibility of a local schema
 			against a remote schema(against) on stencil server.`),
 		Example: heredoc.Doc(`
-			$ stencil schema check <id> -n odpf -c COMPATIBILITY_BACKWARD -F ./booking.desc
+			$ stencil schema check <id> -n raystack -c COMPATIBILITY_BACKWARD -F ./booking.desc
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")

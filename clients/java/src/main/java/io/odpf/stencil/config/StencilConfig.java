@@ -1,4 +1,4 @@
-package io.odpf.stencil.config;
+package org.raystack.stencil.config;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 import com.timgroup.statsd.StatsDClient;
 import com.timgroup.statsd.NoOpStatsDClient;
 import org.apache.http.Header;
-import io.odpf.stencil.SchemaUpdateListener;
-import io.odpf.stencil.cache.SchemaRefreshStrategy;
+import org.raystack.stencil.SchemaUpdateListener;
+import org.raystack.stencil.cache.SchemaRefreshStrategy;
 
 @Getter
 @Builder(toBuilder = true)
@@ -62,7 +62,7 @@ public class StencilConfig {
     Long cacheTtlMs = TimeUnit.HOURS.toMillis(24);
 
     /**
-     * Strategy implementation of when schema needs to be refreshed. Default {@link io.odpf.stencil.cache.SchemaRefreshStrategy#longPollingStrategy}
+     * Strategy implementation of when schema needs to be refreshed. Default {@link org.raystack.stencil.cache.SchemaRefreshStrategy#longPollingStrategy}
      * @param refreshStrategy schema refresh strategy implementation
      * @return schema refresh strategy
      */

@@ -10,7 +10,7 @@ It has following features
 ## Installation
 
 ```sh
-npm install --save @odpf/stencil
+npm install --save @raystack/stencil
 ```
 
 ## Usage
@@ -96,7 +96,7 @@ console.log(decodedType.toObject())
 1. Clone the repo
 
    ```sh
-   $ git clone https://github.com/odpf/stencil
+   $ git clone https://github.com/raystack/stencil
    $ cd stencil/clients/js
    ```
 
@@ -114,4 +114,4 @@ console.log(decodedType.toObject())
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/odpf/stencil/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/raystack/stencil/tags).
