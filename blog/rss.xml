@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Stencil Blog</title>
-        <link>https://odpf.github.io/stencil/blog</link>
+        <link>https://raystack.github.io/stencil/blog</link>
         <description>Stencil Blog</description>
         <lastBuildDate>Fri, 20 Aug 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[Introducing Stencil]]></title>
-            <link>https://odpf.github.io/stencil/blog/introducing-stencil</link>
+            <link>https://raystack.github.io/stencil/blog/introducing-stencil</link>
             <guid>introducing-stencil</guid>
             <pubDate>Fri, 20 Aug 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[We are live!]]></description>
             <content:encoded><![CDATA[<p>We are live!</p>]]></content:encoded>
-            <category>odpf</category>
+            <category>raystack</category>
             <category>stencil</category>
         </item>
     </channel>
