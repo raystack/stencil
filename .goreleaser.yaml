@@ -5,6 +5,7 @@ before:
   hooks:
     - go mod tidy
     - make clean
+    - make ui
 builds:
   - id: "stencil"
     main: ./main.go
