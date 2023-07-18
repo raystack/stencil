@@ -1,4 +1,4 @@
-# ODPF Stencil Configuration
+# Raystack Stencil Configuration
 #
 #
 # !!WARNING!!
@@ -19,7 +19,7 @@ newrelic:
   appname: example
   enabled: false
   license: "<key>"
-# Database configurations for stencil backend 
+# Database configurations for stencil backend
 db:
   # Connection string for postgres database
   connectionstring: "postgres://postgres@localhost:5432/db"

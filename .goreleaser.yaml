@@ -5,6 +5,7 @@ before:
   hooks:
     - go mod tidy
     - make clean
+    - make ui
 builds:
   - id: "stencil"
     main: ./main.go
@@ -52,7 +53,7 @@ dockers:
       - "docker.io/raystack/{{.ProjectName}}:{{ .Version }}"
       - "docker.io/raystack/{{.ProjectName}}:{{ .Tag }}-amd64"
 nfpms:
-  - maintainer: ODPF
+  - maintainer: Raystack
     description: Schema registry
     homepage: https://github.com/raystack/stencil
     license: Apache 2.0
