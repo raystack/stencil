@@ -1,4 +1,4 @@
-(defproject org.raystack/stencil-clj "0.4.0"
+(defproject org.raystack/stencil-clj "0.4.1"
   :description "Stencil client for clojure"
   :url "https://github.com/raystack/stencil"
   :license {:name "Apache 2.0"
