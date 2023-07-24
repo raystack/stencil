@@ -137,7 +137,7 @@ $ stencil schema list --host localhost:8000
 
 # Get list of versions available for particular schema. These versions are auto generated.
 # Version numbers managed by stencil.
-$ stencil schema version example -n quickstart  --host ocalhost:8000
+$ stencil schema version example -n quickstart  --host localhost:8000
 
 # Download specific version of particular schema
 $ stencil schema get example --version 1 --host localhost:8000
