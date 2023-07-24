@@ -121,27 +121,29 @@ $ echo "{
 <TabItem value="cli" label="CLI">
 
 ```bash
+# --host does not contain the protocol scheme http:// since they internally use GRPC.
+
 # Create namespace named "quickstart" with backward compatibility enabled
-$ stencil namespace create quickstart -c COMPATIBILITY_BACKWARD -f FORMAT_PROTOBUF -d "For quickstart guide" --host http://localhost:8000
+$ stencil namespace create quickstart -c COMPATIBILITY_BACKWARD -f FORMAT_PROTOBUF -d "For quickstart guide" --host localhost:8000
 
 # List namespaces
-$ stencil namespace list --host http://localhost:8000
+$ stencil namespace list --host localhost:8000
 
 # Upload generated schema proto descriptor file to server with schema name as `example` under `quickstart` namespace.
 $ stencil schema create example --namespace=quickstart –-filePath=schema.desc
 
 # Get list of schemas available in a namespace
-$ stencil schema list --host http://localhost:8000
+$ stencil schema list --host localhost:8000
 
 # Get list of versions available for particular schema. These versions are auto generated.
 # Version numbers managed by stencil.
-$ stencil schema version example -n quickstart  --host http://localhost:8000
+$ stencil schema version example -n quickstart  --host ocalhost:8000
 
 # Download specific version of particular schema
-$ stencil schema get example --version 1 --host http://localhost:8000
+$ stencil schema get example --version 1 --host localhost:8000
 
 # Download latest version of particular schema
-$ stencil schema get example  -n quickstart --host http://localhost:8000
+$ stencil schema get example  -n quickstart --host localhost:8000
 ```
 
 </TabItem>
