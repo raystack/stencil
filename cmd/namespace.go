@@ -7,10 +7,10 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/dustin/go-humanize"
+	"github.com/goto/salt/printer"
+	"github.com/goto/salt/prompt"
+	"github.com/goto/salt/term"
 	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/prompt"
-	"github.com/odpf/salt/term"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

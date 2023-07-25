@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/goto/salt/printer"
+	"github.com/goto/salt/term"
 	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
 	"github.com/spf13/cobra"
 )
 

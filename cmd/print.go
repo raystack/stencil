@@ -6,11 +6,11 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/alecthomas/chroma/quick"
+	"github.com/goto/salt/printer"
+	"github.com/goto/salt/term"
 	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoprint"
-	"github.com/odpf/salt/printer"
-	"github.com/odpf/salt/term"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"

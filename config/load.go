@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/odpf/salt/config"
+	"github.com/goto/salt/config"
 )
 
 func Load(configFile string) (Config, error) {

@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/goto/salt/printer"
 	stencilv1beta1 "github.com/goto/stencil/proto/v1beta1"
-	"github.com/odpf/salt/printer"
 	"github.com/spf13/cobra"
 	"github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
