@@ -6,11 +6,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.protobuf.Descriptors;
 
+import com.gotocompany.stencil.DescriptorMapBuilder;
 import com.gotocompany.stencil.http.RemoteFile;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.gotocompany.stencil.DescriptorMapBuilder;
 import com.gotocompany.stencil.exception.StencilRuntimeException;
 
 public interface SchemaRefreshStrategy {

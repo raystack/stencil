@@ -1,5 +1,7 @@
 package com.gotocompany.stencil.config;
 
+import com.gotocompany.stencil.SchemaUpdateListener;
+import com.gotocompany.stencil.cache.SchemaRefreshStrategy;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,9 +10,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import com.timgroup.statsd.StatsDClient;
 import com.timgroup.statsd.NoOpStatsDClient;
-import org.apache.http.Header;
-import com.gotocompany.stencil.SchemaUpdateListener;
-import com.gotocompany.stencil.cache.SchemaRefreshStrategy;
+import org.apache.hc.core5.http.Header;
 
 @Getter
 @Builder(toBuilder = true)

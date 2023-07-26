@@ -5,20 +5,22 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
+import com.gotocompany.stencil.DescriptorMapBuilder;
 import com.gotocompany.stencil.cache.SchemaCacheLoader;
 import com.gotocompany.stencil.config.StencilConfig;
 import com.gotocompany.stencil.exception.StencilRuntimeException;
-import com.gotocompany.stencil.DescriptorMapBuilder;
 import com.gotocompany.stencil.NestedField;
 import com.gotocompany.stencil.account_db_accounts.FULLDOCUMENT;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -35,7 +37,7 @@ public class URLStencilClientWithCacheTest {
     @Before
     public void setup() throws IOException, Descriptors.DescriptorValidationException {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream fileInputStream = new FileInputStream(classLoader.getResource(DESCRIPTOR_FILE_PATH).getFile());
+        InputStream fileInputStream = Files.newInputStream(Paths.get(Objects.requireNonNull(classLoader.getResource(DESCRIPTOR_FILE_PATH)).getFile()));
         descriptorMap = DescriptorMapBuilder.buildFrom(fileInputStream);
     }
 

@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.gotocompany'
-version '0.4.0'
+version '0.6.0'
 
 repositories {
     mavenLocal()
@@ -18,14 +18,14 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
-    api group: 'com.google.protobuf', name: 'protobuf-java', version: '3.5.1'
-    implementation group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+    api group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
+    api group: 'com.google.protobuf', name: 'protobuf-java', version: '3.23.2'
     api group: 'com.datadoghq', name: 'java-dogstatsd-client', version: '2.13.0'
-    implementation group: 'org.json', name: 'json', version:'20211205'
+    implementation group: 'org.json', name: 'json', version: '20230618'
+    implementation group: 'com.google.guava', name: 'guava', version: '32.0.1-jre'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 
-    testImplementation group: 'junit', name: 'junit' , version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.18.0'
     testImplementation group: 'com.google.guava', name: 'guava-testlib', version: '12.0-rc2'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
@@ -56,6 +56,8 @@ idea {
 java {
     withJavadocJar()
     withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 publishing {
@@ -101,7 +103,7 @@ publishing {
 }
 
 signing {
-    sign publishing.publications.maven
+   sign publishing.publications.maven
 }
 
 nexusPublishing {

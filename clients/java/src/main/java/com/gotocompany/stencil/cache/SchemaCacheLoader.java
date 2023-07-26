@@ -5,10 +5,10 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.protobuf.Descriptors;
-import com.gotocompany.stencil.config.StencilConfig;
-import com.gotocompany.stencil.http.RemoteFile;
-import com.timgroup.statsd.StatsDClient;
 import com.gotocompany.stencil.SchemaUpdateListener;
+import com.gotocompany.stencil.http.RemoteFile;
+import com.gotocompany.stencil.config.StencilConfig;
+import com.timgroup.statsd.StatsDClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
