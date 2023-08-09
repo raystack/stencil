@@ -18,7 +18,7 @@ timeout: 5s
 newrelic:
   appname: example
   enabled: false
-  license: "<key>"
+  license: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 # Database configurations for stencil backend
 db:
   # Connection string for postgres database

@@ -25,3 +25,7 @@ vendor/
 /stencil
 /config.yaml
 node_modules
+
+__debug*
+example
+
