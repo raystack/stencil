@@ -22,7 +22,7 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
 	github.com/pkg/errors v0.9.1
 	github.com/raystack/salt v0.3.2
-	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
+	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.8.0
 	github.com/yudai/gojsondiff v1.0.0
