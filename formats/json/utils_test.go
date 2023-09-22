@@ -14,5 +14,5 @@ func TestExploreJsonSchemaRecursively(t *testing.T) {
 	assert.Nil(t, err)
 	exploredMap := exploreSchema(sc)
 	assert.NotEmpty(t, exploredMap)
-	assert.Equal(t, 42, len(exploredMap))
+	assert.Equal(t, 41, len(exploredMap))
 }

@@ -3,82 +3,87 @@ package json
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/raystack/stencil/pkg/logger"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
 func exploreSchema(jsonSchema *jsonschema.Schema) map[string]*jsonschema.Schema {
+	baseLocation := jsonSchema.Location
 	exploredSchemas := make(map[string]*jsonschema.Schema, 10)
-	explore(jsonSchema, exploredSchemas)
+	explore(jsonSchema, exploredSchemas, baseLocation)
 	return exploredSchemas
 }
 
-func explore(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func explore(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	_, ok := locationSchemaMap[jsonSchema.Location]
 	if ok {
 		return //already explored
 	}
+	if !strings.HasPrefix(jsonSchema.Location, baseLocation) {
+		return //remote reference
+	}
 	locationSchemaMap[jsonSchema.Location] = jsonSchema // marking visited
-	exploreRef(jsonSchema, locationSchemaMap)
-	exploreAllOf(jsonSchema, locationSchemaMap)
-	exploreOneOf(jsonSchema, locationSchemaMap)
-	exploreAnyOf(jsonSchema, locationSchemaMap)
-	exploreProperties(jsonSchema, locationSchemaMap)
-	exploreItems(jsonSchema, locationSchemaMap)
+	exploreRef(jsonSchema, locationSchemaMap, baseLocation)
+	exploreAllOf(jsonSchema, locationSchemaMap, baseLocation)
+	exploreOneOf(jsonSchema, locationSchemaMap, baseLocation)
+	exploreAnyOf(jsonSchema, locationSchemaMap, baseLocation)
+	exploreProperties(jsonSchema, locationSchemaMap, baseLocation)
+	exploreItems(jsonSchema, locationSchemaMap, baseLocation)
 }
 
-func exploreItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	if jsonSchema.Items == nil && jsonSchema.Items2020 == nil {
 		return
 	}
 	itemSchemas := getItems(jsonSchema)
 	for _, itemSchema := range itemSchemas {
-		explore(itemSchema, locationSchemaMap)
+		explore(itemSchema, locationSchemaMap, baseLocation)
 	}
 }
 
-func exploreProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	if jsonSchema.Properties == nil || len(jsonSchema.Properties) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.Properties {
-		explore(schema, locationSchemaMap)
+		explore(schema, locationSchemaMap, baseLocation)
 	}
 }
 
-func exploreAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	if jsonSchema.AnyOf == nil || len(jsonSchema.AnyOf) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.AnyOf {
-		explore(schema, locationSchemaMap)
+		explore(schema, locationSchemaMap, baseLocation)
 	}
 }
 
-func exploreOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	if jsonSchema.OneOf == nil || len(jsonSchema.OneOf) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.OneOf {
-		explore(schema, locationSchemaMap)
+		explore(schema, locationSchemaMap, baseLocation)
 	}
 }
 
-func exploreAllOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreAllOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	if jsonSchema.AllOf == nil || len(jsonSchema.AllOf) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.AllOf {
-		explore(schema, locationSchemaMap)
+		explore(schema, locationSchemaMap, baseLocation)
 	}
 }
 
-func exploreRef(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreRef(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	if jsonSchema.Ref == nil {
 		return
 	}
-	explore(jsonSchema.Ref, locationSchemaMap)
+	explore(jsonSchema.Ref, locationSchemaMap, baseLocation)
 }
 
 func elementsMatch[K comparable](arr1, arr2 []K) error {
@@ -137,7 +142,7 @@ func contains[K comparable](haystack []K, needle K) bool {
 }
 
 func getItems(jsonSchema *jsonschema.Schema) []*jsonschema.Schema {
-	schemaArr := make([]*jsonschema.Schema, 1)
+	schemaArr := make([]*jsonschema.Schema, 0)
 	if jsonSchema.Items == nil && jsonSchema.Items2020 == nil {
 		return schemaArr
 	}
