@@ -10,6 +10,7 @@ import (
 )
 
 const jsonFormat = "FORMAT_JSON"
+const schemaURI = "sample_schema"
 
 type Schema struct {
 	data []byte
@@ -29,20 +30,18 @@ func (s *Schema) GetCanonicalValue() *schema.SchemaFile {
 
 // IsBackwardCompatible checks backward compatibility against given schema
 func (s *Schema) IsBackwardCompatible(against schema.ParsedSchema) error {
-	sc, err := jsonschema.CompileString(s.GetCanonicalValue().ID, string(s.data))
+	sc, err := jsonschema.CompileString(schemaURI, string(s.data))
 	if err != nil {
 		logger.Logger.Warn("unable to compile schema to check for backward compatibility")
 		return err
 	}
-	schemaFile := against.GetCanonicalValue()
-	againstSchema, err := jsonschema.CompileString(schemaFile.ID, string(schemaFile.Data))
+	againstSchema, err := jsonschema.CompileString(schemaURI, string(against.GetCanonicalValue().Data))
 	if err != nil {
 		logger.Logger.Warn("unable to compile against schema to check for backward compatibility")
 		return err
 	}
 	jsonSchemaMap := exploreSchema(sc)
 	againstJsonSchemaMap := exploreSchema(againstSchema)
-
 	return compareSchemas(againstJsonSchemaMap, jsonSchemaMap, backwardCompatibility)
 }
 
