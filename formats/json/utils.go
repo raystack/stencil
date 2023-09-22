@@ -20,40 +20,25 @@ func explore(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonsc
 		return //already explored
 	}
 	locationSchemaMap[jsonSchema.Location] = jsonSchema // marking visited
-	checkRef(jsonSchema, locationSchemaMap)
-	checkAllOf(jsonSchema, locationSchemaMap)
-	checkOneOf(jsonSchema, locationSchemaMap)
-	checkAnyOf(jsonSchema, locationSchemaMap)
-	checkProperties(jsonSchema, locationSchemaMap)
-	checkItems(jsonSchema, locationSchemaMap)
+	exploreRef(jsonSchema, locationSchemaMap)
+	exploreAllOf(jsonSchema, locationSchemaMap)
+	exploreOneOf(jsonSchema, locationSchemaMap)
+	exploreAnyOf(jsonSchema, locationSchemaMap)
+	exploreProperties(jsonSchema, locationSchemaMap)
+	exploreItems(jsonSchema, locationSchemaMap)
 }
 
-func checkItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
 	if jsonSchema.Items == nil && jsonSchema.Items2020 == nil {
 		return
 	}
-	var items interface{}
-	if jsonSchema.Items != nil {
-		items = jsonSchema.Items
-	} else if jsonSchema.Items2020 != nil {
-		items = jsonSchema.Items2020
-	}
-	itemSchema, ok := items.(*jsonschema.Schema)
-	if ok {
+	itemSchemas := getItems(jsonSchema)
+	for _, itemSchema := range itemSchemas {
 		explore(itemSchema, locationSchemaMap)
-		return
-	}
-	itemSchemas, ok := items.([]*jsonschema.Schema)
-	if ok {
-		for _, itemSchema := range itemSchemas {
-			explore(itemSchema, locationSchemaMap)
-		}
-	}else {
-		logger.Logger.Warn(fmt.Sprintf("unable to parse itemschemas to either schema or array of schemas %s", jsonSchema.Location))
 	}
 }
 
-func checkProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
 	if jsonSchema.Properties == nil || len(jsonSchema.Properties) == 0 {
 		return
 	}
@@ -62,7 +47,7 @@ func checkProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[string
 	}
 }
 
-func checkAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
 	if jsonSchema.AnyOf == nil || len(jsonSchema.AnyOf) == 0 {
 		return
 	}
@@ -71,7 +56,7 @@ func checkAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jso
 	}
 }
 
-func checkOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
 	if jsonSchema.OneOf == nil || len(jsonSchema.OneOf) == 0 {
 		return
 	}
@@ -80,7 +65,7 @@ func checkOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jso
 	}
 }
 
-func checkAllOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreAllOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
 	if jsonSchema.AllOf == nil || len(jsonSchema.AllOf) == 0 {
 		return
 	}
@@ -89,14 +74,14 @@ func checkAllOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jso
 	}
 }
 
-func checkRef(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
+func exploreRef(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema) {
 	if jsonSchema.Ref == nil {
 		return
 	}
 	explore(jsonSchema.Ref, locationSchemaMap)
 }
 
-func elementsMatch(arr1, arr2 []string) error {
+func elementsMatch[K comparable](arr1, arr2 []K) error {
 	if len(arr1) != len(arr2) {
 		return errors.New("count of elements do not match")
 	}
@@ -109,8 +94,68 @@ func elementsMatch(arr1, arr2 []string) error {
 			}
 		}
 		if !found {
-			return errors.New(fmt.Sprintf("%s element not found in second array", element))
+			return fmt.Errorf("%v element not found in second array", element)
 		} 
 	}
 	return nil
+}
+
+func getKeys(properties map[string]*jsonschema.Schema) []string {
+	slice := make([]string, len(properties))
+	for key := range properties {
+		slice = append(slice, key)
+	}
+	return slice
+}
+
+func getDiffernce[K comparable](arr, toBeSubtracted []K) []K {
+	slice := make([]K, 1)
+	for _, element := range arr {
+		if !contains(toBeSubtracted, element){
+			slice = append(slice, element)
+		} 
+	}
+	return slice
+}
+
+func isSubset[K comparable](superSet, subSetCandidate []K) bool {
+	for _, val := range subSetCandidate {
+		if !contains(superSet, val) {
+			return false
+		}
+	}
+	return true
+}
+
+func contains[K comparable](haystack []K, needle K) bool {
+	for _, val := range haystack {
+		if val == needle {
+			return true
+		}
+	}
+	return false
+}
+
+func getItems(jsonSchema *jsonschema.Schema) []*jsonschema.Schema {
+	schemaArr := make([]*jsonschema.Schema, 1)
+	if jsonSchema.Items == nil && jsonSchema.Items2020 == nil {
+		return schemaArr
+	}
+	var items interface{}
+	if jsonSchema.Items != nil {
+		items = jsonSchema.Items
+	} else if jsonSchema.Items2020 != nil {
+		items = jsonSchema.Items2020
+	}
+	itemSchema, ok := items.(*jsonschema.Schema)
+	if ok {
+		schemaArr = append(schemaArr, itemSchema)
+		return schemaArr
+	}
+	itemSchemas, ok := items.([]*jsonschema.Schema)
+	if ok {
+		return itemSchemas
+	}
+	logger.Logger.Warn(fmt.Sprintf("unable to extract items schema from provided jsonschema: %s", jsonSchema.Location))
+	return schemaArr
 }
