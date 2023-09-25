@@ -67,6 +67,26 @@ func Test_CheckAdditionalProperties_Succeeds_When_Its_OpenContentModel(t *testin
 	assert.Empty(t, len(diffs.diffs))
 }
 
+func Test_CheckPropertyDeleted_ReturnsEmpty_When_FieldModified(t *testing.T){
+	prev := initialiseSchema(t, "./testdata/propertyDeleted/prevSchema.json")
+	modified := initialiseSchema(t, "./testdata/propertyDeleted/modifiedSchema.json")
+	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
+	CheckPropertyDeleted(prev, modified, diffs)
+	assert.Empty(t, diffs.diffs)
+}
+
+func Test_CheckPropertyDeleted_ReturnsDiff_When_FieldDeleted(t *testing.T){
+	prev := initialiseSchema(t, "./testdata/propertyDeleted/prevSchema.json")
+	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
+	CheckPropertyDeleted(prev, nil, diffs)
+	assert.Equal(t, 1, len(diffs.diffs))
+}
+
+// func initSchemaCompareFunction(prev, new *jsonschema.Schema,fn SchemaCompareCheck, fn2 SchemaCheck) (map[string]*jsonschema.Schema,map[string]*jsonschema.Schema, []diffKind, []SchemaCompareCheck, []SchemaCheck){
+// 	currMap := exploreSchema(new)
+// 	prevMap := exploreSchema(prev)
+// 	return prevMap, currMap, backwardCompatibility, []SchemaCompareCheck{fn}, []SchemaCheck{fn2}
+// }
 
 func initialiseSchema(t *testing.T, path string) *jsonschema.Schema {
 	sc, err := jsonschema.Compile(path)

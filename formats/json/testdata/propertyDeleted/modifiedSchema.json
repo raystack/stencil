@@ -1,0 +1,26 @@
+{
+    "title": "summaries",
+    "properties": {
+        "minimum": {
+            "title": "Minimum value",
+            "type": [
+                "number",
+                "string"
+            ]
+        },
+        "maximum": {
+            "title": "Maximum value",
+            "type": [
+                "number"
+            ]
+        },
+        "setValue": {
+            "title": "Set of values",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "description": "For each field only the original data type of the property can occur (except for arrays), but we can't validate that in JSON Schema yet. See the sumamry description in the STAC specification for details."
+            }
+        }
+    }
+}
