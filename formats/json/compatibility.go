@@ -50,14 +50,32 @@ var backwardCompatibility = []diffKind{
 type SchemaCompareCheck func(*jsonschema.Schema, *jsonschema.Schema, *compatibilityErr)
 type SchemaCheck func(*jsonschema.Schema, *compatibilityErr)
 
+type TypeCheckSpec struct {
+	emptyTypeChecks []SchemaCompareCheck
+	objectTypeChecks []SchemaCompareCheck
+	arrayTypeChecks []SchemaCompareCheck
+}
+
+var (
+	emptyTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
+		checkAllOf, checkAnyOf, checkOneOf, checkEnum, checkRef, checkEnum,
+	}
+	objectTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
+		checkRequiredProperties, checkFieldAddition,
+	}
+	arrayTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
+		checkItemSchema,
+	}
+)
+
+var StandardTypeChecks TypeCheckSpec = TypeCheckSpec{emptyTypeChecks, objectTypeChecks, arrayTypeChecks}
+
 func compareSchemas(prevSchemaMap, currentSchemaMap map[string]*jsonschema.Schema, notAllowedChanges []diffKind,
 	schemaCompareFuncs []SchemaCompareCheck, schemaChecks []SchemaCheck) error {
 	diffs := &compatibilityErr{notAllowed: notAllowedChanges}
 	for location, prevSchema := range prevSchemaMap {
 		currSchema := currentSchemaMap[location]
-		for _, schemaCompareFunc := range schemaCompareFuncs {
-			schemaCompareFunc(prevSchema, currSchema, diffs)
-		}
+		executeSchemaCompareCheck(prevSchema, currSchema, diffs, schemaCompareFuncs)
 	}
 	for _, currSchema := range currentSchemaMap {
 		for _, schemaCheck := range schemaChecks {
@@ -70,7 +88,7 @@ func compareSchemas(prevSchemaMap, currentSchemaMap map[string]*jsonschema.Schem
 	return diffs
 }
 
-func CheckPropertyDeleted(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr){
+func CheckPropertyDeleted(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
 	if prevSchema != nil && currSchema == nil {
 		diffs.add(schemaDeleted, prevSchema.Location, `property is removed`)
 	}
@@ -88,45 +106,41 @@ func CheckAdditionalProperties(schema *jsonschema.Schema, diffs *compatibilityEr
 
 }
 
-func CheckTypes(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
-	prevTypes := prevSchema.Types
-	currTypes := currSchema.Types
-	err := elementsMatch(prevTypes, currTypes)
-	if err != nil {
-		diffs.add(subSchemaTypeModification, currSchema.Location, err.Error())
-	}
-	if len(currTypes) == 0 {
-		// types are not available for references and conditional schema types
-		// ref/holder schema
-		checkAllOf(prevSchema, currSchema, diffs)
-		checkOneOf(prevSchema, currSchema, diffs)
-		checkAnyOf(prevSchema, currSchema, diffs)
-		checkRef(prevSchema, currSchema, diffs)
-		checkEnum(prevSchema, currSchema, diffs)
-		// check ref
-		// check enum
-		return
-	}
-	for _, schemaTypes := range prevTypes {
-		switch schemaTypes {
-		case "object":
-			checkRequiredProperties(prevSchema, currSchema, diffs)
-			checkFieldAddition(prevSchema, currSchema, diffs)
-		case "array":
-			// check item schema is same
-			checkItemSchema(prevSchema, currSchema, diffs)
-		case "integer":
-			// check for validation conflicts
-		case "string":
-			// check validation conflicts
-		case "number":
-			// check validation conflicts
-		case "boolean":
+func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
+	return func(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
+		prevTypes := prevSchema.Types
+		currTypes := currSchema.Types
+		err := elementsMatch(prevTypes, currTypes)
+		if err != nil {
+			diffs.add(subSchemaTypeModification, currSchema.Location, err.Error())
+			return
+		}
+		if len(currTypes) == 0 {
+			// types are not available for references and conditional schema types
+			// ref/holder schema
+			executeSchemaCompareCheck(prevSchema, currSchema, diffs, spec.emptyTypeChecks)
+			return
+		}
+		for _, schemaTypes := range prevTypes {
+			switch schemaTypes {
+			case "object":
+				executeSchemaCompareCheck(prevSchema, currSchema, diffs, spec.objectTypeChecks)
+			case "array":
+				// check item schema is same
+				executeSchemaCompareCheck(prevSchema, currSchema, diffs, spec.arrayTypeChecks)
+			case "integer":
+				// check for validation conflicts
+			case "string":
+				// check validation conflicts
+			case "number":
+				// check validation conflicts
+			case "boolean":
 
-		case "null":
+			case "null":
 
-		default:
-			logger.Logger.Warn(fmt.Sprintf("Unexpected type %s", schemaTypes))
+			default:
+				logger.Logger.Warn(fmt.Sprintf("Unexpected type %s", schemaTypes))
+			}
 		}
 	}
 }
@@ -251,5 +265,11 @@ func checkRequiredProperties(prevSchema, currSchema *jsonschema.Schema, diffs *c
 	err := elementsMatch(prevRequiredProperties, currReqiredProperties)
 	if err != nil {
 		diffs.add(requiredFieldChanged, currSchema.Location, err.Error())
+	}
+}
+
+func executeSchemaCompareCheck(prev, curr *jsonschema.Schema, diffs *compatibilityErr, checks []SchemaCompareCheck){
+	for _, check := range checks {
+		check(prev, curr, diffs)
 	}
 }
