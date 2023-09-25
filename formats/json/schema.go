@@ -42,7 +42,8 @@ func (s *Schema) IsBackwardCompatible(against schema.ParsedSchema) error {
 	}
 	jsonSchemaMap := exploreSchema(sc)
 	againstJsonSchemaMap := exploreSchema(againstSchema)
-	return compareSchemas(againstJsonSchemaMap, jsonSchemaMap, backwardCompatibility)
+	return compareSchemas(againstJsonSchemaMap, jsonSchemaMap, backwardCompatibility, 
+		[]SchemaCompareCheck{CheckPropertyDeleted, CheckTypes}, []SchemaCheck{CheckAdditionalProperties})
 }
 
 // IsForwardCompatible checks backward compatibility against given schema

@@ -47,37 +47,48 @@ var backwardCompatibility = []diffKind{
 	additionalPropertiesNotTrue,
 }
 
-func compareSchemas(prevSchemaMap, currentSchemaMap map[string]*jsonschema.Schema, notAllowedChanges []diffKind) error {
+type SchemaCompareCheck func(*jsonschema.Schema, *jsonschema.Schema, *compatibilityErr)
+type SchemaCheck func(*jsonschema.Schema, *compatibilityErr)
+
+func compareSchemas(prevSchemaMap, currentSchemaMap map[string]*jsonschema.Schema, notAllowedChanges []diffKind,
+	schemaCompareFuncs []SchemaCompareCheck, schemaChecks []SchemaCheck) error {
 	diffs := &compatibilityErr{notAllowed: notAllowedChanges}
 	for location, prevSchema := range prevSchemaMap {
-		currSchema, ok := currentSchemaMap[location]
-		if !ok {
-			diffs.add(schemaDeleted, location, `property is removed`)
-			continue
+		currSchema := currentSchemaMap[location]
+		for _, schemaCompareFunc := range schemaCompareFuncs {
+			schemaCompareFunc(prevSchema, currSchema, diffs)
 		}
-		checkTypes(prevSchema, currSchema, diffs)
 	}
-	checkAdditionalProperties(currentSchemaMap, diffs)
+	for _, currSchema := range currentSchemaMap {
+		for _, schemaCheck := range schemaChecks {
+			schemaCheck(currSchema, diffs)
+		}
+	}
 	if diffs.isEmpty() {
 		return nil
 	}
 	return diffs
 }
 
-func checkAdditionalProperties(currentSchemaMap map[string]*jsonschema.Schema, diffs *compatibilityErr) {
-	// enforcing open content model, in the future we can use existing additional properties schema to validate 
-	// new properties to ensure better adherence to schema.
-	for location, schema := range currentSchemaMap {
-		if schema.AdditionalProperties != nil {
-			property, ok := schema.AdditionalProperties.(bool)
-			if !ok || !property {
-				diffs.add(additionalPropertiesNotTrue, location, "additionalProperties need to be not defined or true for evaluation as an open content model")
-			}
-		}
+func CheckPropertyDeleted(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr){
+	if prevSchema != nil && currSchema == nil {
+		diffs.add(schemaDeleted, prevSchema.Location, `property is removed`)
 	}
 }
 
-func checkTypes(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
+func CheckAdditionalProperties(schema *jsonschema.Schema, diffs *compatibilityErr) {
+	// enforcing open content model, in the future we can use existing additional properties schema to validate
+	// new properties to ensure better adherence to schema.
+	if schema.AdditionalProperties != nil {
+		property, ok := schema.AdditionalProperties.(bool)
+		if !ok || !property {
+			diffs.add(additionalPropertiesNotTrue, schema.Location, "additionalProperties need to be not defined or true for evaluation as an open content model")
+		}
+	}
+
+}
+
+func CheckTypes(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
 	prevTypes := prevSchema.Types
 	currTypes := currSchema.Types
 	err := elementsMatch(prevTypes, currTypes)
@@ -94,7 +105,7 @@ func checkTypes(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 		checkEnum(prevSchema, currSchema, diffs)
 		// check ref
 		// check enum
-		return 
+		return
 	}
 	for _, schemaTypes := range prevTypes {
 		switch schemaTypes {
@@ -111,9 +122,9 @@ func checkTypes(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 		case "number":
 			// check validation conflicts
 		case "boolean":
-		
+
 		case "null":
-			
+
 		default:
 			logger.Logger.Warn(fmt.Sprintf("Unexpected type %s", schemaTypes))
 		}
@@ -130,7 +141,7 @@ func checkEnum(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityEr
 		diffs.add(enumDeletion, currSchema.Location, "enum was deleted")
 	}
 	if prevEnum != nil && currEnum != nil {
-		if !isSubset(currEnum, prevEnum){
+		if !isSubset(currEnum, prevEnum) {
 			diffs.add(enumElementDeletion, currSchema.Location, "enum property was deleted")
 		}
 	}
@@ -217,12 +228,12 @@ func checkAllOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 	}
 }
 
-func checkItemSchema(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr){
+func checkItemSchema(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
 	prevItems := getItems(prevSchema)
 	currItems := getItems(currSchema)
 	if len(prevItems) != len(currItems) {
 		diffs.add(itemSchemaAddition, currSchema.Location, "prev items contains %d elements, current contains %d", len(prevItems), len(currItems))
-	} 
+	}
 }
 
 func checkFieldAddition(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
@@ -234,11 +245,11 @@ func checkFieldAddition(prevSchema, currSchema *jsonschema.Schema, diffs *compat
 	}
 }
 
-func checkRequiredProperties(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr){
+func checkRequiredProperties(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
 	prevRequiredProperties := prevSchema.Required
 	currReqiredProperties := currSchema.Required
 	err := elementsMatch(prevRequiredProperties, currReqiredProperties)
-	if err!= nil {
+	if err != nil {
 		diffs.add(requiredFieldChanged, currSchema.Location, err.Error())
 	}
 }
