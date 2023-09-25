@@ -6,8 +6,35 @@ import (
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
+type compareMock struct{
+	mock.Mock
+}
+
+func(m *compareMock) SchemaCompareFunc(prev, curr *jsonschema.Schema, diff *compatibilityErr){
+	m.Called(prev, curr, diff)
+}
+
+func(m *compareMock) SchemaFunc(curr *jsonschema.Schema, diff *compatibilityErr){
+	m.Called(curr, diff)
+}
+
+
+func Test_CompareSchema_Invokes_SchemaCheck_And_Schema_CompareCheck_Expected_Number_Of_Times(t *testing.T){
+	schema := initialiseSchema(t, "./testdata/compareSchemas/currSchema.json")
+	prevSchema := initialiseSchema(t, "./testdata/compareSchemas/prevSchema.json")
+	currMap := exploreSchema(schema)
+	prevMap := exploreSchema(prevSchema)
+	m := &compareMock{}
+	m.On("SchemaCompareFunc", mock.Anything, mock.Anything, mock.Anything)
+	m.On("SchemaFunc", mock.Anything, mock.Anything)
+	diff := compareSchemas(prevMap, currMap, backwardCompatibility, []SchemaCompareCheck{m.SchemaCompareFunc}, []SchemaCheck{m.SchemaFunc})
+	m.AssertNumberOfCalls(t, "SchemaCompareFunc", len(prevMap))
+	m.AssertNumberOfCalls(t, "SchemaFunc", len(currMap))
+	assert.Nil(t, diff) //nil because validation checks are mocked
+}
 
 func Test_CheckAdditionalProperties_Fails_When_Its_Partial_OpenContentModel(t *testing.T){
 	schema := initialiseSchema(t, "./testdata/additionalProperties/partialOpenContent.json")
