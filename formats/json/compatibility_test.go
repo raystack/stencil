@@ -21,6 +21,23 @@ func(m *compareMock) SchemaFunc(curr *jsonschema.Schema, diff *compatibilityErr)
 	m.Called(curr, diff)
 }
 
+type typeCheckMock struct {
+	mock.Mock
+}
+
+func (m *typeCheckMock) objectTypeChecks(prev, curr *jsonschema.Schema, diff *compatibilityErr){
+	m.Called(prev, curr, diff)
+}
+
+func (m *typeCheckMock) arrayTypeChecks(prev, curr *jsonschema.Schema, diff *compatibilityErr){
+	m.Called(prev, curr, diff)
+}
+
+func (m *typeCheckMock) emptyTypeChecks(prev, curr *jsonschema.Schema, diff *compatibilityErr){
+	m.Called(prev, curr, diff)
+}
+
+
 
 func Test_CompareSchema_Invokes_SchemaCheck_And_Schema_CompareCheck_Expected_Number_Of_Times(t *testing.T){
 	schema := initialiseSchema(t, "./testdata/compareSchemas/currSchema.json")
@@ -80,6 +97,32 @@ func Test_CheckPropertyDeleted_ReturnsDiff_When_FieldDeleted(t *testing.T){
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
 	CheckPropertyDeleted(prev, nil, diffs)
 	assert.Equal(t, 1, len(diffs.diffs))
+}
+
+func TestTypeCheckExecutorCorrectness(t *testing.T){
+	curr := initialiseSchema(t, "./testdata/typeChecks/typeCheckSchema.json")
+	objectSchema := curr.Properties["objectType"]
+	arraySchema := curr.Properties["arrayType"]
+	emptyTypeSchema := initialiseSchema(t, "./testdata/collection.json")
+	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
+	tcMock := &typeCheckMock{}
+	tcMock.On("objectTypeChecks", objectSchema, objectSchema, diffs)
+	tcMock.On("arrayTypeChecks", arraySchema, arraySchema, diffs)
+	tcMock.On("emptyTypeChecks", emptyTypeSchema, emptyTypeSchema, diffs)
+	spec := TypeCheckSpec{emptyTypeChecks: []SchemaCompareCheck{tcMock.emptyTypeChecks}, 
+	objectTypeChecks: []SchemaCompareCheck{tcMock.objectTypeChecks}, arrayTypeChecks: []SchemaCompareCheck{tcMock.arrayTypeChecks},}
+	typeCheck := TypeCheckExecutor(spec)
+	typeCheck(objectSchema, objectSchema, diffs)
+	tcMock.AssertNumberOfCalls(t, "objectTypeChecks", 1)
+	tcMock.AssertCalled(t, "objectTypeChecks", objectSchema, objectSchema, diffs)
+	tcMock.AssertNotCalled(t, "arrayTypeChecks")
+	tcMock.AssertNotCalled(t, "emptyTypeChecks")
+	typeCheck(arraySchema, arraySchema, diffs)
+	tcMock.AssertNumberOfCalls(t, "arrayTypeChecks", 1)
+	tcMock.AssertCalled(t, "arrayTypeChecks",arraySchema, arraySchema, diffs)
+	tcMock.AssertNotCalled(t, "emptyTypeChecks")
+	typeCheck(emptyTypeSchema, emptyTypeSchema, diffs)
+	tcMock.AssertCalled(t, "emptyTypeChecks", emptyTypeSchema, emptyTypeSchema, diffs)
 }
 
 // func initSchemaCompareFunction(prev, new *jsonschema.Schema,fn SchemaCompareCheck, fn2 SchemaCheck) (map[string]*jsonschema.Schema,map[string]*jsonschema.Schema, []diffKind, []SchemaCompareCheck, []SchemaCheck){
