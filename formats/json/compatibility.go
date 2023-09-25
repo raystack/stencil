@@ -23,6 +23,7 @@ const (
 	anyOfModified
 	oneOfModified
 	allOfModified
+	additionalPropertiesNotTrue
 )
 
 var backwardCompatibility = []diffKind{
@@ -43,6 +44,7 @@ var backwardCompatibility = []diffKind{
 	anyOfModified,
 	oneOfModified,
 	allOfModified,
+	additionalPropertiesNotTrue,
 }
 
 func compareSchemas(prevSchemaMap, currentSchemaMap map[string]*jsonschema.Schema, notAllowedChanges []diffKind) error {
@@ -55,10 +57,24 @@ func compareSchemas(prevSchemaMap, currentSchemaMap map[string]*jsonschema.Schem
 		}
 		checkTypes(prevSchema, currSchema, diffs)
 	}
+	checkAdditionalProperties(currentSchemaMap, diffs)
 	if diffs.isEmpty() {
 		return nil
 	}
 	return diffs
+}
+
+func checkAdditionalProperties(currentSchemaMap map[string]*jsonschema.Schema, diffs *compatibilityErr) {
+	// enforcing open content model, in the future we can use existing additional properties schema to validate 
+	// new properties to ensure better adherence to schema.
+	for location, schema := range currentSchemaMap {
+		if schema.AdditionalProperties != nil {
+			property, ok := schema.AdditionalProperties.(bool)
+			if !ok || !property {
+				diffs.add(additionalPropertiesNotTrue, location, "additionalProperties need to be not defined or true for evaluation as an open content model")
+			}
+		}
+	}
 }
 
 func checkTypes(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
