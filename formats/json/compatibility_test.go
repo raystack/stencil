@@ -99,7 +99,7 @@ func Test_CheckPropertyDeleted_ReturnsDiff_When_FieldDeleted(t *testing.T){
 	assert.Equal(t, 1, len(diffs.diffs))
 }
 
-func TestTypeCheckExecutorCorrectness(t *testing.T){
+func Test_TypeCheckExecutorCorrectness(t *testing.T){
 	curr := initialiseSchema(t, "./testdata/typeChecks/typeCheckSchema.json")
 	objectSchema := curr.Properties["objectType"]
 	arraySchema := curr.Properties["arrayType"]

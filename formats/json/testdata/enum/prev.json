@@ -1,0 +1,15 @@
+{
+    "title": "summaries",
+    "properties": {
+        "roles": {
+            "title": "Organization roles",
+            "type": "string",
+            "enum": [
+                "producer",
+                "licensor",
+                "processor",
+                "host"
+            ]
+        }
+    }
+}
