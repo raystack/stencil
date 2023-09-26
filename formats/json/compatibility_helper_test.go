@@ -165,3 +165,29 @@ func Test_CheckPropertyAddition_ReturnsSuccess_WhenPropertyAdded(t *testing.T) {
 	assert.Equal(t, 1, len(newDiff.diffs))
 	assert.Equal(t, propertyAddition, newDiff.diffs[0].kind)
 }
+
+func Test_CheckRequiredProperties_ReturnFailure_WhenRequiredPropertiesAdded(t *testing.T){
+	prev := initialiseSchema(t, "./testdata/requiredProperties/prev.json")
+	new := initialiseSchema(t, "./testdata/requiredProperties/added.json")
+	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
+	checkRequiredProperties(prev, new, diffs)
+	assert.Equal(t, 1, len(diffs.diffs))
+	assert.Equal(t, requiredFieldChanged, diffs.diffs[0].kind)
+}
+
+func Test_CheckRequiredProperties_ReturnSuccess_WhenRequiredPropertiesUnchangedAndNewPropertyAdded(t *testing.T){
+	prev := initialiseSchema(t, "./testdata/requiredProperties/prev.json")
+	new := initialiseSchema(t, "./testdata/requiredProperties/modified.json")
+	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
+	checkRequiredProperties(prev, new, diffs)
+	assert.Empty(t, diffs.diffs)
+}
+
+func Test_CheckRequiredProperties_ReturnFailure_WhenRequiredPropertiesAreRemoved(t *testing.T){
+	prev := initialiseSchema(t, "./testdata/requiredProperties/prev.json")
+	new := initialiseSchema(t, "./testdata/requiredProperties/removed.json")
+	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
+	checkRequiredProperties(prev, new, diffs)
+	assert.Equal(t, 1, len(diffs.diffs))
+	assert.Equal(t, requiredFieldChanged, diffs.diffs[0].kind)
+}
