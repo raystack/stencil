@@ -50,9 +50,9 @@ type SchemaCompareCheck func(*jsonschema.Schema, *jsonschema.Schema, *compatibil
 type SchemaCheck func(*jsonschema.Schema, *compatibilityErr)
 
 type TypeCheckSpec struct {
-	emptyTypeChecks []SchemaCompareCheck
+	emptyTypeChecks  []SchemaCompareCheck
 	objectTypeChecks []SchemaCompareCheck
-	arrayTypeChecks []SchemaCompareCheck
+	arrayTypeChecks  []SchemaCompareCheck
 }
 
 var (
@@ -60,7 +60,7 @@ var (
 		checkAllOf, checkAnyOf, checkOneOf, checkEnum, checkRef, checkEnum,
 	}
 	objectTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
-		checkRequiredProperties, checkFieldAddition,
+		checkRequiredProperties, checkPropertyAddition,
 	}
 	arrayTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
 		checkItemSchema,

@@ -100,7 +100,7 @@ func elementsMatch[K comparable](arr1, arr2 []K) error {
 		}
 		if !found {
 			return fmt.Errorf("%v element not found in second array", element)
-		} 
+		}
 	}
 	return nil
 }
@@ -116,9 +116,9 @@ func getKeys(properties map[string]*jsonschema.Schema) []string {
 func getDiffernce[K comparable](arr, toBeSubtracted []K) []K {
 	slice := make([]K, 1)
 	for _, element := range arr {
-		if !contains(toBeSubtracted, element){
+		if !contains(toBeSubtracted, element) {
 			slice = append(slice, element)
-		} 
+		}
 	}
 	return slice
 }

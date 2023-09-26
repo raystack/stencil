@@ -6,7 +6,6 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
-
 func checkEnum(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
 	prevEnum := prevSchema.Enum
 	currEnum := currSchema.Enum
@@ -94,7 +93,7 @@ func checkItemSchema(prevSchema, currSchema *jsonschema.Schema, diffs *compatibi
 	}
 }
 
-func checkFieldAddition(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
+func checkPropertyAddition(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
 	prevProperties := getKeys(prevSchema.Properties)
 	currProperties := getKeys(currSchema.Properties)
 	addedKeys := getDiffernce(currProperties, prevProperties)
@@ -112,7 +111,7 @@ func checkRequiredProperties(prevSchema, currSchema *jsonschema.Schema, diffs *c
 	}
 }
 
-func executeSchemaCompareCheck(prev, curr *jsonschema.Schema, diffs *compatibilityErr, checks []SchemaCompareCheck){
+func executeSchemaCompareCheck(prev, curr *jsonschema.Schema, diffs *compatibilityErr, checks []SchemaCompareCheck) {
 	for _, check := range checks {
 		check(prev, curr, diffs)
 	}

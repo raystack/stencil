@@ -1,0 +1,12 @@
+{
+    "title": "summaries",
+    "properties": {
+        "roles": {
+            "title": "Organization roles",
+            "type": "string"
+        },
+        "roleRef": {
+            "$ref": "#/properties/roles"
+        }
+    }
+}
