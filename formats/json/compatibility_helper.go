@@ -43,12 +43,6 @@ func checkAnyOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 			diffs.add(anyOfModified, currSchema.Location, "anyOf condition cannot be modified")
 			return
 		}
-		for i, prevAnyOfSchema := range prevAnyOf {
-			currAnyOfSchema := currAnyOf[i]
-			if prevAnyOfSchema.Location != currAnyOfSchema.Location {
-				diffs.add(anyOfModified, currAnyOfSchema.Location, "anyOf schema ref cannot be changed cannot be modified")
-			}
-		}
 	}
 	if prevAnyOf == nil && currAnyOf != nil {
 		diffs.add(anyOfModified, currSchema.Location, "anyOf condition cannot created during modification of schema")
@@ -66,12 +60,6 @@ func checkOneOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 			diffs.add(oneOfModified, currSchema.Location, "oneOf condition cannot be modified")
 			return
 		}
-		for i, prevOneOfSchema := range prevOneOf {
-			currOneOfSchema := currOneOf[i]
-			if prevOneOfSchema.Location != currOneOfSchema.Location {
-				diffs.add(oneOfModified, currOneOfSchema.Location, "oneOf schema ref cannot be changed")
-			}
-		}
 	}
 	if prevOneOf == nil && currOneOf != nil {
 		diffs.add(oneOfModified, currSchema.Location, "oneOf condition cannot created during modification of schema")
@@ -88,12 +76,6 @@ func checkAllOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 		if len(prevAllOf) != len(currAllOf) {
 			diffs.add(allOfModified, currSchema.Location, "allOf condition cannot be modified")
 			return
-		}
-		for i, prevAllOfSchema := range prevAllOf {
-			currAllOfSchema := currAllOf[i]
-			if prevAllOfSchema.Location != currAllOfSchema.Location {
-				diffs.add(allOfModified, currAllOfSchema.Location, "allOf schema ref cannot be changed")
-			}
 		}
 	}
 	if prevAllOf == nil && currAllOf != nil {
