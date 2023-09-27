@@ -23,7 +23,7 @@ func checkEnum(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityEr
 }
 
 func checkRef(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
-	if prevSchema.Ref != nil && currSchema.Ref != nil && prevSchema.Ref.Location != currSchema.Location { // check if prev and curr schema location are equivalent
+	if prevSchema.Ref != nil && currSchema.Ref != nil && prevSchema.Ref.Location != currSchema.Ref.Location { // check if prev and curr schema location are equivalent
 		diffs.add(refChanged, currSchema.Location, "ref for schema has been changed")
 	}
 	if prevSchema.Ref != nil && currSchema.Ref == nil {
@@ -86,10 +86,65 @@ func checkAllOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 }
 
 func checkItemSchema(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
-	prevItems := getItems(prevSchema)
-	currItems := getItems(currSchema)
-	if len(prevItems) != len(currItems) {
-		diffs.add(itemSchemaModification, currSchema.Location, "prev items contains %d elements, current contains %d", len(prevItems), len(currItems))
+	//  check index based schemas
+	if prevSchema.Draft == jsonschema.Draft2020 {
+		prevItems := prevSchema.PrefixItems
+		currItems := currSchema.PrefixItems
+		if prevItems != nil && currItems != nil {
+			if len(prevItems) != len(currItems) {
+				diffs.add(itemSchemaModification, currSchema.Location, "prev prefix items contains %d elements, current contains %d", len(prevItems), len(currItems))
+			}
+		}
+		if prevItems == nil && currItems != nil{
+			diffs.add(itemSchemaModification, currSchema.Location, "prev prefix items is absent, current contains %d", len(currItems))
+		}
+		if prevItems != nil && currItems == nil {
+			diffs.add(itemSchemaModification, currSchema.Location, "prev prefix items contains %d elements, current contains absent", len(prevItems))
+		}
+	}else {
+		prevItems := getItems(prevSchema)
+		currItems := getItems(currSchema)
+		if len(prevItems) != len(currItems) {
+			diffs.add(itemSchemaModification, currSchema.Location, "prev items contains %d elements, current contains %d", len(prevItems), len(currItems))
+		}
+	}
+	
+}
+
+func checkRestOfItemsSchema(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr){
+	var prevItem, currItem *jsonschema.Schema
+	var ok bool
+	// check schema for remaining array elements
+	if prevSchema.Draft == jsonschema.Draft2020{
+		prevItem = prevSchema.Items2020
+		currItem = currSchema.Items2020
+	}else{
+		if prevSchema.AdditionalItems != nil {
+			prevItem, ok = prevSchema.AdditionalItems.(*jsonschema.Schema)
+			if !ok { // prev schema additional Items is boolean value
+				if prevSchema.AdditionalItems != currSchema.AdditionalItems {
+					// curr schema additonal items is not equivalent
+					diffs.add(itemSchemaModification, prevSchema.Location, "the value of additional items has changed")
+				}
+				return // since both cases equal and non equal have been evaluated.
+			}
+		}
+		if currSchema.AdditionalItems != nil {
+			currItem, ok = currSchema.AdditionalItems.(*jsonschema.Schema)
+			if !ok  { // curr schema is boolean
+				if prevSchema.AdditionalItems == nil {
+					diffs.add(itemSchemaAddition, prevSchema.Location, "additional items has been set, changes are not allowed to additional items")
+				}else if prevSchema.AdditionalItems != currSchema.AdditionalItems {
+					diffs.add(itemSchemaModification, prevSchema.Location, "additional items has been modified, changes are not allowed")
+				}
+				return
+			}
+		}
+	}
+	if prevItem == nil && currItem != nil {
+		diffs.add(itemSchemaAddition, currItem.Location, "item schema cannot be added in schema changes")
+	}else if prevItem != nil && currItem == nil {
+		diffs.add(itemsSchemaDeletion, prevItem.Location, "items schema cannot be deleted in modification changes")
 	}
 }
 

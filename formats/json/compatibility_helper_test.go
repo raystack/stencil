@@ -152,14 +152,6 @@ func Test_Check_OneOf_Conditions(t *testing.T) {
 	assert.Equal(t, oneOfModified, diffs3.diffs[0].kind)
 }
 
-func Test_CheckItem_ReturnFailure_WhenNewSchemaHasBeenAdded(t *testing.T){
-	prev := initialiseSchema(t, "./testdata/array/prev.json").Properties["interval"]
-	curr := initialiseSchema(t, "./testdata/array/modified.json").Properties["interval"]
-	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
-	checkItemSchema(prev, curr, diffs)
-	assert.Equal(t, 1, len(diffs.diffs))
-	assert.Equal(t, itemSchemaModification, diffs.diffs[0].kind)
-}
 
 func Test_CheckPropertyAddition_ReturnsSuccess_WhenPropertyAdded(t *testing.T) {
 	prev := initialiseSchema(t, "./testdata/propertyAddition/prev.json")
@@ -202,17 +194,21 @@ func Test_CheckRequiredProperties_ReturnFailure_WhenRequiredPropertiesAreRemoved
 }
 
 func Test_CheckItems_ReturnsFailure_WhenNon2020DraftAdditionalItemsIsChanged(t *testing.T) {
-	prev := initialiseSchema(t, "./testdata/array/draft7prev.json")
-	new := initialiseSchema(t, "./testdata/array/draft7additionalItems.json")
+	prev := initialiseSchema(t, "./testdata/array/draft7prev.json").Properties["example"]
+	new := initialiseSchema(t, "./testdata/array/draft7additionalItems.json").Properties["example"]
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
-	checkItemSchema(prev, new, diffs)
+	checkRestOfItemsSchema(prev, new, diffs)
 	assert.Equal(t, 1, len(diffs.diffs))
-	assert.Equal(t, itemSchemaModification, diffs.diffs[0].kind)
+	assert.Equal(t, itemsSchemaDeletion, diffs.diffs[0].kind)
+	diffs = &compatibilityErr{notAllowed: backwardCompatibility}
+	checkRestOfItemsSchema(new, prev, diffs)
+	assert.Equal(t, 1, len(diffs.diffs))
+	assert.Equal(t, itemSchemaAddition, diffs.diffs[0].kind)
 }
 
 func Test_CheckItems_ReturnsFailure_WhenNon2020DraftItemsIsChanged(t *testing.T) {
-	prev := initialiseSchema(t, "./testdata/array/draft7prev.json")
-	new := initialiseSchema(t, "./testdata/array/draft7items.json")
+	prev := initialiseSchema(t, "./testdata/array/draft7prev.json").Properties["example"]
+	new := initialiseSchema(t, "./testdata/array/draft7items.json").Properties["example"]
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkItemSchema(prev, new, diffs)
 	assert.Equal(t, 1, len(diffs.diffs))
@@ -220,17 +216,21 @@ func Test_CheckItems_ReturnsFailure_WhenNon2020DraftItemsIsChanged(t *testing.T)
 }
 
 func Test_CheckItems_ReturnsFailure_When2020DraftItemsIsChanged(t *testing.T) {
-	prev := initialiseSchema(t, "./testdata/array/2020prev.json")
-	new := initialiseSchema(t, "./testdata/array/2020items.json")
+	prev := initialiseSchema(t, "./testdata/array/2020prev.json").Properties["example"]
+	new := initialiseSchema(t, "./testdata/array/2020items.json").Properties["example"]
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
-	checkItemSchema(prev, new, diffs)
+	checkRestOfItemsSchema(prev, new, diffs)
 	assert.Equal(t, 1, len(diffs.diffs))
-	assert.Equal(t, itemSchemaModification, diffs.diffs[0].kind)
+	assert.Equal(t, itemsSchemaDeletion, diffs.diffs[0].kind)
+	diffs = &compatibilityErr{notAllowed: backwardCompatibility}
+	checkRestOfItemsSchema(new, prev, diffs)
+	assert.Equal(t, 1, len(diffs.diffs))
+	assert.Equal(t, itemSchemaAddition, diffs.diffs[0].kind)
 }
 
 func Test_CheckItems_ReturnsFailure_When2020DraftAPrefixItemsIsChanged(t *testing.T) {
-	prev := initialiseSchema(t, "./testdata/array/2020prev.json")
-	new := initialiseSchema(t, "./testdata/array/2020prefixItems.json")
+	prev := initialiseSchema(t, "./testdata/array/2020prev.json").Properties["example"]
+	new := initialiseSchema(t, "./testdata/array/2020prefixItems.json").Properties["example"]
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkItemSchema(prev, new, diffs)
 	assert.Equal(t, 1, len(diffs.diffs))
@@ -242,8 +242,7 @@ func Test_CheckItems_ReturnsSuccess_WhenNon2020DraftItemsAreUpdated(t *testing.T
 	new := initialiseSchema(t, "./testdata/array/draft7updated.json")
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkItemSchema(prev, new, diffs)
-	assert.Equal(t, 1, len(diffs.diffs))
-	assert.Equal(t, itemSchemaModification, diffs.diffs[0].kind)
+	assert.Equal(t, 0, len(diffs.diffs))
 }
 
 func Test_CheckItems_ReturnsSuccess_When2020DraftPrefixItemsAreUpdated(t *testing.T) {
@@ -251,6 +250,5 @@ func Test_CheckItems_ReturnsSuccess_When2020DraftPrefixItemsAreUpdated(t *testin
 	new := initialiseSchema(t, "./testdata/array/2020updated.json")
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkItemSchema(prev, new, diffs)
-	assert.Equal(t, 1, len(diffs.diffs))
-	assert.Equal(t, itemSchemaModification, diffs.diffs[0].kind)
+	assert.Equal(t, 0, len(diffs.diffs))
 }

@@ -14,6 +14,8 @@ const (
 	requiredFieldChanged
 	propertyAddition
 	itemSchemaModification
+	itemSchemaAddition
+	itemsSchemaDeletion
 	subSchemaTypeModification
 	enumCreation
 	enumDeletion
@@ -30,6 +32,8 @@ var backwardCompatibility = []diffKind{
 	incompatibleTypes,
 	requiredFieldChanged,
 	itemSchemaModification,
+	itemSchemaAddition,
+	itemsSchemaDeletion,
 	subSchemaTypeModification,
 	schemaDeleted,
 	incompatibleTypes,
@@ -63,7 +67,7 @@ var (
 		checkRequiredProperties, checkPropertyAddition,
 	}
 	arrayTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
-		checkItemSchema,
+		checkItemSchema, checkRestOfItemsSchema,
 	}
 )
 
