@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/raystack/stencil/pkg/logger"
+
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
@@ -31,14 +31,19 @@ func explore(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonsc
 	exploreAnyOf(jsonSchema, locationSchemaMap, baseLocation)
 	exploreProperties(jsonSchema, locationSchemaMap, baseLocation)
 	exploreItems(jsonSchema, locationSchemaMap, baseLocation)
+	exploreAdditionalItems(jsonSchema, locationSchemaMap, baseLocation)
 }
 
 func exploreItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
-	if jsonSchema.Items == nil && jsonSchema.Items2020 == nil {
-		return
-	}
 	itemSchemas := getItems(jsonSchema)
 	for _, itemSchema := range itemSchemas {
+		explore(itemSchema, locationSchemaMap, baseLocation)
+	}
+}
+
+func exploreAdditionalItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string){
+	itemSchema := getRestOfItemsSchema(jsonSchema)
+	if itemSchema != nil {
 		explore(itemSchema, locationSchemaMap, baseLocation)
 	}
 }
@@ -141,26 +146,32 @@ func contains[K comparable](haystack []K, needle K) bool {
 	return false
 }
 
-func getItems(jsonSchema *jsonschema.Schema) []*jsonschema.Schema {
-	schemaArr := make([]*jsonschema.Schema, 0)
-	if jsonSchema.Items == nil && jsonSchema.Items2020 == nil {
-		return schemaArr
+func getItems(jsSchema *jsonschema.Schema) []*jsonschema.Schema {
+	if jsSchema.Draft == jsonschema.Draft2020 {
+		if jsSchema.PrefixItems != nil {
+			return jsSchema.PrefixItems
+		}
+	}else {
+		schemaArr, ok := jsSchema.Items.([]*jsonschema.Schema)
+		if ok {
+			return schemaArr
+		}
+		schema, ok := jsSchema.Items.(*jsonschema.Schema)
+		if ok {
+			return []*jsonschema.Schema{schema}
+		}
 	}
-	var items interface{}
-	if jsonSchema.Items != nil {
-		items = jsonSchema.Items
-	} else if jsonSchema.Items2020 != nil {
-		items = jsonSchema.Items2020
+	return []*jsonschema.Schema{}
+}
+
+func getRestOfItemsSchema(jsSchema *jsonschema.Schema) *jsonschema.Schema{
+	if jsSchema.Draft == jsonschema.Draft2020 {
+		return jsSchema.Items2020
+	}else{
+		schema, ok := jsSchema.AdditionalItems.(*jsonschema.Schema) 
+		if !ok {
+			return nil
+		}
+		return schema
 	}
-	itemSchema, ok := items.(*jsonschema.Schema)
-	if ok {
-		schemaArr = append(schemaArr, itemSchema)
-		return schemaArr
-	}
-	itemSchemas, ok := items.([]*jsonschema.Schema)
-	if ok {
-		return itemSchemas
-	}
-	logger.Logger.Warn(fmt.Sprintf("unable to extract items schema from provided jsonschema: %s", jsonSchema.Location))
-	return schemaArr
 }
