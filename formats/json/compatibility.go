@@ -13,7 +13,7 @@ const (
 	incompatibleTypes
 	requiredFieldChanged
 	propertyAddition
-	itemSchemaAddition
+	itemSchemaModification
 	subSchemaTypeModification
 	enumCreation
 	enumDeletion
@@ -29,12 +29,12 @@ var backwardCompatibility = []diffKind{
 	schemaDeleted,
 	incompatibleTypes,
 	requiredFieldChanged,
-	itemSchemaAddition,
+	itemSchemaModification,
 	subSchemaTypeModification,
 	schemaDeleted,
 	incompatibleTypes,
 	requiredFieldChanged,
-	itemSchemaAddition,
+	itemSchemaModification,
 	subSchemaTypeModification,
 	enumCreation,
 	enumDeletion,

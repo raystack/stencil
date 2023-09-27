@@ -89,7 +89,7 @@ func checkItemSchema(prevSchema, currSchema *jsonschema.Schema, diffs *compatibi
 	prevItems := getItems(prevSchema)
 	currItems := getItems(currSchema)
 	if len(prevItems) != len(currItems) {
-		diffs.add(itemSchemaAddition, currSchema.Location, "prev items contains %d elements, current contains %d", len(prevItems), len(currItems))
+		diffs.add(itemSchemaModification, currSchema.Location, "prev items contains %d elements, current contains %d", len(prevItems), len(currItems))
 	}
 }
 
