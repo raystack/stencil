@@ -111,6 +111,9 @@ func CheckAdditionalProperties(schema *jsonschema.Schema, diffs *compatibilityEr
 
 func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
 	return func(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityErr) {
+		if prevSchema == nil || currSchema == nil {
+			return
+		}
 		prevTypes := prevSchema.Types
 		currTypes := currSchema.Types
 		err := elementsMatch(prevTypes, currTypes)
