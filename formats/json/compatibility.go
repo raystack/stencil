@@ -50,8 +50,8 @@ var backwardCompatibility = []diffKind{
 	additionalPropertiesNotTrue,
 }
 
-type SchemaCompareCheck func(*jsonschema.Schema, *jsonschema.Schema, *compatibilityErr)
-type SchemaCheck func(*jsonschema.Schema, *compatibilityErr)
+type SchemaCompareCheck func(prev, curr *jsonschema.Schema, err *compatibilityErr)
+type SchemaCheck func(curr *jsonschema.Schema, err *compatibilityErr)
 
 type TypeCheckSpec struct {
 	emptyTypeChecks  []SchemaCompareCheck
