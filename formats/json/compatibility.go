@@ -66,6 +66,10 @@ var (
 	objectTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
 		checkRequiredProperties, checkPropertyAddition,
 	}
+	/*  
+	Array schemas can define subschemas for each index as well as for rest of the elements. 
+	Hence, divided the two evaluation into two separate functions.
+	*/
 	arrayTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
 		checkItemSchema, checkRestOfItemsSchema,
 	}
@@ -98,8 +102,10 @@ func CheckPropertyDeleted(prevSchema, currSchema *jsonschema.Schema, diffs *comp
 }
 
 func CheckAdditionalProperties(schema *jsonschema.Schema, diffs *compatibilityErr) {
-	// enforcing open content model, in the future we can use existing additional properties schema to validate
-	// new properties to ensure better adherence to schema.
+	/* 
+	enforcing open content model, in the future we can use existing additional properties schema to validate
+	new properties to ensure better adherence to schema. 
+	 */
 	if schema.AdditionalProperties != nil {
 		property, ok := schema.AdditionalProperties.(bool)
 		if !ok || !property {
@@ -115,14 +121,16 @@ func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
 		}
 		prevTypes := prevSchema.Types
 		currTypes := currSchema.Types
-		err := elementsMatch(prevTypes, currTypes)
+		err := elementsMatch(prevTypes, currTypes) // special case of integer being allowed to changed to number is not respected due to additional code complexity
 		if err != nil {
 			diffs.add(subSchemaTypeModification, currSchema.Location, err.Error())
 			return
 		}
 		if len(currTypes) == 0 {
-			// types are not available for references and conditional schema types
-			// ref/holder schema
+			/* 
+			types are not available for references and conditional schema types
+			ref/holder schema
+			*/
 			executeSchemaCompareCheck(prevSchema, currSchema, diffs, spec.emptyTypeChecks)
 			return
 		}

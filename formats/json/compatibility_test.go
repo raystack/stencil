@@ -123,12 +123,6 @@ func Test_TypeCheckExecutorCorrectness(t *testing.T) {
 	tcMock.AssertCalled(t, "emptyTypeChecks", emptyTypeSchema, emptyTypeSchema, diffs)
 }
 
-// func initSchemaCompareFunction(prev, new *jsonschema.Schema,fn SchemaCompareCheck, fn2 SchemaCheck) (map[string]*jsonschema.Schema,map[string]*jsonschema.Schema, []diffKind, []SchemaCompareCheck, []SchemaCheck){
-// 	currMap := exploreSchema(new)
-// 	prevMap := exploreSchema(prev)
-// 	return prevMap, currMap, backwardCompatibility, []SchemaCompareCheck{fn}, []SchemaCheck{fn2}
-// }
-
 func initialiseSchema(t *testing.T, path string) *jsonschema.Schema {
 	t.Helper()
 	sc, err := jsonschema.Compile(path)
