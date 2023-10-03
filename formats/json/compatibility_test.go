@@ -130,6 +130,7 @@ func Test_TypeCheckExecutorCorrectness(t *testing.T) {
 // }
 
 func initialiseSchema(t *testing.T, path string) *jsonschema.Schema {
+	t.Helper()
 	sc, err := jsonschema.Compile(path)
 	if err != nil {
 		assert.Fail(t, fmt.Sprintf("failed while compiling schema: %s", path))

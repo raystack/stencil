@@ -152,7 +152,6 @@ func Test_Check_OneOf_Conditions(t *testing.T) {
 	assert.Equal(t, oneOfModified, diffs3.diffs[0].kind)
 }
 
-
 func Test_CheckPropertyAddition_ReturnsSuccess_WhenPropertyAdded(t *testing.T) {
 	prev := initialiseSchema(t, "./testdata/propertyAddition/prev.json")
 	new := initialiseSchema(t, "./testdata/propertyAddition/added.json")

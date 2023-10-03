@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
@@ -41,7 +40,7 @@ func exploreItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*j
 	}
 }
 
-func exploreAdditionalItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string){
+func exploreAdditionalItems(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
 	itemSchema := getRestOfItemsSchema(jsonSchema)
 	if itemSchema != nil {
 		explore(itemSchema, locationSchemaMap, baseLocation)
@@ -151,7 +150,7 @@ func getItems(jsSchema *jsonschema.Schema) []*jsonschema.Schema {
 		if jsSchema.PrefixItems != nil {
 			return jsSchema.PrefixItems
 		}
-	}else {
+	} else {
 		schemaArr, ok := jsSchema.Items.([]*jsonschema.Schema)
 		if ok {
 			return schemaArr
@@ -164,11 +163,11 @@ func getItems(jsSchema *jsonschema.Schema) []*jsonschema.Schema {
 	return []*jsonschema.Schema{}
 }
 
-func getRestOfItemsSchema(jsSchema *jsonschema.Schema) *jsonschema.Schema{
+func getRestOfItemsSchema(jsSchema *jsonschema.Schema) *jsonschema.Schema {
 	if jsSchema.Draft == jsonschema.Draft2020 {
 		return jsSchema.Items2020
-	}else{
-		schema, ok := jsSchema.AdditionalItems.(*jsonschema.Schema) 
+	} else {
+		schema, ok := jsSchema.AdditionalItems.(*jsonschema.Schema)
 		if !ok {
 			return nil
 		}

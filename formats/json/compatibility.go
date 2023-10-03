@@ -106,7 +106,6 @@ func CheckAdditionalProperties(schema *jsonschema.Schema, diffs *compatibilityEr
 			diffs.add(additionalPropertiesNotTrue, schema.Location, "additionalProperties need to be not defined or true for evaluation as an open content model")
 		}
 	}
-
 }
 
 func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
