@@ -9,28 +9,28 @@ import (
 var allFilter = []diffKind{
 	schemaDeleted,
 	incompatibleTypes,
-  requiredFieldChanged,
-  propertyAddition,
-  itemSchemaModification,
-  itemSchemaAddition,
-  itemsSchemaDeletion,
-  subSchemaTypeModification,
-  enumCreation,
-  enumDeletion,
-  enumElementDeletion,
-  refChanged,
-  anyOfModified,
-  anyOfAdded,
-  anyOfDeleted,
-  anyOfElementAdded,
-  anyOfElementDeleted,
-  oneOfModified,
-  oneOfAdded,
-  oneOfDeleted,
-  oneOfElementAdded,
-  oneOfElementDeleted,
-  allOfModified,
-  additionalPropertiesNotTrue,
+	requiredFieldChanged,
+	propertyAddition,
+	itemSchemaModification,
+	itemSchemaAddition,
+	itemsSchemaDeletion,
+	subSchemaTypeModification,
+	enumCreation,
+	enumDeletion,
+	enumElementDeletion,
+	refChanged,
+	anyOfModified,
+	anyOfAdded,
+	anyOfDeleted,
+	anyOfElementAdded,
+	anyOfElementDeleted,
+	oneOfModified,
+	oneOfAdded,
+	oneOfDeleted,
+	oneOfElementAdded,
+	oneOfElementDeleted,
+	allOfModified,
+	additionalPropertiesNotTrue,
 }
 
 func Test_CheckEnum_ForSuccess_WhenAddition_Of_Fields(t *testing.T) {
@@ -138,7 +138,7 @@ func Test_Check_AnyOf_Conditions(t *testing.T) {
 	checkAnyOf(prev, new, diffs0all)
 	assert.Equal(t, 1, len(diffs0all.diffs))
 	assert.Equal(t, anyOfElementAdded, diffs0all.diffs[0].kind)
-	
+
 	// check deleted
 	deleted := initialiseSchema(t, "./testdata/anyOf/deleted.json").Properties["roles"]
 	diffs1 := &compatibilityErr{notAllowed: backwardCompatibility}
@@ -150,7 +150,7 @@ func Test_Check_AnyOf_Conditions(t *testing.T) {
 	diffs2 := &compatibilityErr{notAllowed: allFilter}
 	checkAnyOf(prev, noChange, diffs2)
 	assert.Empty(t, len(diffs2.diffs))
-	
+
 	// check addition of any of condition
 	diffs3backward := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkAnyOf(deleted, prev, diffs3backward)
@@ -170,12 +170,12 @@ func Test_Check_AnyOf_Conditions(t *testing.T) {
 func Test_Check_OneOf_Conditions(t *testing.T) {
 	prev := initialiseSchema(t, "./testdata/oneOf/prev.json").Properties["roles"]
 	new := initialiseSchema(t, "./testdata/oneOf/modified.json").Properties["roles"]
-	
+
 	// check element added
-	diffs0backward := &compatibilityErr{notAllowed: backwardCompatibility} 
+	diffs0backward := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkOneOf(prev, new, diffs0backward)
 	assert.Equal(t, 0, len(diffs0backward.diffs))
-	diffs0all := &compatibilityErr{notAllowed: allFilter} 
+	diffs0all := &compatibilityErr{notAllowed: allFilter}
 	checkOneOf(prev, new, diffs0all)
 	assert.Equal(t, 1, len(diffs0all.diffs))
 	assert.Equal(t, oneOfElementAdded, diffs0all.diffs[0].kind)
@@ -201,7 +201,7 @@ func Test_Check_OneOf_Conditions(t *testing.T) {
 	assert.Equal(t, oneOfAdded, diffs3all.diffs[0].kind)
 
 	// check element deleted
-	diffs4 := &compatibilityErr{notAllowed: backwardCompatibility} 
+	diffs4 := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkOneOf(new, prev, diffs4)
 	assert.Equal(t, 1, len(diffs4.diffs))
 	assert.Equal(t, oneOfElementDeleted, diffs4.diffs[0].kind)
