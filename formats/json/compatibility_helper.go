@@ -38,16 +38,20 @@ func checkAnyOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 	prevAnyOf := prevSchema.AnyOf
 	currAnyOf := currSchema.AnyOf
 	if prevAnyOf != nil && currAnyOf != nil {
-		if len(prevAnyOf) != len(currAnyOf) {
-			diffs.add(anyOfModified, currSchema.Location, "anyOf condition cannot be modified")
+		if len(prevAnyOf) < len(currAnyOf) {
+			diffs.add(anyOfElementAdded, currSchema.Location, "anyOf condition cannot have added elements")
+			return
+		}
+		if len(prevAnyOf) > len(currAnyOf) {
+			diffs.add(anyOfElementDeleted, currSchema.Location, "anyOf condition cannot have deleted elements")
 			return
 		}
 	}
 	if prevAnyOf == nil && currAnyOf != nil {
-		diffs.add(anyOfModified, currSchema.Location, "anyOf condition cannot created during modification of schema")
+		diffs.add(anyOfAdded, currSchema.Location, "anyOf condition cannot created during modification of schema")
 	}
 	if prevAnyOf != nil && currAnyOf == nil {
-		diffs.add(anyOfModified, currSchema.Location, "anyOf condition cannot be removed during modification of schema")
+		diffs.add(anyOfDeleted, currSchema.Location, "anyOf condition cannot be removed during modification of schema")
 	}
 }
 
@@ -55,16 +59,19 @@ func checkOneOf(prevSchema, currSchema *jsonschema.Schema, diffs *compatibilityE
 	prevOneOf := prevSchema.OneOf
 	currOneOf := currSchema.OneOf
 	if prevOneOf != nil && currOneOf != nil {
-		if len(prevOneOf) != len(currOneOf) {
-			diffs.add(oneOfModified, currSchema.Location, "oneOf condition cannot be modified")
+		if len(prevOneOf) < len(currOneOf) {
+			diffs.add(oneOfElementAdded, currSchema.Location, "oneOf condition cannot have added elements")
 			return
+		}
+		if len(prevOneOf) > len(currOneOf) {
+			diffs.add(oneOfElementDeleted, currSchema.Location, "oneOf condition cannot have elements removed")
 		}
 	}
 	if prevOneOf == nil && currOneOf != nil {
-		diffs.add(oneOfModified, currSchema.Location, "oneOf condition cannot created during modification of schema")
+		diffs.add(oneOfAdded, currSchema.Location, "oneOf condition cannot created during modification of schema")
 	}
 	if prevOneOf != nil && currOneOf == nil {
-		diffs.add(oneOfModified, currSchema.Location, "oneOf condition cannot be removed during modification of schema")
+		diffs.add(oneOfDeleted, currSchema.Location, "oneOf condition cannot be removed during modification of schema")
 	}
 }
 

@@ -22,7 +22,15 @@ const (
 	enumElementDeletion
 	refChanged
 	anyOfModified
+	anyOfAdded
+	anyOfDeleted
+	anyOfElementAdded
+	anyOfElementDeleted
 	oneOfModified
+	oneOfAdded
+	oneOfDeleted
+	oneOfElementAdded
+	oneOfElementDeleted
 	allOfModified
 	additionalPropertiesNotTrue
 )
@@ -44,8 +52,10 @@ var backwardCompatibility = []diffKind{
 	enumDeletion,
 	enumElementDeletion,
 	refChanged,
-	anyOfModified,
-	oneOfModified,
+	anyOfDeleted,
+	anyOfElementDeleted,
+	oneOfDeleted,
+	oneOfElementDeleted,
 	allOfModified,
 	additionalPropertiesNotTrue,
 }
@@ -66,9 +76,9 @@ var (
 	objectTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
 		checkRequiredProperties, checkPropertyAddition,
 	}
-	/*  
-	Array schemas can define subschemas for each index as well as for rest of the elements. 
-	Hence, divided the two evaluation into two separate functions.
+	/*
+		Array schemas can define subschemas for each index as well as for rest of the elements.
+		Hence, divided the two evaluation into two separate functions.
 	*/
 	arrayTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
 		checkItemSchema, checkRestOfItemsSchema,
@@ -102,10 +112,10 @@ func CheckPropertyDeleted(prevSchema, currSchema *jsonschema.Schema, diffs *comp
 }
 
 func CheckAdditionalProperties(schema *jsonschema.Schema, diffs *compatibilityErr) {
-	/* 
-	enforcing open content model, in the future we can use existing additional properties schema to validate
-	new properties to ensure better adherence to schema. 
-	 */
+	/*
+		enforcing open content model, in the future we can use existing additional properties schema to validate
+		new properties to ensure better adherence to schema.
+	*/
 	if schema.AdditionalProperties != nil {
 		property, ok := schema.AdditionalProperties.(bool)
 		if !ok || !property {
@@ -127,9 +137,9 @@ func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
 			return
 		}
 		if len(currTypes) == 0 {
-			/* 
-			types are not available for references and conditional schema types
-			ref/holder schema
+			/*
+				types are not available for references and conditional schema types
+				ref/holder schema
 			*/
 			executeSchemaCompareCheck(prevSchema, currSchema, diffs, spec.emptyTypeChecks)
 			return
