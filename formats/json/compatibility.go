@@ -26,7 +26,6 @@ const (
 	anyOfDeleted
 	anyOfElementAdded
 	anyOfElementDeleted
-	oneOfModified
 	oneOfAdded
 	oneOfDeleted
 	oneOfElementAdded

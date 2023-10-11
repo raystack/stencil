@@ -24,7 +24,6 @@ var allFilter = []diffKind{
 	anyOfDeleted,
 	anyOfElementAdded,
 	anyOfElementDeleted,
-	oneOfModified,
 	oneOfAdded,
 	oneOfDeleted,
 	oneOfElementAdded,
