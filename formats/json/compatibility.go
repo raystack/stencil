@@ -36,15 +36,10 @@ const (
 
 var backwardCompatibility = []diffKind{
 	schemaDeleted,
-	incompatibleTypes,
 	requiredFieldChanged,
-	itemSchemaModification,
 	itemSchemaAddition,
 	itemsSchemaDeletion,
-	subSchemaTypeModification,
-	schemaDeleted,
 	incompatibleTypes,
-	requiredFieldChanged,
 	itemSchemaModification,
 	subSchemaTypeModification,
 	enumCreation,
