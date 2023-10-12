@@ -70,7 +70,7 @@ type TypeCheckSpec struct {
 
 var (
 	emptyTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
-		checkAllOf, checkAnyOf, checkOneOf, checkEnum, checkRef, checkEnum,
+		checkAllOf, checkAnyOf, checkOneOf, checkEnum, checkRef,
 	}
 	objectTypeChecks []SchemaCompareCheck = []SchemaCompareCheck{
 		checkRequiredProperties, checkPropertyAddition,
