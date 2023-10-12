@@ -75,7 +75,7 @@ func Test_CheckRef_ForSuccess_WhenRefIsSame(t *testing.T) {
 }
 
 func Test_CheckRef_ForSuccess_WhenRefIsAbsentInSchemas(t *testing.T) {
-	prev := initialiseSchema(t, "./testdata/refChange/prev.json").Properties["roles"]
+	prev := initialiseSchema(t, "./testdata/refChange/removed.json").Properties["roles"]
 	curr := initialiseSchema(t, "./testdata/refChange/prev.json").Properties["roles"]
 	diffs := &compatibilityErr{notAllowed: backwardCompatibility}
 	checkRef(prev, curr, diffs)
