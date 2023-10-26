@@ -1,0 +1,58 @@
+{
+    "title": "STAC Collection",
+    "description": "These are the fields specific to a STAC Collection. All other fields are inherited from STAC Catalog.",
+    "type": "object",
+    "required": [
+        "stac_version",
+        "type",
+        "id",
+        "license"
+    ],
+    "properties": {
+        "stac_version": {
+            "title": "STAC version",
+            "type": "string",
+            "const": "1.0.0"
+        },
+        "stac_extensions": {
+            "title": "STAC extensions",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Reference to a JSON Schema",
+                "type": "string",
+                "format": "iri"
+            }
+        },
+        "type": {
+            "title": "Type of STAC entity",
+            "const": "Collection"
+        },
+        "id": {
+            "title": "Identifier",
+            "type": "string",
+            "minLength": 1
+        },
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string",
+            "minLength": 1
+        },
+        "keywords": {
+            "title": "Keywords",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "license": {
+            "title": "Collection License Name",
+            "type": "string",
+            "pattern": "^[\\w\\-\\.\\+]+$"
+        }
+    }
+}

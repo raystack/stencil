@@ -1,0 +1,13 @@
+{
+    "title": "summaries",
+    "properties": {
+        "roles": {
+            "title": "Organization roles",
+            "type": "string"
+        },
+        "roleRef": {
+            "title": "Organization roles reference",
+            "type": "string"
+        }
+    }
+}

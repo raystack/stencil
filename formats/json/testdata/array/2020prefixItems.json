@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "STAC Collection Specification",
+    "description": "This object represents Collections in a SpatioTemporal Asset Catalog.",
+    "properties": {
+        "example": {
+            "type": "array",
+            "prefixItems": [
+                {
+                    "type":"string"
+                },
+                {
+                    "type": "number"
+                },
+                {
+                    "type":"string"
+                }
+            ],
+            "items": {
+                "type":"integer"
+            }
+        }
+    }
+}

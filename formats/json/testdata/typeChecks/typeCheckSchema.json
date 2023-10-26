@@ -1,0 +1,27 @@
+{
+    "title": "summaries",
+    "properties": {
+        "objectType": {
+            "title": "Minimum value",
+            "type": "object"},
+        "arrayType": {
+            "title": "Maximum value",
+            "type": "array",
+            "items": {
+                "description": "For each field only the original data type of the property can occur (except for arrays), but we can't validate that in JSON Schema yet. See the sumamry description in the STAC specification for details.",
+                "type":"integer"
+            }
+        },
+        "integerType": {
+            "title": "Set of values",
+            "type": "integer",
+            "minItems": 1
+        },
+        "stringType": {
+            "type": "string"
+        },
+        "numberType": {
+            "type": "number"
+        }
+    }
+}

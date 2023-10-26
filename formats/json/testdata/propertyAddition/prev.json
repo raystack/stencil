@@ -1,0 +1,9 @@
+{
+    "title": "summaries",
+    "properties": {
+        "roles": {
+            "title": "Organization roles",
+            "type": "string"
+        }
+    }
+}

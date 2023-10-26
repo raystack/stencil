@@ -1,0 +1,16 @@
+{
+    "title": "summaries",
+    "properties": {
+        "roles": {
+            "title": "Organization roles",
+            "type": "string"
+        },
+        "doubleRole": {
+            "title": "Organization Double roles",
+            "type": "string"
+        },
+        "roleRef": {
+            "$ref": "#/properties/doubleRole"
+        }
+    }
+}

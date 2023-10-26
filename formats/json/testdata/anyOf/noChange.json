@@ -1,0 +1,14 @@
+{
+    "title": "summaries",
+    "properties": {
+        "roles": {
+            "title": "Organization roles",
+            "type": "object",
+            "anyOf": [
+                {
+                    "$ref": "http://json-schema.org/draft-07/schema"
+                }
+            ]
+        }
+    }
+}
