@@ -16,7 +16,7 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 #### Gradle
 
 ```groovy
-  implementation group: 'org.raystack', name: 'stencil', version: '0.4.1'
+  implementation group: 'org.raystack', name: 'stencil', version: '0.5.0'
 ```
 
 #### Maven
