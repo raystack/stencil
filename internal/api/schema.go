@@ -32,12 +32,16 @@ func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaR
 	}, err
 }
 func (a *API) HTTPUpload(w http.ResponseWriter, req *http.Request, pathParams map[string]string) error {
+	endFunc := a.newrelic.StartGenericSegment(req.Context(), "UploadSchema")
+	defer endFunc()
 	data, err := io.ReadAll(req.Body)
 	if err != nil {
 		return err
 	}
+
 	format := req.Header.Get("X-Format")
 	compatibility := req.Header.Get("X-Compatibility")
+
 	metadata := &schema.Metadata{Format: format, Compatibility: compatibility}
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
@@ -63,6 +67,7 @@ func (a *API) HTTPCheckCompatibility(w http.ResponseWriter, req *http.Request, p
 	if err != nil {
 		return err
 	}
+
 	compatibility := req.Header.Get("X-Compatibility")
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
@@ -87,9 +92,12 @@ func (a *API) GetLatestSchema(ctx context.Context, in *stencilv1beta1.GetLatestS
 }
 
 func (a *API) HTTPLatestSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*schema.Metadata, []byte, error) {
+	endFunc := a.newrelic.StartGenericSegment(req.Context(), "GetLatestSchema")
+	defer endFunc()
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
-	return a.schema.GetLatest(req.Context(), namespaceID, schemaName)
+	metadata, data, err := a.schema.GetLatest(req.Context(), namespaceID, schemaName)
+	return metadata, data, err
 }
 
 func (a *API) GetSchema(ctx context.Context, in *stencilv1beta1.GetSchemaRequest) (*stencilv1beta1.GetSchemaResponse, error) {
@@ -100,6 +108,9 @@ func (a *API) GetSchema(ctx context.Context, in *stencilv1beta1.GetSchemaRequest
 }
 
 func (a *API) HTTPGetSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*schema.Metadata, []byte, error) {
+	endFunc := a.newrelic.StartGenericSegment(req.Context(), "GetSchema")
+	defer endFunc()
+	defer endFunc()
 	namespaceID := pathParams["namespace"]
 	schemaName := pathParams["name"]
 	versionString := pathParams["version"]

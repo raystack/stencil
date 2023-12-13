@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	newrelic2 "github.com/goto/stencil/pkg/newrelic"
 	"net/http"
 	"strconv"
 
@@ -49,13 +50,15 @@ type API struct {
 	namespace NamespaceService
 	schema    SchemaService
 	search    SearchService
+	newrelic  newrelic2.Service
 }
 
-func NewAPI(namespace NamespaceService, schema SchemaService, search SearchService) *API {
+func NewAPI(namespace NamespaceService, schema SchemaService, search SearchService, nr newrelic2.Service) *API {
 	return &API{
 		namespace: namespace,
 		schema:    schema,
 		search:    search,
+		newrelic:  nr,
 	}
 }
 
