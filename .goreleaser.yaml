@@ -21,7 +21,14 @@ builds:
     env:
       - CGO_ENABLED=0
 archives:
-  - format_overrides:
+  - name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}'
+    format_overrides:
       - goos: windows
         format: zip
 changelog:
@@ -46,3 +53,34 @@ dockers:
       - "docker.io/gotocompany/{{.ProjectName}}:latest"
       - "docker.io/gotocompany/{{.ProjectName}}:{{ .Version }}"
       - "docker.io/gotocompany/{{.ProjectName}}:{{ .Tag }}-amd64"
+nfpms:
+  - maintainer: Goto
+    description: Schema registry
+    homepage: https://github.com/goto/stencil
+    license: Apache 2.0
+    formats:
+      - deb
+      - rpm
+scoop:
+  bucket:
+    owner: goto
+    name: scoop-bucket
+  homepage: "https://github.com/goto/stencil"
+  description: "Schema registry"
+  license: Apache 2.0
+brews:
+  - name: stencil
+    homepage: "https://github.com/goto/stencil"
+    description: "Schema registry"
+    tap:
+      owner: goto
+      name: homebrew-tap
+    license: "Apache 2.0"
+    folder: Formula
+    dependencies:
+      - name: git
+    install: |-
+      bin.install "stencil"
+    commit_author:
+      name: Lav
+      email: lavkesh51@gmail.com
