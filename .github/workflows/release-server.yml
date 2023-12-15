@@ -7,6 +7,7 @@ on:
     inputs:
       goreleaserArgs:
         required: false
+        description: ""
         type: string
 
 jobs:
@@ -28,10 +29,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2.6.1
+        uses: goreleaser/goreleaser-action@v5.0.0
         with:
           distribution: goreleaser
-          version: 1.9.2
+          version: latest
           args: --rm-dist ${{ inputs.goreleaserArgs }}
         env:
           GITHUB_TOKEN: ${{ secrets.GO_RELEASER_TOKEN }}
