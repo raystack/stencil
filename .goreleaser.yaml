@@ -10,6 +10,9 @@ builds:
   - id: "stencil"
     main: ./main.go
     binary: stencil
+    ignore:
+      - goos: windows
+        goarch: arm64
     flags:
       - -a
     ldflags:
