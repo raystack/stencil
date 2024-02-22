@@ -1,5 +1,5 @@
-from src.odpf.stencil import Client
-from src.odpf.store import Store
+from src.raystack.stencil import Client
+from src.raystack.store import Store
 from mock import patch
 
 URL = 'http://stencil.test/proto-descriptors/test/latest'

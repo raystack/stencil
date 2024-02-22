@@ -23,7 +23,7 @@ pip3 install stencil-python-client
 
 Then import the stencil package into your own code as mentioned below
 ```python
-from odpf import stencil
+from raystack import stencil
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ from odpf import stencil
 ### Creating a client
 
 ```python
-from odpf import stencil
+from raystack import stencil
 
 url = "http://url/to/proto/descriptorset/file"
 client = stencil.Client(url)
@@ -40,7 +40,7 @@ client = stencil.Client(url)
 ### Creating a multiURLClient
 
 ```python
-from odpf import stencil
+from raystack import stencil
 
 urls = ["http://urlA", "http://urlB"]
 client = stencil.MultiUrlClient(urls)
@@ -48,7 +48,7 @@ client = stencil.MultiUrlClient(urls)
 
 ### Get Descriptor
 ```python
-from odpf import stencil
+from raystack import stencil
 
 url = "http://url/to/proto/descriptorset/file"
 client = stencil.Client(url)
@@ -57,7 +57,7 @@ client.get_descriptor("google.protobuf.DescriptorProto")
 
 ### Parse protobuf message. 
 ```python
-from odpf import stencil
+from raystack import stencil
 
 url = "http://url/to/proto/descriptorset/file"
 client = stencil.Client(url)
@@ -66,4 +66,4 @@ data = ""
 desc = client.parse("google.protobuf.DescriptorProto", data)
 ```
 
-Refer to [stencil documentation](https://odpf.gitbook.io/stencil/) for more information what you can do in stencil.
+Refer to [stencil documentation](https://raystack.gitbook.io/stencil/) for more information what you can do in stencil.

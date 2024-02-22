@@ -8,9 +8,9 @@ class MultiUrlClient:
         self._urls = urls
         self._interval = interval
         self._auto_refresh = auto_refresh
-        self._schduler = Scheduler()
+        self._scheduler = Scheduler()
         if self._auto_refresh:
-            self._schduler.every(self._interval).seconds.do(self.refresh)
+            self._scheduler.every(self._interval).seconds.do(self.refresh)
         #TODO: check whether scheduler executed immediatelly or not
         self.refresh()        
 
