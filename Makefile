@@ -1,5 +1,6 @@
 NAME="github.com/goto/stencil"
 VERSION=$(shell git describe --always --tags 2>/dev/null)
+PROTON_COMMIT := "<PROTON_COMMIT>"
 
 .PHONY: all build test clean dist vet proto install ui
 
@@ -23,7 +24,7 @@ lint: ## Run golang-ci lint
 proto: ## Generate the protobuf files
 	@echo " > generating protobuf stub files"
 	@echo " > [info] make sure correct version of dependencies are installed using 'make install'"
-	@buf generate --template buf.gen.yaml --path proto/v1beta1
+	@buf generate https://github.com/goto/proton/archive/${PROTON_COMMIT}.zip#strip_components=1 --template buf.gen.yaml --path gotocompany/stencil
 	@echo " > protobuf compilation finished"
 
 clean: ## Clean the build artifacts
