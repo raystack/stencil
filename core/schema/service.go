@@ -1,25 +1,25 @@
 package schema
 
 import (
-	"github.com/goto/stencil/core/namespace"
-	"github.com/goto/stencil/pkg/newrelic"
-)
-
-import (
 	"context"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/goto/stencil/core/changedetector"
+	"github.com/goto/stencil/core/namespace"
 	"github.com/goto/stencil/internal/store"
+	"github.com/goto/stencil/pkg/newrelic"
+	"log"
 )
 
-func NewService(repo Repository, provider Provider, nsSvc NamespaceService, cache Cache, nr newrelic.Service) *Service {
+func NewService(repo Repository, provider Provider, nsSvc NamespaceService, cache Cache, nr newrelic.Service, cds ChangeDetectorService) *Service {
 	return &Service{
-		repo:             repo,
-		provider:         provider,
-		cache:            cache,
-		namespaceService: nsSvc,
-		newrelic:         nr,
+		repo:                  repo,
+		provider:              provider,
+		cache:                 cache,
+		namespaceService:      nsSvc,
+		newrelic:              nr,
+		changeDetectorService: cds,
 	}
 }
 
@@ -28,11 +28,12 @@ type NamespaceService interface {
 }
 
 type Service struct {
-	provider         Provider
-	repo             Repository
-	cache            Cache
-	namespaceService NamespaceService
-	newrelic         newrelic.Service
+	provider              Provider
+	repo                  Repository
+	cache                 Cache
+	namespaceService      NamespaceService
+	newrelic              newrelic.Service
+	changeDetectorService ChangeDetectorService
 }
 
 func (s *Service) cachedGetSchema(ctx context.Context, nsName, schemaName string, version int32) ([]byte, error) {
@@ -105,12 +106,32 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 		Compatibility: compatibility,
 	}
 	versionID := getIDforSchema(nsName, schemaName, sf.ID)
+	_, prevSchemaData, _ := s.GetLatest(ctx, nsName, schemaName)
 	version, err := s.repo.Create(ctx, nsName, schemaName, mergedMetadata, versionID, sf)
+	changeRequest := &changedetector.ChangeRequest{
+		NamespaceName: nsName,
+		SchemaName:    schemaName,
+		Version:       version,
+		OldData:       prevSchemaData,
+		NewData:       data,
+	}
+	go s.identifySchemaChange(ctx, changeRequest)
 	return SchemaInfo{
 		Version:  version,
 		ID:       versionID,
 		Location: fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", nsName, schemaName, version),
 	}, err
+}
+
+func (s *Service) identifySchemaChange(ctx context.Context, request *changedetector.ChangeRequest) {
+	endFunc := s.newrelic.StartGenericSegment(ctx, "Identify Schema Change")
+	defer endFunc()
+	sce, err := s.changeDetectorService.IdentifySchemaChange(ctx, request)
+	if err != nil {
+		log.Printf("got error while identifying schema change for namespace : %s, schema: %s, version: %d, %v", request.NamespaceName, request.SchemaName, request.Version, err)
+	} else {
+		log.Printf("schema change result %v", sce)
+	}
 }
 
 func (s *Service) withMetadata(ctx context.Context, namespace, schemaName string, getData func() ([]byte, error)) (*Metadata, []byte, error) {

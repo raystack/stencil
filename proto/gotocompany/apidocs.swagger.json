@@ -1,0 +1,820 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "gotocompany/stencil/v1beta1/stencil.proto",
+    "version": "0.1.4"
+  },
+  "tags": [
+    {
+      "name": "StencilService"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1beta1/namespaces": {
+      "get": {
+        "summary": "List names of namespaces",
+        "operationId": "StencilService_ListNamespaces",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListNamespacesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "namespace"
+        ]
+      },
+      "post": {
+        "summary": "Create namespace entry",
+        "operationId": "StencilService_CreateNamespace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1CreateNamespaceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1beta1CreateNamespaceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "namespace"
+        ]
+      }
+    },
+    "/v1beta1/namespaces/{id}": {
+      "get": {
+        "summary": "Get namespace by id",
+        "operationId": "StencilService_GetNamespace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1GetNamespaceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "namespace"
+        ]
+      },
+      "delete": {
+        "summary": "Delete namespace by id",
+        "description": "Ensure all schemas under this namespace is deleted, otherwise it will throw error",
+        "operationId": "StencilService_DeleteNamespace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1DeleteNamespaceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "namespace"
+        ]
+      },
+      "put": {
+        "summary": "Update namespace entity by id",
+        "operationId": "StencilService_UpdateNamespace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1UpdateNamespaceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "format": {
+                  "$ref": "#/definitions/SchemaFormat"
+                },
+                "compatibility": {
+                  "$ref": "#/definitions/SchemaCompatibility"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format",
+                "compatibility"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "namespace"
+        ]
+      }
+    },
+    "/v1beta1/namespaces/{id}/schemas": {
+      "get": {
+        "summary": "List schemas under the namespace",
+        "operationId": "StencilService_ListSchemas",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListSchemasResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "schema"
+        ]
+      }
+    },
+    "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}": {
+      "delete": {
+        "summary": "Delete specified schema",
+        "operationId": "StencilService_DeleteSchema",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1DeleteSchemaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "schema"
+        ]
+      },
+      "patch": {
+        "summary": "Update only schema metadata",
+        "operationId": "StencilService_UpdateSchemaMetadata",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1UpdateSchemaMetadataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "compatibility": {
+                  "$ref": "#/definitions/SchemaCompatibility"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "schema"
+        ]
+      }
+    },
+    "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/meta": {
+      "get": {
+        "summary": "Create schema under the namespace. Returns version number, unique ID and location",
+        "operationId": "StencilService_GetSchemaMetadata",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1GetSchemaMetadataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "schema"
+        ]
+      }
+    },
+    "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions": {
+      "get": {
+        "summary": "List all version numbers for schema",
+        "operationId": "StencilService_ListVersions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListVersionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "schema",
+          "version"
+        ]
+      }
+    },
+    "/v1beta1/namespaces/{namespaceId}/schemas/{schemaId}/versions/{versionId}": {
+      "delete": {
+        "summary": "Delete specified version of the schema",
+        "operationId": "StencilService_DeleteVersion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1DeleteVersionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "schema",
+          "version"
+        ]
+      }
+    },
+    "/v1beta1/search": {
+      "get": {
+        "summary": "Global Search API",
+        "operationId": "StencilService_Search",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1SearchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "schemaId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "history",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "schema"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "SchemaCompatibility": {
+      "type": "string",
+      "enum": [
+        "COMPATIBILITY_UNSPECIFIED",
+        "COMPATIBILITY_BACKWARD",
+        "COMPATIBILITY_BACKWARD_TRANSITIVE",
+        "COMPATIBILITY_FORWARD",
+        "COMPATIBILITY_FORWARD_TRANSITIVE",
+        "COMPATIBILITY_FULL",
+        "COMPATIBILITY_FULL_TRANSITIVE"
+      ],
+      "default": "COMPATIBILITY_UNSPECIFIED"
+    },
+    "SchemaFormat": {
+      "type": "string",
+      "enum": [
+        "FORMAT_UNSPECIFIED",
+        "FORMAT_PROTOBUF",
+        "FORMAT_AVRO",
+        "FORMAT_JSON"
+      ],
+      "default": "FORMAT_UNSPECIFIED"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "stencilv1beta1Schema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/SchemaFormat"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1beta1CheckCompatibilityResponse": {
+      "type": "object"
+    },
+    "v1beta1CreateNamespaceRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/SchemaFormat"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "format",
+        "compatibility"
+      ]
+    },
+    "v1beta1CreateNamespaceResponse": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "$ref": "#/definitions/v1beta1Namespace"
+        }
+      }
+    },
+    "v1beta1CreateSchemaResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1DeleteNamespaceResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1DeleteSchemaResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1DeleteVersionResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1GetLatestSchemaResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1beta1GetNamespaceResponse": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "$ref": "#/definitions/v1beta1Namespace"
+        }
+      }
+    },
+    "v1beta1GetSchemaMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/SchemaFormat"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1beta1GetSchemaResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1beta1ListNamespacesResponse": {
+      "type": "object",
+      "properties": {
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1beta1Namespace"
+          }
+        }
+      }
+    },
+    "v1beta1ListSchemasResponse": {
+      "type": "object",
+      "properties": {
+        "schemas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/stencilv1beta1Schema"
+          }
+        }
+      }
+    },
+    "v1beta1ListVersionsResponse": {
+      "type": "object",
+      "properties": {
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "v1beta1Namespace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/SchemaFormat"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1beta1SearchHits": {
+      "type": "object",
+      "properties": {
+        "namespaceId": {
+          "type": "string"
+        },
+        "schemaId": {
+          "type": "string"
+        },
+        "versionId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1SearchMeta": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "v1beta1SearchResponse": {
+      "type": "object",
+      "properties": {
+        "hits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1beta1SearchHits"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/v1beta1SearchMeta"
+        }
+      }
+    },
+    "v1beta1UpdateNamespaceResponse": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "$ref": "#/definitions/v1beta1Namespace"
+        }
+      }
+    },
+    "v1beta1UpdateSchemaMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/SchemaFormat"
+        },
+        "compatibility": {
+          "$ref": "#/definitions/SchemaCompatibility"
+        },
+        "authority": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

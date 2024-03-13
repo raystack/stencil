@@ -22,4 +22,4 @@ newrelic:
 # Database configurations for stencil backend 
 db:
   # Connection string for postgres database
-  connectionstring: "postgres://postgres@localhost:5432/db"
+  connectionstring: "postgres://postgres:password@localhost:5432/db?sslmode=disable"

@@ -1,6 +1,10 @@
 package schema
 
-import "context"
+import (
+	"context"
+	"github.com/goto/stencil/core/changedetector"
+	stencilv1beta2 "github.com/goto/stencil/proto/gotocompany/stencil/v1beta1"
+)
 
 type Metadata struct {
 	Authority     string
@@ -55,4 +59,8 @@ type Schema struct {
 	Format        string
 	Compatibility string
 	Authority     string
+}
+
+type ChangeDetectorService interface {
+	IdentifySchemaChange(ctx context.Context, request *changedetector.ChangeRequest) (*stencilv1beta2.SchemaChangedEvent, error)
 }
