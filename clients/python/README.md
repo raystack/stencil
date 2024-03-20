@@ -16,9 +16,9 @@ It has following features
 
 ## Installation
 
-Use `pip`
+Install it via git reference
 ```
-pip3 install stencil-python-client
+stencil-python-client = { git = "git+https://github.com/raystack/stencil.git", subdirectory = "clients/python"}
 ```
 
 Then import the stencil package into your own code as mentioned below
