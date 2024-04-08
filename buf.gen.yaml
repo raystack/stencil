@@ -1,14 +1,17 @@
 version: v1
 plugins:
-  - name: go
-    out: ./
+  - plugin: buf.build/protocolbuffers/go:v1.28.1
+    out: proto
     opt: paths=source_relative
-  - name: go-grpc
-    out: ./
+  - plugin: buf.build/grpc/go:v1.2.0
+    out: proto
     opt: paths=source_relative
-  - name: grpc-gateway
-    out: ./
+  - plugin: buf.build/bufbuild/validate-go:v0.9.0
+    out: proto
     opt: paths=source_relative
-  - name: openapiv2
-    out: ./
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.15.1
+    out: proto
+    opt: paths=source_relative
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.15.1
+    out: proto
     opt: "allow_merge=true"
