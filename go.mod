@@ -10,6 +10,7 @@ require (
 	github.com/emicklei/dot v0.16.0
 	github.com/georgysavva/scany v0.2.9
 	github.com/golang-migrate/migrate/v4 v4.15.2
+	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
 	github.com/goto/salt v0.3.1
