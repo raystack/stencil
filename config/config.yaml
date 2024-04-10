@@ -23,3 +23,6 @@ newrelic:
 db:
   # Connection string for postgres database
   connectionstring: "postgres://postgres@localhost:5432/db"
+
+kafkaProducer:
+  bootstrapServer: "localhost:9092"

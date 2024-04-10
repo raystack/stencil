@@ -20,6 +20,10 @@ type GRPCConfig struct {
 	MaxSendMsgSizeInMB int `default:"10"`
 }
 
+type KafkaProducerConfig struct {
+	BootstrapServer string
+}
+
 // Config Server config
 type Config struct {
 	Port string `default:"8080"`
@@ -29,4 +33,5 @@ type Config struct {
 	GRPC          GRPCConfig
 	NewRelic      NewRelicConfig
 	DB            DBConfig
+	KafkaProducer KafkaProducerConfig
 }
