@@ -1,8 +1,9 @@
 package kafka
 
 import (
-	"github.com/cactus/go-statsd-client/v5/statsd"
 	"log"
+
+	"github.com/cactus/go-statsd-client/v5/statsd"
 )
 
 type MetricsCollector struct {
@@ -10,7 +11,6 @@ type MetricsCollector struct {
 }
 
 func NewMetricsCollector(statsdAddr string) (*MetricsCollector, error) {
-
 	statsdClient, err := statsd.NewClient(statsdAddr, "")
 	if err != nil {
 		log.Printf("Failed to initialise statsd client- %s", err.Error())

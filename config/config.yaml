@@ -24,5 +24,19 @@ db:
   # Connection string for postgres database
   connectionstring: "postgres://postgres@localhost:5432/db"
 
+# Kafka Producer config
 kafkaProducer:
   bootstrapServer: "localhost:9092"
+  retries: 5
+  retryinterval: 2000
+
+#StatsD Config
+statsd:
+  address: "localhost:9090"
+  prefix: "schema-change-event"
+
+#Schame Change config
+schemachange:
+  kafkatopic: "schema_change"
+
+
