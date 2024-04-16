@@ -9,16 +9,21 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/jackc/pgx/v4"
+
 	"github.com/goto/stencil/config"
 	"github.com/goto/stencil/core/changedetector"
 	"github.com/goto/stencil/core/namespace"
 	"github.com/goto/stencil/internal/store"
 	"github.com/goto/stencil/pkg/newrelic"
+	stencilv1beta1 "github.com/goto/stencil/proto/gotocompany/stencil/v1beta1"
 )
+
+const EventTypeSchemaChange = "SCHEMA_CHANGE_EVENT"
 
 func NewService(repo Repository, provider Provider, nsSvc NamespaceService,
 	cache Cache, nr newrelic.Service, cds ChangeDetectorService,
-	producer Producer, config *config.Config) *Service {
+	producer Producer, config *config.Config, notificationEventRepo NotificationEventRepository) *Service {
 	return &Service{
 		repo:                  repo,
 		provider:              provider,
@@ -28,6 +33,7 @@ func NewService(repo Repository, provider Provider, nsSvc NamespaceService,
 		changeDetectorService: cds,
 		producer:              producer,
 		config:                config,
+		notificationEventRepo: notificationEventRepo,
 	}
 }
 
@@ -44,6 +50,7 @@ type Service struct {
 	changeDetectorService ChangeDetectorService
 	producer              Producer
 	config                *config.Config
+	notificationEventRepo NotificationEventRepository
 }
 
 func (s *Service) cachedGetSchema(ctx context.Context, nsName, schemaName string, version int32) ([]byte, error) {
@@ -119,13 +126,15 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 	_, prevSchemaData, _ := s.GetLatest(ctx, nsName, schemaName)
 	version, err := s.repo.Create(ctx, nsName, schemaName, mergedMetadata, versionID, sf)
 	changeRequest := &changedetector.ChangeRequest{
-		NamespaceName: nsName,
-		SchemaName:    schemaName,
-		Version:       version,
-		OldData:       prevSchemaData,
-		NewData:       data,
+		NamespaceID: nsName,
+		SchemaName:  schemaName,
+		Version:     version,
+		VersionID:   versionID,
+		OldData:     prevSchemaData,
+		NewData:     data,
 	}
-	go s.identifySchemaChange(ctx, changeRequest)
+	newCtx := context.Background()
+	go s.identifySchemaChange(newCtx, changeRequest)
 	return SchemaInfo{
 		Version:  version,
 		ID:       versionID,
@@ -136,12 +145,37 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 func (s *Service) identifySchemaChange(ctx context.Context, request *changedetector.ChangeRequest) error {
 	endFunc := s.newrelic.StartGenericSegment(ctx, "Identify Schema Change")
 	defer endFunc()
+	schemaID, err := s.repo.GetSchemaID(ctx, request.NamespaceID, request.SchemaName)
+	if err != nil {
+		log.Printf("got error while getting schema ID from DB %s", err.Error())
+		return err
+	}
+	prevEvent, err := s.notificationEventRepo.GetByNameSpaceSchemaVersionAndSuccess(ctx, request.NamespaceID, schemaID, request.VersionID, true)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		log.Printf("got error while fetching previous notification event status for for namespace : %s, schema: %s, version: %d, %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+		// todo push to grafana
+		return err
+	}
+	if prevEvent.ID != "" {
+		log.Printf("Duplicate request for schema change for namespace : %s, schema: %s, version: %d", request.NamespaceID, request.SchemaName, request.Version)
+		if _, err := s.notificationEventRepo.Update(ctx, prevEvent.ID, true); err != nil {
+			log.Printf("unable to update event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+			return err
+		}
+		log.Printf("Update successful for schema change event")
+		return nil
+	}
 	sce, err := s.changeDetectorService.IdentifySchemaChange(ctx, request)
 	if err != nil {
-		log.Printf("got error while identifying schema change for namespace : %s, schema: %s, version: %d, %v", request.NamespaceName, request.SchemaName, request.Version, err)
+		log.Printf("got error while identifying schema change for namespace : %s, schema: %s, version: %d, %s", request.NamespaceID, request.SchemaName, request.Version, err)
 		return err
 	}
 	log.Printf("schema change result %s", sce.String())
+	notificationEvent := createNotificationEvent(sce, request, schemaID, false)
+	if _, err := s.notificationEventRepo.Create(ctx, notificationEvent); err != nil {
+		log.Printf("unable to insert event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+		return err
+	}
 	schemaChangeTopic := s.config.SchemaChange.KafkaTopic
 	retryInterval := time.Duration(s.config.KafkaProducer.RetryInterval) * time.Millisecond
 	if err := s.producer.PushMessagesWithRetries(schemaChangeTopic, sce, s.config.KafkaProducer.Retries, retryInterval); err != nil {
@@ -149,7 +183,24 @@ func (s *Service) identifySchemaChange(ctx context.Context, request *changedetec
 		return err
 	}
 	log.Printf("successfully pushed message to kafka topic %s", schemaChangeTopic)
+	if _, err := s.notificationEventRepo.Update(ctx, notificationEvent.ID, true); err != nil {
+		log.Printf("unable to insert event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+		return err
+	}
+	log.Printf("NotificationEvents saved in db successfully")
 	return nil
+}
+
+func createNotificationEvent(sce *stencilv1beta1.SchemaChangedEvent, request *changedetector.ChangeRequest, schemaID int32, success bool) changedetector.NotificationEvent {
+	return changedetector.NotificationEvent{
+		ID:          sce.EventId,
+		Type:        EventTypeSchemaChange,
+		EventTime:   time.Unix(sce.EventTimestamp.GetSeconds(), int64(sce.EventTimestamp.GetNanos())).UTC(),
+		NamespaceID: request.NamespaceID,
+		SchemaID:    schemaID,
+		VersionID:   request.VersionID,
+		Success:     success,
+	}
 }
 
 func (s *Service) withMetadata(ctx context.Context, namespace, schemaName string, getData func() ([]byte, error)) (*Metadata, []byte, error) {

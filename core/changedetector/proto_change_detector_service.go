@@ -3,15 +3,17 @@ package changedetector
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
+
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/google/uuid"
-	"github.com/goto/stencil/pkg/newrelic"
-	stencilv1beta1 "github.com/goto/stencil/proto/gotocompany/stencil/v1beta1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"log"
-	"time"
+
+	"github.com/goto/stencil/pkg/newrelic"
+	stencilv1beta1 "github.com/goto/stencil/proto/gotocompany/stencil/v1beta1"
 )
 
 func NewService(nr newrelic.Service) *Service {
@@ -44,7 +46,7 @@ func (s *Service) IdentifySchemaChange(ctx context.Context, request *ChangeReque
 	sce := &stencilv1beta1.SchemaChangedEvent{
 		EventId:        uuid.New().String(),
 		EventTimestamp: timestamppb.New(time.Now()),
-		NamespaceName:  request.NamespaceName,
+		NamespaceName:  request.NamespaceID,
 		SchemaName:     request.SchemaName,
 		Version:        request.Version,
 	}

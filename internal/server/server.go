@@ -7,17 +7,18 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/cactus/go-statsd-client/v5/statsd"
-
-	"github.com/goto/stencil/changeEventProducer/kafka"
 	"github.com/goto/stencil/core/changedetector"
 	newRelic2 "github.com/goto/stencil/pkg/newrelic"
+
+	"github.com/cactus/go-statsd-client/v5/statsd"
 
 	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/goto/salt/spa"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+
+	"github.com/goto/stencil/changeEventProducer/kafka"
 
 	"github.com/goto/stencil/config"
 	"github.com/goto/stencil/internal/store/postgres"
@@ -62,6 +63,7 @@ func Start(cfg config.Config) {
 	}
 	newRelic := &newRelic2.NewRelic{}
 	changeDetectorService := changedetector.NewService(newRelic)
+
 	statsDconfig := &statsd.ClientConfig{
 		Address: cfg.StatsD.Address,
 		Prefix:  cfg.StatsD.Prefix,
@@ -74,7 +76,9 @@ func Start(cfg config.Config) {
 	if err != nil {
 		log.Fatal("Error creating producer :", err)
 	}
-	schemaService := schema.NewService(schemaRepository, provider.NewSchemaProvider(), namespaceService, cache, newRelic, changeDetectorService, producer, &cfg)
+
+	notificationEventRepo := postgres.NewNotificationEventRepository(db)
+	schemaService := schema.NewService(schemaRepository, provider.NewSchemaProvider(), namespaceService, cache, newRelic, changeDetectorService, producer, &cfg, notificationEventRepo)
 
 	searchRepository := postgres.NewSearchRepository(db)
 	searchService := search.NewService(searchRepository)

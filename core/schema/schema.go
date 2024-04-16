@@ -39,6 +39,7 @@ type Repository interface {
 	UpdateMetadata(context.Context, string, string, *Metadata) (*Metadata, error)
 	Delete(context.Context, string, string) error
 	DeleteVersion(context.Context, string, string, int32) error
+	GetSchemaID(ctx context.Context, ns string, sc string) (int32, error)
 }
 
 type ParsedSchema interface {
@@ -71,4 +72,10 @@ type ChangeDetectorService interface {
 
 type Producer interface {
 	PushMessagesWithRetries(topic string, protoMessage proto.Message, retries int, retryInterval time.Duration) error
+}
+
+type NotificationEventRepository interface {
+	Create(ctx context.Context, event changedetector.NotificationEvent) (changedetector.NotificationEvent, error)
+	Update(ctx context.Context, Id string, success bool) (changedetector.NotificationEvent, error)
+	GetByNameSpaceSchemaVersionAndSuccess(ctx context.Context, namespace string, schemaID int32, versionID string, success bool) (changedetector.NotificationEvent, error)
 }

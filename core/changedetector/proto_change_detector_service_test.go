@@ -5,16 +5,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/goto/stencil/core/changedetector"
-	"github.com/goto/stencil/formats/protobuf"
-	mocks2 "github.com/goto/stencil/pkg/newrelic/mocks"
-	stencilv1beta2 "github.com/goto/stencil/proto/gotocompany/stencil/v1beta1"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"io/ioutil"
 	"log"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
+	"github.com/goto/stencil/core/changedetector"
+	"github.com/goto/stencil/formats/protobuf"
+	mocks2 "github.com/goto/stencil/pkg/newrelic/mocks"
+	stencilv1beta2 "github.com/goto/stencil/proto/gotocompany/stencil/v1beta1"
 )
 
 var request *changedetector.ChangeRequest
@@ -26,9 +28,9 @@ func getSvc() (*changedetector.Service, *mocks2.NewRelic) {
 }
 func init() {
 	request = &changedetector.ChangeRequest{
-		NamespaceName: "testNamespace",
-		SchemaName:    "testSchemaName",
-		Version:       int32(1),
+		NamespaceID: "testNamespace",
+		SchemaName:  "testSchemaName",
+		Version:     int32(1),
 	}
 }
 

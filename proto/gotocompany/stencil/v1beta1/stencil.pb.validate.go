@@ -4300,7 +4300,7 @@ func (m *SchemaChangedEvent) validate(all bool) error {
 		}
 	}
 
-	// no validation rules for NamespaceName
+	// no validation rules for NamespaceID
 
 	// no validation rules for SchemaName
 

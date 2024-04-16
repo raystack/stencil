@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"github.com/georgysavva/scany/pgxscan"
-	"github.com/goto/stencil/core/schema"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
+
+	"github.com/goto/stencil/core/schema"
 )
 
 type SchemaRepository struct {
@@ -101,6 +102,12 @@ func (r *SchemaRepository) DeleteVersion(ctx context.Context, ns string, sc stri
 	// Idempotent operation to clean orphaned data.
 	r.db.Exec(ctx, deleteOrphanedData)
 	return wrapError(err, "delete version")
+}
+
+func (r *SchemaRepository) GetSchemaID(ctx context.Context, ns string, sc string) (int32, error) {
+	var schemaID int32
+	err := pgxscan.Get(ctx, r.db, &schemaID, getSchemaIDByNSAndSchemaName, ns, sc)
+	return schemaID, wrapError(err, sc)
 }
 
 const schemaInsertQuery = `
@@ -200,4 +207,8 @@ DELETE from versions where id=(select id from version)
 
 const deleteOrphanedData = `
 DELETE from schema_files WHERE id NOT IN (SELECT DISTINCT vsf.schema_file_id from versions_schema_files as vsf)
+`
+
+const getSchemaIDByNSAndSchemaName = `
+select id  from schemas where namespace_id=$1 AND name=$2
 `

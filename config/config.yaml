@@ -26,7 +26,7 @@ db:
 
 # Kafka Producer config
 kafkaProducer:
-  bootstrapServer: "localhost:9092"
+  bootstrapserver: "localhost:9092"
   retries: 5
   retryinterval: 2000
 
