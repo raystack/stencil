@@ -2,15 +2,17 @@ package kafka
 
 import (
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/cactus/go-statsd-client/v5/statsd"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"google.golang.org/protobuf/proto"
-	"log"
-	"time"
 )
 
 type KafkaProducer struct {
 	hostName     string
+	timeout      int
 	producer     *kafka.Producer
 	statsdClient statsd.Statter
 }
@@ -21,14 +23,15 @@ const (
 	RetryExhaustedMetric = "kafka.RetryExhaustedMetric"
 )
 
-func NewKafkaProducer(hostName string, statsdClient statsd.Statter) (*KafkaProducer, error) {
-	producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": hostName})
+func NewKafkaProducer(hostName string, timeout int, statsdClient statsd.Statter) (*KafkaProducer, error) {
+	producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": hostName,
+		"message.timeout.ms": timeout})
 	if err != nil {
 		log.Printf("Failed to initialise Kafka Producer - %s", err.Error())
 		return nil, err
 	}
 
-	return &KafkaProducer{producer: producer, hostName: hostName, statsdClient: statsdClient}, nil
+	return &KafkaProducer{producer: producer, hostName: hostName, timeout: timeout, statsdClient: statsdClient}, nil
 }
 
 func (kp *KafkaProducer) PushMessagesWithRetries(topic string, protoMessage proto.Message, retries int, retryInterval time.Duration) error {

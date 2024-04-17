@@ -29,6 +29,7 @@ kafkaProducer:
   bootstrapserver: "localhost:9092"
   retries: 5
   retryinterval: 2000
+  timeout: 5000
 
 #StatsD Config
 statsd:

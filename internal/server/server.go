@@ -72,7 +72,7 @@ func Start(cfg config.Config) {
 	if err != nil {
 		log.Fatal("Error creating StatsD client:", err)
 	}
-	producer, err := kafka.NewKafkaProducer(cfg.KafkaProducer.BootstrapServer, statsDClient)
+	producer, err := kafka.NewKafkaProducer(cfg.KafkaProducer.BootstrapServer, cfg.KafkaProducer.Timeoutm, statsDClient)
 	if err != nil {
 		log.Fatal("Error creating producer :", err)
 	}
