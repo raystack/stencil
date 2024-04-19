@@ -23,3 +23,22 @@ newrelic:
 db:
   # Connection string for postgres database
   connectionstring: "postgres://postgres@localhost:5432/db"
+
+# Kafka Producer config
+kafkaProducer:
+  bootstrapserver: "localhost:9092"
+  retries: 5
+  retryinterval: 2000
+  timeout: 5000
+
+# StatsD Config
+statsd:
+  address: "localhost:9090"
+  prefix: "schema-change-event"
+
+# Schema Change config
+schemachange:
+  kafkatopic: "schema_change"
+  depth: 5
+
+

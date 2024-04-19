@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package test;
+
+message User {
+  string name = 1;
+  string address = 2;
+}
+
+message Course {
+  string name = 1;
+  User user = 2;
+}
+
+

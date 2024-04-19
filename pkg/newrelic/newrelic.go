@@ -4,6 +4,7 @@ package newrelic
 
 import (
 	"context"
+
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 

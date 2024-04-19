@@ -3,9 +3,10 @@ package api
 import (
 	"context"
 	"fmt"
-	newrelic2 "github.com/goto/stencil/pkg/newrelic"
 	"net/http"
 	"strconv"
+
+	newrelic2 "github.com/goto/stencil/pkg/newrelic"
 
 	"github.com/goto/stencil/core/namespace"
 	"github.com/goto/stencil/core/schema"

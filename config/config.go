@@ -20,6 +20,26 @@ type GRPCConfig struct {
 	MaxSendMsgSizeInMB int `default:"10"`
 }
 
+// Kafka Producer Config
+type KafkaProducerConfig struct {
+	BootstrapServer string
+	Retries         int `default:"5"`
+	RetryInterval   int `default:"2000"`
+	Timeout         int `default:"5000"`
+}
+
+// StatsDConfig
+type StatsDConfig struct {
+	Address string
+	Prefix  string
+}
+
+// SchameChangeConfig
+type SchemaChangeConfig struct {
+	KafkaTopic string
+	Depth      int32
+}
+
 // Config Server config
 type Config struct {
 	Port string `default:"8080"`
@@ -29,4 +49,7 @@ type Config struct {
 	GRPC          GRPCConfig
 	NewRelic      NewRelicConfig
 	DB            DBConfig
+	KafkaProducer KafkaProducerConfig
+	StatsD        StatsDConfig
+	SchemaChange  SchemaChangeConfig
 }

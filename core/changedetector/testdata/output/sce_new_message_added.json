@@ -1,0 +1,23 @@
+{
+  "namespace_name": "testNamespace",
+  "schema_name": "testSchemaName",
+  "updated_schemas": [
+    "test.Course"
+  ],
+  "updated_fields": {
+    "test.Course": {
+      "field_names": [
+        "name",
+        "user"
+      ]
+    }
+  },
+  "impacted_schemas": {
+    "test.Course": {
+      "schema_names": [
+        "test.Course"
+      ]
+    }
+  },
+  "version": 1
+}

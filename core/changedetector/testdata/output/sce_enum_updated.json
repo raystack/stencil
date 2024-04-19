@@ -1,0 +1,22 @@
+{
+  "namespace_name": "testNamespace",
+  "schema_name": "testSchemaName",
+  "updated_schemas": [
+    "test.PaymentType"
+  ],
+  "updated_fields": {
+    "test.PaymentType": {
+      "field_names": [
+        "PaymentType.CREDIT"
+      ]
+    }
+  },
+  "impacted_schemas": {
+    "test.PaymentType": {
+      "schema_names": [
+        "test.PaymentType"
+      ]
+    }
+  },
+  "version": 1
+}

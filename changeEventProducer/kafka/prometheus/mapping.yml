@@ -1,0 +1,12 @@
+mappings:
+  - match: "kafka.SuccessCount.*"
+    name: "kafka_success_count"
+    type: counter
+    labels:
+      application: "change_event_kafka_producer"
+  - match: "kafka.FailureCount.*"
+    name: "kafka_failure_count"
+    type: counter
+    labels:
+      application: "change_event_kafka_producer"
+

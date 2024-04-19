@@ -119,6 +119,13 @@ $ make test
 $ make coverage
 ```
 
+## Generating mocks
+```
+Install mockery using $ brew install mockery
+Run  mockery --name <Interface Name> --output <Output directory for mocks>
+E.g
+mockery --name ChangeDetectorService --output mocks
+```
 ## Contribute
 
 Development of Stencil happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving stencil.
@@ -128,3 +135,4 @@ Read our [contributing guide](docs/contribute/contribution.md) to learn about ou
 To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/goto/stencil/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 This project exists thanks to all the [contributors](https://github.com/goto/stencil/graphs/contributors).
+

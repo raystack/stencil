@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package test;
+
+message User {
+  string name = 1;
+  int32 age = 2;
+}
+
+message Course {
+  string name = 1;
+  User user = 2;
+}
+
+message Department{
+  string name = 1;
+  User user = 2;
+}
+
+message Subject{
+  string name = 1;
+  User user = 2;
+}
+
+message Teacher{
+  string name = 1;
+  Department department = 2;
+}
+
+

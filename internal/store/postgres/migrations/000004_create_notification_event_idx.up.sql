@@ -1,0 +1,1 @@
+CREATE INDEX notification_events_idx ON notification_events (namespace_id, schema_id, version_id)
