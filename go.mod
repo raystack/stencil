@@ -6,7 +6,6 @@ require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/alecthomas/chroma v0.8.2
 	github.com/cactus/go-statsd-client/v5 v5.1.0
-	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/emicklei/dot v0.16.0
@@ -53,6 +52,7 @@ require (
 	github.com/onsi/gomega v1.29.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
+	github.com/segmentio/kafka-go v0.4.47
 	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/viper v1.13.0 // indirect
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect

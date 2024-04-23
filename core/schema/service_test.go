@@ -124,7 +124,7 @@ func TestSchemaCreate(t *testing.T) {
 		schemaRepo.On("Create", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(int32(1), nil)
 		schemaRepo.On("GetSchemaID", mock.Anything, nsName, "a").Return(int32(1), nil)
 		cdService.On("IdentifySchemaChange", mock.Anything, mock.Anything).Return(&stencilv1beta2.SchemaChangedEvent{}, nil)
-		producer.On("PushMessagesWithRetries", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
+		producer.On("Write", mock.Anything, mock.Anything).Return(nil)
 		neRepo.On("GetByNameSpaceSchemaVersionAndSuccess", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(changedetector.NotificationEvent{}, pgx.ErrNoRows)
 		neRepo.On("Create", mock.Anything, mock.Anything).Return(changedetector.NotificationEvent{}, nil)
 		neRepo.On("Update", mock.Anything, mock.Anything, mock.Anything).Return(changedetector.NotificationEvent{}, nil)

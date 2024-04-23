@@ -2,8 +2,6 @@ package schema
 
 import (
 	"context"
-	"time"
-
 	"google.golang.org/protobuf/proto"
 
 	"github.com/goto/stencil/core/changedetector"
@@ -71,7 +69,7 @@ type ChangeDetectorService interface {
 }
 
 type Producer interface {
-	PushMessagesWithRetries(topic string, protoMessage proto.Message, retries int, retryInterval time.Duration) error
+	Write(topic string, protoMessage proto.Message) error
 }
 
 type NotificationEventRepository interface {

@@ -24,7 +24,6 @@ type GRPCConfig struct {
 type KafkaProducerConfig struct {
 	BootstrapServer string
 	Retries         int `default:"5"`
-	RetryInterval   int `default:"2000"`
 	Timeout         int `default:"5000"`
 }
 

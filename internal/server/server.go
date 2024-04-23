@@ -73,10 +73,7 @@ func Start(cfg config.Config) {
 	if err != nil {
 		log.Fatal("Error creating StatsD client:", err)
 	}
-	producer, err := kafka.NewKafkaProducer(cfg.KafkaProducer.BootstrapServer, cfg.KafkaProducer.Timeout, statsDClient)
-	if err != nil {
-		log.Fatal("Error creating producer :", err)
-	}
+	producer := kafka.NewWriter(cfg.KafkaProducer.BootstrapServer, cfg.KafkaProducer.Timeout, cfg.KafkaProducer.Retries, statsDClient)
 
 	notificationEventRepo := postgres.NewNotificationEventRepository(db)
 	schemaService := schema.NewService(schemaRepository, provider.NewSchemaProvider(), namespaceService, cache, newRelic, changeDetectorService, producer, &cfg, notificationEventRepo)
