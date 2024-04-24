@@ -22,12 +22,12 @@ jobs:
         run: cd docs && yarn build
       - name: Deploy docs
         env:
-          GIT_USER: harikrishnakanchi
-          GIT_PASS: ${{ secrets.DOCU_RS_TOKEN }}
+          GIT_USER: github-actions[bot]
+          GIT_PASS: ${{ secrets.GITHUB_TOKEN }}
           DEPLOYMENT_BRANCH: gh-pages
           CURRENT_BRANCH: main
         working-directory: docs
         run: |
-          git config --global user.email "harikrishnakanchi@gmail.com"
-          git config --global user.name "harikrishnakanchi"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           yarn deploy
