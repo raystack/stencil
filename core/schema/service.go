@@ -186,19 +186,21 @@ func (s *Service) identifySchemaChange(ctx context.Context, request *changedetec
 		return fmt.Errorf("got error while identifying schema change for namespace : %s, schema: %s, version: %d, %s", request.NamespaceID, request.SchemaName, request.Version, err)
 	}
 	log.Printf("schema change result %s", sce.String())
-	notificationEvent := createNotificationEvent(sce, request, schemaID, false)
-	if _, err := s.notificationEventRepo.Create(ctx, notificationEvent); err != nil {
-		return fmt.Errorf("unable to insert event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+	if len(sce.UpdatedSchemas) > 0 {
+		notificationEvent := createNotificationEvent(sce, request, schemaID, false)
+		if _, err := s.notificationEventRepo.Create(ctx, notificationEvent); err != nil {
+			return fmt.Errorf("unable to insert event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+		}
+		schemaChangeTopic := s.config.SchemaChange.KafkaTopic
+		if err := s.producer.Write(schemaChangeTopic, sce); err != nil {
+			return fmt.Errorf("unable to push message to Kafka topic %s for schema change event %s: %s", schemaChangeTopic, sce, err.Error())
+		}
+		log.Printf("successfully pushed message to kafka topic %s", schemaChangeTopic)
+		if _, err := s.notificationEventRepo.Update(ctx, notificationEvent.ID, true); err != nil {
+			return fmt.Errorf("unable to insert event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
+		}
+		log.Printf("NotificationEvents saved in db successfully")
 	}
-	schemaChangeTopic := s.config.SchemaChange.KafkaTopic
-	if err := s.producer.Write(schemaChangeTopic, sce); err != nil {
-		return fmt.Errorf("unable to push message to Kafka topic %s for schema change event %s: %s", schemaChangeTopic, sce, err.Error())
-	}
-	log.Printf("successfully pushed message to kafka topic %s", schemaChangeTopic)
-	if _, err := s.notificationEventRepo.Update(ctx, notificationEvent.ID, true); err != nil {
-		return fmt.Errorf("unable to insert event for namesapce %s , schema %s and version %d in DB, got error: %s", request.NamespaceID, request.SchemaName, request.Version, err.Error())
-	}
-	log.Printf("NotificationEvents saved in db successfully")
 	return nil
 }
 
