@@ -123,13 +123,13 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 		Compatibility: compatibility,
 	}
 	versionID := getIDforSchema(nsName, schemaName, sf.ID)
+	_, prevSchemaData, err2 := s.GetLatest(ctx, nsName, schemaName)
 	version, err := s.repo.Create(ctx, nsName, schemaName, mergedMetadata, versionID, sf)
 	if err != nil {
 		log.Printf("got error while creating schema %s in namespace %s -> %s", schemaName, nsName, err.Error())
 	}
-
+	log.Printf("feature flag is %t", s.config.SchemaChange.Enable)
 	if s.config.SchemaChange.Enable {
-		_, prevSchemaData, err2 := s.GetLatest(ctx, nsName, schemaName)
 		if err2 == nil {
 			changeRequest := &changedetector.ChangeRequest{
 				NamespaceID: nsName,
