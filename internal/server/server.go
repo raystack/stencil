@@ -62,20 +62,22 @@ func Start(cfg config.Config) {
 		panic(err)
 	}
 	newRelic := &newRelic2.NewRelic{}
+
 	changeDetectorService := changedetector.NewService(newRelic)
 
-	statsDconfig := &statsd.ClientConfig{
+	statsdConfig := &statsd.ClientConfig{
 		Address: cfg.StatsD.Address,
 		Prefix:  cfg.StatsD.Prefix,
 	}
 	fmt.Printf("Kafka Adress %s", cfg.KafkaProducer.BootstrapServer)
-	statsDClient, err := statsd.NewClientWithConfig(statsDconfig)
+	statsdClient, err := statsd.NewClientWithConfig(statsdConfig)
 	if err != nil {
 		log.Fatal("Error creating StatsD client:", err)
 	}
-	producer := kafka.NewWriter(cfg.KafkaProducer.BootstrapServer, cfg.KafkaProducer.Timeout, cfg.KafkaProducer.Retries, statsDClient)
+	producer := kafka.NewWriter(cfg.KafkaProducer.BootstrapServer, cfg.KafkaProducer.Timeout, cfg.KafkaProducer.Retries, statsdClient)
 
 	notificationEventRepo := postgres.NewNotificationEventRepository(db)
+
 	schemaService := schema.NewService(schemaRepository, provider.NewSchemaProvider(), namespaceService, cache, newRelic, changeDetectorService, producer, &cfg, notificationEventRepo)
 
 	searchRepository := postgres.NewSearchRepository(db)

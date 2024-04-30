@@ -37,6 +37,7 @@ type StatsDConfig struct {
 type SchemaChangeConfig struct {
 	KafkaTopic string
 	Depth      int32
+	Enable     bool `default:"false"`
 }
 
 // Config Server config

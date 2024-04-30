@@ -123,29 +123,36 @@ func (s *Service) Create(ctx context.Context, nsName string, schemaName string, 
 		Compatibility: compatibility,
 	}
 	versionID := getIDforSchema(nsName, schemaName, sf.ID)
-	_, prevSchemaData, dataErr := s.GetLatest(ctx, nsName, schemaName)
 	version, err := s.repo.Create(ctx, nsName, schemaName, mergedMetadata, versionID, sf)
-	if dataErr == nil {
-		changeRequest := &changedetector.ChangeRequest{
-			NamespaceID: nsName,
-			SchemaName:  schemaName,
-			Version:     version,
-			VersionID:   versionID,
-			OldData:     prevSchemaData,
-			NewData:     data,
-			Depth:       s.config.SchemaChange.Depth,
-		}
-		go func() {
-			newCtx, cancel := context.WithTimeout(context.Background(), 1*time.Hour)
-			defer cancel()
-			err := s.identifySchemaChangeWithContext(newCtx, changeRequest)
-			if err != nil {
-				log.Printf("got error while identifying schema change event %s", err.Error())
-			}
-		}()
-	} else {
-		log.Printf("got error while getting previous schema data %s", dataErr.Error())
+	if err != nil {
+		log.Printf("got error while creating schema %s in namespace %s -> %s", schemaName, nsName, err.Error())
 	}
+
+	if s.config.SchemaChange.Enable {
+		_, prevSchemaData, err2 := s.GetLatest(ctx, nsName, schemaName)
+		if err2 == nil {
+			changeRequest := &changedetector.ChangeRequest{
+				NamespaceID: nsName,
+				SchemaName:  schemaName,
+				Version:     version,
+				VersionID:   versionID,
+				OldData:     prevSchemaData,
+				NewData:     data,
+				Depth:       s.config.SchemaChange.Depth,
+			}
+			go func() {
+				newCtx, cancel := context.WithTimeout(context.Background(), 1*time.Hour)
+				defer cancel()
+				err := s.identifySchemaChangeWithContext(newCtx, changeRequest)
+				if err != nil {
+					log.Printf("got error while identifying schema change event %s", err.Error())
+				}
+			}()
+		} else {
+			log.Printf("got error while getting previous schema data %s", err2.Error())
+		}
+	}
+
 	return SchemaInfo{
 		Version:  version,
 		ID:       versionID,

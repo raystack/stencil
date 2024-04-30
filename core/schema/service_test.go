@@ -32,8 +32,12 @@ func getSvc() (*schema.Service, *mocks.NamespaceService, *mocks.SchemaProvider, 
 	cache.On("Get", mock.Anything).Return("", false)
 	cache.On("Set", mock.Anything, mock.Anything, mock.Anything).Return(false)
 	producer := &mocks.Producer{}
-	config := &config.Config{}
-	svc := schema.NewService(schemaRepo, schemaProvider, nsService, cache, newRelic, cdService, producer, config, neRepo)
+	conf := &config.Config{
+		SchemaChange: config.SchemaChangeConfig{
+			Enable: true,
+		},
+	}
+	svc := schema.NewService(schemaRepo, schemaProvider, nsService, cache, newRelic, cdService, producer, conf, neRepo)
 	return svc, nsService, schemaProvider, schemaRepo, newRelic, cdService, producer, neRepo
 }
 
@@ -160,6 +164,7 @@ func TestSchemaCreate(t *testing.T) {
 
 	t.Run("should identify schema change event and not push to kafka and db when updated schemas is zero", func(t *testing.T) {
 		svc, nsService, schemaProvider, schemaRepo, newrelic, cdService, producer, neRepo := getSvc()
+
 		scFile := &schema.SchemaFile{}
 		parsedSchema := &mocks.ParsedSchema{}
 		nsName := "testNamespace"
@@ -197,6 +202,60 @@ func TestSchemaCreate(t *testing.T) {
 		assert.True(t, called)
 		assert.True(t, compatibility)
 		assert.True(t, cdCalled)
+		assert.True(t, metadata)
+		assert.True(t, dataCheck)
+	})
+
+	t.Run("should not trigger identify schema change if the feature flag is OFF", func(t *testing.T) {
+		nsService := &mocks.NamespaceService{}
+		schemaProvider := &mocks.SchemaProvider{}
+		schemaRepo := &mocks.SchemaRepository{}
+		cache := &mocks.SchemaCache{}
+		newrelic := &mocks2.NewRelic{}
+		cdService := &mocks.ChangeDetectorService{}
+		cache.On("Get", mock.Anything).Return("", false)
+		cache.On("Set", mock.Anything, mock.Anything, mock.Anything).Return(false)
+		neRepo := &mocks.NotificationEventRepository{}
+		producer := &mocks.Producer{}
+		conf := &config.Config{
+			SchemaChange: config.SchemaChangeConfig{
+				Enable: false,
+			},
+		}
+		svc := schema.NewService(schemaRepo, schemaProvider, nsService, cache, newrelic, cdService, producer, conf, neRepo)
+		ctx := context.Background()
+		scFile := &schema.SchemaFile{}
+		parsedSchema := &mocks.ParsedSchema{}
+		nsName := "testNamespace"
+		data := []byte("data")
+		nsService.On("Get", mock.Anything, nsName).Return(namespace.Namespace{Format: "protobuf"}, nil)
+		schemaProvider.On("ParseSchema", "protobuf", data).Return(parsedSchema, nil)
+		schemaRepo.On("GetLatestVersion", mock.Anything, nsName, "a").Return(int32(3), nil)
+		schemaRepo.On("Get", mock.Anything, nsName, "a", int32(3)).Return(data, nil)
+		schemaRepo.On("GetMetadata", mock.Anything, nsName, "a").Return(&schema.Metadata{Format: "protobuf"}, nil)
+		parsedSchema.On("GetCanonicalValue").Return(scFile)
+		schemaRepo.On("Create", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(int32(1), nil)
+
+		var called, compatibility, metadata, dataCheck bool
+		newrelic.On("StartGenericSegment", mock.Anything, "Create Schema Info").Return(func() { called = true })
+		newrelic.On("StartGenericSegment", mock.Anything, "Compatibility checker").Return(func() { compatibility = true })
+		newrelic.On("StartGenericSegment", mock.Anything, "GetMetaData").Return(func() { metadata = true })
+		newrelic.On("StartGenericSegment", mock.Anything, "GetData").Return(func() { dataCheck = true })
+		scInfo, err := svc.Create(ctx, nsName, "a", &schema.Metadata{}, data)
+		time.Sleep(100 * time.Millisecond)
+		assert.NoError(t, err)
+		assert.Equal(t, scInfo.Version, int32(1))
+
+		schemaRepo.AssertExpectations(t)
+		nsService.AssertExpectations(t)
+		cdService.AssertNotCalled(t, "IdentifySchemaChange")
+		producer.AssertNotCalled(t, "Write")
+		neRepo.AssertNotCalled(t, "GetByNameSpaceSchemaVersionAndSuccess")
+		neRepo.AssertNotCalled(t, "Create")
+		neRepo.AssertNotCalled(t, "Update")
+		newrelic.AssertExpectations(t)
+		assert.True(t, called)
+		assert.True(t, compatibility)
 		assert.True(t, metadata)
 		assert.True(t, dataCheck)
 	})
