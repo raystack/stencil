@@ -7,7 +7,7 @@ A Clojure library designed to easily encode and decode protobuf messages by usin
 Add the below dependency to your `project.clj` file:
 
 ```clj
-           [com.gotocompany/stencil-clj "0.4.0"]
+           [com.gotocompany/stencil-clj "0.5.0"]
 ```
 
 ## Usage

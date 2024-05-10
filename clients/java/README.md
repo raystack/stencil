@@ -16,7 +16,7 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 #### Gradle
 
 ```groovy
-  implementation group: 'com.gotocompany', name: 'stencil', version: '0.4.0'
+  implementation group: 'com.gotocompany', name: 'stencil', version: '0.7.0'
 ```
 
 #### Maven
@@ -25,7 +25,7 @@ Protobuf allows you to define a protobuf file using DescriptorSet. A FileDescrip
 <dependency>
   <groupId>com.gotocompany</groupId>
   <artifactId>stencil</artifactId>
-  <version>0.4.0</version>
+  <version>0.7.0</version>
 </dependency>
 ```
 

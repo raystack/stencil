@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.gotocompany'
-version '0.6.0'
+version '0.7.0'
 
 repositories {
     mavenLocal()
@@ -91,9 +91,9 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'harikrishnakanchi'
-                        name = 'Hari Krishna'
-                        email = 'hari.kanchi@gojek.com'
+                        id = 'github-actions[bot]'
+                        name = 'github-actions[bot]'
+                        email = '41898282+github-actions[bot]@users.noreply.github.com'
                     }
                 }
                 from components.java

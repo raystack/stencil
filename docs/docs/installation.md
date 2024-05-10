@@ -23,7 +23,7 @@ docker pull gotocompany/stencil:latest
 To pull a specific version:
 
 ```
-docker pull gotocompany/stencil:0.4.0
+docker pull gotocompany/stencil:0.8.1
 ```
 
 ### Building from source
