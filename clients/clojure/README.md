@@ -7,7 +7,7 @@ A Clojure library designed to easily encode and decode protobuf messages by usin
 Add the below dependency to your `project.clj` file:
 
 ```clj
-           [org.raystack/stencil-clj "0.5.0"]
+           [org.raystack/stencil-clj "0.5.1"]
 ```
 
 ## Usage
