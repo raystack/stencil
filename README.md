@@ -81,7 +81,7 @@ docker pull raystack/stencil:latest
 To pull a specific version:
 
 ```sh
-docker pull raystack/stencil:v0.5.0
+docker pull raystack/stencil:v0.5.1
 ```
 
 ## Usage
