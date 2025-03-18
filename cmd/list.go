@@ -6,8 +6,7 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
@@ -53,11 +52,11 @@ func listSchemaCmd(cdk *CDK) *cobra.Command {
 			report := [][]string{}
 			index := 1
 			report = append(report, []string{
-				term.Bold("INDEX"),
-				term.Bold("NAME"),
-				term.Bold("FORMAT"),
-				term.Bold("COMPATIBILITY"),
-				term.Bold("AUTHORITY"),
+				printer.Bold("INDEX"),
+				printer.Bold("NAME"),
+				printer.Bold("FORMAT"),
+				printer.Bold("COMPATIBILITY"),
+				printer.Bold("AUTHORITY"),
 			})
 			for _, s := range schemas {
 				c := s.GetCompatibility().String()
@@ -67,7 +66,7 @@ func listSchemaCmd(cdk *CDK) *cobra.Command {
 				if a == "" {
 					a = "-"
 				}
-				report = append(report, []string{term.Greenf("#%d", index), s.GetName(), dict[f], dict[c], a})
+				report = append(report, []string{printer.Greenf("#%d", index), s.GetName(), dict[f], dict[c], a})
 				index++
 			}
 

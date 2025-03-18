@@ -7,8 +7,7 @@ import (
 	"strconv"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
@@ -44,18 +43,18 @@ func infoSchemaCmd(cdk *CDK) *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
-					fmt.Printf("%s Schema with id '%s' not found.\n", term.Red(term.FailureIcon()), args[0])
+					fmt.Printf("%s Schema with id '%s' not found.\n", printer.Red(printer.Icon("failure")), args[0])
 					return nil
 				}
 				return err
 			}
 
-			fmt.Printf("\n%s\n", term.Blue(args[0]))
-			fmt.Printf("\n%s\n\n", term.Grey("No description provided"))
-			fmt.Printf("%s \t %s \n", term.Grey("Namespace:"), namespace)
-			fmt.Printf("%s \t %s \n", term.Grey("Format:"), dict[info.GetFormat().String()])
-			fmt.Printf("%s \t %s \n", term.Grey("Compatibility:"), dict[info.GetCompatibility().String()])
-			fmt.Printf("%s \t %s \n\n", term.Grey("Authority:"), dict[info.GetAuthority()])
+			fmt.Printf("\n%s\n", printer.Blue(args[0]))
+			fmt.Printf("\n%s\n\n", printer.Grey("No description provided"))
+			fmt.Printf("%s \t %s \n", printer.Grey("Namespace:"), namespace)
+			fmt.Printf("%s \t %s \n", printer.Grey("Format:"), dict[info.GetFormat().String()])
+			fmt.Printf("%s \t %s \n", printer.Grey("Compatibility:"), dict[info.GetCompatibility().String()])
+			fmt.Printf("%s \t %s \n\n", printer.Grey("Authority:"), dict[info.GetAuthority()])
 			return nil
 		},
 	}
@@ -109,7 +108,7 @@ func versionSchemaCmd(cdk *CDK) *cobra.Command {
 
 			for _, v := range versions {
 				report = append(report, []string{
-					term.Greenf("#%v", strconv.FormatInt(int64(v), 10)),
+					printer.Greenf("#%v", strconv.FormatInt(int64(v), 10)),
 					"-",
 					"-",
 				})

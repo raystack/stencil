@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"time"
 
-	"github.com/raystack/salt/cmdx"
 	"github.com/raystack/salt/config"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
@@ -54,16 +52,14 @@ func createClient(cmd *cobra.Command, cdk *CDK) (stencilv1beta1.StencilServiceCl
 	return client, cancel, nil
 }
 
-func loadClientConfig(cmd *cobra.Command, cmdxConfig *cmdx.Config) (*ClientConfig, error) {
+func loadClientConfig(cmd *cobra.Command, cmdxConfig *config.Loader) (*ClientConfig, error) {
 	var clientConfig ClientConfig
 
 	if err := cmdxConfig.Load(
 		&clientConfig,
-		cmdx.WithFlags(cmd.Flags()),
 	); err != nil {
-		if !errors.Is(err, new(config.ConfigFileNotFoundError)) {
-			return nil, ErrClientConfigNotFound
-		}
+			return nil, err
+		
 	}
 
 	return &clientConfig, nil

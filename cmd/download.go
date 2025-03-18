@@ -5,8 +5,7 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +41,7 @@ func downloadSchemaCmd(cdk *CDK) *cobra.Command {
 				return err
 			}
 
-			fmt.Printf("%s Schema successfully written to %s\n", term.Green(term.SuccessIcon()), output)
+			fmt.Printf("%s Schema successfully written to %s\n", printer.Green(printer.Icon("success")), output)
 			return nil
 		},
 	}

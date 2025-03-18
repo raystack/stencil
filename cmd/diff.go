@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
+	"github.com/raystack/salt/cli/printer"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"github.com/yudai/gojsondiff"

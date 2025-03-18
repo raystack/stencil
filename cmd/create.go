@@ -7,8 +7,7 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
@@ -52,7 +51,7 @@ func createSchemaCmd(cdk *CDK) *cobra.Command {
 			if err != nil {
 				errStatus := status.Convert(err)
 				if codes.AlreadyExists == errStatus.Code() {
-					fmt.Printf("\n%s Schema with id '%s' already exist.\n", term.FailureIcon(), args[0])
+					fmt.Printf("\n%s Schema with id '%s' already exist.\n", printer.Icon("failure"), args[0])
 					return nil
 				}
 				return errors.New(errStatus.Message())
@@ -61,7 +60,7 @@ func createSchemaCmd(cdk *CDK) *cobra.Command {
 			id := res.GetId()
 
 			spinner.Stop()
-			fmt.Printf("\n%s Created schema with id %s.\n", term.Green(term.SuccessIcon()), term.Cyan(id))
+			fmt.Printf("\n%s Created schema with id %s.\n", printer.Green(printer.Icon("success")), printer.Cyan(id))
 			return nil
 		},
 	}
