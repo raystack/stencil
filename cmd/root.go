@@ -45,18 +45,22 @@ func New() *cobra.Command {
 	cmd.AddCommand(SchemaCmd(cdk))
 	cmd.AddCommand(SearchCmd(cdk))
 
-	// Help topics
-	cmdr := commander.New(cmd)
-	cmdr.Init()
-	// cmdx.SetHelp(cmd)
-	// cmd.AddCommand(cmdx.SetCompletionCmd("stencil"))
-	// cmd.AddCommand(cmdx.SetHelpTopicCmd("environment", envHelp))
-	// cmd.AddCommand(cmdx.SetRefCmd(cmd))
+	hooks := []commander.HookBehavior{
+		{
+			Name: "client",
+			Behavior: func(cmd *cobra.Command) {
+				cmd.PersistentFlags().String("host", "", "Server host address")
+			},
+		},
+	}
 
-	// cmdx.SetClientHook(cmd, func(cmd *cobra.Command) {
-	// 	// client config
-	// 	cmd.PersistentFlags().String("host", "", "Server host address")
-	// })
+	// Help topics
+	cmdr := commander.New(
+		cmd,
+		commander.WithTopics(envHelpTopics),
+		commander.WithHooks(hooks),
+	)
+	cmdr.Init()
 
 	return cmd
 }

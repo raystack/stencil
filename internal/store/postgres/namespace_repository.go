@@ -44,25 +44,25 @@ func NewNamespaceRepository(dbc *DB) *NamespaceRepository {
 func (r *NamespaceRepository) Create(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
 	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceInsertQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
-	return newNamespace, wrapError(err, ns.ID)
+	return newNamespace, wrapError(err, "%s", ns.ID)
 }
 
 func (r *NamespaceRepository) Update(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error) {
 	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceUpdateQuery, ns.ID, ns.Format, ns.Compatibility, ns.Description)
-	return newNamespace, wrapError(err, ns.ID)
+	return newNamespace, wrapError(err, "%s", ns.ID)
 }
 
 func (r *NamespaceRepository) Get(ctx context.Context, id string) (namespace.Namespace, error) {
 	newNamespace := namespace.Namespace{}
 	err := pgxscan.Get(ctx, r.db, &newNamespace, namespaceGetQuery, id)
-	return newNamespace, wrapError(err, id)
+	return newNamespace, wrapError(err, "%s", id)
 }
 
 func (r *NamespaceRepository) Delete(ctx context.Context, id string) error {
 	_, err := r.db.Exec(ctx, namespaceDeleteQuery, id)
 	r.db.Exec(ctx, deleteOrphanedData)
-	return wrapError(err, id)
+	return wrapError(err, "%s", id)
 }
 
 func (r *NamespaceRepository) List(ctx context.Context) ([]namespace.Namespace, error) {

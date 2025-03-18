@@ -168,7 +168,7 @@ func checkRequiredProperties(prevSchema, currSchema *jsonschema.Schema, diffs *c
 	currReqiredProperties := currSchema.Required
 	err := elementsMatch(prevRequiredProperties, currReqiredProperties)
 	if err != nil {
-		diffs.add(requiredFieldChanged, currSchema.Location, err.Error())
+		diffs.add(requiredFieldChanged, currSchema.Location, "%s", err.Error())
 	}
 }
 

@@ -58,8 +58,7 @@ func loadClientConfig(cmd *cobra.Command, cmdxConfig *config.Loader) (*ClientCon
 	if err := cmdxConfig.Load(
 		&clientConfig,
 	); err != nil {
-			return nil, err
-		
+		return nil, err
 	}
 
 	return &clientConfig, nil
