@@ -8,8 +8,7 @@ import (
 	"strings"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
@@ -86,11 +85,11 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 
 		var total = 0
 		report = append(report, []string{
-			term.Bold("FIELD"),
-			term.Bold("TYPE"),
-			term.Bold("SCHEMA"),
-			term.Bold("VERSION"),
-			term.Bold("NAMESPACE"),
+			printer.Bold("FIELD"),
+			printer.Bold("TYPE"),
+			printer.Bold("SCHEMA"),
+			printer.Bold("VERSION"),
+			printer.Bold("NAMESPACE"),
 		})
 		for _, h := range hits {
 			fields := h.GetFields()

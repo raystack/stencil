@@ -8,8 +8,8 @@ import (
 	"github.com/alecthomas/chroma/quick"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoprint"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
+	"github.com/raystack/salt/cli/terminator"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
@@ -57,7 +57,7 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 			case "FORMAT_PROTOBUF":
 				printProtoSchema(data, filter)
 			default:
-				fmt.Printf("%s Unknown schema format: %s\n", term.Red(term.FailureIcon()), format)
+				fmt.Printf("%s Unknown schema format: %s\n", printer.Red(printer.Icon("failure")), format)
 			}
 			return nil
 		},
@@ -73,7 +73,7 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 }
 
 func printSchema(data []byte) error {
-	page := term.NewPager()
+	page := terminator.NewPager()
 	page.Start()
 	defer page.Stop()
 
@@ -113,7 +113,7 @@ func printProtoSchema(data []byte, filter string) error {
 		schema = schema + fmt.Sprintf("\n//Schema file:: %s\n\n%s", fd.GetName(), protoAsString)
 	}
 
-	page := term.NewPager()
+	page := terminator.NewPager()
 	page.Start()
 	defer page.Stop()
 

@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
-	"github.com/raystack/salt/spa"
+	"github.com/raystack/salt/server/spa"
 	"github.com/raystack/stencil/config"
 	"github.com/raystack/stencil/internal/store/postgres"
 	"github.com/raystack/stencil/ui"

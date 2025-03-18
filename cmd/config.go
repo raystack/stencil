@@ -32,7 +32,7 @@ func configInitCommand(cdk *CDK) *cobra.Command {
 				return err
 			}
 
-			fmt.Printf("Config created: %v\n", cdk.Config.File())
+			fmt.Printf("Config created\n")
 			return nil
 		},
 	}
@@ -49,7 +49,7 @@ func configListCommand(cdk *CDK) *cobra.Command {
 			"group": "core",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			data, err := cdk.Config.Read()
+			data, err := cdk.Config.View()
 			if err != nil {
 				return ErrClientConfigNotFound
 			}

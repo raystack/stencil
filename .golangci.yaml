@@ -1,19 +1,13 @@
 run:
   timeout: 5m
-  skip-dirs:
-    - api/proto
-    - clients/java
-    - clients/js
-    - docs
-    - scripts
-    - ui
 output:
-  format: line-number
+  formats:
+    - format: colored-line-number
 linters:
   enable-all: false
   disable-all: true
   enable:
-    - vet
+    - govet
     - goimports
     - thelper
     - tparallel
@@ -29,6 +23,13 @@ linters-settings:
     ignore-generated-header: true
     severity: warning
 issues:
+  exclude-dirs:
+    - api/proto
+    - clients/java
+    - clients/js
+    - docs
+    - scripts
+    - ui
   fix: true
 severity:
   default-severity: error

@@ -7,9 +7,8 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/dustin/go-humanize"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/prompt"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
+	"github.com/raystack/salt/cli/prompter"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
@@ -76,14 +75,14 @@ func listNamespaceCmd(cdk *CDK) *cobra.Command {
 			report := [][]string{}
 			index := 1
 			report = append(report, []string{
-				term.Bold("INDEX"),
-				term.Bold("NAMESPACE"),
-				term.Bold("FORMAT"),
-				term.Bold("COMPATIBILITY"),
+				printer.Bold("INDEX"),
+				printer.Bold("NAMESPACE"),
+				printer.Bold("FORMAT"),
+				printer.Bold("COMPATIBILITY"),
 			})
 			for _, n := range namespaces {
 				report = append(report,
-					[]string{term.Greenf("#%d", index),
+					[]string{printer.Greenf("#%d", index),
 						n.Id,
 						dict[n.GetFormat().String()],
 						dict[n.GetCompatibility().String()],
@@ -111,7 +110,7 @@ func createNamespaceCmd(cdk *CDK) *cobra.Command {
 			$ stencil namespace create -n=raystack -f=FORMAT_PROTOBUF -c=COMPATIBILITY_BACKWARD -d="Event schemas"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			prompter := prompt.New()
+			prompter := prompter.New()
 			if id == "" {
 				id, _ = prompter.Input("What is the namespace id?", "")
 			}
@@ -151,14 +150,14 @@ func createNamespaceCmd(cdk *CDK) *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.AlreadyExists == errStatus.Code() {
-					fmt.Printf("\n%s Namespace with id '%s' already exist.\n", term.FailureIcon(), id)
+					fmt.Printf("\n%s Namespace with id '%s' already exist.\n", printer.Icon("failure"), id)
 					return nil
 				}
 				return err
 			}
 
 			namespace := res.GetNamespace()
-			fmt.Printf("\n%s Created namespace with id %s.\n", term.Green(term.SuccessIcon()), term.Bold(term.Blue(namespace.GetId())))
+			fmt.Printf("\n%s Created namespace with id %s.\n", printer.Green(printer.Icon("success")), printer.Bold(printer.Blue(namespace.GetId())))
 			return nil
 		},
 	}
@@ -206,7 +205,7 @@ func editNamespaceCmd(cdk *CDK) *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
-					fmt.Printf("%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					fmt.Printf("%s Namespace with id '%s' does not exist.\n", printer.Icon("failure"), id)
 					return nil
 				}
 				return err
@@ -214,7 +213,7 @@ func editNamespaceCmd(cdk *CDK) *cobra.Command {
 
 			namespace := res.Namespace
 
-			fmt.Printf("%s Updated namespace with id %s.\n", term.Green(term.SuccessIcon()), term.Bold(term.Blue(namespace.GetId())))
+			fmt.Printf("%s Updated namespace with id %s.\n", printer.Green(printer.Icon("success")), printer.Bold(printer.Blue(namespace.GetId())))
 			return nil
 		},
 	}
@@ -261,7 +260,7 @@ func viewNamespaceCmd(cdk *CDK) *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
-					fmt.Printf("%s Namespace with id %s does not exist.\n", term.FailureIcon(), term.Bold(term.Blue(id)))
+					fmt.Printf("%s Namespace with id %s does not exist.\n", printer.Icon("failure"), printer.Bold(printer.Blue(id)))
 					return nil
 				}
 				return err
@@ -291,10 +290,10 @@ func deleteNamespaceCmd(cdk *CDK) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
 
-			prompter := prompt.New()
+			prompter := prompter.New()
 			confirm, _ := prompter.Input(fmt.Sprintf("Deleting namespace `%s`. To confirm, type the namespace id:", id), "")
 			if id != confirm {
-				fmt.Printf("\n%s Namespace id '%s' did not match.\n", term.WarningIcon(), confirm)
+				fmt.Printf("\n%s Namespace id '%s' did not match.\n", printer.Icon("warning"), confirm)
 				return nil
 			}
 
@@ -316,13 +315,13 @@ func deleteNamespaceCmd(cdk *CDK) *cobra.Command {
 			if err != nil {
 				errStatus, _ := status.FromError(err)
 				if codes.NotFound == errStatus.Code() {
-					fmt.Printf("\n%s Namespace with id '%s' does not exist.\n", term.FailureIcon(), id)
+					fmt.Printf("\n%s Namespace with id '%s' does not exist.\n", printer.Icon("failure"), id)
 					return nil
 				}
 				return err
 			}
 
-			fmt.Printf("\n%s Deleted namespace with id %s.\n", term.Red(term.SuccessIcon()), term.Bold(term.Blue(id)))
+			fmt.Printf("\n%s Deleted namespace with id %s.\n", printer.Red(printer.Icon("success")), printer.Bold(printer.Blue(id)))
 
 			return nil
 		},
@@ -337,10 +336,10 @@ func printNamespace(namespace *stencilv1beta1.Namespace) {
 		desc = "No description provided"
 	}
 
-	fmt.Printf("\n%s\n", term.Blue(namespace.GetId()))
-	fmt.Printf("\n%s.\n\n", term.Grey(desc))
-	fmt.Printf("%s \t %s \n", term.Grey("Format:"), namespace.GetFormat().String())
-	fmt.Printf("%s \t %s \n", term.Grey("Compatibility:"), namespace.GetCompatibility().String())
-	fmt.Printf("\n%s %s, ", term.Grey("Created"), humanize.Time(namespace.GetCreatedAt().AsTime()))
-	fmt.Printf("%s %s \n\n", term.Grey("last updated"), humanize.Time(namespace.GetUpdatedAt().AsTime()))
+	fmt.Printf("\n%s\n", printer.Blue(namespace.GetId()))
+	fmt.Printf("\n%s.\n\n", printer.Grey(desc))
+	fmt.Printf("%s \t %s \n", printer.Grey("Format:"), namespace.GetFormat().String())
+	fmt.Printf("%s \t %s \n", printer.Grey("Compatibility:"), namespace.GetCompatibility().String())
+	fmt.Printf("\n%s %s, ", printer.Grey("Created"), humanize.Time(namespace.GetCreatedAt().AsTime()))
+	fmt.Printf("%s %s \n\n", printer.Grey("last updated"), humanize.Time(namespace.GetUpdatedAt().AsTime()))
 }

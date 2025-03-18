@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/cmdx"
+	"github.com/raystack/salt/cli/commander"
+	"github.com/raystack/salt/config"
 	"github.com/spf13/cobra"
 )
 
 type CDK struct {
-	Config *cmdx.Config
+	Config *config.Loader
 }
 
 // New root command
@@ -30,7 +31,13 @@ func New() *cobra.Command {
 		},
 	}
 
-	cdk := &CDK{Config: cmdx.SetConfig("stencil")}
+	cdk := &CDK{
+		Config: config.NewLoader(
+			config.WithAppConfig("stencil"),
+			config.WithEnvPrefix("STENCIL"),
+			config.WithFlags(cmd.Flags()),
+		),
+	}
 
 	cmd.AddCommand(ServerCommand())
 	cmd.AddCommand(configCmd(cdk))
@@ -38,16 +45,22 @@ func New() *cobra.Command {
 	cmd.AddCommand(SchemaCmd(cdk))
 	cmd.AddCommand(SearchCmd(cdk))
 
-	// Help topics
-	cmdx.SetHelp(cmd)
-	cmd.AddCommand(cmdx.SetCompletionCmd("stencil"))
-	cmd.AddCommand(cmdx.SetHelpTopicCmd("environment", envHelp))
-	cmd.AddCommand(cmdx.SetRefCmd(cmd))
+	hooks := []commander.HookBehavior{
+		{
+			Name: "client",
+			Behavior: func(cmd *cobra.Command) {
+				cmd.PersistentFlags().String("host", "", "Server host address")
+			},
+		},
+	}
 
-	cmdx.SetClientHook(cmd, func(cmd *cobra.Command) {
-		// client config
-		cmd.PersistentFlags().String("host", "", "Server host address")
-	})
+	// Help topics
+	cmdr := commander.New(
+		cmd,
+		commander.WithTopics(envHelpTopics),
+		commander.WithHooks(hooks),
+	)
+	cmdr.Init()
 
 	return cmd
 }

@@ -127,7 +127,7 @@ func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
 		currTypes := currSchema.Types
 		err := elementsMatch(prevTypes, currTypes) // special case of integer being allowed to changed to number is not respected due to additional code complexity
 		if err != nil {
-			diffs.add(subSchemaTypeModification, currSchema.Location, err.Error())
+			diffs.add(subSchemaTypeModification, currSchema.Location, "%s", err.Error())
 			return
 		}
 		if len(currTypes) == 0 {

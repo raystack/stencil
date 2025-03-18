@@ -1,9 +1,6 @@
 package config
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/raystack/salt/config"
 )
 
@@ -12,10 +9,6 @@ func Load(configFile string) (Config, error) {
 	loader := config.NewLoader(config.WithFile(configFile))
 
 	if err := loader.Load(&cfg); err != nil {
-		if errors.As(err, &config.ConfigFileNotFoundError{}) {
-			fmt.Println(err)
-			return cfg, nil
-		}
 		return Config{}, err
 	}
 

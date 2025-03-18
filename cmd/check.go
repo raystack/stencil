@@ -7,8 +7,7 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/salt/printer"
-	"github.com/raystack/salt/term"
+	"github.com/raystack/salt/cli/printer"
 	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/status"
@@ -57,7 +56,7 @@ func checkSchemaCmd(cdk *CDK) *cobra.Command {
 			}
 
 			spinner.Stop()
-			fmt.Printf("\n%s Schema is compatible.\n", term.Green(term.SuccessIcon()))
+			fmt.Printf("\n%s Schema is compatible.\n", printer.Green(printer.Icon("success")))
 			return nil
 		},
 	}
