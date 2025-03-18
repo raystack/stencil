@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-go@v5
       - uses: actions/checkout@v4
       - name: Crete empty build directory
-        run: mkdir ui/build
+        run: touch ui/build/.gitkeep
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
