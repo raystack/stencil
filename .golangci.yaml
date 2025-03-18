@@ -23,7 +23,6 @@ linters-settings:
     ignore-generated-header: true
     severity: warning
 issues:
-  fix: true
   exclude-dirs:
     - api/proto
     - clients/java
@@ -31,5 +30,6 @@ issues:
     - docs
     - scripts
     - ui
+  fix: true
 severity:
   default-severity: error
