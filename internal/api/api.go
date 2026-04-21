@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -114,7 +115,9 @@ func (a *API) handleUploadSchema(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(sc)
+	if err := json.NewEncoder(w).Encode(sc); err != nil {
+		slog.Error("failed to encode response", "error", err)
+	}
 }
 
 func (a *API) handleCheckCompatibility(w http.ResponseWriter, r *http.Request) {
@@ -144,13 +147,15 @@ func writeSchemaResponse(w http.ResponseWriter, meta *schema.Metadata, data []by
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Content-Length", strconv.Itoa(len(data)))
 	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	_, _ = w.Write(data)
 }
 
 func writeError(w http.ResponseWriter, statusCode int, msg string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(map[string]string{"error": msg})
+	if err := json.NewEncoder(w).Encode(map[string]string{"error": msg}); err != nil {
+		slog.Error("failed to encode error response", "error", err)
+	}
 }
 
 func writeServiceError(w http.ResponseWriter, err error) {
@@ -158,6 +163,6 @@ func writeServiceError(w http.ResponseWriter, err error) {
 }
 
 func readBody(r *http.Request) ([]byte, error) {
-	defer r.Body.Close()
+	defer func() { _ = r.Body.Close() }()
 	return io.ReadAll(r.Body)
 }

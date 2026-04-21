@@ -5,6 +5,7 @@ import (
 
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/raystack/stencil/core/namespace"
+	"github.com/raystack/stencil/internal/store"
 )
 
 const namespaceListQuery = `
@@ -60,9 +61,17 @@ func (r *NamespaceRepository) Get(ctx context.Context, id string) (namespace.Nam
 }
 
 func (r *NamespaceRepository) Delete(ctx context.Context, id string) error {
-	_, err := r.db.Exec(ctx, namespaceDeleteQuery, id)
-	r.db.Exec(ctx, deleteOrphanedData)
-	return wrapError(err, "%s", id)
+	ct, err := r.db.Exec(ctx, namespaceDeleteQuery, id)
+	if err != nil {
+		return wrapError(err, "%s", id)
+	}
+	if ct.RowsAffected() == 0 {
+		return store.NoRowsErr.WithErr(nil, id)
+	}
+	if _, execErr := r.db.Exec(ctx, deleteOrphanedData); execErr != nil {
+		return wrapError(execErr, "%s", id)
+	}
+	return nil
 }
 
 func (r *NamespaceRepository) List(ctx context.Context) ([]namespace.Namespace, error) {

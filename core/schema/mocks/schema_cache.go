@@ -50,6 +50,11 @@ func (_m *SchemaCache) Set(_a0 interface{}, _a1 interface{}, _a2 int64) bool {
 	return r0
 }
 
+// Del provides a mock function with given fields: _a0
+func (_m *SchemaCache) Del(_a0 interface{}) {
+	_m.Called(_a0)
+}
+
 // NewSchemaCache creates a new instance of SchemaCache. It also registers the testing.TB interface on the mock and a cleanup function to assert the mocks expectations.
 func NewSchemaCache(t testing.TB) *SchemaCache {
 	mock := &SchemaCache{}
