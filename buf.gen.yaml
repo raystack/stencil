@@ -1,10 +1,4 @@
 version: v2
-inputs:
-  - git_repo: https://github.com/raystack/proton.git
-    branch: main
-    paths:
-      - raystack/stencil
-  - module: buf.build/bufbuild/protovalidate
 managed:
   enabled: true
   override:
