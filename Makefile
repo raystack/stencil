@@ -24,7 +24,6 @@ proto: ## Generate the protobuf files
 	@echo " > generating protobuf from raystack/proton"
 	@echo " > [info] make sure correct version of dependencies are installed using 'make install'"
 	@buf generate
-	@find gen/raystack -mindepth 1 -maxdepth 1 ! -name stencil -exec rm -rf {} +
 	@rm -rf gen/buf
 	@echo " > protobuf compilation finished"
 

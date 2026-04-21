@@ -1,9 +1,9 @@
 version: v2
-# Proto source lives in the proton repo (../proton).
-# After running `buf generate`, remove unwanted generated files:
-#   find gen/raystack -mindepth 1 -maxdepth 1 ! -name stencil -exec rm -rf {} +
 inputs:
-  - directory: ../proton
+  - git_repo: https://github.com/raystack/proton.git
+    branch: main
+    paths:
+      - raystack/stencil
   - module: buf.build/bufbuild/protovalidate
 managed:
   enabled: true
