@@ -4,18 +4,19 @@ import (
 	"context"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/raystack/stencil/core/search"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 )
 
-func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*stencilv1beta1.SearchResponse, error) {
+func (a *API) Search(ctx context.Context, req *connect.Request[stencilv1beta1.SearchRequest]) (*connect.Response[stencilv1beta1.SearchResponse], error) {
 	searchReq := &search.SearchRequest{
-		NamespaceID: in.GetNamespaceId(),
-		Query:       in.GetQuery(),
-		SchemaID:    in.GetSchemaId(),
+		NamespaceID: req.Msg.GetNamespaceId(),
+		Query:       req.Msg.GetQuery(),
+		SchemaID:    req.Msg.GetSchemaId(),
 	}
 
-	switch v := in.GetVersion().(type) {
+	switch v := req.Msg.GetVersion().(type) {
 	case *stencilv1beta1.SearchRequest_VersionId:
 		searchReq.VersionID = v.VersionId
 	case *stencilv1beta1.SearchRequest_History:
@@ -38,10 +39,10 @@ func (a *API) Search(ctx context.Context, in *stencilv1beta1.SearchRequest) (*st
 			Path:        fmt.Sprintf("/v1beta1/namespaces/%s/schemas/%s/versions/%d", hit.NamespaceID, hit.SchemaID, hit.VersionID),
 		})
 	}
-	return &stencilv1beta1.SearchResponse{
+	return connect.NewResponse(&stencilv1beta1.SearchResponse{
 		Hits: hits,
 		Meta: &stencilv1beta1.SearchMeta{
 			Total: uint32(len(hits)),
 		},
-	}, nil
+	}), nil
 }

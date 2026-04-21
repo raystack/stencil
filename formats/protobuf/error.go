@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"connectrpc.com/connect"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -39,6 +38,6 @@ func (c *compatibilityErr) Error() string {
 	return strings.Join(msgs, ";")
 }
 
-func (c *compatibilityErr) GRPCStatus() *status.Status {
-	return status.New(codes.InvalidArgument, c.Error())
+func (c *compatibilityErr) ConnectError() *connect.Error {
+	return connect.NewError(connect.CodeInvalidArgument, c)
 }

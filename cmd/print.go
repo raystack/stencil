@@ -10,7 +10,7 @@ import (
 	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/raystack/salt/cli/printer"
 	"github.com/raystack/salt/cli/terminator"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -32,11 +32,10 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			data, meta, err := fetchSchemaAndMeta(client, version, namespaceID, args[0])
 			if err != nil {

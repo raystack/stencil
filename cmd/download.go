@@ -24,11 +24,10 @@ func downloadSchemaCmd(cdk *CDK) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			data, _, err = fetchSchemaAndMeta(client, version, namespaceID, args[0])
 			if err != nil {

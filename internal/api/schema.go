@@ -2,15 +2,10 @@ package api
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
-	"io"
-	"net/http"
-	"strconv"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"connectrpc.com/connect"
 	"github.com/raystack/stencil/core/schema"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 )
 
 func schemaToProto(s schema.Schema) *stencilv1beta1.Schema {
@@ -22,137 +17,111 @@ func schemaToProto(s schema.Schema) *stencilv1beta1.Schema {
 	}
 }
 
-func (a *API) CreateSchema(ctx context.Context, in *stencilv1beta1.CreateSchemaRequest) (*stencilv1beta1.CreateSchemaResponse, error) {
-	metadata := &schema.Metadata{Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String()}
-	sc, err := a.schema.Create(ctx, in.NamespaceId, in.SchemaId, metadata, in.GetData())
-	return &stencilv1beta1.CreateSchemaResponse{
+func (a *API) CreateSchema(ctx context.Context, req *connect.Request[stencilv1beta1.CreateSchemaRequest]) (*connect.Response[stencilv1beta1.CreateSchemaResponse], error) {
+	metadata := &schema.Metadata{Format: req.Msg.GetFormat().String(), Compatibility: req.Msg.GetCompatibility().String()}
+	sc, err := a.schema.Create(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId(), metadata, req.Msg.GetData())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.CreateSchemaResponse{
 		Version:  sc.Version,
 		Id:       sc.ID,
 		Location: sc.Location,
-	}, err
+	}), nil
 }
-func (a *API) HTTPUpload(w http.ResponseWriter, req *http.Request, pathParams map[string]string) error {
-	data, err := io.ReadAll(req.Body)
+
+func (a *API) CheckCompatibility(ctx context.Context, req *connect.Request[stencilv1beta1.CheckCompatibilityRequest]) (*connect.Response[stencilv1beta1.CheckCompatibilityResponse], error) {
+	err := a.schema.CheckCompatibility(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId(), req.Msg.GetCompatibility().String(), req.Msg.GetData())
 	if err != nil {
-		return err
+		return nil, err
 	}
-	format := req.Header.Get("X-Format")
-	compatibility := req.Header.Get("X-Compatibility")
-	metadata := &schema.Metadata{Format: format, Compatibility: compatibility}
-	namespaceID := pathParams["namespace"]
-	schemaName := pathParams["name"]
-	sc, err := a.schema.Create(req.Context(), namespaceID, schemaName, metadata, data)
+	return connect.NewResponse(&stencilv1beta1.CheckCompatibilityResponse{}), nil
+}
+
+func (a *API) ListSchemas(ctx context.Context, req *connect.Request[stencilv1beta1.ListSchemasRequest]) (*connect.Response[stencilv1beta1.ListSchemasResponse], error) {
+	schemas, err := a.schema.List(ctx, req.Msg.GetId())
 	if err != nil {
-		return err
+		return nil, err
 	}
-	respData, _ := json.Marshal(sc)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	w.Write(respData)
-	return nil
-}
-
-func (a *API) CheckCompatibility(ctx context.Context, req *stencilv1beta1.CheckCompatibilityRequest) (*stencilv1beta1.CheckCompatibilityResponse, error) {
-	resp := &stencilv1beta1.CheckCompatibilityResponse{}
-	err := a.schema.CheckCompatibility(ctx, req.GetNamespaceId(), req.GetSchemaId(), req.GetCompatibility().String(), req.GetData())
-	return resp, err
-}
-
-func (a *API) HTTPCheckCompatibility(w http.ResponseWriter, req *http.Request, pathParams map[string]string) error {
-	data, err := io.ReadAll(req.Body)
-	if err != nil {
-		return err
-	}
-	compatibility := req.Header.Get("X-Compatibility")
-	namespaceID := pathParams["namespace"]
-	schemaName := pathParams["name"]
-	return a.schema.CheckCompatibility(req.Context(), namespaceID, schemaName, compatibility, data)
-}
-
-func (a *API) ListSchemas(ctx context.Context, in *stencilv1beta1.ListSchemasRequest) (*stencilv1beta1.ListSchemasResponse, error) {
-	schemas, err := a.schema.List(ctx, in.Id)
-
 	var ss []*stencilv1beta1.Schema
 	for _, s := range schemas {
 		ss = append(ss, schemaToProto(s))
 	}
-	return &stencilv1beta1.ListSchemasResponse{Schemas: ss}, err
+	return connect.NewResponse(&stencilv1beta1.ListSchemasResponse{Schemas: ss}), nil
 }
 
-func (a *API) GetLatestSchema(ctx context.Context, in *stencilv1beta1.GetLatestSchemaRequest) (*stencilv1beta1.GetLatestSchemaResponse, error) {
-	_, data, err := a.schema.GetLatest(ctx, in.NamespaceId, in.SchemaId)
-	return &stencilv1beta1.GetLatestSchemaResponse{
-		Data: data,
-	}, err
-}
-
-func (a *API) HTTPLatestSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*schema.Metadata, []byte, error) {
-	namespaceID := pathParams["namespace"]
-	schemaName := pathParams["name"]
-	return a.schema.GetLatest(req.Context(), namespaceID, schemaName)
-}
-
-func (a *API) GetSchema(ctx context.Context, in *stencilv1beta1.GetSchemaRequest) (*stencilv1beta1.GetSchemaResponse, error) {
-	_, data, err := a.schema.Get(ctx, in.NamespaceId, in.SchemaId, in.GetVersionId())
-	return &stencilv1beta1.GetSchemaResponse{
-		Data: data,
-	}, err
-}
-
-func (a *API) HTTPGetSchema(w http.ResponseWriter, req *http.Request, pathParams map[string]string) (*schema.Metadata, []byte, error) {
-	namespaceID := pathParams["namespace"]
-	schemaName := pathParams["name"]
-	versionString := pathParams["version"]
-	v, err := strconv.ParseInt(versionString, 10, 32)
+func (a *API) GetLatestSchema(ctx context.Context, req *connect.Request[stencilv1beta1.GetLatestSchemaRequest]) (*connect.Response[stencilv1beta1.GetLatestSchemaResponse], error) {
+	_, data, err := a.schema.GetLatest(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId())
 	if err != nil {
-		return nil, nil, &runtime.HTTPStatusError{HTTPStatus: http.StatusBadRequest, Err: errors.New("invalid version number")}
+		return nil, err
 	}
-	return a.schema.Get(req.Context(), namespaceID, schemaName, int32(v))
+	return connect.NewResponse(&stencilv1beta1.GetLatestSchemaResponse{
+		Data: data,
+	}), nil
 }
 
-func (a *API) ListVersions(ctx context.Context, in *stencilv1beta1.ListVersionsRequest) (*stencilv1beta1.ListVersionsResponse, error) {
-	versions, err := a.schema.ListVersions(ctx, in.NamespaceId, in.SchemaId)
-	return &stencilv1beta1.ListVersionsResponse{Versions: versions}, err
+func (a *API) GetSchema(ctx context.Context, req *connect.Request[stencilv1beta1.GetSchemaRequest]) (*connect.Response[stencilv1beta1.GetSchemaResponse], error) {
+	_, data, err := a.schema.Get(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId(), req.Msg.GetVersionId())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.GetSchemaResponse{
+		Data: data,
+	}), nil
 }
 
-func (a *API) GetSchemaMetadata(ctx context.Context, in *stencilv1beta1.GetSchemaMetadataRequest) (*stencilv1beta1.GetSchemaMetadataResponse, error) {
-	meta, err := a.schema.GetMetadata(ctx, in.NamespaceId, in.SchemaId)
-	return &stencilv1beta1.GetSchemaMetadataResponse{
+func (a *API) ListVersions(ctx context.Context, req *connect.Request[stencilv1beta1.ListVersionsRequest]) (*connect.Response[stencilv1beta1.ListVersionsResponse], error) {
+	versions, err := a.schema.ListVersions(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.ListVersionsResponse{Versions: versions}), nil
+}
+
+func (a *API) GetSchemaMetadata(ctx context.Context, req *connect.Request[stencilv1beta1.GetSchemaMetadataRequest]) (*connect.Response[stencilv1beta1.GetSchemaMetadataResponse], error) {
+	meta, err := a.schema.GetMetadata(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.GetSchemaMetadataResponse{
 		Format:        stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[meta.Format]),
 		Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[meta.Compatibility]),
 		Authority:     meta.Authority,
-	}, err
+	}), nil
 }
 
-func (a *API) UpdateSchemaMetadata(ctx context.Context, in *stencilv1beta1.UpdateSchemaMetadataRequest) (*stencilv1beta1.UpdateSchemaMetadataResponse, error) {
-	meta, err := a.schema.UpdateMetadata(ctx, in.NamespaceId, in.SchemaId, &schema.Metadata{
-		Compatibility: in.Compatibility.String(),
+func (a *API) UpdateSchemaMetadata(ctx context.Context, req *connect.Request[stencilv1beta1.UpdateSchemaMetadataRequest]) (*connect.Response[stencilv1beta1.UpdateSchemaMetadataResponse], error) {
+	meta, err := a.schema.UpdateMetadata(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId(), &schema.Metadata{
+		Compatibility: req.Msg.GetCompatibility().String(),
 	})
-	return &stencilv1beta1.UpdateSchemaMetadataResponse{
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.UpdateSchemaMetadataResponse{
 		Format:        stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[meta.Format]),
 		Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[meta.Compatibility]),
 		Authority:     meta.Authority,
-	}, err
+	}), nil
 }
 
-func (a *API) DeleteSchema(ctx context.Context, in *stencilv1beta1.DeleteSchemaRequest) (*stencilv1beta1.DeleteSchemaResponse, error) {
-	err := a.schema.Delete(ctx, in.NamespaceId, in.SchemaId)
+func (a *API) DeleteSchema(ctx context.Context, req *connect.Request[stencilv1beta1.DeleteSchemaRequest]) (*connect.Response[stencilv1beta1.DeleteSchemaResponse], error) {
+	err := a.schema.Delete(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId())
 	message := "success"
 	if err != nil {
 		message = "failed"
 	}
-	return &stencilv1beta1.DeleteSchemaResponse{
+	return connect.NewResponse(&stencilv1beta1.DeleteSchemaResponse{
 		Message: message,
-	}, err
+	}), err
 }
 
-func (a *API) DeleteVersion(ctx context.Context, in *stencilv1beta1.DeleteVersionRequest) (*stencilv1beta1.DeleteVersionResponse, error) {
-	err := a.schema.DeleteVersion(ctx, in.NamespaceId, in.SchemaId, in.GetVersionId())
+func (a *API) DeleteVersion(ctx context.Context, req *connect.Request[stencilv1beta1.DeleteVersionRequest]) (*connect.Response[stencilv1beta1.DeleteVersionResponse], error) {
+	err := a.schema.DeleteVersion(ctx, req.Msg.GetNamespaceId(), req.Msg.GetSchemaId(), req.Msg.GetVersionId())
 	message := "success"
 	if err != nil {
 		message = "failed"
 	}
-	return &stencilv1beta1.DeleteVersionResponse{
+	return connect.NewResponse(&stencilv1beta1.DeleteVersionResponse{
 		Message: message,
-	}, err
+	}), err
 }

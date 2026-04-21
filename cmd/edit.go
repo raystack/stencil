@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
 func editSchemaCmd(cdk *CDK) *cobra.Command {
 	var comp, namespaceID string
-	var req stencilv1beta1.UpdateSchemaMetadataRequest
 
 	cmd := &cobra.Command{
 		Use:   "edit",
@@ -25,19 +25,20 @@ func editSchemaCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			schemaID := args[0]
 
-			req.NamespaceId = namespaceID
-			req.SchemaId = schemaID
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
+			req := &stencilv1beta1.UpdateSchemaMetadataRequest{
+				NamespaceId:   namespaceID,
+				SchemaId:      schemaID,
+				Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp]),
+			}
 
-			_, err = client.UpdateSchemaMetadata(context.Background(), &req)
+			_, err = client.UpdateSchemaMetadata(context.Background(), connect.NewRequest(req))
 			if err != nil {
 				return err
 			}

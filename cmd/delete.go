@@ -4,16 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
 func deleteSchemaCmd(cdk *CDK) *cobra.Command {
 	var namespaceID string
-	var req stencilv1beta1.DeleteSchemaRequest
-	var reqVer stencilv1beta1.DeleteVersionRequest
 	var version int32
 
 	cmd := &cobra.Command{
@@ -27,28 +26,27 @@ func deleteSchemaCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			schemaID := args[0]
 
 			if version == 0 {
-				req.NamespaceId = namespaceID
-				req.SchemaId = schemaID
-
-				_, err = client.DeleteSchema(context.Background(), &req)
+				_, err = client.DeleteSchema(context.Background(), connect.NewRequest(&stencilv1beta1.DeleteSchemaRequest{
+					NamespaceId: namespaceID,
+					SchemaId:    schemaID,
+				}))
 				if err != nil {
 					return err
 				}
 			} else {
-				reqVer.NamespaceId = namespaceID
-				reqVer.SchemaId = schemaID
-				reqVer.VersionId = version
-
-				_, err = client.DeleteVersion(context.Background(), &reqVer)
+				_, err = client.DeleteVersion(context.Background(), connect.NewRequest(&stencilv1beta1.DeleteVersionRequest{
+					NamespaceId: namespaceID,
+					SchemaId:    schemaID,
+					VersionId:   version,
+				}))
 				if err != nil {
 					return err
 				}

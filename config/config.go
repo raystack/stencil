@@ -2,31 +2,24 @@ package config
 
 import "time"
 
-// NewRelicConfig contains the New Relic go-agent configuration
-type NewRelicConfig struct {
-	Enabled bool   `default:"false"`
-	AppName string `default:"stencil"`
-	License string
-}
-
 // DBConfig contains DB connection details
 type DBConfig struct {
 	ConnectionString string
 }
 
-// GRPCConfig grpc options
-type GRPCConfig struct {
-	MaxRecvMsgSizeInMB int `default:"10"`
-	MaxSendMsgSizeInMB int `default:"10"`
+// CORSConfig contains CORS configuration
+type CORSConfig struct {
+	AllowedOrigins []string `default:"[\"*\"]"`
 }
 
 // Config Server config
 type Config struct {
 	Port string `default:"8080"`
 	// Timeout represents graceful shutdown period. Defaults to 60 seconds.
-	Timeout       time.Duration `default:"60s"`
-	CacheSizeInMB int64         `default:"100"`
-	GRPC          GRPCConfig
-	NewRelic      NewRelicConfig
-	DB            DBConfig
+	Timeout        time.Duration `default:"60s"`
+	CacheSizeInMB  int64         `default:"100"`
+	MaxRecvMsgSize int           `default:"10485760"` // 10 MB
+	MaxSendMsgSize int           `default:"10485760"` // 10 MB
+	CORS           CORSConfig
+	DB             DBConfig
 }

@@ -1,17 +1,22 @@
-version: v1
+version: v2
+# Proto source lives in the proton repo (../proton).
+# After running `buf generate`, remove unwanted generated files:
+#   find gen/raystack -mindepth 1 -maxdepth 1 ! -name stencil -exec rm -rf {} +
+inputs:
+  - directory: ../proton
+  - module: buf.build/bufbuild/protovalidate
+managed:
+  enabled: true
+  override:
+    - file_option: go_package
+      path: raystack/stencil/v1beta1/stencil.proto
+      value: github.com/raystack/stencil/gen/raystack/stencil/v1beta1;stencilv1beta1
 plugins:
-  - name: go
-    out: ./proto
-    opt: paths=source_relative
-  - name: go-grpc
-    out: ./proto
-    opt: paths=source_relative
-  - remote: buf.build/raystack/plugins/validate
-    out: "proto"
-    opt: "paths=source_relative,lang=go"
-  - name: grpc-gateway
-    out: ./proto
-    opt: paths=source_relative
-  - name: openapiv2
-    out: ./proto
-    opt: "allow_merge=true"
+  - remote: buf.build/protocolbuffers/go:v1.36.11
+    out: gen
+    opt:
+      - paths=source_relative
+  - remote: buf.build/connectrpc/go:v1.18.1
+    out: gen
+    opt:
+      - paths=source_relative
