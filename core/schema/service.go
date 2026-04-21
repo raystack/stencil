@@ -10,6 +10,7 @@ import (
 	"github.com/raystack/stencil/internal/store"
 )
 
+// NewService creates a new schema service with the given dependencies.
 func NewService(repo Repository, provider Provider, nsSvc NamespaceService, cache Cache) *Service {
 	return &Service{
 		repo:             repo,
@@ -23,6 +24,7 @@ type NamespaceService interface {
 	Get(ctx context.Context, name string) (namespace.Namespace, error)
 }
 
+// Service provides schema management operations.
 type Service struct {
 	provider         Provider
 	repo             Repository
@@ -75,6 +77,7 @@ func (s *Service) checkCompatibility(ctx context.Context, nsName, schemaName, fo
 	return checkerFn(current, []ParsedSchema{prevSchema})
 }
 
+// Create validates, parses, and stores a new schema version.
 func (s *Service) Create(ctx context.Context, nsName string, schemaName string, metadata *Metadata, data []byte) (SchemaInfo, error) {
 	var scInfo SchemaInfo
 	ns, err := s.namespaceService.Get(ctx, nsName)
@@ -114,18 +117,36 @@ func (s *Service) withMetadata(ctx context.Context, namespace, schemaName string
 	return meta, data, err
 }
 
+// Get retrieves a specific schema version by namespace, name, and version number.
 func (s *Service) Get(ctx context.Context, namespace string, schemaName string, version int32) (*Metadata, []byte, error) {
 	return s.withMetadata(ctx, namespace, schemaName, func() ([]byte, error) { return s.cachedGetSchema(ctx, namespace, schemaName, version) })
 }
 
+// Delete removes a schema and all its versions, and invalidates cached entries.
 func (s *Service) Delete(ctx context.Context, namespace string, schemaName string) error {
-	return s.repo.Delete(ctx, namespace, schemaName)
+	versions, err := s.repo.ListVersions(ctx, namespace, schemaName)
+	if err != nil {
+		return err
+	}
+	if err := s.repo.Delete(ctx, namespace, schemaName); err != nil {
+		return err
+	}
+	for _, v := range versions {
+		s.cache.Del(schemaKeyFunc(namespace, schemaName, v))
+	}
+	return nil
 }
 
+// DeleteVersion removes a specific version of a schema and invalidates the cached entry.
 func (s *Service) DeleteVersion(ctx context.Context, namespace string, schemaName string, version int32) error {
-	return s.repo.DeleteVersion(ctx, namespace, schemaName, version)
+	err := s.repo.DeleteVersion(ctx, namespace, schemaName, version)
+	if err == nil {
+		s.cache.Del(schemaKeyFunc(namespace, schemaName, version))
+	}
+	return err
 }
 
+// GetLatest retrieves the latest version of a schema.
 func (s *Service) GetLatest(ctx context.Context, namespace string, schemaName string) (*Metadata, []byte, error) {
 	version, err := s.repo.GetLatestVersion(ctx, namespace, schemaName)
 	if err != nil {
@@ -134,18 +155,22 @@ func (s *Service) GetLatest(ctx context.Context, namespace string, schemaName st
 	return s.Get(ctx, namespace, schemaName, version)
 }
 
+// GetMetadata retrieves the metadata for a schema.
 func (s *Service) GetMetadata(ctx context.Context, namespace, schemaName string) (*Metadata, error) {
 	return s.repo.GetMetadata(ctx, namespace, schemaName)
 }
 
+// UpdateMetadata updates the metadata for a schema.
 func (s *Service) UpdateMetadata(ctx context.Context, namespace, schemaName string, meta *Metadata) (*Metadata, error) {
 	return s.repo.UpdateMetadata(ctx, namespace, schemaName, meta)
 }
 
+// List returns all schemas in a namespace.
 func (s *Service) List(ctx context.Context, namespaceID string) ([]Schema, error) {
 	return s.repo.List(ctx, namespaceID)
 }
 
+// ListVersions returns all version numbers for a schema.
 func (s *Service) ListVersions(ctx context.Context, namespaceID string, schemaName string) ([]int32, error) {
 	return s.repo.ListVersions(ctx, namespaceID, schemaName)
 }

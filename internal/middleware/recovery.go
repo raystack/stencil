@@ -3,7 +3,7 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"runtime/debug"
 
 	"connectrpc.com/connect"
@@ -16,7 +16,7 @@ func Recovery() connect.UnaryInterceptorFunc {
 			defer func() {
 				if r := recover(); r != nil {
 					stack := debug.Stack()
-					log.Printf("panic recovered: %v\n%s", r, string(stack))
+					slog.ErrorContext(ctx, "panic recovered", "error", r, "stack", string(stack))
 					err = connect.NewError(
 						connect.CodeInternal,
 						fmt.Errorf("internal server error"),

@@ -46,12 +46,12 @@ func downloadSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "Version of the schema")
 
 	cmd.Flags().StringVarP(&output, "output", "o", "", "Path to the output file")
-	cmd.MarkFlagRequired("output")
+	_ = cmd.MarkFlagRequired("output")
 
 	return cmd
 }

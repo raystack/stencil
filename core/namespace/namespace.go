@@ -1,3 +1,4 @@
+// Package namespace provides types and operations for managing schema namespaces.
 package namespace
 
 import (
@@ -5,6 +6,7 @@ import (
 	"time"
 )
 
+// Namespace represents a grouping of schemas with shared configuration.
 type Namespace struct {
 	ID            string
 	Format        string
@@ -14,6 +16,7 @@ type Namespace struct {
 	UpdatedAt     time.Time
 }
 
+// Repository defines the persistence interface for namespaces.
 type Repository interface {
 	Create(context.Context, Namespace) (Namespace, error)
 	Update(context.Context, Namespace) (Namespace, error)

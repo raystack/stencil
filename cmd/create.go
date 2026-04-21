@@ -64,14 +64,14 @@ func createSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().StringVarP(&format, "format", "f", "", "Schema format")
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Schema compatibility")
 
 	cmd.Flags().StringVarP(&file, "file", "F", "", "Path to the schema file")
-	cmd.MarkFlagRequired("file")
+	_ = cmd.MarkFlagRequired("file")
 
 	return cmd
 }

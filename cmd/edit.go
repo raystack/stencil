@@ -50,10 +50,10 @@ func editSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Schema compatibility")
-	cmd.MarkFlagRequired("comp")
+	_ = cmd.MarkFlagRequired("comp")
 
 	return cmd
 }

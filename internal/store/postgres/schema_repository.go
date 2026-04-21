@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
 	"github.com/raystack/stencil/core/schema"
+	"github.com/raystack/stencil/internal/store"
 )
 
 type SchemaRepository struct {
@@ -84,10 +85,18 @@ func (r *SchemaRepository) List(ctx context.Context, namespaceID string) ([]sche
 }
 
 func (r *SchemaRepository) Delete(ctx context.Context, ns string, sc string) error {
-	_, err := r.db.Exec(ctx, deleteSchemaQuery, ns, sc)
+	ct, err := r.db.Exec(ctx, deleteSchemaQuery, ns, sc)
+	if err != nil {
+		return wrapError(err, "delete schema")
+	}
+	if ct.RowsAffected() == 0 {
+		return store.NoRowsErr.WithErr(nil, "schema")
+	}
 	// Idempotent operation to clean orphaned data.
-	r.db.Exec(ctx, deleteOrphanedData)
-	return wrapError(err, "delete schema")
+	if _, execErr := r.db.Exec(ctx, deleteOrphanedData); execErr != nil {
+		return wrapError(execErr, "delete schema")
+	}
+	return nil
 }
 
 func (r *SchemaRepository) ListVersions(ctx context.Context, ns string, sc string) ([]int32, error) {
@@ -97,10 +106,18 @@ func (r *SchemaRepository) ListVersions(ctx context.Context, ns string, sc strin
 }
 
 func (r *SchemaRepository) DeleteVersion(ctx context.Context, ns string, sc string, version int32) error {
-	_, err := r.db.Exec(ctx, deleteVersionQuery, ns, sc, version)
+	ct, err := r.db.Exec(ctx, deleteVersionQuery, ns, sc, version)
+	if err != nil {
+		return wrapError(err, "delete version")
+	}
+	if ct.RowsAffected() == 0 {
+		return store.NoRowsErr.WithErr(nil, "version")
+	}
 	// Idempotent operation to clean orphaned data.
-	r.db.Exec(ctx, deleteOrphanedData)
-	return wrapError(err, "delete version")
+	if _, execErr := r.db.Exec(ctx, deleteOrphanedData); execErr != nil {
+		return wrapError(execErr, "delete version")
+	}
+	return nil
 }
 
 const schemaInsertQuery = `

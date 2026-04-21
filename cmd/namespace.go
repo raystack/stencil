@@ -219,13 +219,13 @@ func editNamespaceCmd(cdk *CDK) *cobra.Command {
 
 	// TODO(Ravi) : Edit should not require all flags
 	cmd.Flags().StringVarP(&format, "format", "f", "", "schema format")
-	cmd.MarkFlagRequired("format")
+	_ = cmd.MarkFlagRequired("format")
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "schema compatibility")
-	cmd.MarkFlagRequired("comp")
+	_ = cmd.MarkFlagRequired("comp")
 
 	cmd.Flags().StringVarP(&desc, "desc", "d", "", "description")
-	cmd.MarkFlagRequired("desc")
+	_ = cmd.MarkFlagRequired("desc")
 
 	return cmd
 }

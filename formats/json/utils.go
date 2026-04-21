@@ -48,7 +48,7 @@ func exploreAdditionalItems(jsonSchema *jsonschema.Schema, locationSchemaMap map
 }
 
 func exploreProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
-	if jsonSchema.Properties == nil || len(jsonSchema.Properties) == 0 {
+	if len(jsonSchema.Properties) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.Properties {
@@ -57,7 +57,7 @@ func exploreProperties(jsonSchema *jsonschema.Schema, locationSchemaMap map[stri
 }
 
 func exploreAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
-	if jsonSchema.AnyOf == nil || len(jsonSchema.AnyOf) == 0 {
+	if len(jsonSchema.AnyOf) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.AnyOf {
@@ -66,7 +66,7 @@ func exploreAnyOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*j
 }
 
 func exploreOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
-	if jsonSchema.OneOf == nil || len(jsonSchema.OneOf) == 0 {
+	if len(jsonSchema.OneOf) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.OneOf {
@@ -75,7 +75,7 @@ func exploreOneOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*j
 }
 
 func exploreAllOf(jsonSchema *jsonschema.Schema, locationSchemaMap map[string]*jsonschema.Schema, baseLocation string) {
-	if jsonSchema.AllOf == nil || len(jsonSchema.AllOf) == 0 {
+	if len(jsonSchema.AllOf) == 0 {
 		return
 	}
 	for _, schema := range jsonSchema.AllOf {

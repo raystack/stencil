@@ -1,36 +1,34 @@
-name: "Lint"
+name: Lint
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   golangci:
-    name: "Lint"
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@v5
-      - uses: actions/checkout@v4
-      - name: Crete empty build directory
-        run: mkdir ui/build && touch ui/build/.gitkeep
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Create empty UI build directory
+        run: mkdir -p ui/build && touch ui/build/.gitkeep
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v9
         with:
-          version: v1.64
-
-  codeql:
-    name: "Analyze with CodeQL"
-    runs-on: "ubuntu-latest"
-    permissions:
-      actions: "read"
-      contents: "read"
-      security-events: "write"
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["go"]
-    steps:
-      - uses: "actions/checkout@v2"
-      - uses: "github/codeql-action/init@v1"
-        with:
-          languages: "${{ matrix.language }}"
-      - uses: "github/codeql-action/autobuild@v1"
-      - uses: "github/codeql-action/analyze@v1"
+          version: latest
+          args: --timeout=5m

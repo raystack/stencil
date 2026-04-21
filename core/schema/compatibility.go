@@ -2,7 +2,10 @@ package schema
 
 import "go.uber.org/multierr"
 
+// ValidationStrategy defines a function that validates compatibility between two schemas.
 type ValidationStrategy func(ParsedSchema, ParsedSchema) error
+
+// CompatibilityFn defines a function that checks compatibility against a list of previous schemas.
 type CompatibilityFn func(ParsedSchema, []ParsedSchema) error
 
 func validateLatest(strategy ValidationStrategy) CompatibilityFn {
@@ -37,7 +40,7 @@ func fullStrategy(current, prev ParsedSchema) error {
 	return current.IsFullCompatible(prev)
 }
 
-func defaultCompatibilityFn(current ParsedSchema, prevs []ParsedSchema) error {
+func defaultCompatibilityFn(_ ParsedSchema, _ []ParsedSchema) error {
 	return nil
 }
 

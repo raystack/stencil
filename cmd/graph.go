@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/raystack/stencil/pkg/graph"
 	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
+	"github.com/raystack/stencil/pkg/graph"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -63,7 +63,7 @@ func graphSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "provide namespace/group or entity name")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "provide version number")
 

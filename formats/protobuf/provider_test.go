@@ -2,11 +2,11 @@ package protobuf_test
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"math/rand"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
@@ -68,7 +68,7 @@ func getDescriptorData(t *testing.T, path string, includeImports bool) []byte {
 	targetFile := filepath.Join(t.TempDir(), getRandomName())
 	err := runProtoc(root, includeImports, targetFile)
 	assert.NoError(t, err)
-	data, err := ioutil.ReadFile(targetFile)
+	data, err := os.ReadFile(targetFile)
 	assert.NoError(t, err)
 	return data
 }

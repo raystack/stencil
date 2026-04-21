@@ -123,7 +123,9 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 			}
 
 			var placeholder map[string]interface{}
-			json.Unmarshal(eJson, &placeholder)
+			if err := json.Unmarshal(eJson, &placeholder); err != nil {
+				return err
+			}
 			config := formatter.AsciiFormatterConfig{
 				ShowArrayIndex: true,
 				Coloring:       true,
@@ -147,11 +149,11 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 	cmd.Flags().Int32Var(&earlierVersion, "earlier-version", 0, "Earlier version of the schema")
-	cmd.MarkFlagRequired("earlier-version")
+	_ = cmd.MarkFlagRequired("earlier-version")
 	cmd.Flags().Int32Var(&laterVersion, "later-version", 0, "Later version of the schema")
-	cmd.MarkFlagRequired("later-version")
+	_ = cmd.MarkFlagRequired("later-version")
 	cmd.Flags().StringVar(&fullname, "fullname", "", "Only applicable for FORMAT_PROTO. fullname of proto schema eg: raystack.common.v1.Version")
 	return cmd
 }

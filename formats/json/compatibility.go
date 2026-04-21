@@ -1,9 +1,8 @@
 package json
 
 import (
-	"fmt"
+	"log/slog"
 
-	"github.com/raystack/stencil/pkg/logger"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
@@ -156,7 +155,7 @@ func TypeCheckExecutor(spec TypeCheckSpec) SchemaCompareCheck {
 			case "null":
 
 			default:
-				logger.Logger.Warn(fmt.Sprintf("Unexpected type %s", schemaTypes))
+				slog.Warn("unexpected schema type", "type", schemaTypes)
 			}
 		}
 	}

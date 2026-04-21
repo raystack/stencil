@@ -1,35 +1,27 @@
+version: "2"
 run:
   timeout: 5m
-output:
-  formats:
-    - format: colored-line-number
+formatters:
+  enable:
+    - goimports
+    - gofmt
 linters:
-  enable-all: false
-  disable-all: true
   enable:
     - govet
-    - goimports
     - thelper
     - tparallel
     - unconvert
     - wastedassign
-    - revive
     - unused
-    - gofmt
     - whitespace
     - misspell
-linters-settings:
-  revive:
-    ignore-generated-header: true
-    severity: warning
-issues:
-  exclude-dirs:
-    - api/proto
-    - clients/java
-    - clients/js
-    - docs
-    - scripts
-    - ui
-  fix: true
-severity:
-  default-severity: error
+    - errcheck
+    - staticcheck
+  exclusions:
+    paths:
+      - clients/java
+      - clients/js
+      - docs
+      - scripts
+      - ui
+      - gen
