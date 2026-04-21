@@ -4,15 +4,24 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
   pull_request:
-  workflow_dispatch:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:13
+        image: postgres:15
         env:
           POSTGRES_HOST: localhost
           POSTGRES_USER: postgres
@@ -26,18 +35,24 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
-          go-version: ^1.20
-        id: go
+          go-version-file: "go.mod"
+          cache: true
+      - name: Create empty UI build directory
+        run: mkdir -p ui/build && touch ui/build/.gitkeep
       - name: Install Protoc
-        uses: arduino/setup-protoc@v1
+        uses: arduino/setup-protoc@v3
         with:
-          version: "3.x"
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-      - name: Test
+          version: "25.x"
+      - name: Run Test
         run: make test
         env:
           TEST_DB_CONNECTIONSTRING: "postgres://postgres:postgres@localhost:5432/test_stencil_db?sslmode=disable"
+      - name: Install goveralls and send coverage
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          go install github.com/mattn/goveralls@latest
+          goveralls -coverprofile=coverage.out -service=github

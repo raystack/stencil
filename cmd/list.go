@@ -76,7 +76,7 @@ func listSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	return cmd
 }

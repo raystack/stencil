@@ -1,17 +1,19 @@
-name: docs
+name: Docs
 
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**.md"
   workflow_dispatch:
 
 jobs:
   documentation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
       - name: Installation
         uses: bahmutov/npm-install@v1
         with:

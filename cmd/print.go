@@ -6,7 +6,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/alecthomas/chroma/quick"
-	"github.com/jhump/protoreflect/desc"
+	"github.com/jhump/protoreflect/desc" //nolint:staticcheck
 	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/raystack/salt/cli/printer"
 	"github.com/raystack/salt/cli/terminator"
@@ -54,7 +54,9 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 					return err
 				}
 			case "FORMAT_PROTOBUF":
-				printProtoSchema(data, filter)
+				if err := printProtoSchema(data, filter); err != nil {
+					return err
+				}
 			default:
 				fmt.Printf("%s Unknown schema format: %s\n", printer.Red(printer.Icon("failure")), format)
 			}
@@ -63,7 +65,7 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Provide namespace/group or entity name")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().Int32VarP(&version, "version", "v", 0, "Provide version number")
 	cmd.Flags().StringVar(&filter, "filter", "", "Filter schema files by path prefix, e.g., --filter=google/protobuf")
@@ -73,12 +75,14 @@ func printSchemaCmd(cdk *CDK) *cobra.Command {
 
 func printSchema(data []byte) error {
 	page := terminator.NewPager()
-	page.Start()
+	if err := page.Start(); err != nil {
+		return err
+	}
 	defer page.Stop()
 
 	err := quick.Highlight(page.Out, string(data), "JSON", "terminal16m", "solarized-light")
 	if err != nil {
-		page.Out.Write(data)
+		_, _ = page.Out.Write(data)
 	}
 	return nil
 }
@@ -113,12 +117,14 @@ func printProtoSchema(data []byte, filter string) error {
 	}
 
 	page := terminator.NewPager()
-	page.Start()
+	if err := page.Start(); err != nil {
+		return err
+	}
 	defer page.Stop()
 
 	err = quick.Highlight(page.Out, schema, "Protocol Buffer", "terminal16m", "solarized-light")
 	if err != nil {
-		fmt.Fprint(page.Out, schema)
+		_, _ = fmt.Fprint(page.Out, schema)
 	}
 	return nil
 }

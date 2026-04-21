@@ -60,6 +60,7 @@ func (e StorageErr) Unwrap() error {
 	return e.err
 }
 
+// Is reports whether the target error matches this StorageErr's kind.
 func (e StorageErr) Is(err error) bool {
 	sErr, ok := err.(StorageErr)
 	if !ok {

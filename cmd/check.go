@@ -60,13 +60,13 @@ func checkSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "Parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	cmd.Flags().StringVarP(&comp, "comp", "c", "", "Schema compatibility")
-	cmd.MarkFlagRequired("comp")
+	_ = cmd.MarkFlagRequired("comp")
 
 	cmd.Flags().StringVarP(&file, "file", "F", "", "Path to the schema file")
-	cmd.MarkFlagRequired("file")
+	_ = cmd.MarkFlagRequired("file")
 
 	return cmd
 }

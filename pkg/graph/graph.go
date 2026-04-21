@@ -9,12 +9,14 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
+// Graph node rendering constants.
 const (
 	NodeShape = "note"
 	NodeStyle = "filled"
 	NodeColor = "cornsilk"
 )
 
+// GetProtoFileDependencyGraph builds a directed graph of proto file dependencies.
 func GetProtoFileDependencyGraph(file *descriptorpb.FileDescriptorSet) (*dot.Graph, error) {
 	files, err := protodesc.NewFiles(file)
 	if err != nil {

@@ -1,3 +1,4 @@
+// Package ui provides embedded frontend assets.
 package ui
 
 import "embed"

@@ -59,7 +59,7 @@ func infoSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespace, "namespace", "n", "", "Provide schema namespace")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	return cmd
 }
@@ -117,7 +117,7 @@ func versionSchemaCmd(cdk *CDK) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&namespaceID, "namespace", "n", "", "parent namespace ID")
-	cmd.MarkFlagRequired("namespace")
+	_ = cmd.MarkFlagRequired("namespace")
 
 	return cmd
 }
