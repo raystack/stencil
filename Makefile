@@ -20,11 +20,9 @@ vet: ## Run the go vet tool
 lint: ## Run golang-ci lint
 	golangci-lint run
 
-PROTON_REF ?= main
-
 proto: ## Generate the protobuf files
-	@echo " > generating protobuf from raystack/proton (ref: ${PROTON_REF})"
-	@buf generate "https://github.com/raystack/proton.git#ref=${PROTON_REF}" --path raystack/stencil
+	@echo " > generating protobuf from raystack/proton"
+	@buf generate
 	@echo " > protobuf compilation finished"
 
 clean: ## Clean the build artifacts

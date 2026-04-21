@@ -1,4 +1,9 @@
 version: v2
+inputs:
+  - git_repo: https://github.com/raystack/proton.git
+    ref: 8ef3e30859491f877a791fe0f9039370235c99b2
+    paths:
+      - raystack/stencil
 managed:
   enabled: true
   override:
