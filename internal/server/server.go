@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -27,6 +26,7 @@ import (
 	"github.com/raystack/stencil/internal/api"
 	"github.com/raystack/stencil/internal/middleware"
 	"github.com/raystack/stencil/internal/store/postgres"
+	"github.com/raystack/stencil/pkg/logger"
 	"github.com/raystack/stencil/ui"
 	"github.com/rs/cors"
 	"golang.org/x/net/http2"
@@ -35,7 +35,7 @@ import (
 
 // Start Entry point to start the server
 func Start(cfg config.Config) {
-	logger := slog.Default().With("component", "server")
+	logger.Init(cfg.LogLevel)
 
 	db := postgres.NewStore(cfg.DB.ConnectionString)
 	defer db.Close()
@@ -99,7 +99,8 @@ func Start(cfg config.Config) {
 	// UI SPA handler
 	spaHandler, err := spa.Handler(ui.Assets, "build", "index.html", false)
 	if err != nil {
-		log.Fatalln("Failed to load spa:", err)
+		slog.Error("failed to load spa", "error", err)
+		os.Exit(1)
 	}
 	mux.Handle("/ui/", http.StripPrefix("/ui", spaHandler))
 
@@ -127,9 +128,10 @@ func Start(cfg config.Config) {
 
 	// Start server in goroutine
 	go func() {
-		logger.Info("starting server", "addr", addr)
+		slog.Info("starting server", "addr", addr)
 		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("server error: %v", err)
+			slog.Error("server error", "error", err)
+			os.Exit(1)
 		}
 	}()
 
@@ -138,12 +140,13 @@ func Start(cfg config.Config) {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	logger.Info("shutting down server")
+	slog.Info("shutting down server")
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Timeout)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("server forced to shutdown: %v", err)
+		slog.Error("server forced to shutdown", "error", err)
+		os.Exit(1)
 	}
-	logger.Info("server stopped")
+	slog.Info("server stopped")
 }

@@ -1,9 +1,10 @@
 package json
 
 import (
+	"log/slog"
+
 	"github.com/google/uuid"
 	"github.com/raystack/stencil/core/schema"
-	"github.com/raystack/stencil/pkg/logger"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 	_ "github.com/santhosh-tekuri/jsonschema/v5/httploader" // imported to compile http references in json schema
 	"go.uber.org/multierr"
@@ -32,12 +33,12 @@ func (s *Schema) GetCanonicalValue() *schema.SchemaFile {
 func (s *Schema) IsBackwardCompatible(against schema.ParsedSchema) error {
 	sc, err := jsonschema.CompileString(schemaURI, string(s.data))
 	if err != nil {
-		logger.Logger.Warn("unable to compile schema to check for backward compatibility")
+		slog.Warn("unable to compile schema to check for backward compatibility", "error", err)
 		return err
 	}
 	againstSchema, err := jsonschema.CompileString(schemaURI, string(against.GetCanonicalValue().Data))
 	if err != nil {
-		logger.Logger.Warn("unable to compile against schema to check for backward compatibility")
+		slog.Warn("unable to compile against schema to check for backward compatibility", "error", err)
 		return err
 	}
 	jsonSchemaMap := exploreSchema(sc)

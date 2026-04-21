@@ -17,6 +17,7 @@ type Config struct {
 	Port string `default:"8080"`
 	// Timeout represents graceful shutdown period. Defaults to 60 seconds.
 	Timeout        time.Duration `default:"60s"`
+	LogLevel       string        `default:"info"`
 	CacheSizeInMB  int64         `default:"100"`
 	MaxRecvMsgSize int           `default:"10485760"` // 10 MB
 	MaxSendMsgSize int           `default:"10485760"` // 10 MB

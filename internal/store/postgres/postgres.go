@@ -4,7 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -12,7 +12,6 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/httpfs"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"github.com/raystack/stencil/internal/store"
@@ -34,11 +33,13 @@ type DB struct {
 // NewStore create a postgres store
 func NewStore(conn string) *DB {
 	cc, _ := pgxpool.ParseConfig(conn)
-	cc.ConnConfig.Logger = zapadapter.NewLogger(logger.Logger)
+	cc.ConnConfig.Logger = &logger.PgxLogger{}
+	cc.ConnConfig.LogLevel = pgx.LogLevelWarn
 
 	pgxPool, err := pgxpool.ConnectConfig(context.Background(), cc)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("failed to connect to database", "error", err)
+		panic(err)
 	}
 
 	return &DB{Pool: pgxPool}
@@ -59,7 +60,7 @@ func Migrate(connURL string) error {
 	if err != nil {
 		return errors.Wrap(err, "db migrator")
 	}
-	defer m.Close()
+	defer func() { _, _ = m.Close() }()
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return errors.Wrap(err, "db migrator")
