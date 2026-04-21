@@ -6,7 +6,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/stencil/pkg/graph"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -25,11 +25,10 @@ func graphSchemaCmd(cdk *CDK) *cobra.Command {
 			$ stencil schema graph booking -n raystack -v 1 -o ./vis.dot
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			schemaID := args[0]
 

@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"os"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/dustin/go-humanize"
 	"github.com/raystack/salt/cli/printer"
 	"github.com/raystack/salt/cli/prompter"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func NamespaceCmd(cdk *CDK) *cobra.Command {
@@ -42,8 +41,6 @@ func NamespaceCmd(cdk *CDK) *cobra.Command {
 }
 
 func listNamespaceCmd(cdk *CDK) *cobra.Command {
-	var req stencilv1beta1.ListNamespacesRequest
-
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List all namespaces",
@@ -52,18 +49,17 @@ func listNamespaceCmd(cdk *CDK) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd, cdk)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			res, err := client.ListNamespaces(context.Background(), &req)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
 
-			namespaces := res.GetNamespaces()
+			res, err := client.ListNamespaces(context.Background(), connect.NewRequest(&stencilv1beta1.ListNamespacesRequest{}))
+			if err != nil {
+				return err
+			}
+
+			namespaces := res.Msg.GetNamespaces()
 			spinner.Stop()
 
 			if len(namespaces) == 0 {
@@ -99,14 +95,13 @@ func listNamespaceCmd(cdk *CDK) *cobra.Command {
 
 func createNamespaceCmd(cdk *CDK) *cobra.Command {
 	var id, desc, format, comp string
-	var req stencilv1beta1.CreateNamespaceRequest
 
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create a namespace",
 		Args:  cobra.ExactArgs(0),
 		Example: heredoc.Doc(`
-			$ stencil namespace create 
+			$ stencil namespace create
 			$ stencil namespace create -n=raystack -f=FORMAT_PROTOBUF -c=COMPATIBILITY_BACKWARD -d="Event schemas"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -130,33 +125,37 @@ func createNamespaceCmd(cdk *CDK) *cobra.Command {
 				comp = comps[formatAnswer]
 			}
 
-			req.Id = id
-			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
-			req.Description = desc
+			req := &stencilv1beta1.CreateNamespaceRequest{
+				Id:            id,
+				Format:        stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format]),
+				Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp]),
+				Description:   desc,
+			}
 
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
-			res, err := client.CreateNamespace(context.Background(), &req)
+			res, err := client.CreateNamespace(context.Background(), connect.NewRequest(req))
 			spinner.Stop()
 
 			if err != nil {
-				errStatus, _ := status.FromError(err)
-				if codes.AlreadyExists == errStatus.Code() {
+				connectErr := new(connect.Error)
+				if ok := err.(*connect.Error); ok != nil {
+					connectErr = ok
+				}
+				if connectErr.Code() == connect.CodeAlreadyExists {
 					fmt.Printf("\n%s Namespace with id '%s' already exist.\n", printer.Icon("failure"), id)
 					return nil
 				}
 				return err
 			}
 
-			namespace := res.GetNamespace()
+			namespace := res.Msg.GetNamespace()
 			fmt.Printf("\n%s Created namespace with id %s.\n", printer.Green(printer.Icon("success")), printer.Bold(printer.Blue(namespace.GetId())))
 			return nil
 		},
@@ -173,7 +172,6 @@ func createNamespaceCmd(cdk *CDK) *cobra.Command {
 func editNamespaceCmd(cdk *CDK) *cobra.Command {
 	var format, comp string
 	var desc string
-	var req stencilv1beta1.UpdateNamespaceRequest
 
 	cmd := &cobra.Command{
 		Use:   "edit <id>",
@@ -186,32 +184,33 @@ func editNamespaceCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			id := args[0]
 
-			req.Id = id
-			req.Format = stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format])
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
-			req.Description = desc
+			req := &stencilv1beta1.UpdateNamespaceRequest{
+				Id:            id,
+				Format:        stencilv1beta1.Schema_Format(stencilv1beta1.Schema_Format_value[format]),
+				Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp]),
+				Description:   desc,
+			}
 
-			res, err := client.UpdateNamespace(context.Background(), &req)
+			res, err := client.UpdateNamespace(context.Background(), connect.NewRequest(req))
 			spinner.Stop()
 
 			if err != nil {
-				errStatus, _ := status.FromError(err)
-				if codes.NotFound == errStatus.Code() {
+				connectErr, ok := err.(*connect.Error)
+				if ok && connectErr.Code() == connect.CodeNotFound {
 					fmt.Printf("%s Namespace with id '%s' does not exist.\n", printer.Icon("failure"), id)
 					return nil
 				}
 				return err
 			}
 
-			namespace := res.Namespace
+			namespace := res.Msg.GetNamespace()
 
 			fmt.Printf("%s Updated namespace with id %s.\n", printer.Green(printer.Icon("success")), printer.Bold(printer.Blue(namespace.GetId())))
 			return nil
@@ -232,8 +231,6 @@ func editNamespaceCmd(cdk *CDK) *cobra.Command {
 }
 
 func viewNamespaceCmd(cdk *CDK) *cobra.Command {
-	var req stencilv1beta1.GetNamespaceRequest
-
 	cmd := &cobra.Command{
 		Use:   "view <id>",
 		Short: "View a namespace",
@@ -245,28 +242,25 @@ func viewNamespaceCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			id := args[0]
-			req.Id = id
-
-			res, err := client.GetNamespace(context.Background(), &req)
+			res, err := client.GetNamespace(context.Background(), connect.NewRequest(&stencilv1beta1.GetNamespaceRequest{Id: id}))
 			spinner.Stop()
 
 			if err != nil {
-				errStatus, _ := status.FromError(err)
-				if codes.NotFound == errStatus.Code() {
+				connectErr, ok := err.(*connect.Error)
+				if ok && connectErr.Code() == connect.CodeNotFound {
 					fmt.Printf("%s Namespace with id %s does not exist.\n", printer.Icon("failure"), printer.Bold(printer.Blue(id)))
 					return nil
 				}
 				return err
 			}
 
-			namespace := res.GetNamespace()
+			namespace := res.Msg.GetNamespace()
 
 			printNamespace(namespace)
 
@@ -278,8 +272,6 @@ func viewNamespaceCmd(cdk *CDK) *cobra.Command {
 }
 
 func deleteNamespaceCmd(cdk *CDK) *cobra.Command {
-	var req stencilv1beta1.DeleteNamespaceRequest
-
 	cmd := &cobra.Command{
 		Use:   "delete <id>",
 		Short: "Delete a namespace",
@@ -300,21 +292,18 @@ func deleteNamespaceCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
-			req.Id = id
-
-			_, err = client.DeleteNamespace(context.Background(), &req)
+			_, err = client.DeleteNamespace(context.Background(), connect.NewRequest(&stencilv1beta1.DeleteNamespaceRequest{Id: id}))
 
 			spinner.Stop()
 
 			if err != nil {
-				errStatus, _ := status.FromError(err)
-				if codes.NotFound == errStatus.Code() {
+				connectErr, ok := err.(*connect.Error)
+				if ok && connectErr.Code() == connect.CodeNotFound {
 					fmt.Printf("\n%s Namespace with id '%s' does not exist.\n", printer.Icon("failure"), id)
 					return nil
 				}

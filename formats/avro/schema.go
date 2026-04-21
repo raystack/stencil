@@ -3,8 +3,8 @@ package avro
 import (
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	av "github.com/hamba/avro"
 	"github.com/raystack/stencil/core/schema"
 	"go.uber.org/multierr"
@@ -35,7 +35,7 @@ func (s *Schema) verify(against schema.ParsedSchema) (*Schema, error) {
 	if s.Format() == against.Format() && ok {
 		return prev, nil
 	}
-	return nil, &runtime.HTTPStatusError{HTTPStatus: 400, Err: fmt.Errorf("current and prev schema formats(%s, %s) are different", s.Format(), against.Format())}
+	return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("current and prev schema formats(%s, %s) are different", s.Format(), against.Format()))
 }
 
 // IsBackwardCompatible checks backward compatibility against given schema

@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
+	stencilv1beta1connect "github.com/raystack/stencil/gen/raystack/stencil/v1beta1/stencilv1beta1connect"
 	"github.com/spf13/cobra"
 	"github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
@@ -24,23 +26,23 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 	var earlierVersion int32
 	var laterVersion int32
 
-	var schemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
-		res, err := client.GetSchema(context.Background(), req)
+	var schemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1connect.StencilServiceClient) ([]byte, error) {
+		res, err := client.GetSchema(context.Background(), connect.NewRequest(req))
 		if err != nil {
 			return nil, err
 		}
-		return res.Data, nil
+		return res.Msg.GetData(), nil
 	}
-	var protoSchemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1.StencilServiceClient) ([]byte, error) {
+	var protoSchemaFetcher = func(req *stencilv1beta1.GetSchemaRequest, client stencilv1beta1connect.StencilServiceClient) ([]byte, error) {
 		if fullname == "" {
 			return nil, fmt.Errorf("fullname flag is mandator for FORMAT_PROTO")
 		}
-		res, err := client.GetSchema(context.Background(), req)
+		res, err := client.GetSchema(context.Background(), connect.NewRequest(req))
 		if err != nil {
 			return nil, err
 		}
 		fds := &descriptorpb.FileDescriptorSet{}
-		if err := proto.Unmarshal(res.Data, fds); err != nil {
+		if err := proto.Unmarshal(res.Msg.GetData(), fds); err != nil {
 			return nil, fmt.Errorf("descriptor set file is not valid. %w", err)
 		}
 		files, err := protodesc.NewFiles(fds)
@@ -75,10 +77,6 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 
 			schemaID := args[0]
 
-			metaReq := stencilv1beta1.GetSchemaMetadataRequest{
-				NamespaceId: namespace,
-				SchemaId:    schemaID,
-			}
 			eReq := &stencilv1beta1.GetSchemaRequest{
 				NamespaceId: namespace,
 				SchemaId:    schemaID,
@@ -90,17 +88,20 @@ func diffSchemaCmd(cdk *CDK) *cobra.Command {
 				VersionId:   laterVersion,
 			}
 
-			client, cancel, err := createClient(cmd, cdk)
-			if err != nil {
-				return err
-			}
-			defer cancel()
-
-			meta, err := client.GetSchemaMetadata(context.Background(), &metaReq)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
 
+			metaRes, err := client.GetSchemaMetadata(context.Background(), connect.NewRequest(&stencilv1beta1.GetSchemaMetadataRequest{
+				NamespaceId: namespace,
+				SchemaId:    schemaID,
+			}))
+			if err != nil {
+				return err
+			}
+
+			meta := metaRes.Msg
 			var getSchema = schemaFetcher
 			if meta.Format == *stencilv1beta1.Schema_FORMAT_PROTOBUF.Enum() {
 				getSchema = protoSchemaFetcher

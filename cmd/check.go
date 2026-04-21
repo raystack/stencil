@@ -2,20 +2,18 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc/status"
 )
 
 func checkSchemaCmd(cdk *CDK) *cobra.Command {
 	var comp, file, namespaceID string
-	var req stencilv1beta1.CheckCompatibilityRequest
 
 	cmd := &cobra.Command{
 		Use:   "check <id>",
@@ -36,23 +34,23 @@ func checkSchemaCmd(cdk *CDK) *cobra.Command {
 				return err
 			}
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			schemaID := args[0]
 
-			req.Data = fileData
-			req.NamespaceId = namespaceID
-			req.SchemaId = schemaID
-			req.Compatibility = stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp])
+			req := &stencilv1beta1.CheckCompatibilityRequest{
+				Data:          fileData,
+				NamespaceId:   namespaceID,
+				SchemaId:      schemaID,
+				Compatibility: stencilv1beta1.Schema_Compatibility(stencilv1beta1.Schema_Compatibility_value[comp]),
+			}
 
-			_, err = client.CheckCompatibility(context.Background(), &req)
+			_, err = client.CheckCompatibility(context.Background(), connect.NewRequest(req))
 			if err != nil {
-				errStatus := status.Convert(err)
-				return errors.New(errStatus.Message())
+				return err
 			}
 
 			spinner.Stop()

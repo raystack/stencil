@@ -1,55 +1,34 @@
 package cmd
 
 import (
-	"context"
-	"time"
+	"net/http"
 
 	"github.com/raystack/salt/config"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1connect "github.com/raystack/stencil/gen/raystack/stencil/v1beta1/stencilv1beta1connect"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type ClientConfig struct {
 	Host string `yaml:"host" cmdx:"host"`
 }
 
-func createConnection(ctx context.Context, host string) (*grpc.ClientConn, error) {
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	}
-
-	return grpc.DialContext(ctx, host, opts...)
-}
-
-func createClient(cmd *cobra.Command, cdk *CDK) (stencilv1beta1.StencilServiceClient, func(), error) {
+func createClient(cmd *cobra.Command, cdk *CDK) (stencilv1beta1connect.StencilServiceClient, error) {
 	c, err := loadClientConfig(cmd, cdk.Config)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	host := c.Host
 
 	if host == "" {
-		return nil, nil, ErrClientConfigHostNotFound
+		return nil, ErrClientConfigHostNotFound
 	}
 
-	dialTimeoutCtx, dialCancel := context.WithTimeout(cmd.Context(), time.Second*2)
-	conn, err := createConnection(dialTimeoutCtx, host)
-	if err != nil {
-		dialCancel()
-		return nil, nil, err
-	}
-
-	cancel := func() {
-		dialCancel()
-		conn.Close()
-	}
-
-	client := stencilv1beta1.NewStencilServiceClient(conn)
-	return client, cancel, nil
+	client := stencilv1beta1connect.NewStencilServiceClient(
+		http.DefaultClient,
+		host,
+	)
+	return client, nil
 }
 
 func loadClientConfig(cmd *cobra.Command, cmdxConfig *config.Loader) (*ClientConfig, error) {

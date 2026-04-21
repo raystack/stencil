@@ -3,8 +3,7 @@ package store
 import (
 	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"connectrpc.com/connect"
 )
 
 type errKind int
@@ -39,15 +38,15 @@ func (e StorageErr) Error() string {
 	return e.name
 }
 
-// GRPCStatus this is used by gateway interceptor to return appropriate http status code and message
-func (e StorageErr) GRPCStatus() *status.Status {
+// ConnectError returns an appropriate Connect error for this storage error.
+func (e StorageErr) ConnectError() *connect.Error {
 	if e.kind == noRows {
-		return status.New(codes.NotFound, fmt.Sprintf("%s %s", e.name, "not found"))
+		return connect.NewError(connect.CodeNotFound, fmt.Errorf("%s %s", e.name, "not found"))
 	}
 	if e.kind == conflict {
-		return status.New(codes.AlreadyExists, fmt.Sprintf("%s %s", e.name, "resource already exists"))
+		return connect.NewError(connect.CodeAlreadyExists, fmt.Errorf("%s %s", e.name, "resource already exists"))
 	}
-	return status.New(codes.Unknown, e.Error())
+	return connect.NewError(connect.CodeUnknown, e)
 }
 
 // WithErr convenience function to override sentinel errors

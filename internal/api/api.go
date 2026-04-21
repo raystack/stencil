@@ -2,21 +2,15 @@ package api
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/raystack/stencil/core/namespace"
 	"github.com/raystack/stencil/core/schema"
 	"github.com/raystack/stencil/core/search"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
-	"google.golang.org/grpc/health/grpc_health_v1"
 )
-
-type getSchemaData func(http.ResponseWriter, *http.Request, map[string]string) (*schema.Metadata, []byte, error)
-type errHandleFunc func(http.ResponseWriter, *http.Request, map[string]string) error
 
 type NamespaceService interface {
 	Create(ctx context.Context, ns namespace.Namespace) (namespace.Namespace, error)
@@ -44,8 +38,6 @@ type SearchService interface {
 }
 
 type API struct {
-	stencilv1beta1.UnimplementedStencilServiceServer
-	grpc_health_v1.UnimplementedHealthServer
 	namespace NamespaceService
 	schema    SchemaService
 	search    SearchService
@@ -59,57 +51,113 @@ func NewAPI(namespace NamespaceService, schema SchemaService, search SearchServi
 	}
 }
 
-// RegisterSchemaHandlers registers HTTP handlers for schema download
-func (a *API) RegisterSchemaHandlers(mux *runtime.ServeMux, app *newrelic.Application) {
-	mux.HandlePath("GET", "/ping", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		fmt.Fprint(w, "pong")
-	})
-	mux.HandlePath(wrapHandler(app, "GET", "/v1beta1/namespaces/{namespace}/schemas/{name}/versions/{version}", handleSchemaResponse(mux, a.HTTPGetSchema)))
-	mux.HandlePath(wrapHandler(app, "GET", "/v1beta1/namespaces/{namespace}/schemas/{name}", handleSchemaResponse(mux, a.HTTPLatestSchema)))
-	mux.HandlePath(wrapHandler(app, "POST", "/v1beta1/namespaces/{namespace}/schemas/{name}", wrapErrHandler(mux, a.HTTPUpload)))
-	mux.HandlePath(wrapHandler(app, "POST", "/v1beta1/namespaces/{namespace}/schemas/{name}/check", wrapErrHandler(mux, a.HTTPCheckCompatibility)))
+// RegisterSchemaHandlers registers custom HTTP handlers for schema binary endpoints.
+// These serve raw schema bytes (protobuf/JSON) rather than standard RPC responses.
+func (a *API) RegisterSchemaHandlers(mux *http.ServeMux) {
+	mux.HandleFunc("GET /v1beta1/namespaces/{namespace}/schemas/{name}/versions/{version}", a.handleGetSchema)
+	mux.HandleFunc("GET /v1beta1/namespaces/{namespace}/schemas/{name}", a.handleGetLatestSchema)
+	mux.HandleFunc("POST /v1beta1/namespaces/{namespace}/schemas/{name}", a.handleUploadSchema)
+	mux.HandleFunc("POST /v1beta1/namespaces/{namespace}/schemas/{name}/check", a.handleCheckCompatibility)
 }
 
-func handleSchemaResponse(mux *runtime.ServeMux, getSchemaFn getSchemaData) runtime.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		meta, data, err := getSchemaFn(w, r, pathParams)
-		if err != nil {
-			_, outbound := runtime.MarshalerForRequest(mux, r)
-			runtime.HTTPError(r.Context(), mux, outbound, w, r, err)
-			return
-		}
-		contentType := "application/json"
-		if meta.Format == "FORMAT_PROTOBUF" {
-			contentType = "application/octet-stream"
-		}
-		w.Header().Set("Content-Type", contentType)
-		w.Header().Set("Content-Length", strconv.Itoa(len(data)))
-		w.WriteHeader(http.StatusOK)
-		w.Write(data)
+func (a *API) handleGetSchema(w http.ResponseWriter, r *http.Request) {
+	namespaceID := r.PathValue("namespace")
+	schemaName := r.PathValue("name")
+	versionStr := r.PathValue("version")
+
+	v, err := strconv.ParseInt(versionStr, 10, 32)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "invalid version number")
+		return
 	}
+
+	meta, data, err := a.schema.Get(r.Context(), namespaceID, schemaName, int32(v))
+	if err != nil {
+		writeServiceError(w, err)
+		return
+	}
+
+	writeSchemaResponse(w, meta, data)
 }
 
-func wrapErrHandler(mux *runtime.ServeMux, handler errHandleFunc) runtime.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		err := handler(w, r, pathParams)
-		if err != nil {
-			_, outbound := runtime.MarshalerForRequest(mux, r)
-			runtime.DefaultHTTPErrorHandler(r.Context(), mux, outbound, w, r, err)
-			return
-		}
+func (a *API) handleGetLatestSchema(w http.ResponseWriter, r *http.Request) {
+	namespaceID := r.PathValue("namespace")
+	schemaName := r.PathValue("name")
+
+	meta, data, err := a.schema.GetLatest(r.Context(), namespaceID, schemaName)
+	if err != nil {
+		writeServiceError(w, err)
+		return
 	}
+
+	writeSchemaResponse(w, meta, data)
 }
 
-func wrapHandler(app *newrelic.Application, method, pattern string, handler runtime.HandlerFunc) (string, string, runtime.HandlerFunc) {
-	if app == nil {
-		return method, pattern, handler
+func (a *API) handleUploadSchema(w http.ResponseWriter, r *http.Request) {
+	data, err := readBody(r)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "failed to read request body")
+		return
 	}
-	return method, pattern, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-		txn := app.StartTransaction(method + " " + pattern)
-		defer txn.End()
-		w = txn.SetWebResponse(w)
-		txn.SetWebRequestHTTP(r)
-		r = newrelic.RequestWithTransactionContext(r, txn)
-		handler(w, r, pathParams)
+
+	format := r.Header.Get("X-Format")
+	compatibility := r.Header.Get("X-Compatibility")
+	metadata := &schema.Metadata{Format: format, Compatibility: compatibility}
+	namespaceID := r.PathValue("namespace")
+	schemaName := r.PathValue("name")
+
+	sc, err := a.schema.Create(r.Context(), namespaceID, schemaName, metadata, data)
+	if err != nil {
+		writeServiceError(w, err)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(sc)
+}
+
+func (a *API) handleCheckCompatibility(w http.ResponseWriter, r *http.Request) {
+	data, err := readBody(r)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "failed to read request body")
+		return
+	}
+
+	compatibility := r.Header.Get("X-Compatibility")
+	namespaceID := r.PathValue("namespace")
+	schemaName := r.PathValue("name")
+
+	if err := a.schema.CheckCompatibility(r.Context(), namespaceID, schemaName, compatibility, data); err != nil {
+		writeServiceError(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func writeSchemaResponse(w http.ResponseWriter, meta *schema.Metadata, data []byte) {
+	contentType := "application/json"
+	if meta.Format == "FORMAT_PROTOBUF" {
+		contentType = "application/octet-stream"
+	}
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Length", strconv.Itoa(len(data)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
+func writeError(w http.ResponseWriter, statusCode int, msg string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(map[string]string{"error": msg})
+}
+
+func writeServiceError(w http.ResponseWriter, err error) {
+	writeError(w, http.StatusInternalServerError, err.Error())
+}
+
+func readBody(r *http.Request) ([]byte, error) {
+	defer r.Body.Close()
+	return io.ReadAll(r.Body)
 }

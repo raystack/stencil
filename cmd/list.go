@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"os"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
 func listSchemaCmd(cdk *CDK) *cobra.Command {
 	var namespace string
-	var req stencilv1beta1.ListSchemasRequest
 
 	cmd := &cobra.Command{
 		Use:   "list",
@@ -29,18 +29,16 @@ func listSchemaCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
-			req.Id = namespace
-			res, err := client.ListSchemas(context.Background(), &req)
+			res, err := client.ListSchemas(context.Background(), connect.NewRequest(&stencilv1beta1.ListSchemasRequest{Id: namespace}))
 			if err != nil {
 				return err
 			}
-			schemas := res.GetSchemas()
+			schemas := res.Msg.GetSchemas()
 
 			// TODO(Ravi): List schemas should also handle namespace not found
 			if len(schemas) == 0 {

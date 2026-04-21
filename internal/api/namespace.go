@@ -3,8 +3,9 @@ package api
 import (
 	"context"
 
+	"connectrpc.com/connect"
 	"github.com/raystack/stencil/core/namespace"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -29,37 +30,49 @@ func namespaceToProto(ns namespace.Namespace) *stencilv1beta1.Namespace {
 }
 
 // CreateNamespace handler for creating namespace
-func (a *API) CreateNamespace(ctx context.Context, in *stencilv1beta1.CreateNamespaceRequest) (*stencilv1beta1.CreateNamespaceResponse, error) {
-	ns := createNamespaceRequestToNamespace(in)
+func (a *API) CreateNamespace(ctx context.Context, req *connect.Request[stencilv1beta1.CreateNamespaceRequest]) (*connect.Response[stencilv1beta1.CreateNamespaceResponse], error) {
+	ns := createNamespaceRequestToNamespace(req.Msg)
 	newNamespace, err := a.namespace.Create(ctx, ns)
-	return &stencilv1beta1.CreateNamespaceResponse{Namespace: namespaceToProto(newNamespace)}, err
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.CreateNamespaceResponse{Namespace: namespaceToProto(newNamespace)}), nil
 }
 
-func (a *API) UpdateNamespace(ctx context.Context, in *stencilv1beta1.UpdateNamespaceRequest) (*stencilv1beta1.UpdateNamespaceResponse, error) {
-	ns, err := a.namespace.Update(ctx, namespace.Namespace{ID: in.GetId(), Format: in.GetFormat().String(), Compatibility: in.GetCompatibility().String(), Description: in.GetDescription()})
-	return &stencilv1beta1.UpdateNamespaceResponse{Namespace: namespaceToProto(ns)}, err
+func (a *API) UpdateNamespace(ctx context.Context, req *connect.Request[stencilv1beta1.UpdateNamespaceRequest]) (*connect.Response[stencilv1beta1.UpdateNamespaceResponse], error) {
+	ns, err := a.namespace.Update(ctx, namespace.Namespace{ID: req.Msg.GetId(), Format: req.Msg.GetFormat().String(), Compatibility: req.Msg.GetCompatibility().String(), Description: req.Msg.GetDescription()})
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.UpdateNamespaceResponse{Namespace: namespaceToProto(ns)}), nil
 }
 
-func (a *API) GetNamespace(ctx context.Context, in *stencilv1beta1.GetNamespaceRequest) (*stencilv1beta1.GetNamespaceResponse, error) {
-	namespace, err := a.namespace.Get(ctx, in.GetId())
-	return &stencilv1beta1.GetNamespaceResponse{Namespace: namespaceToProto(namespace)}, err
+func (a *API) GetNamespace(ctx context.Context, req *connect.Request[stencilv1beta1.GetNamespaceRequest]) (*connect.Response[stencilv1beta1.GetNamespaceResponse], error) {
+	namespace, err := a.namespace.Get(ctx, req.Msg.GetId())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&stencilv1beta1.GetNamespaceResponse{Namespace: namespaceToProto(namespace)}), nil
 }
 
 // ListNamespaces handler for returning list of available namespaces
-func (a *API) ListNamespaces(ctx context.Context, in *stencilv1beta1.ListNamespacesRequest) (*stencilv1beta1.ListNamespacesResponse, error) {
+func (a *API) ListNamespaces(ctx context.Context, req *connect.Request[stencilv1beta1.ListNamespacesRequest]) (*connect.Response[stencilv1beta1.ListNamespacesResponse], error) {
 	namespaces, err := a.namespace.List(ctx)
+	if err != nil {
+		return nil, err
+	}
 	var nsp []*stencilv1beta1.Namespace
 	for _, n := range namespaces {
 		nsp = append(nsp, namespaceToProto(n))
 	}
-	return &stencilv1beta1.ListNamespacesResponse{Namespaces: nsp}, err
+	return connect.NewResponse(&stencilv1beta1.ListNamespacesResponse{Namespaces: nsp}), nil
 }
 
-func (a *API) DeleteNamespace(ctx context.Context, in *stencilv1beta1.DeleteNamespaceRequest) (*stencilv1beta1.DeleteNamespaceResponse, error) {
-	err := a.namespace.Delete(ctx, in.GetId())
+func (a *API) DeleteNamespace(ctx context.Context, req *connect.Request[stencilv1beta1.DeleteNamespaceRequest]) (*connect.Response[stencilv1beta1.DeleteNamespaceResponse], error) {
+	err := a.namespace.Delete(ctx, req.Msg.GetId())
 	message := "success"
 	if err != nil {
 		message = "failed"
 	}
-	return &stencilv1beta1.DeleteNamespaceResponse{Message: message}, err
+	return connect.NewResponse(&stencilv1beta1.DeleteNamespaceResponse{Message: message}), err
 }

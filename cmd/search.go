@@ -7,9 +7,10 @@ import (
 	"strconv"
 	"strings"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +18,6 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 	var namespaceID, schemaID string
 	var versionID int32
 	var history bool
-	var req stencilv1beta1.SearchRequest
 
 	cmd := &cobra.Command{
 		Use:     "search <query>",
@@ -41,22 +41,23 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 		s := printer.Spin("")
 		defer s.Stop()
 
-		client, cancel, err := createClient(cmd, cdk)
+		client, err := createClient(cmd, cdk)
 		if err != nil {
 			return err
 		}
-		defer cancel()
 
 		query := args[0]
-		req.Query = query
+		req := &stencilv1beta1.SearchRequest{
+			Query:       query,
+			NamespaceId: namespaceID,
+			SchemaId:    schemaID,
+		}
 
 		if len(schemaID) > 0 && len(namespaceID) == 0 {
 			s.Stop()
 			fmt.Println("Namespace ID not specified for", schemaID)
 			return nil
 		}
-		req.NamespaceId = namespaceID
-		req.SchemaId = schemaID
 
 		if versionID != 0 {
 			req.Version = &stencilv1beta1.SearchRequest_VersionId{
@@ -68,12 +69,12 @@ func SearchCmd(cdk *CDK) *cobra.Command {
 			}
 		}
 
-		res, err := client.Search(context.Background(), &req)
+		res, err := client.Search(context.Background(), connect.NewRequest(req))
 		if err != nil {
 			return err
 		}
 
-		hits := res.GetHits()
+		hits := res.Msg.GetHits()
 
 		report := [][]string{}
 		s.Stop()

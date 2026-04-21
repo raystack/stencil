@@ -6,12 +6,11 @@ import (
 	"os"
 	"strconv"
 
+	"connectrpc.com/connect"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/raystack/salt/cli/printer"
-	stencilv1beta1 "github.com/raystack/stencil/proto/raystack/stencil/v1beta1"
+	stencilv1beta1 "github.com/raystack/stencil/gen/raystack/stencil/v1beta1"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func infoSchemaCmd(cdk *CDK) *cobra.Command {
@@ -28,27 +27,27 @@ func infoSchemaCmd(cdk *CDK) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
-			req := stencilv1beta1.GetSchemaMetadataRequest{
+			req := &stencilv1beta1.GetSchemaMetadataRequest{
 				NamespaceId: namespace,
 				SchemaId:    args[0],
 			}
-			info, err := client.GetSchemaMetadata(cmd.Context(), &req)
+			res, err := client.GetSchemaMetadata(cmd.Context(), connect.NewRequest(req))
 			spinner.Stop()
 			if err != nil {
-				errStatus, _ := status.FromError(err)
-				if codes.NotFound == errStatus.Code() {
+				connectErr, ok := err.(*connect.Error)
+				if ok && connectErr.Code() == connect.CodeNotFound {
 					fmt.Printf("%s Schema with id '%s' not found.\n", printer.Red(printer.Icon("failure")), args[0])
 					return nil
 				}
 				return err
 			}
 
+			info := res.Msg
 			fmt.Printf("\n%s\n", printer.Blue(args[0]))
 			fmt.Printf("\n%s\n\n", printer.Grey("No description provided"))
 			fmt.Printf("%s \t %s \n", printer.Grey("Namespace:"), namespace)
@@ -67,7 +66,6 @@ func infoSchemaCmd(cdk *CDK) *cobra.Command {
 
 func versionSchemaCmd(cdk *CDK) *cobra.Command {
 	var namespaceID string
-	var req stencilv1beta1.ListVersionsRequest
 
 	cmd := &cobra.Command{
 		Use:   "version",
@@ -80,22 +78,21 @@ func versionSchemaCmd(cdk *CDK) *cobra.Command {
 			spinner := printer.Spin("")
 			defer spinner.Stop()
 
-			client, cancel, err := createClient(cmd, cdk)
+			client, err := createClient(cmd, cdk)
 			if err != nil {
 				return err
 			}
-			defer cancel()
 
 			schemaID := args[0]
-			req.NamespaceId = namespaceID
-			req.SchemaId = schemaID
-
-			res, err := client.ListVersions(context.Background(), &req)
+			res, err := client.ListVersions(context.Background(), connect.NewRequest(&stencilv1beta1.ListVersionsRequest{
+				NamespaceId: namespaceID,
+				SchemaId:    schemaID,
+			}))
 			if err != nil {
 				return err
 			}
 
-			versions := res.GetVersions()
+			versions := res.Msg.GetVersions()
 			spinner.Stop()
 
 			if len(versions) == 0 {
